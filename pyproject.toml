@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "probabilistic-ontology-engine"
+version = "0.1.0"
+description = "Domain-agnostic probabilistic ontology engine with three-level belief architecture"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.0",
+    "fastapi>=0.100",
+    "networkx>=3.0",
+    "pgmpy>=0.1.20",
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "uvicorn>=0.22",
+    "httpx>=0.24",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "httpx>=0.24"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
