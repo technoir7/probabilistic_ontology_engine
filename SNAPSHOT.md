@@ -1,4 +1,4 @@
-# Codebase Snapshot — 2026-05-24
+# Codebase Snapshot — 2026-05-25
 
 Handoff document. Describes exact state of every module, what is implemented vs. stubbed, all bugs found and fixed, test results, and known limitations. Not marketing copy.
 
@@ -6,7 +6,7 @@ Handoff document. Describes exact state of every module, what is implemented vs.
 
 ## Test status
 
-**41/41 passing** across all `PYTHONHASHSEED` values (confirmed at 0, 1, 42, 100, 999, 12345).
+**57/57 passing** across all `PYTHONHASHSEED` values (confirmed at 0, 1, 42, 100, 999, 12345).
 
 ```
 tests/integration/test_corn_ingestion.py::test_build_evidence_record_maps_all_uuids          PASSED
@@ -25,6 +25,22 @@ tests/integration/test_corn_ingestion.py::test_in_season_nass_observed_and_confi
 tests/integration/test_corn_ingestion.py::test_fas_and_nasdaq_always_observed_and_confident  PASSED
 tests/integration/test_corn_ingestion.py::test_nass_snapshot_builder_from_raw_rows           PASSED
 tests/integration/test_corn_ingestion.py::test_fetch_evidence_full_async                     PASSED
+tests/integration/test_soybean_ingestion.py::test_build_evidence_record_maps_all_uuids       PASSED
+tests/integration/test_soybean_ingestion.py::test_planting_delayed_when_behind_5yr_avg       PASSED
+tests/integration/test_soybean_ingestion.py::test_planting_on_pace_when_within_threshold     PASSED
+tests/integration/test_soybean_ingestion.py::test_drought_index_when_below_threshold         PASSED
+tests/integration/test_soybean_ingestion.py::test_no_drought_when_above_threshold            PASSED
+tests/integration/test_soybean_ingestion.py::test_yield_forecast_down_when_below_prior_year  PASSED
+tests/integration/test_soybean_ingestion.py::test_yield_not_down_when_above_prior_year       PASSED
+tests/integration/test_soybean_ingestion.py::test_export_demand_high_when_above_rolling_avg  PASSED
+tests/integration/test_soybean_ingestion.py::test_export_demand_not_high_when_below_rolling_avg PASSED
+tests/integration/test_soybean_ingestion.py::test_soy_price_up_when_settle_above_avg         PASSED
+tests/integration/test_soybean_ingestion.py::test_soy_price_not_up_when_settle_below_avg     PASSED
+tests/integration/test_soybean_ingestion.py::test_off_season_nass_yields_missing_assignments PASSED
+tests/integration/test_soybean_ingestion.py::test_in_season_nass_observed_and_confident      PASSED
+tests/integration/test_soybean_ingestion.py::test_fas_and_nasdaq_always_observed_and_confident PASSED
+tests/integration/test_soybean_ingestion.py::test_nass_snapshot_builder_from_raw_rows        PASSED
+tests/integration/test_soybean_ingestion.py::test_fetch_evidence_full_async                  PASSED
 tests/integration/test_natural_gas_ingestion.py::test_build_evidence_record_maps_all_uuids   PASSED
 tests/integration/test_natural_gas_ingestion.py::test_temp_below_normal_january              PASSED
 tests/integration/test_natural_gas_ingestion.py::test_temp_above_normal_july                 PASSED
@@ -52,8 +68,8 @@ tests/level3/test_population.py::test_L3_05_population_size_bounded             
 tests/level3/test_population.py::test_L3_06_lineage_tracked                                  PASSED
 ```
 
-Run command: `pytest tests/ -v`  
-Runtime: ~4.0 seconds. The warning flood (several thousand `DeprecationWarning: datetime.utcnow()`) is noise from pgmpy and the stores; all warnings are non-fatal.
+Run command: `.venv/bin/python -m pytest tests/ -v`  
+Runtime: ~4.5 seconds. The warning flood (several thousand `DeprecationWarning: datetime.utcnow()`) is noise from pgmpy and the stores; all warnings are non-fatal.
 
 ---
 
@@ -78,7 +94,8 @@ probabilistic_ontology_engine/
 │   │   ├── engine.py                     # ProbabilisticOntologyEngine — top-level orchestrator
 │   │   ├── schemas.py                    # All Pydantic v2 models
 │   │   ├── api/
-│   │   │   └── __init__.py               # EMPTY — FastAPI routes not yet written
+│   │   │   ├── __init__.py
+│   │   │   └── app.py                    # FastAPI app — all v1 routes implemented
 │   │   ├── services/
 │   │   │   ├── __init__.py
 │   │   │   ├── learning.py               # Level 1 — CPT parameter update
@@ -109,15 +126,25 @@ probabilistic_ontology_engine/
 │       │       ├── noaa_client.py        # api.weather.gov — 5 CONUS stations, hourly obs
 │       │       ├── eia_client.py         # api.eia.gov v2 — weekly storage + daily Henry Hub price
 │       │       └── pipeline.py           # Combines NOAA + EIA → EvidenceRecord (static builder)
-│       └── corn_v1/
+│       ├── corn_v1/
+│       │   ├── __init__.py
+│       │   ├── domain.py                 # 5 variables, 3 candidates, CornV1 class
+│       │   ├── scheduler.py              # Daily ingestion loop (08:00 UTC); standalone entry point
+│       │   └── ingestion/
+│       │       ├── __init__.py
+│       │       ├── usda_nass_client.py   # quickstats.nass.usda.gov — planting/conditions/yield
+│       │       ├── usda_fas_client.py    # apps.fas.usda.gov — weekly corn export volume
+│       │       ├── nasdaq_client.py      # data.nasdaq.com — CME/ZC1 front-month settle price
+│       │       └── pipeline.py           # Combines NASS + FAS + Nasdaq → EvidenceRecord
+│       └── soybean_v1/
 │           ├── __init__.py
-│           ├── domain.py                 # 5 variables, 3 candidates, CornV1 class
-│           ├── scheduler.py              # Daily ingestion loop (08:00 UTC); standalone entry point
+│           ├── domain.py                 # 5 variables, 3 candidates, SoybeanV1 class
+│           ├── scheduler.py              # Daily ingestion loop (09:00 UTC); standalone entry point
 │           └── ingestion/
 │               ├── __init__.py
-│               ├── usda_nass_client.py   # quickstats.nass.usda.gov — planting/conditions/yield
-│               ├── usda_fas_client.py    # apps.fas.usda.gov — weekly corn export volume
-│               ├── nasdaq_client.py      # data.nasdaq.com — CME/ZC1 front-month settle price
+│               ├── usda_nass_client.py   # quickstats.nass.usda.gov — planting/conditions/yield (SOYBEANS)
+│               ├── usda_fas_client.py    # apps.fas.usda.gov — weekly soybean export volume
+│               ├── nasdaq_client.py      # data.nasdaq.com — CHRIS/CME_S1 front-month settle price
 │               └── pipeline.py           # Combines NASS + FAS + Nasdaq → EvidenceRecord
 │
 └── tests/
@@ -135,7 +162,8 @@ probabilistic_ontology_engine/
     └── integration/
         ├── __init__.py
         ├── test_natural_gas_ingestion.py  # NG-01..10: NOAA+EIA pipeline tests
-        └── test_corn_ingestion.py         # ZC-01..16: NASS+FAS+Nasdaq pipeline tests
+        ├── test_corn_ingestion.py         # ZC-01..16: NASS+FAS+Nasdaq pipeline tests
+        └── test_soybean_ingestion.py      # ZS-01..16: NASS+FAS+Nasdaq pipeline tests (soybeans)
 ```
 
 ---
@@ -233,7 +261,7 @@ evidence_records (
 )
 ```
 
-Methods: `append(record, domain_module_id)`, `append_batch(records, domain_module_id)` (uses `executemany`), `load_all(domain_module_id)` (returns deserialized `EvidenceRecord` list), `count(domain_module_id)`, `clear(domain_module_id)`.
+Methods: `append(record, domain_module_id)`, `append_batch(records, domain_module_id)` (uses `executemany`), `load_all(domain_module_id)` (returns deserialized `EvidenceRecord` list), `load_recent(domain_module_id, limit=20)` (returns plain dicts sorted newest-first; used by API routes), `latest_timestamp(domain_module_id)` (returns ISO string or None; used by population/status route), `count(domain_module_id)`, `clear(domain_module_id)`.
 
 `load_all` round-trips through JSON. `variable_id` is stored as UUID string and reconstructed. `observed_value` round-trips as JSON which may coerce Python `True/False` to/from JSON `true/false` (fine for bool; may need attention for richer types).
 
@@ -601,15 +629,111 @@ Same structure as natural gas scheduler: `run_once`, `backfill`, `run_forever`. 
 
 ---
 
+### `src/domains/soybean_v1/domain.py` — **fully implemented**
+
+Module-level canonical variable definitions (UUIDs fixed at import time):
+
+```
+PlantingDelayed   — soybean planting progress > 5 pp behind 5-year average (BOOLEAN)
+DroughtIndex      — USDA NASS crop GOOD+EXCELLENT % < 55% threshold (BOOLEAN)
+YieldForecastDown — latest WASDE yield forecast < prior year final yield (BOOLEAN)
+ExportDemandHigh  — weekly soybean export volume > 4-week rolling average (BOOLEAN)
+SoyPriceUp        — ZS front-month settle > 20-day rolling average (BOOLEAN)
+```
+
+Three candidate structures:
+- **W\*** (weather-dominant): `PlantingDelayed → YieldForecastDown`, `DroughtIndex → YieldForecastDown`, `YieldForecastDown → SoyPriceUp` (priors 0.70/0.75/0.65). ExportDemandHigh absent — hypothesis treats export demand as noise.
+- **D\*** (demand-dominant): `YieldForecastDown → SoyPriceUp`, `ExportDemandHigh → SoyPriceUp` (priors 0.60/0.70). Planting and drought omitted — weather effects assumed already priced in.
+- **Null**: `YieldForecastDown → SoyPriceUp` only (prior 0.55).
+
+`SoybeanV1` domain module class. `existence_thresholds()`: prune_below=0.05, accept_above=0.90.
+
+---
+
+### `src/domains/soybean_v1/ingestion/usda_nass_client.py` — **fully implemented**
+
+Identical structure to `corn_v1/ingestion/usda_nass_client.py` with `commodity_desc='SOYBEANS'` (instead of `'CORN'`). Returns `SoybeanNASSSnapshot` dataclass. All three series (planting progress, crop conditions, yield forecast) share the same parsers and derived-boolean thresholds as corn:
+- `PlantingDelayed` = `progress < avg - 5.0`
+- `DroughtIndex` = `good_exc < 55.0`
+- `YieldForecastDown` = `forecast < prior`
+
+Seasonal missingness: off-season `None` fields → MISSING/confidence=0.0 downstream.
+
+---
+
+### `src/domains/soybean_v1/ingestion/usda_fas_client.py` — **fully implemented**
+
+Identical structure to `corn_v1/ingestion/usda_fas_client.py` with `_SOYBEAN_CODE = "SOYBEANS"`. Returns `SoybeanFASSnapshot` dataclass. Same 5-week fetch, same rolling-average logic, same `IOError` on < 2 rows.
+
+---
+
+### `src/domains/soybean_v1/ingestion/nasdaq_client.py` — **fully implemented**
+
+Fetches from `https://data.nasdaq.com/api/v3/datasets/CHRIS/CME_S1.json` (CBOT Soybean Futures, Continuous Front Month). Same column layout as ZC1 (Settle at index 4), same 21-row fetch, same 20-day rolling average. Returns `SoybeanNASDAQSnapshot` dataclass with `price_up = settle > 20d_avg`.
+
+---
+
+### `src/domains/soybean_v1/ingestion/pipeline.py` — **fully implemented**
+
+**`SoybeanPipeline`**: mirrors `CornPipeline` exactly. Static `build_evidence_record` maps five Boolean variables:
+```
+PlantingDelayed   ← nass.planting_delayed
+DroughtIndex      ← nass.drought_index
+YieldForecastDown ← nass.yield_forecast_down
+ExportDemandHigh  ← fas.export_demand_high
+SoyPriceUp        ← nasdaq.price_up
+```
+NASS-derived fields use `MISSING`/`confidence=0.0` when off-season; FAS and Nasdaq always `OBSERVED`/`confidence=1.0`. `source_ref` encodes `USDA-NASS+USDA-FAS+NASDAQ:CHRIS/CME_S1@{date}`.
+
+---
+
+### `src/domains/soybean_v1/scheduler.py` — **fully implemented**
+
+`IngestionScheduler(engine, pipeline, run_hour_utc=9, backfill_days=7)`.
+
+Default schedule **09:00 UTC**: one hour after the corn scheduler (08:00 UTC) to stagger API calls. Same structure as corn scheduler: `run_once`, `backfill`, `run_forever`. Standalone entry point `python -m src.domains.soybean_v1.scheduler`. Validates `NASDAQ_API_KEY` before starting. Uses `soybean.db` as the default database path.
+
+---
+
 ### `src/domains/market_risk_v1/` — **empty placeholder**
 
 Directory and `__init__.py` exist. No implementation.
 
 ---
 
-### `src/engine/api/` — **empty placeholder**
+### `src/engine/api/app.py` — **fully implemented**
 
-Directory and `__init__.py` exist. FastAPI routes not written.
+FastAPI application with all priority routes. Startup creates three shared `ProbabilisticOntologyEngine` instances (one per domain, each with its own SQLite db), stored in `app.state.engines`. If `EVIDENCE_SCHEDULER_ENABLED=true`, the three daily ingestion schedulers are started as asyncio tasks using those shared engines.
+
+**CORS**: `CORSMiddleware` with `allow_origins=["*"]` (tighten to Vercel deploy URL in production).
+
+**Environment variables**:
+- `EVIDENCE_SCHEDULER_ENABLED` (default True) — set to `false` for API-only mode
+- `POE_DATA_DIR` (default `.`) — directory for `natural_gas.db`, `corn.db`, `soybean.db`
+- `EIA_API_KEY`, `NASDAQ_API_KEY`, `NASS_API_KEY` — required when scheduler enabled
+- `EVIDENCE_BACKFILL_DAYS` (default 30), `NATURAL_GAS_RUN_HOUR_UTC` (7), `CORN_RUN_HOUR_UTC` (8), `SOYBEAN_RUN_HOUR_UTC` (9)
+- `LOG_LEVEL` (default INFO)
+
+**Domain short-name map**: `ng` → `natural-gas-v1`, `zc` → `corn-v1`, `zs` → `soybean-v1`.
+
+**Routes**:
+
+- `GET /health` → `{"status": "ok"}`
+- `GET /runtime` → scheduler task status list
+- `GET /v1/population/status?domain=ng` → `PopStatusOut` (structure_entropy, active_candidates, max_candidates, current_generation, dominant_hypothesis, paradigm_shifts_this_window, frontier_edge_count, last_evidence_cycle_ago, engine_status)
+- `GET /v1/population/candidates?domain=ng` → `CandidatesOut` (sorted best-first, normalized scores, rising/falling/neutral/dominant status)
+- `POST /v1/inference/query` body `{domain, target_variable, candidate_id?, conditions?, aggregation?}` → `InferenceOut` (nodes, edges, frontier_edges, target_probability). Fuzzy variable resolution handles `target_variable: 'price_up'` from the frontend (resolves to `PriceUp`/`CornPriceUp`/`SoyPriceUp` per domain).
+- `GET /v1/population/lineage/{candidate_id}?domain=ng` → `LineageOut` (parent chain events)
+- `GET /v1/evidence/recent?domain=ng&limit=20` → `EvidenceOut` (most-recent evidence records)
+
+**Response models** match TypeScript interfaces in `epistemic-monitor/lib/types.ts`.
+
+**Key helpers**:
+- `_find_variable_fuzzy(cand, raw_name)`: normalise (lower, strip separators), exact match, then suffix match
+- `_normalize_scores(candidates, avg_fn)`: min-max to [0.05, 0.95]; rank-based when all scores equal
+- `_time_ago(iso_ts)`: converts ISO timestamp to "Xm ago" / "Xh ago" / "Xd ago"
+- `_edge_status_label(prob, lo, hi)`: 'strong' / 'explore' / 'weak' based on explore_band
+- `_node_status_label(...)`: 'target' / 'established' / 'exploring' / 'weak' based on max edge existence_probability touching the variable
 
 ---
 
@@ -709,7 +833,7 @@ Outside these windows, the underlying data is genuinely unavailable — not dela
 
 10. **Single domain active at a time**: `engine.activate_domain()` sets one domain. Multi-domain parallel learning is not implemented.
 
-11. **FastAPI routes not written**: `src/engine/api/__init__.py` is empty. There is no HTTP interface.
+11. **FastAPI routes implemented but untested by automated integration tests**: `tests/integration/test_api.py` has not been written. The routes have been smoke-tested with `TestClient` in-process but there are no regression tests for schema compliance or edge-case inputs.
 
 12. **`introduce_variants` selects parent candidates by raw log_score, prunes by BIC-corrected score**: A candidate with many evidence records may rank low as a variant parent even if it has the best BIC-adjusted average. Design inconsistency.
 

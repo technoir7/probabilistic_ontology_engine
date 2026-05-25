@@ -4,75 +4,60 @@ Priority order. Each item has enough context for a cold session to pick up witho
 
 ---
 
-## 1. Dashboard frontend integration  ← TOP PRIORITY
+## 1. API integration tests  ← TOP PRIORITY
 
 ### What this is
 
-A read interface that shows the current population state for each registered domain, the dominant candidate graph structure, paradigm shift history, and candidate score trajectories over time. Not a configuration UI; read-only initially.
-
-Two production domains now exist that generate real daily evidence: `natural_gas_v1` (NOAA + EIA) and `corn_v1` (USDA NASS + USDA FAS + Nasdaq ZC1). The dashboard has real data to display.
-
-### FastAPI routes to write first (`src/engine/api/`)
-
-The API layer is a hard prerequisite for any frontend. Write these in order of dependency:
-
-```
-GET  /domains                                → list registered domains and their status
-GET  /domains/{domain_id}/population         → OntologyPopulation summary dict
-GET  /domains/{domain_id}/candidates         → all candidates (active + pruned), sorted by score
-GET  /domains/{domain_id}/candidates/{cand}  → single candidate with full edge list + existence probs
-GET  /domains/{domain_id}/dominant           → dominant candidate + its active edge structure + scores
-GET  /domains/{domain_id}/scores             → candidate_scores time series from PopulationStore
-GET  /domains/{domain_id}/edges              → all edges across active candidates with existence probs
-POST /domains/{domain_id}/query              → InferenceQuery body → posterior dict + explanation
-POST /domains/{domain_id}/ingest             → list[EvidenceRecord] bodies → ingests, returns count
-POST /domains/{domain_id}/learn              → run one learning cycle → ModelSnapshot
-POST /domains/register                       → register a new domain module
-```
-
-Create `src/engine/api/routes.py` with an `APIRouter` and `src/engine/api/app.py` with the FastAPI app and lifespan management.
-
-### Engine integration gap to resolve first
-
-Currently `ProbabilisticOntologyEngine` holds all state in-process with an in-memory `ParameterStore`. Two problems:
-
-1. **Restart loses parameters**: A process restart clears all CPT counts. The `PopulationStore` persists scores and candidate metadata, but parameters are gone. For a useful dashboard, `ParameterStore` must be persisted. Options: serialize CPTData count dicts to a dedicated SQLite table as JSON blobs, or write/load a pickle file per candidate keyed by `candidate_id`. The SQLite approach is cleaner and keeps everything in one database.
-
-2. **Singleton engine**: The FastAPI app needs one shared engine instance. Use FastAPI's `lifespan` context manager to create the engine on startup and shut it down cleanly on exit. Inject it via dependency injection rather than a bare global.
-
-Resolve parameter persistence before writing routes — the routes are not useful without it.
-
-### What the dashboard should show
-
-Priority order within the dashboard itself:
-
-**Score trajectory view** (highest value): A time series showing each candidate's BIC-adjusted average score per learning cycle, with pruning events (red X) and variant introductions (green circle) annotated on the timeline. Data source: `candidate_scores` table in `PopulationStore`, which already records per-batch log-likelihood increments. This view makes paradigm shifts visible as the crossover point where one candidate's score line overtakes another's.
-
-**Dominant graph view**: The current dominant candidate's active edge structure rendered as a directed graph (D3.js or Vega-Lite force layout). Edges are colored by `existence_probability` (green = high, gray = uncertain, red = near-pruning threshold). Node labels are variable names.
-
-**Population table**: All active candidates sorted by BIC-adjusted score, showing: generation, parent lineage, edge count, evidence_count, log_score, `_avg_score`, and status.
-
-**Paradigm shift log**: Timestamped list of dominant candidate changes, with the old and new dominant structures side-by-side.
-
-### Frontend stack
-
-Recommend minimal dependencies:
-
-- **Backend**: FastAPI (already in stack) serving JSON. No additional framework.
-- **Graph visualization**: D3.js force layout or Dagre-D3 for the DAG display (handles hierarchical layouts better than force for DAGs).
-- **Time series**: Vega-Lite or Chart.js for score trajectories.
-- **Deployment**: Static HTML + vanilla JS loaded from FastAPI's `/static` route. No build step needed for MVP.
-
-Avoid Observable Framework or React for the first pass — they add tooling complexity that slows iteration. Plain HTML + CDN-hosted D3 and Vega-Lite is deployable without a build pipeline.
+The FastAPI routes in `src/engine/api/app.py` are now implemented and smoke-tested manually with `TestClient`, but no automated regression tests exist. Without them, route regressions will be invisible.
 
 ### Tests to write
 
-`tests/integration/test_api.py` using FastAPI's `TestClient`:
-- Each route returns 200 with correct schema
-- `/domains/{id}/population` includes `structure_entropy`, `paradigm_shift_count`, `dominant_candidate`
-- `/domains/{id}/query` returns posteriors for all target variables
-- `/domains/{id}/learn` increments `evidence_count` on all candidates
-- Regression: after calling `/learn` N times, dominant candidate matches expected structure
+`tests/integration/test_api.py` using FastAPI's `TestClient` with `EVIDENCE_SCHEDULER_ENABLED=false`:
+
+```python
+@pytest.fixture
+def client():
+    import os; os.environ["EVIDENCE_SCHEDULER_ENABLED"] = "false"
+    from fastapi.testclient import TestClient
+    from src.engine.api.app import app
+    with TestClient(app) as c:
+        yield c
+```
+
+Priority test cases:
+
+1. **Schema compliance** — each route returns 200 with all required fields present and of the correct type. Verify against the TypeScript interface field list.
+
+2. **`GET /v1/population/status?domain=ng/zc/zs`** — `active_candidates == 3` (initial), `dominant_hypothesis.candidate_id` is a valid UUID string, `engine_status == 'online'`.
+
+3. **`GET /v1/population/candidates?domain=ng`** — exactly one candidate has `status == 'dominant'`, all `score_normalized` values in [0.05, 0.95], candidates sorted best-first.
+
+4. **`POST /v1/inference/query` with `target_variable='price_up'`** — fuzzy resolution works for all three domains (`ng`→`PriceUp`, `zc`→`CornPriceUp`, `zs`→`SoyPriceUp`), `target_probability` is float in [0, 1], all variable names appear in `nodes`.
+
+5. **Fuzzy resolution edge cases** — `'Price_Up'`, `'PRICE_UP'`, `'priceup'` all resolve; `'nonexistent'` returns 422.
+
+6. **`GET /v1/population/lineage/{id}?domain=ng`** — events list non-empty; last event has `event_type == 'current'`.
+
+7. **`GET /v1/evidence/recent?domain=ng`** — returns `EvidenceOut` with `records` list (may be empty if fresh db).
+
+8. **Unknown domain** — `GET /v1/population/status?domain=xx` → 404.
+
+9. **Score trajectory regression** — ingest 10 synthetic records from `test_domain_v1` generator, call `engine.learn(batch)` 3×, then `GET /v1/population/candidates` shows all `score_normalized` values distinct.
+
+### Persistence gap (still open)
+
+`ParameterStore` is in-memory. A process restart clears CPT counts. `PopulationStore` persists scores and candidate metadata but not the parameters. For a robust deployment, serialize CPTData count dicts to a SQLite table:
+
+```sql
+cpt_parameters (
+    candidate_id TEXT,
+    variable_name TEXT,
+    counts_json   TEXT,          -- JSON-serialized CPTData.counts dict
+    PRIMARY KEY (candidate_id, variable_name)
+)
+```
+
+Round-trip: `json.dumps({str(k): dict(v) for k, v in cpt.counts.items()})` → DB → reconstruct counts on load. The `digest()` method already produces a stable hash for validation. Implement in `ParameterStore` with `save_to_db(conn, candidate_id)` and `load_from_db(conn, candidate_id)` methods. Call from engine lifespan (save on shutdown, load on startup).
 
 ---
 
@@ -154,6 +139,26 @@ Existing tests parameterize `max_population_size`. Running L3-05 with `max_pop=5
 
 ## Completed
 
+### ✓ FastAPI routes — all priority endpoints
+
+`src/engine/api/app.py` — complete rewrite implementing all frontend-required routes.
+
+- `GET /health` — liveness probe
+- `GET /runtime` — scheduler task status list
+- `GET /v1/population/status?domain=ng|zc|zs` → `PopStatusOut` matching TypeScript `PopulationStatus`
+- `GET /v1/population/candidates?domain=ng|zc|zs` → `CandidatesOut` matching TypeScript `CandidatesResponse`
+- `POST /v1/inference/query` body `{domain, target_variable, ...}` → `InferenceOut` matching TypeScript `InferenceResponse`. Fuzzy variable matching handles `target_variable: 'price_up'` resolving to domain-specific variable names (`PriceUp`, `CornPriceUp`, `SoyPriceUp`).
+- `GET /v1/population/lineage/{candidate_id}?domain=` → `LineageOut`
+- `GET /v1/evidence/recent?domain=` → `EvidenceOut`
+
+Architecture: three shared `ProbabilisticOntologyEngine` instances (ng, zc, zs) built at lifespan startup and stored in `app.state.engines`. Schedulers receive these shared engines — no separate engine instances created inside scheduler coroutines. CORS middleware added.
+
+Two new `EvidenceStore` methods added: `load_recent(domain_module_id, limit)` and `latest_timestamp(domain_module_id)`.
+
+All 57 existing tests pass unchanged.
+
+---
+
 ### ✓ NOAA and EIA data ingestion for natural gas domain
 
 `src/domains/natural_gas_v1/` — fully implemented and tested.
@@ -174,3 +179,15 @@ Existing tests parameterize `max_population_size`. Running L3-05 with `max_pop=5
 - `pipeline.py`: static `build_evidence_record` maps 5 Boolean variables. NASS-derived assignments carry `MISSING`/`confidence=0.0` when off-season.
 - `scheduler.py`: daily loop at 08:00 UTC, 30-day backfill on startup.
 - 16 integration tests (TEST-ZC-01..16), all passing.
+
+### ✓ Soybean domain module
+
+`src/domains/soybean_v1/` — fully implemented and tested.
+
+- `usda_nass_client.py`: USDA NASS Quick Stats API — same three series as corn but with `commodity_desc='SOYBEANS'`. Returns `SoybeanNASSSnapshot`. Identical derived-boolean logic and seasonal missingness semantics.
+- `usda_fas_client.py`: USDA FAS GATS — weekly soybean export inspection volume. Commodity code `'SOYBEANS'`. Same rolling-average logic as corn client.
+- `nasdaq_client.py`: Nasdaq Data Link CHRIS/CME_S1 — front-month soybean futures settlement price (cents/bushel). 20-day rolling average baseline. Requires `NASDAQ_API_KEY`.
+- `pipeline.py`: static `build_evidence_record` maps 5 Boolean variables (PlantingDelayed, DroughtIndex, YieldForecastDown, ExportDemandHigh, SoyPriceUp). NASS-derived assignments carry `MISSING`/`confidence=0.0` when off-season.
+- `scheduler.py`: daily loop at **09:00 UTC** (one hour after corn to stagger API calls). 30-day backfill on startup.
+- 16 integration tests (TEST-ZS-01..16), all passing.
+- Total test suite: **57/57 passing**.

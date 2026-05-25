@@ -99,6 +99,37 @@ class EvidenceStore:
         return cur.fetchone()[0]
 
     # ------------------------------------------------------------------
+    def load_recent(self, domain_module_id: str, limit: int = 20) -> list[dict]:
+        """Return the most recent *limit* records as plain dicts for API serialisation."""
+        cur = self._conn.execute(
+            """SELECT evidence_id, timestamp, source_type, source_ref, confidence, assignments
+               FROM evidence_records WHERE domain_module=?
+               ORDER BY timestamp DESC LIMIT ?""",
+            (domain_module_id, limit),
+        )
+        records = []
+        for row in cur.fetchall():
+            records.append({
+                "evidence_id": row[0],
+                "timestamp": row[1],
+                "source_type": row[2],
+                "source_ref": row[3] or "",
+                "confidence": row[4],
+                "assignments": json.loads(row[5]) if row[5] else [],
+            })
+        return records
+
+    # ------------------------------------------------------------------
+    def latest_timestamp(self, domain_module_id: str) -> str | None:
+        """Return the ISO timestamp of the most recent record, or None."""
+        cur = self._conn.execute(
+            "SELECT MAX(timestamp) FROM evidence_records WHERE domain_module=?",
+            (domain_module_id,),
+        )
+        row = cur.fetchone()
+        return row[0] if row and row[0] else None
+
+    # ------------------------------------------------------------------
     def clear(self, domain_module_id: str) -> None:
         self._conn.execute(
             "DELETE FROM evidence_records WHERE domain_module=?",
