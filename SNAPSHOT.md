@@ -6,28 +6,54 @@ Handoff document. Describes exact state of every module, what is implemented vs.
 
 ## Test status
 
-**15/15 passing** across all `PYTHONHASHSEED` values (confirmed at 0, 1, 42, 100, 999, 12345).
+**41/41 passing** across all `PYTHONHASHSEED` values (confirmed at 0, 1, 42, 100, 999, 12345).
 
 ```
-tests/level1/test_parameter_learning.py::test_L1_01_parameter_update_single_variable  PASSED
-tests/level1/test_parameter_learning.py::test_L1_02_cpt_convergence_full_graph         PASSED
-tests/level1/test_parameter_learning.py::test_L1_03_parameter_reproducibility          PASSED
-tests/level1/test_parameter_learning.py::test_L1_04_missing_evidence_em                PASSED
-tests/level2/test_edge_existence.py::test_L2_01_true_edge_existence_rises               PASSED
-tests/level2/test_edge_existence.py::test_L2_02_spurious_edge_existence_falls           PASSED
-tests/level2/test_edge_existence.py::test_L2_03_existence_update_direction              PASSED
-tests/level2/test_edge_existence.py::test_L2_04_edge_pruned_at_threshold                PASSED
-tests/level2/test_edge_existence.py::test_L2_05_explore_weight_decays                   PASSED
-tests/level3/test_population.py::test_L3_01_true_structure_dominates                    PASSED
-tests/level3/test_population.py::test_L3_02_low_scorers_pruned                          PASSED
-tests/level3/test_population.py::test_L3_03_paradigm_shift_on_regime_switch             PASSED  ← MILESTONE
-tests/level3/test_population.py::test_L3_04_variant_introduction_schema_valid           PASSED
-tests/level3/test_population.py::test_L3_05_population_size_bounded                     PASSED
-tests/level3/test_population.py::test_L3_06_lineage_tracked                             PASSED
+tests/integration/test_corn_ingestion.py::test_build_evidence_record_maps_all_uuids          PASSED
+tests/integration/test_corn_ingestion.py::test_planting_delayed_when_behind_5yr_avg          PASSED
+tests/integration/test_corn_ingestion.py::test_planting_on_pace_when_within_threshold        PASSED
+tests/integration/test_corn_ingestion.py::test_drought_index_when_below_threshold            PASSED
+tests/integration/test_corn_ingestion.py::test_no_drought_when_above_threshold               PASSED
+tests/integration/test_corn_ingestion.py::test_yield_forecast_down_when_below_prior_year     PASSED
+tests/integration/test_corn_ingestion.py::test_yield_not_down_when_above_prior_year          PASSED
+tests/integration/test_corn_ingestion.py::test_export_demand_high_when_above_rolling_avg     PASSED
+tests/integration/test_corn_ingestion.py::test_export_demand_not_high_when_below_rolling_avg PASSED
+tests/integration/test_corn_ingestion.py::test_corn_price_up_when_settle_above_avg           PASSED
+tests/integration/test_corn_ingestion.py::test_corn_price_not_up_when_settle_below_avg       PASSED
+tests/integration/test_corn_ingestion.py::test_off_season_nass_yields_missing_assignments    PASSED
+tests/integration/test_corn_ingestion.py::test_in_season_nass_observed_and_confident         PASSED
+tests/integration/test_corn_ingestion.py::test_fas_and_nasdaq_always_observed_and_confident  PASSED
+tests/integration/test_corn_ingestion.py::test_nass_snapshot_builder_from_raw_rows           PASSED
+tests/integration/test_corn_ingestion.py::test_fetch_evidence_full_async                     PASSED
+tests/integration/test_natural_gas_ingestion.py::test_build_evidence_record_maps_all_uuids   PASSED
+tests/integration/test_natural_gas_ingestion.py::test_temp_below_normal_january              PASSED
+tests/integration/test_natural_gas_ingestion.py::test_temp_above_normal_july                 PASSED
+tests/integration/test_natural_gas_ingestion.py::test_storage_draw_when_decrease             PASSED
+tests/integration/test_natural_gas_ingestion.py::test_storage_build_when_increase            PASSED
+tests/integration/test_natural_gas_ingestion.py::test_price_up_when_above_median             PASSED
+tests/integration/test_natural_gas_ingestion.py::test_price_not_up_when_at_or_below_median   PASSED
+tests/integration/test_natural_gas_ingestion.py::test_station_confidence_scales_with_stations PASSED
+tests/integration/test_natural_gas_ingestion.py::test_eia_variables_always_full_confidence   PASSED
+tests/integration/test_natural_gas_ingestion.py::test_fetch_evidence_full_async              PASSED
+tests/level1/test_parameter_learning.py::test_L1_01_parameter_update_single_variable         PASSED
+tests/level1/test_parameter_learning.py::test_L1_02_cpt_convergence_full_graph               PASSED
+tests/level1/test_parameter_learning.py::test_L1_03_parameter_reproducibility                PASSED
+tests/level1/test_parameter_learning.py::test_L1_04_missing_evidence_em                      PASSED
+tests/level2/test_edge_existence.py::test_L2_01_true_edge_existence_rises                    PASSED
+tests/level2/test_edge_existence.py::test_L2_02_spurious_edge_existence_falls                PASSED
+tests/level2/test_edge_existence.py::test_L2_03_existence_update_direction                   PASSED
+tests/level2/test_edge_existence.py::test_L2_04_edge_pruned_at_threshold                     PASSED
+tests/level2/test_edge_existence.py::test_L2_05_explore_weight_decays                        PASSED
+tests/level3/test_population.py::test_L3_01_true_structure_dominates                         PASSED
+tests/level3/test_population.py::test_L3_02_low_scorers_pruned                               PASSED
+tests/level3/test_population.py::test_L3_03_paradigm_shift_on_regime_switch                  PASSED  ← MILESTONE
+tests/level3/test_population.py::test_L3_04_variant_introduction_schema_valid                PASSED
+tests/level3/test_population.py::test_L3_05_population_size_bounded                          PASSED
+tests/level3/test_population.py::test_L3_06_lineage_tracked                                  PASSED
 ```
 
-Run command: `pytest tests/level1/ tests/level2/ tests/level3/ -v`  
-Runtime: ~3.6 seconds. The warning flood (several thousand `DeprecationWarning: datetime.utcnow()`) is noise from pgmpy and the stores; all warnings are non-fatal and suppressed in normal runs.
+Run command: `pytest tests/ -v`  
+Runtime: ~4.0 seconds. The warning flood (several thousand `DeprecationWarning: datetime.utcnow()`) is noise from pgmpy and the stores; all warnings are non-fatal.
 
 ---
 
@@ -37,10 +63,12 @@ Runtime: ~3.6 seconds. The warning flood (several thousand `DeprecationWarning: 
 probabilistic_ontology_engine/
 │
 ├── pyproject.toml                        # hatchling build; pytest config; deps
-├── README.md                             # user-facing introduction
+├── .env                                  # NOT checked in — EIA_API_KEY, NASDAQ_API_KEY
+├── .gitignore
+├── README.md
 ├── SNAPSHOT.md                           # this file
-├── NEXT.md                               # next steps
-├── SPECM.md                              # authoritative spec (unchanged from original)
+├── NEXT.md
+├── SPEC.md                               # authoritative spec
 ├── CLAUDE.md                             # build rules and project instructions
 │
 ├── src/
@@ -70,8 +98,27 @@ probabilistic_ontology_engine/
 │       │   ├── __init__.py
 │       │   ├── domain.py                 # Canonical variable defs, CPTs, candidate factories
 │       │   └── synthetic_generator.py    # Samples EvidenceRecords from T* or T_alt
-│       └── market_risk_v1/
-│           └── __init__.py               # EMPTY — placeholder directory only
+│       ├── market_risk_v1/
+│       │   └── __init__.py               # EMPTY — placeholder directory only
+│       ├── natural_gas_v1/
+│       │   ├── __init__.py
+│       │   ├── domain.py                 # 4 variables, 3 candidates, NaturalGasV1 class
+│       │   ├── scheduler.py              # Daily ingestion loop (07:00 UTC); standalone entry point
+│       │   └── ingestion/
+│       │       ├── __init__.py
+│       │       ├── noaa_client.py        # api.weather.gov — 5 CONUS stations, hourly obs
+│       │       ├── eia_client.py         # api.eia.gov v2 — weekly storage + daily Henry Hub price
+│       │       └── pipeline.py           # Combines NOAA + EIA → EvidenceRecord (static builder)
+│       └── corn_v1/
+│           ├── __init__.py
+│           ├── domain.py                 # 5 variables, 3 candidates, CornV1 class
+│           ├── scheduler.py              # Daily ingestion loop (08:00 UTC); standalone entry point
+│           └── ingestion/
+│               ├── __init__.py
+│               ├── usda_nass_client.py   # quickstats.nass.usda.gov — planting/conditions/yield
+│               ├── usda_fas_client.py    # apps.fas.usda.gov — weekly corn export volume
+│               ├── nasdaq_client.py      # data.nasdaq.com — CME/ZC1 front-month settle price
+│               └── pipeline.py           # Combines NASS + FAS + Nasdaq → EvidenceRecord
 │
 └── tests/
     ├── __init__.py
@@ -86,7 +133,9 @@ probabilistic_ontology_engine/
     │   ├── __init__.py
     │   └── test_population.py            # L3-01..06: population management tests
     └── integration/
-        └── __init__.py                    # EMPTY — integration tests not yet written
+        ├── __init__.py
+        ├── test_natural_gas_ingestion.py  # NG-01..10: NOAA+EIA pipeline tests
+        └── test_corn_ingestion.py         # ZC-01..16: NASS+FAS+Nasdaq pipeline tests
 ```
 
 ---
@@ -263,9 +312,7 @@ Falls back to uniform distributions if pgmpy inference fails (exception caught s
 
 **`EdgeExistenceService`**:
 
-**`update(candidate)`**: For every `learnable` edge in candidate (including disabled ones, since update is called on all edges regardless of enabled state — note: this means existence probabilities continue updating even after pruning, which is fine as they are not acted on once `enabled=False`):
-
-Calls `_update_edge(candidate, edge)`.
+**`update(candidate)`**: For every `learnable` edge in candidate (including disabled ones):
 
 **`_update_edge`**:
 1. Gets `child_var`'s CPTData from ParameterStore
@@ -273,14 +320,14 @@ Calls `_update_edge(candidate, edge)`.
 3. Checks if `parent_var.name` is in `cpt_data.parents` — skips if not (edge already removed from CPT)
 4. `score_without = cpt_data.bic_score_without_parent(parent_var.name)` — BIC with parent marginalized out
 5. `log_lr = score_with - score_without`
-6. `log_odds = logit(edge.existence_prior) + log_lr` — using cumulative data means this is the correct Bayesian posterior from the prior
+6. `log_odds = logit(edge.existence_prior) + log_lr`
 7. `edge.existence_probability = sigmoid(log_odds)`
 8. `edge.existence_update_count += 1`
-9. Explore weight update: if existence_probability is outside `explore_band`, decay by `0.3 * distance_from_mid`; if inside, increase by 5%. Clipped to [0.05, 2.0].
+9. Explore weight update: if outside explore_band, decay by `0.3 * distance_from_mid`; if inside, increase 5%. Clipped to [0.05, 2.0].
 
-**`prune_below_threshold(candidate, parameter_store)`**: Iterates enabled edges. If `existence_probability < prune_below`, sets `edge.enabled = False`, then calls `parameter_store.update_parents(candidate_id, child_var.name, new_parents)` to remove the parent from the CPT (resets CPT counts for that variable with the smaller parent set). Returns list of pruned edges.
+**`prune_below_threshold(candidate, parameter_store)`**: Iterates enabled edges. If `existence_probability < prune_below`, sets `edge.enabled = False`, then calls `parameter_store.update_parents(...)` to remove parent from CPT. Returns list of pruned edges.
 
-**`get_uncertain_edges(candidate)`**: Returns edges in explore_band; currently used by ExploreExploitService (which is stubbed).
+**`get_uncertain_edges(candidate)`**: Returns edges in explore_band; used by ExploreExploitService (stubbed).
 
 ---
 
@@ -307,113 +354,250 @@ Returns `float("-inf")` if `evidence_count == 0`.
 
 **`update_score(domain_module_id, candidate_id, log_likelihood, batch_index, batch_size)`**: Finds candidate in population by UUID, adds `log_likelihood` to `log_score`, adds `batch_size` to `evidence_count`. Also calls `pop_store.update_score` and `pop_store.append_score_record`. `batch_size` should be `len(batch)` — the count of individual records in the batch.
 
-**`prune_low_scorers(domain_module_id)`**: Guards: `len(active) < 2` → return; `not any(c.evidence_count >= _MIN_BATCHES_FOR_PRUNING for c in active)` → return (where `_MIN_BATCHES_FOR_PRUNING = 3`; note this is compared against `evidence_count` which is a record count, not a batch count — any candidate that has seen 3+ records will pass this threshold, which is always true after the first batch of any practical size). Ranks active candidates by `_avg_score`; prunes bottom `max(1, len(active)//4)`, skipping the dominant. Marks candidates PRUNED with `pruning_reason="bottom_quartile_log_score"`.
+**`prune_low_scorers(domain_module_id)`**: Guards: `len(active) < 2` → return; any candidate with `evidence_count >= 3` required. Ranks active candidates by `_avg_score`; prunes bottom `max(1, len(active)//4)`, skipping the dominant. Marks candidates PRUNED with `pruning_reason="bottom_quartile_log_score"`.
 
-**`introduce_variants(domain_module_id, learning_service=None)`**: Computes `slots = max_population_size - len(active)`. Sorts survivors by raw `log_score` (not BIC-adjusted) for parent selection. Loops up to `slots * 10` attempts, picking parent via `survivors[attempts % len(survivors)]`. Calls `_make_variant`; validates DAG; checks for duplicate edge signatures among existing + new candidates. On success: appends to population, increments generation, saves candidate, clones CPTs, optionally calls `ps.update_parents` for new edges if `learning_service` provided.
+**`introduce_variants(domain_module_id, learning_service=None)`**: Computes `slots = max_population_size - len(active)`. Sorts survivors by raw `log_score` for parent selection. Loops up to `slots * 10` attempts, picking parent. Calls `_make_variant`; validates DAG; checks for duplicate edge signatures. On success: appends to population, increments generation, saves candidate, clones CPTs.
 
-**`_make_variant(domain_module_id, parent, admissible)`**: Strategy randomly chosen from ["add", "remove"]. Falls back to the other strategy if chosen strategy is impossible.
+**`_make_variant(domain_module_id, parent, admissible)`**: Strategy randomly chosen from ["add", "remove"].
 
-- "add": `candidates_to_add = sorted(admissible - edge_sigs)` (sorted for PYTHONHASHSEED independence), `rng.choice(candidates_to_add)`, creates new `DependencyEdge` with `existence_prior=0.5, existence_probability=0.5`.
+- "add": `candidates_to_add = sorted(admissible - edge_sigs)` (sorted for PYTHONHASHSEED independence), `rng.choice(candidates_to_add)`, creates new `DependencyEdge` with `existence_prior=0.5`.
 - "remove": `rng.choice(active_edges)`, filters that edge out of `variant_edges` list.
 
-Warm-start: `variant.log_score = parent.log_score`, `variant.evidence_count = parent.evidence_count`. This ensures new variants enter the BIC-corrected ranking at the same level as their parent, not at -inf.
+Warm-start: `variant.log_score = parent.log_score`, `variant.evidence_count = parent.evidence_count`.
 
-**`end_cycle(domain_module_id)`**: Calls `pop.update_dominant()` (which increments `paradigm_shift_count` if dominant changes), calls `pop_store.save_population(pop)`, returns `pop.summary()`.
+**`end_cycle(domain_module_id)`**: Calls `pop.update_dominant()`, calls `pop_store.save_population(pop)`, returns `pop.summary()`.
 
 ---
 
 ### `src/engine/services/inference.py` — **fully implemented**
 
-**`InferenceService.query(inference_query, population)`**: Dispatches on `PopulationAggregation`.
+**`InferenceService.query(inference_query, population)`**: Dispatches on `PopulationAggregation` (ACTIVE_ONLY, WEIGHTED_AVERAGE, TOP_K). Runs pgmpy `VariableElimination` per candidate. If `explain=True`: returns path explanations via networkx `all_simple_paths` with edge existence probabilities.
 
-- `ACTIVE_ONLY`: queries dominant candidate only
-- `WEIGHTED_AVERAGE`: queries all active candidates, merges posteriors weighted by `score_weights()`
-- `TOP_K`: top 3 by raw log_score, exp-weight normalized
-
-**`_query_candidate`**: Builds pgmpy model via `_build_pgmpy_model`, runs `VariableElimination.query([var], evidence=evidence_int)` for each target variable. Evidence must be encoded as int indices (pgmpy uses 0-based integer states) via `_encode_value`. Falls back to uniform marginal on any exception.
-
-If `query.explain=True`: returns path explanations via networkx `all_simple_paths` from each conditioned variable to each target, with edge existence probabilities along each path.
-
-**`_build_pgmpy_model(candidate)`**: Builds `DiscreteBayesianNetwork` from active edges, adds all variables as nodes (isolated variables get uniform CPDs), builds `TabularCPD` for each variable via `_build_tabular_cpd`. Calls `model.check_model()` but silently ignores failures (slight numerical imprecision in CPT normalization).
-
-**`_build_tabular_cpd(var, parent_vars, cpt_data)`**: Generates all parent value combinations in pgmpy column order (last evidence variable varies fastest), queries `get_probability` for each, normalizes columns. Returns `TabularCPD`.
-
-**`_encode_value(value, support)`**: Maps Python value to 0-based index by equality or `str()` comparison.
+**`_build_pgmpy_model(candidate)`**: Builds `DiscreteBayesianNetwork` from active edges. Isolated variables get uniform CPDs. Falls back silently on model check failures.
 
 ---
 
 ### `src/engine/services/explore_exploit.py` — **stubbed**
 
-`ExploreExploitService` class exists and has a `propose(population, batch, top_k)` method that structurally identifies admissible edges not in any active candidate and ranks them by empirical mutual information. However, `_empirical_mi` is a stub that always returns 0.0 — it cannot extract variable names from `ObservedAssignment` objects (which carry UUIDs, not names). The ranking is therefore always trivial; all proposals have equal score.
-
-This service is not called anywhere in the current engine or tests.
+`ExploreExploitService` class exists. `_empirical_mi` always returns 0.0. `propose()` returns unranked results. Not integrated into the engine or called from any test.
 
 ---
 
 ### `src/engine/engine.py` — **fully implemented** (core loop)
 
-**`ProbabilisticOntologyEngine`**: Top-level orchestrator.
+`__init__(db_path=":memory:", random_seed=42)`: Creates all stores and services.
 
-`__init__(db_path=":memory:", random_seed=42)`: Creates all stores and services. Note: `PopulationManager` is created without a seeded RNG here (uses the default `random.Random(42)` inside PopulationManager's own `__init__`).
+`register_domain(domain_module)`: Calls `initial_candidates()`, `learning_service.initialize_candidate` for each, `_derive_admissible_edges` (all variable pairs), `population_manager.initialize`.
 
-`register_domain(domain_module)`: Calls `domain_module.initial_candidates()`, `learning_service.initialize_candidate` for each, `_derive_admissible_edges` (all variable pairs, regardless of which pairs appear in initial candidates), `population_manager.initialize`.
+`learn(batch, domain_module_id=None)`: Full learning cycle: accumulate → edge existence update → prune → score → update_score → prune_low_scorers → introduce_variants → end_cycle → ModelSnapshot.
 
-`learn(batch, domain_module_id=None)`: One full learning cycle:
-1. For each active candidate: accumulate, edge existence update, prune, score, update_score (with `batch_size=len(batch)`)
-2. `prune_low_scorers`, `introduce_variants`
-3. `end_cycle` → ModelSnapshot
+`ingest(record)`: Appends an EvidenceRecord to the evidence store.
 
 `query(inference_query)`: Delegates to `inference_service.query`.
 
-`_make_snapshot`: Computes SHA-256 of summary dict (population_state_hash) and parameter_hash of dominant candidate.
-
-`get_edge_existence(candidate_id, parent_name, child_name)`: Scans candidate edges for the named pair, returns `existence_probability` or None.
-
-`_derive_admissible_edges(candidates)`: Returns all (a, b) pairs for a ≠ b across all variable names in all candidates. This is a superset of what appears in initial candidates — effectively all possible edges. Domain-specific pruning (via schema TemplateRules) is not yet implemented.
+`_derive_admissible_edges(candidates)`: Returns all (a, b) pairs for a ≠ b across all variable names in all candidates.
 
 ---
 
 ### `src/domains/test_domain_v1/domain.py` — **fully implemented**
 
-Module-level canonical variable definitions:
-
-```python
-_VARIABLE_DEFS: dict[str, Variable] = {
-    name: Variable(variable_id=uuid4(), ...)
-    for name in ["A", "B", "C", "D", "E"]
-}
-```
-
-Created once at module import time. All subsequent calls to `get_variables()`, all candidate factories, and the `SyntheticDataGenerator` reference the same objects with the same UUIDs. This is the critical requirement for evidence records to match candidate variable lookups.
-
-Ground truth CPTs: `CPT_A`, `CPT_B`, `CPT_C`, `CPT_D_TSTAR`, `CPT_D_TALT`, `CPT_E`. See module docstring for values.
-
-Structure signatures: `T_STAR_EDGES = frozenset({("A","C"),("B","C"),("B","D"),("C","E"),("D","E")})`, `T_ALT_EDGES = frozenset({("A","C"),("B","C"),("A","D"),("C","E"),("D","E")})`.
-
-Candidate factories (all create fresh `candidate_id` UUIDs, share `_VARIABLE_DEFS` variables):
-- `make_tstar_candidate(module_id, gen)` — 5 edges, priors 0.7
-- `make_talt_candidate(module_id, gen)` — 5 edges, A→D prior 0.5
-- `make_null_candidate(module_id, gen)` — 1 edge (C→E), prior 0.5
-- `make_spurious_1_candidate(module_id)` — T* + A→D (6 edges)
-- `make_spurious_2_candidate(module_id)` — T* − B→D (4 edges)
-
-`TestDomainV1` class implements the domain module interface: `module_id()`, `version()`, `initial_candidates()` (T*, T_alt, null), `existence_thresholds()` (prune_below=0.05, accept_above=0.90).
-
-`initial_entities()`, `initial_assertions()`, `variable_specs()`, `initial_parameterizations()` return empty lists — these are spec fields not yet used.
+Module-level canonical variable definitions for synthetic variables A, B, C, D, E. Ground truth CPTs, structure signatures (`T_STAR_EDGES`, `T_ALT_EDGES`). Candidate factories: `make_tstar_candidate`, `make_talt_candidate`, `make_null_candidate`, `make_spurious_1_candidate`, `make_spurious_2_candidate`. `TestDomainV1` domain module class.
 
 ---
 
 ### `src/domains/test_domain_v1/synthetic_generator.py` — **fully implemented**
 
-`SyntheticDataGenerator(graph="T*", random_seed=42, missing_rate=0.0)`:
+`SyntheticDataGenerator(graph="T*", random_seed=42, missing_rate=0.0)`. Ancestral sampling from T* or T_alt CPTs. `switch_regime(new_graph)` for paradigm shift tests. `sample_variable_only(variable_name, n, p_true)` for single-variable tests.
 
-- Uses `numpy.random.default_rng(random_seed)` for reproducible sampling
-- Calls `get_variables()` to get canonical `_VARIABLE_DEFS` — same UUIDs as candidates
-- `sample(n)` → `list[EvidenceRecord]` from current regime
-- `sample_variable_only(variable_name, n, p_true)` → n records with only one variable observed
-- `switch_regime(new_graph)` — changes `self.graph`; used in L3-03 paradigm shift test
+---
 
-Sampling is ancestral: A, B (roots) → C (parents A,B) → D (parent B or A by regime) → E (parents C,D). Missing rate applies independently to each assignment.
+### `src/domains/natural_gas_v1/domain.py` — **fully implemented**
+
+Module-level canonical variable definitions (UUIDs fixed at import time):
+
+```
+TempAnom    — CONUS daily mean temp above/below seasonal normal (BOOLEAN)
+HeatingDem  — HDD > 0; any heating demand active (BOOLEAN)
+StorageDraw — EIA weekly Lower-48 storage decreased week-over-week (BOOLEAN)
+PriceUp     — Henry Hub spot price above 28-day rolling median (BOOLEAN)
+```
+
+Three candidate structures:
+- **T\***: `TempAnom → HeatingDem → StorageDraw → PriceUp` (demand chain; prior 0.75/0.70/0.70)
+- **T_alt**: `TempAnom → HeatingDem`, `TempAnom → StorageDraw`, `StorageDraw → PriceUp` (temperature direct; prior 0.75/0.55/0.70)
+- **Null**: `StorageDraw → PriceUp` only (prior 0.60)
+
+`NaturalGasV1` domain module class. `existence_thresholds()`: prune_below=0.05, accept_above=0.90.
+
+---
+
+### `src/domains/natural_gas_v1/ingestion/noaa_client.py` — **fully implemented**
+
+**`NOAAClient`**: Fetches hourly temperature observations from `api.weather.gov/stations/{stationId}/observations`. No API key required; `User-Agent` header mandatory.
+
+Five monitored CONUS stations: `KORD` (Chicago), `KJFK` (New York), `KATL` (Atlanta), `KDFW` (Dallas), `KDEN` (Denver). Chosen for geographic spread across heating-demand regions.
+
+`fetch_daily_obs(target_date)` → `DailyClimateObs`:
+- Fetches all 5 stations concurrently via `asyncio.gather`
+- Accepts readings with `qualityControl` in `{"V", "C", "S"}`; skips stations with < 3 valid readings
+- Raises `IOError` if fewer than 2 stations return valid data
+- Computes: `conus_mean` (average of station means), `hdd = max(0, 18.33 - conus_mean)`, `temp_anom = conus_mean > MONTHLY_NORMALS_C[month]`, `heating_dem = hdd > 0`
+
+`MONTHLY_NORMALS_C`: hard-coded 12-month table of approximate population-weighted CONUS normals (1.5°C Jan … 25.0°C Jul … 2.5°C Dec).
+
+Injected `httpx.AsyncClient` pattern: if client provided at construction, caller owns it and it is not closed on exit.
+
+`DailyClimateObs` dataclass: `target_date`, `mean_temp_c`, `hdd`, `temp_anom`, `heating_dem`, `stations_used`, `station_means`.
+
+---
+
+### `src/domains/natural_gas_v1/ingestion/eia_client.py` — **fully implemented**
+
+**`EIAClient`**: Fetches from `https://api.eia.gov/v2/seriesid/{series_id}`. Requires `EIA_API_KEY`.
+
+Two series:
+- `NG.NW2_EPG0_SWO_R48_BCF.W` — weekly Lower-48 storage (Bcf); fetches 3 most-recent weeks to compute change; `storage_draw = change_bcf < 0`
+- `NG.RNGWHHD.D` — Henry Hub spot price ($/MMBtu); fetches 28 most-recent days; `price_up = latest > statistics.median(prices)`
+
+Both series fetched concurrently via `asyncio.gather`.
+
+`NatGasSnapshot` dataclass: `storage_current_bcf`, `storage_prev_bcf`, `storage_change_bcf`, `storage_draw`, `latest_price`, `median_price`, `price_up`.
+
+Raises `ValueError` if `api_key` is empty; raises `IOError` on HTTP or parse failure.
+
+---
+
+### `src/domains/natural_gas_v1/ingestion/pipeline.py` — **fully implemented**
+
+**`NaturalGasPipeline`**: Fetches NOAA + EIA concurrently.
+
+`fetch_evidence(target_date)` → `EvidenceRecord`: concurrent `asyncio.gather` of both clients.
+
+`build_evidence_record(climate_obs, gas_snapshot)` → `EvidenceRecord`: **static synchronous method**. Maps the four Boolean fields to their canonical `variable_id` values (from `get_variables()`). Primary test target.
+
+Confidence:
+- TempAnom, HeatingDem: `max(0.4, stations_used / 5)` — scales from 0.4 (2 stations) to 1.0 (5 stations)
+- StorageDraw, PriceUp: 1.0 (EIA is authoritative; no uncertainty)
+
+`source_ref` encodes: `"NOAA:api.weather.gov+EIA:NG.NW2_EPG0_SWO_R48_BCF.W+NG.RNGWHHD.D@{date}"`.
+
+---
+
+### `src/domains/natural_gas_v1/scheduler.py` — **fully implemented**
+
+`IngestionScheduler(engine, pipeline, run_hour_utc=7, backfill_days=7)`.
+
+`run_once(target_date=None)` → bool: defaults to yesterday UTC.  
+`backfill()` → int: ingests oldest-first, 1s sleep between requests.  
+`run_forever()`: backfills on startup, then `asyncio.sleep` to next 07:00 UTC daily.
+
+Standalone entry point: `python -m src.domains.natural_gas_v1.scheduler`. Loads `.env` via python-dotenv if installed. Validates `EIA_API_KEY` before creating any clients.
+
+---
+
+### `src/domains/corn_v1/domain.py` — **fully implemented**
+
+Module-level canonical variable definitions (UUIDs fixed at import time):
+
+```
+PlantingDelayed   — corn planting progress > 5 pp behind 5-year average (BOOLEAN)
+DroughtIndex      — USDA NASS crop GOOD+EXCELLENT % < 55% threshold (BOOLEAN)
+YieldForecastDown — latest WASDE yield forecast < prior year final yield (BOOLEAN)
+ExportDemandHigh  — weekly corn export volume > 4-week rolling average (BOOLEAN)
+CornPriceUp       — ZC front-month settle > 20-day rolling average (BOOLEAN)
+```
+
+Three candidate structures:
+- **W\*** (weather-dominant): `PlantingDelayed → YieldForecastDown`, `DroughtIndex → YieldForecastDown`, `YieldForecastDown → CornPriceUp` (priors 0.70/0.75/0.65). ExportDemandHigh is absent — hypothesis treats export demand as noise.
+- **D\*** (demand-dominant): `YieldForecastDown → CornPriceUp`, `ExportDemandHigh → CornPriceUp` (priors 0.60/0.70). Planting and drought omitted — weather effects assumed already priced in.
+- **Null**: `YieldForecastDown → CornPriceUp` only (prior 0.55).
+
+`CornV1` domain module class. `existence_thresholds()`: prune_below=0.05, accept_above=0.90.
+
+---
+
+### `src/domains/corn_v1/ingestion/usda_nass_client.py` — **fully implemented**
+
+**`USDANASSClient`**: Fetches from `https://quickstats.nass.usda.gov/api/api_GET/`. API key is optional (omit for anonymous DEMO_KEY tier; free registration available).
+
+Makes 3 concurrent internal API calls per snapshot:
+1. Planting progress (PCT PLANTED, WEEKLY) — last 6 years
+2. Crop conditions (WEEKLY) — current year; filters for PCT GOOD and PCT EXCELLENT
+3. Yield forecast (BU / ACRE, MONTHLY) — current and prior year
+
+`fetch_snapshot(target_date)` → `CornNASSSnapshot` via `asyncio.gather`.
+
+`build_snapshot(target_date, planting_rows, condition_rows, yield_rows)` — **static synchronous method**, primary test target.
+
+Internal parsers:
+- `_parse_planting`: extracts current year's most-recent week value; computes 5-year average from prior years at the same ISO week number. Returns `(current_pct, avg_pct)`.
+- `_parse_conditions`: sums PCT GOOD + PCT EXCELLENT for the most recent week ≤ target_date. Returns `None` if no condition data found (off-season).
+- `_parse_yield`: extracts current year's latest forecast and prior year's last value. Returns `(forecast, prior)`.
+
+`CornNASSSnapshot` dataclass: `target_date`, `planting_progress_pct` (None if off-season), `planting_5yr_avg_pct`, `condition_good_exc_pct`, `yield_forecast_bu_ac`, `yield_prior_year_bu_ac`, `planting_delayed`, `drought_index`, `yield_forecast_down`.
+
+Thresholds: `PlantingDelayed` = `progress < avg - 5.0` (5 percentage points); `DroughtIndex` = `good_exc < 55.0`; `YieldForecastDown` = `forecast < prior`.
+
+Individual series failures degrade gracefully to empty lists; `build_snapshot` returns `None` fields rather than raising, so the pipeline produces MISSING assignments rather than failing.
+
+---
+
+### `src/domains/corn_v1/ingestion/usda_fas_client.py` — **fully implemented**
+
+**`USDAFASClient`**: Fetches from `https://apps.fas.usda.gov/gats/ExpressQuery1.aspx`. No API key required.
+
+Fetches 5 weeks of weekly corn export inspection volume (metric tons). Response format: `{"datalist": [{"yearperiod": "2025 W20", "value": "1300000"}, ...]}` newest-first.
+
+`build_snapshot(target_date, rows)` — **static synchronous method**: `current = rows[0]`, `rolling_avg = mean(rows[1:])`, `export_demand_high = current > rolling_avg`. Raises `IOError` if fewer than 2 rows returned.
+
+`CornFASSnapshot` dataclass: `target_date`, `current_week_exports_mt`, `rolling_4wk_avg_mt`, `export_demand_high`.
+
+---
+
+### `src/domains/corn_v1/ingestion/nasdaq_client.py` — **fully implemented**
+
+**`NASDAQClient`**: Fetches from `https://data.nasdaq.com/api/v3/datasets/CME/ZC1.json`. Requires `NASDAQ_API_KEY`. Fetches 21 most-recent rows (1 latest + 20 for rolling average).
+
+CME/ZC1 = CBOT Corn Futures, Continuous Front Month. Settlement price in cents per bushel. Column layout: `[Date, Open, High, Low, Settle, Volume, Open Interest]`; Settle is at index 4.
+
+`build_snapshot(target_date, rows)` — **static synchronous method**: `latest = rows[0][Settle_index]`, `avg = mean(rows[1:][Settle_index])`, `price_up = latest > avg`. Raises `IOError` if fewer than 2 rows.
+
+`CornNASDAQSnapshot` dataclass: `target_date`, `settle_cents_per_bushel`, `rolling_20d_avg_cents`, `price_up`.
+
+---
+
+### `src/domains/corn_v1/ingestion/pipeline.py` — **fully implemented**
+
+**`CornPipeline`**: Fetches NASS, FAS, and Nasdaq concurrently.
+
+`fetch_evidence(target_date)` → `EvidenceRecord`: concurrent `asyncio.gather` of all three clients.
+
+`build_evidence_record(nass, fas, nasdaq)` → `EvidenceRecord`: **static synchronous method**. Primary test target.
+
+Variable mapping:
+```
+PlantingDelayed   ← nass.planting_delayed
+DroughtIndex      ← nass.drought_index
+YieldForecastDown ← nass.yield_forecast_down
+ExportDemandHigh  ← fas.export_demand_high
+CornPriceUp       ← nasdaq.price_up
+```
+
+Missingness:
+- NASS-derived fields use `MissingnessType.MISSING` and `confidence=0.0` when the underlying data is `None` (off-season); `MissingnessType.OBSERVED` and `confidence=1.0` when data is present.
+- FAS and Nasdaq fields are always `MissingnessType.OBSERVED`, `confidence=1.0`.
+
+`source_ref` encodes all three data sources and the target date.
+
+---
+
+### `src/domains/corn_v1/scheduler.py` — **fully implemented**
+
+`IngestionScheduler(engine, pipeline, run_hour_utc=8, backfill_days=7)`.
+
+Default schedule 08:00 UTC: after NASS Monday crop progress reports (released 15:00 ET), after FAS Tuesday export inspection summaries, and after the previous trading day's Nasdaq ZC1 settlement.
+
+Same structure as natural gas scheduler: `run_once`, `backfill`, `run_forever`. Standalone entry point `python -m src.domains.corn_v1.scheduler`. Validates `NASDAQ_API_KEY` before starting.
 
 ---
 
@@ -429,12 +613,6 @@ Directory and `__init__.py` exist. FastAPI routes not written.
 
 ---
 
-### `tests/integration/` — **empty placeholder**
-
-Directory and `__init__.py` exist. Integration tests not written.
-
----
-
 ## Bugs found and fixed during L3-03 stabilization
 
 ### Bug 1: Warm-started variants gaming BIC score via add-then-prune
@@ -444,11 +622,9 @@ Directory and `__init__.py` exist. Integration tests not written.
 AssertionError: Expected T* to dominate. Dominant: variant_add_A->D, score: -1371.51.
 T* score: -1373.67
 ```
-The dominant candidate was `variant_add_A->D` — a variant of T* that added the spurious edge A→D, which was subsequently pruned (disabled). After pruning, the variant had the same active edge structure as T* but a marginally higher raw log_score (-1371.51 vs T*'s -1373.67).
+The dominant candidate was `variant_add_A->D` — a variant of T* that added the spurious edge A→D, which was subsequently pruned (disabled). After pruning, the variant had the same active edge structure as T* but a marginally higher raw log_score.
 
 **Root cause**: When `_avg_score` computed the BIC complexity penalty `k = Σ 2^(num_active_parents)`, disabled edges were excluded. After A→D was pruned, D's active parent count in the variant was 1 (just B, same as T*). So both had k=12 and identical BIC penalties. The variant's 2.16 advantage in raw log_score persisted, making it dominant.
-
-The variant accumulated that advantage because: after A→D was pruned and D's CPT was reset with only B as parent, the variant's CPT for D converged on fewer data points than T*'s CPT (which had been training with B→D from the start). The re-convergence produced slightly different counts that happened to fit slightly better on the remaining batches.
 
 **Fix**: Count ALL edges (including `enabled=False`) when computing parent count for BIC:
 ```python
@@ -460,44 +636,50 @@ n_parents = sum(1 for e in candidate.edges if e.child_variable_id == v.variable_
 k += 2 ** n_parents   # all edges, including disabled
 ```
 
-For the variant with A→D pruned: D now has 2 edges in its edge list (B→D and A→D), so n_parents=2, contribution to k is 4 instead of 2. Total k=14 vs T*'s k=12. BIC penalty for variant = 0.0870/record vs T*'s 0.0746/record. Total extra penalty = 6.22 over 500 records, which exceeds the 2.16 raw score advantage → T* wins.
+For the variant with A→D pruned: D now has n_parents=2, contribution to k is 4 instead of 2. Total k=14 vs T*'s k=12. Extra BIC penalty of 6.22 over 500 records exceeds the 2.16 raw score advantage → T* wins.
 
-Fix applied to both `PopulationManager._avg_score` and `OntologyPopulation._avg_score` (in schemas.py) for consistency.
+Fix applied to both `PopulationManager._avg_score` and `OntologyPopulation._avg_score` (in schemas.py).
 
-**Semantic justification**: A model that explored additional complexity (add edge, then prune it) should be penalized for that exploration. The original model that never needed the extra edge is preferable by Occam's razor.
+**Semantic justification**: A model that explored additional complexity (add edge, then prune) should be penalized for that exploration. The original model that never needed the extra edge is preferable by Occam's razor.
 
 ---
 
 ### Bug 2: Non-deterministic variant selection across PYTHONHASHSEED values
 
-**Symptom**: `test_L3_03_paradigm_shift_on_regime_switch` passed when run alone (`pytest tests/level3/`) but failed when run in the same session as levels 1 and 2 (`pytest tests/level1/ tests/level2/ tests/level3/`). Confirmed as PYTHONHASHSEED-dependent by running with explicit seeds:
-
-```bash
-PYTHONHASHSEED=0 pytest tests/level3/test_population.py::test_L3_03...  # FAILED
-PYTHONHASHSEED=1 pytest tests/level3/test_population.py::test_L3_03...  # FAILED
-PYTHONHASHSEED=42 pytest tests/level3/test_population.py::test_L3_03...  # PASSED
-PYTHONHASHSEED=100 pytest tests/level3/test_population.py::test_L3_03...  # PASSED
-```
+**Symptom**: `test_L3_03_paradigm_shift_on_regime_switch` passed alone but failed when run in the same session as levels 1 and 2. Confirmed PYTHONHASHSEED-dependent.
 
 **Root cause**: In `PopulationManager._make_variant`:
 ```python
 candidates_to_add = list(admissible - edge_sigs)   # set difference
 pname, cname = self.rng.choice(candidates_to_add)
 ```
-`admissible` and `edge_sigs` are Python `set` objects. `set.__iter__` order depends on `PYTHONHASHSEED`, which is randomized per process and differs between pytest sessions. With a seeded `random.Random(42)`, the choice is deterministic given the list — but the list itself has non-deterministic order. Different PYTHONHASHSEED → different edge is chosen → different structural variants are introduced → some seedings lead to T_alt being pruned before phase 2, preventing paradigm shift detection.
+`set.__iter__` order depends on `PYTHONHASHSEED`. Different PYTHONHASHSEED → different edge is chosen → different structural variants are introduced → some seedings lead to T_alt being pruned before phase 2.
 
 **Fix**: Sort the set difference before choosing:
 ```python
-# Before:
-candidates_to_add = list(admissible - edge_sigs)
-
-# After:
 candidates_to_add = sorted(admissible - edge_sigs)
 ```
 
-Tuples of strings have a deterministic sort order independent of hash randomization. Both occurrences of this pattern in `_make_variant` were fixed (the pre-check on line ~291 and the actual selection on line ~315).
+Tuples of strings sort deterministically regardless of `PYTHONHASHSEED`. After fix: L3-03 passes at all tested PYTHONHASHSEED values (0, 1, 42, 100, 999, 12345).
 
-After fix: L3-03 passes at all tested PYTHONHASHSEED values (0, 1, 42, 100, 999, 12345).
+---
+
+## Notable design decisions
+
+### NASS seasonal missingness (corn domain)
+
+USDA NASS publishes agricultural data only during active crop seasons:
+- Planting progress: April–July
+- Crop conditions: June–October  
+- Yield forecasts: June–November (WASDE months only)
+
+Outside these windows, the underlying data is genuinely unavailable — not delayed or missing due to API failure, but simply unpublished. This creates a design choice: what to ingest in January?
+
+**Decision**: All three NASS-derived assignments (`PlantingDelayed`, `DroughtIndex`, `YieldForecastDown`) use `MissingnessType.MISSING` and `confidence=0.0` when the corresponding data field is `None`. The `LearningService.accumulate()` method treats any non-OBSERVED assignment as missing and handles it via mean-field imputation or EM. With `confidence=0.0` the assignment carries no information about the variable's value — it does not pull the posterior toward the default `False` value. This means off-season records for the corn domain effectively update only the FAS and Nasdaq-derived variables.
+
+**Alternative considered**: Skip ingestion entirely on days without NASS data. Rejected because FAS and Nasdaq price data is available year-round and is valuable for learning the `ExportDemandHigh → CornPriceUp` relationship, which the demand-dominant candidate needs to distinguish itself from the null candidate.
+
+**Practical consequence**: In winter months (January–March), only 2 of 5 corn variables are meaningfully observed per daily record. The population learning rate for weather-driven variables slows substantially during these months. This is epistemically correct — the data genuinely does not speak to planting or yield during winter.
 
 ---
 
@@ -505,34 +687,30 @@ After fix: L3-03 passes at all tested PYTHONHASHSEED values (0, 1, 42, 100, 999,
 
 ### Correctness
 
-1. **BIC n_free approximation**: `CPTData.bic_score()` uses `n_configs = max(len(self.counts), 1)` as the number of parent configurations. This is the number of *observed* configurations, not the full Cartesian product `Π |parent_support|`. For sparse data (not all parent combos observed), this understates the true free parameter count, producing a less conservative BIC. This understatement is consistent between `bic_score()` and `bic_score_without_parent()`, so their difference (the log-likelihood ratio used in EdgeExistenceService) is approximately correct; the systematic error partially cancels. Still, this is not exact BIC.
+1. **BIC n_free approximation**: `CPTData.bic_score()` uses `n_configs = max(len(self.counts), 1)` as the number of parent configurations. This is the number of *observed* configurations, not the full Cartesian product `Π |parent_support|`. For sparse data, this understates the true free parameter count. The systematic error partially cancels between `bic_score()` and `bic_score_without_parent()`, so the log-likelihood ratio used in EdgeExistenceService is approximately correct, but not exact BIC.
 
-2. **EM falls back silently**: In `accumulate_em`, if pgmpy model building or inference throws any exception, the code catches it and falls back to uniform distributions for missing variables. The exception is not logged. If pgmpy fails for any structural reason (e.g., disconnected nodes after edge pruning), the fallback introduces bias without warning.
+2. **EM falls back silently**: In `accumulate_em`, if pgmpy model building or inference throws any exception, the code falls back to uniform distributions without logging. If pgmpy fails for structural reasons (e.g., disconnected nodes after edge pruning), the fallback introduces bias without warning.
 
-3. **Evidence count threshold mislabeled**: `_MIN_BATCHES_FOR_PRUNING = 3` is compared against `evidence_count` (a record count), not a batch count. Any candidate that has seen 3 or more records will pass this threshold. After the first batch of typical size (30–50 records), all candidates exceed this. The name is misleading; the variable should be called `_MIN_RECORDS_FOR_PRUNING`.
+3. **Evidence count threshold mislabeled**: `_MIN_BATCHES_FOR_PRUNING = 3` is compared against `evidence_count` (a record count), not a batch count. The name is misleading; should be `_MIN_RECORDS_FOR_PRUNING`.
 
-4. **Explore weight on disabled edges**: `EdgeExistenceService.update()` iterates all `learnable` edges, including disabled ones. `existence_probability` continues to update after pruning. This is harmless (disabled edges are not used for inference or scoring) but wastes cycles.
+4. **Explore weight on disabled edges**: `EdgeExistenceService.update()` continues updating `existence_probability` on disabled edges. Harmless but wastes cycles.
 
-5. **ExploreExploitService is non-functional**: `_empirical_mi` always returns 0.0. The `propose()` method returns results but they are unranked. This service is not integrated into the engine or called from any test.
+5. **ExploreExploitService is non-functional**: `_empirical_mi` always returns 0.0. The `propose()` method returns unranked results. Not integrated into the engine.
 
 ### Architecture
 
-6. **`ParameterStore` is purely in-memory**: CPT parameters are not persisted to SQLite. A process restart loses all learned parameters. `PopulationStore` persists scores and metadata but not the parameters themselves. Persistence of `ParameterStore` requires serializing the CPTData count dicts to SQLite or a separate file.
+6. **`ParameterStore` is purely in-memory**: CPT parameters are not persisted to SQLite. A process restart loses all learned parameters. `PopulationStore` persists scores and metadata but not the parameters themselves.
 
-7. **PopulationManager._make_variant sorts admissible for "add" but not "remove"**: The "remove" strategy calls `rng.choice(active_edges)` where `active_edges = candidate.get_active_edges()` which is a list derived from `candidate.edges` (a list, so deterministic order). This is fine. No fix needed here.
+7. **`_derive_admissible_edges` in engine.py allows all variable pairs**: Domain-specific forbidden edges (e.g., effect cannot precede cause) are not enforced. TemplateRules from the SPEC are not yet implemented.
 
-8. **`_derive_admissible_edges` in engine.py allows all variable pairs**: This means the engine will propose variants with any possible directed edge between any two variables. For real domains with known forbidden edges (e.g., effect cannot precede cause), the admissible set should be restricted via domain schema TemplateRules (not yet implemented). The current superset is safe but produces more variants to evaluate.
+8. **Inference aggregation modes use raw log_score for weighting**: `InferenceService` uses raw `log_score` for `WEIGHTED_AVERAGE` and `TOP_K`, not the BIC-corrected `_avg_score` used for population management. This inconsistency means candidates with more accumulated evidence may be under-weighted relative to their BIC rank.
 
-9. **Inference aggregation modes TOP_K and WEIGHTED_AVERAGE use raw log_score**: `InferenceService` uses `log_score` (raw) for weighting, not the BIC-corrected `_avg_score`. Candidates with more evidence accumulate more negative log_scores (in absolute terms), so raw-log-score-based weights will tend to weight recent candidates (with less accumulated score) higher than they should be. This inconsistency between the scoring used for population management and the scoring used for inference aggregation is a known issue.
+9. **No streaming/async ingestion**: `engine.learn(batch)` is synchronous and blocking.
 
-10. **No streaming/async ingestion**: Evidence is processed in synchronous batches. `engine.learn(batch)` blocks until the full cycle completes. No async interface exists.
+10. **Single domain active at a time**: `engine.activate_domain()` sets one domain. Multi-domain parallel learning is not implemented.
 
-11. **Single domain active at a time**: `engine.activate_domain()` sets one active domain. Multi-domain parallel learning is not implemented (though the store and population manager architectures support multiple domains concurrently).
+11. **FastAPI routes not written**: `src/engine/api/__init__.py` is empty. There is no HTTP interface.
 
-12. **FastAPI routes not written**: `src/engine/api/__init__.py` is empty. There is no HTTP interface.
+12. **`introduce_variants` selects parent candidates by raw log_score, prunes by BIC-corrected score**: A candidate with many evidence records may rank low as a variant parent even if it has the best BIC-adjusted average. Design inconsistency.
 
-13. **market_risk_v1 domain is empty**: Only a placeholder `__init__.py` exists.
-
-14. **No integration tests**: `tests/integration/` is empty.
-
-15. **`introduce_variants` selects parent candidates by raw log_score, prunes by BIC-corrected score**: Parent selection for variants uses `sorted(active, key=lambda c: c.log_score, reverse=True)` (raw). Population pruning uses `_avg_score` (BIC-corrected). This asymmetry means a candidate with many evidence records (large negative raw log_score) may rank low as a variant parent even if it has the best BIC-adjusted average. Not a correctness issue but a design inconsistency.
+13. **Corn domain: off-season records are sparse**: In January–March, only `ExportDemandHigh` and `CornPriceUp` are OBSERVED per daily record. The demand-dominant candidate (D\*) learns during winter; the weather-dominant candidate (W\*) does not. This is correct behavior but means the system has a structural bias toward D\* after a winter of data, which may need to be accounted for when evaluating paradigm shifts at the start of planting season.

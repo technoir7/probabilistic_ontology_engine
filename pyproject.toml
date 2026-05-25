@@ -16,6 +16,7 @@ dependencies = [
     "scipy>=1.10",
     "uvicorn>=0.22",
     "httpx>=0.24",
+    "python-dotenv>=1.0",
 ]
 
 [project.optional-dependencies]
