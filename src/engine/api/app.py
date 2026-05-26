@@ -177,6 +177,87 @@ class ParadigmShiftsOut(BaseModel):
     events: list[ParadigmShiftEventOut]
 
 
+# ── Narrative snapshot response models ────────────────────────────────────────
+
+class NarrativeMetadataOut(BaseModel):
+    domain: str
+    domain_module_id: str
+    timestamp: str
+    evidence_count: int
+    current_generation: int
+
+
+class NarrativeRegimeVariableOut(BaseModel):
+    name: str
+    boolean_state: Optional[bool]
+    probability: Optional[float]
+
+
+class NarrativeEdgeOut(BaseModel):
+    source: str
+    target: str
+    existence_probability: float
+
+
+class NarrativeDominantHypothesisOut(BaseModel):
+    name: str
+    candidate_id: str
+    edge_count: int
+    edges: list[NarrativeEdgeOut]
+    generations_dominant: int
+    log_score: float
+
+
+class NarrativeCompetitorOut(BaseModel):
+    name: str
+    log_score: float
+    edge_count: int
+    status: str
+    score_normalized: float
+
+
+class NarrativeCompetingCandidatesOut(BaseModel):
+    candidates: list[NarrativeCompetitorOut]
+    score_gap_to_dominant: Optional[float]
+
+
+class NarrativeRecentShiftOut(BaseModel):
+    timestamp: str
+    from_name: str
+    to_name: str
+    generation: int
+
+
+class NarrativeOntologyCompetitionOut(BaseModel):
+    structure_entropy: float
+    entropy_interpretation: str   # "low" | "medium" | "high"
+    active_candidates: int
+    paradigm_shifts_total: int
+    recent_shifts: list[NarrativeRecentShiftOut]
+
+
+class NarrativeFrontierEdgeOut(BaseModel):
+    source: str
+    target: str
+    probability: float
+    relation: str
+
+
+class NarrativeFrontierOut(BaseModel):
+    frontier_edge_count: int
+    frontier_edges: list[NarrativeFrontierEdgeOut]
+
+
+class NarrativeSnapshotOut(BaseModel):
+    metadata: NarrativeMetadataOut
+    current_regime_state: list[NarrativeRegimeVariableOut]
+    dominant_hypothesis: Optional[NarrativeDominantHypothesisOut]
+    competing_candidates: NarrativeCompetingCandidatesOut
+    ontology_competition: NarrativeOntologyCompetitionOut
+    frontier: NarrativeFrontierOut
+    interpretation_hints: list[str]
+
+
 class EvidenceRecordOut(BaseModel):
     id: str
     timestamp: str
@@ -1258,6 +1339,271 @@ async def population_shifts(domain: str = Query("ng")) -> ParadigmShiftsOut:
         domain_module_id=domain_id,
         total_shifts=len(events),
         events=events,
+    )
+
+
+@app.get("/v1/export/narrative-snapshot", response_model=NarrativeSnapshotOut)
+async def narrative_snapshot(domain: str = Query("ng")) -> NarrativeSnapshotOut:
+    """
+    Structured epistemic-state snapshot designed to be passed to an LLM for
+    prose interpretation.  Returns the full current state of the probabilistic
+    engine for a domain: regime variables, dominant hypothesis, population
+    competition, causal frontier, and machine-readable interpretation hints.
+    """
+    engine, domain_id, display_name = _resolve_domain(domain, app.state)
+    pop = engine.get_population(domain_id)
+    dom = pop.dominant()
+    active = pop.active_candidates()
+    summary = pop.summary()
+
+    # ── metadata ──────────────────────────────────────────────────────────────
+    evidence_count = engine.evidence_store.count(domain_id)
+    metadata = NarrativeMetadataOut(
+        domain=display_name,
+        domain_module_id=domain_id,
+        timestamp=datetime.now(timezone.utc).isoformat(),
+        evidence_count=evidence_count,
+        current_generation=pop.generation,
+    )
+
+    # ── variable UUID → name map (from first candidate's variable list) ───────
+    id_to_name: dict[str, str] = {}
+    if pop.candidates:
+        for v in pop.candidates[0].variables:
+            id_to_name[str(v.variable_id)] = v.name
+
+    # ── current_regime_state: most recent evidence record ─────────────────────
+    regime_state: list[NarrativeRegimeVariableOut] = []
+    recent_raw = engine.evidence_store.load_recent(domain_id, limit=1)
+    if recent_raw:
+        for assignment in recent_raw[0].get("assignments", []):
+            var_name = id_to_name.get(str(assignment.get("variable_id", "")), "unknown")
+            missingness = assignment.get("missingness", "OBSERVED")
+            if missingness in ("OBSERVED", "SOFT_OBSERVED"):
+                obs_val = assignment.get("observed_value")
+                # Normalize to Python bool
+                if obs_val is True:
+                    bool_state: Optional[bool] = True
+                elif obs_val is False:
+                    bool_state = False
+                else:
+                    bool_state = None
+                # Probability: from soft-evidence probabilities dict if present
+                probs = assignment.get("probabilities")
+                if probs and bool_state is not None:
+                    # Keys are lowercase strings "true"/"false" after JSON round-trip
+                    key = str(bool_state).lower()
+                    prob: Optional[float] = float(probs.get(key, probs.get(bool_state, 0.5)))
+                else:
+                    prob = float(assignment.get("confidence", 1.0)) if bool_state is not None else None
+            else:
+                bool_state = None
+                prob = None
+            regime_state.append(NarrativeRegimeVariableOut(
+                name=var_name,
+                boolean_state=bool_state,
+                probability=prob,
+            ))
+    elif pop.candidates:
+        # No evidence yet: list variables as unobserved
+        for v in pop.candidates[0].variables:
+            regime_state.append(NarrativeRegimeVariableOut(name=v.name, boolean_state=None, probability=None))
+
+    # ── dominant_hypothesis ───────────────────────────────────────────────────
+    dominant_out: Optional[NarrativeDominantHypothesisOut] = None
+    if dom:
+        dom_edges: list[NarrativeEdgeOut] = []
+        for e in dom.get_active_edges():
+            pv = dom.get_variable_by_id(e.parent_variable_id)
+            cv = dom.get_variable_by_id(e.child_variable_id)
+            if pv and cv:
+                dom_edges.append(NarrativeEdgeOut(
+                    source=pv.name,
+                    target=cv.name,
+                    existence_probability=e.existence_probability,
+                ))
+        gens_dominant = max(0, pop.generation - dom.generation)
+        dominant_out = NarrativeDominantHypothesisOut(
+            name=dom.description or str(dom.candidate_id)[:8],
+            candidate_id=str(dom.candidate_id),
+            edge_count=len(dom_edges),
+            edges=dom_edges,
+            generations_dominant=gens_dominant,
+            log_score=dom.log_score,
+        )
+
+    # ── competing_candidates ──────────────────────────────────────────────────
+    avg_fn = pop._avg_score
+    score_map = _normalize_scores(active, avg_fn)
+    dom_id = dom.candidate_id if dom else None
+    sorted_cands = sorted(active, key=avg_fn, reverse=True)
+    n_cands = len(sorted_cands)
+
+    competitor_list: list[NarrativeCompetitorOut] = []
+    for i, c in enumerate(sorted_cands):
+        if c.candidate_id == dom_id:
+            cstatus = "dominant"
+        elif i < max(1, n_cands // 3) and c.evidence_count > 0:
+            cstatus = "rising"
+        elif i >= max(1, 2 * n_cands // 3) and c.evidence_count > 0:
+            cstatus = "falling"
+        else:
+            cstatus = "neutral"
+        competitor_list.append(NarrativeCompetitorOut(
+            name=c.description or f"Candidate {str(c.candidate_id)[:8]}",
+            log_score=c.log_score,
+            edge_count=len(c.get_active_edges()),
+            status=cstatus,
+            score_normalized=score_map.get(c.candidate_id, 0.5),
+        ))
+
+    # Score gap: dominant avg score minus second-place avg score
+    score_gap: Optional[float] = None
+    if len(sorted_cands) >= 2 and dom:
+        dom_avg = avg_fn(dom)
+        second_cand = sorted_cands[1] if sorted_cands[0].candidate_id == dom_id else sorted_cands[0]
+        second_avg = avg_fn(second_cand)
+        if math.isfinite(dom_avg) and math.isfinite(second_avg):
+            score_gap = dom_avg - second_avg
+
+    competing_out = NarrativeCompetingCandidatesOut(
+        candidates=competitor_list,
+        score_gap_to_dominant=score_gap,
+    )
+
+    # ── ontology_competition ──────────────────────────────────────────────────
+    entropy = summary["structure_entropy"]
+    if entropy < 0.5:
+        entropy_interp = "low"
+    elif entropy < 1.5:
+        entropy_interp = "medium"
+    else:
+        entropy_interp = "high"
+
+    shift_events = engine.population_store.load_shift_events(domain_id)
+    total_shifts = len(shift_events)
+    recent_shifts = [
+        NarrativeRecentShiftOut(
+            timestamp=ev["shift_ts"],
+            from_name=ev["prev_dominant_name"],
+            to_name=ev["new_dominant_name"],
+            generation=ev["generation"],
+        )
+        for ev in shift_events[-3:]
+    ]
+
+    ontology_out = NarrativeOntologyCompetitionOut(
+        structure_entropy=entropy,
+        entropy_interpretation=entropy_interp,
+        active_candidates=len(active),
+        paradigm_shifts_total=total_shifts,
+        recent_shifts=recent_shifts,
+    )
+
+    # ── frontier ──────────────────────────────────────────────────────────────
+    thresholds = engine._modules[domain_id].existence_thresholds()
+    explore_lo, explore_hi = thresholds.explore_band
+    frontier_edges_out: list[NarrativeFrontierEdgeOut] = []
+    if dom:
+        for e in dom.get_active_edges():
+            if explore_lo <= e.existence_probability <= explore_hi:
+                pv = dom.get_variable_by_id(e.parent_variable_id)
+                cv = dom.get_variable_by_id(e.child_variable_id)
+                if pv and cv:
+                    frontier_edges_out.append(NarrativeFrontierEdgeOut(
+                        source=pv.name,
+                        target=cv.name,
+                        probability=e.existence_probability,
+                        relation=e.explanatory_label or f"{pv.name}→{cv.name}",
+                    ))
+
+    frontier_out = NarrativeFrontierOut(
+        frontier_edge_count=len(frontier_edges_out),
+        frontier_edges=frontier_edges_out,
+    )
+
+    # ── interpretation_hints ──────────────────────────────────────────────────
+    hints: list[str] = []
+
+    # Entropy
+    if entropy_interp == "low":
+        hints.append(
+            f"structure_entropy is low ({entropy:.3f}): engine has converged on "
+            "a single dominant causal story"
+        )
+    elif entropy_interp == "medium":
+        hints.append(
+            f"structure_entropy is medium ({entropy:.3f}): engine is converging "
+            "but competing hypotheses remain plausible"
+        )
+    else:
+        hints.append(
+            f"structure_entropy is high ({entropy:.3f}): engine has not converged; "
+            "multiple causal stories remain plausible"
+        )
+
+    # Dominant tenure
+    if dom:
+        gens = max(0, pop.generation - dom.generation)
+        if gens == 0:
+            hints.append("dominant hypothesis was introduced in the current generation")
+        elif gens == 1:
+            hints.append("dominant hypothesis has held for 1 generation")
+        else:
+            hints.append(f"dominant hypothesis has held for {gens} generations")
+    else:
+        hints.append("no dominant hypothesis has been established yet")
+
+    # Last paradigm shift timing
+    if shift_events:
+        last_ts_str = shift_events[-1]["shift_ts"]
+        try:
+            last_ts = datetime.fromisoformat(last_ts_str)
+            if last_ts.tzinfo is None:
+                last_ts = last_ts.replace(tzinfo=timezone.utc)
+            days_ago = (datetime.now(timezone.utc) - last_ts).days
+            if days_ago == 0:
+                hints.append("last paradigm shift occurred today")
+            elif days_ago == 1:
+                hints.append("last paradigm shift was 1 day ago")
+            else:
+                hints.append(f"last paradigm shift was {days_ago} days ago")
+        except Exception:
+            hints.append("last paradigm shift timestamp could not be parsed")
+    else:
+        hints.append("no paradigm shifts recorded since shift logging was enabled")
+
+    # Evidence base size
+    if evidence_count == 0:
+        hints.append("no evidence has been ingested; scores reflect priors only")
+    elif evidence_count < 10:
+        hints.append(
+            f"evidence base is small ({evidence_count} records); "
+            "scores may not yet be reliable"
+        )
+    else:
+        hints.append(f"evidence base: {evidence_count} records ingested")
+
+    # Frontier
+    if frontier_edges_out:
+        hints.append(
+            f"{len(frontier_edges_out)} edge(s) are in the explore band: "
+            "causal structure is still being refined in these relations"
+        )
+    else:
+        hints.append(
+            "no edges are in the explore band: "
+            "dominant causal structure is well-determined"
+        )
+
+    return NarrativeSnapshotOut(
+        metadata=metadata,
+        current_regime_state=regime_state,
+        dominant_hypothesis=dominant_out,
+        competing_candidates=competing_out,
+        ontology_competition=ontology_out,
+        frontier=frontier_out,
+        interpretation_hints=hints,
     )
 
 
