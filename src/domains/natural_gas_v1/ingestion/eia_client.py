@@ -29,6 +29,7 @@ from __future__ import annotations
 import logging
 import statistics
 from dataclasses import dataclass
+from datetime import date, datetime, timezone
 
 import httpx
 
@@ -101,15 +102,29 @@ class EIAClient:
     # Public API
     # ------------------------------------------------------------------
 
-    async def fetch_snapshot(self) -> NatGasSnapshot:
+    async def fetch_snapshot(self, target_date: date | None = None) -> NatGasSnapshot:
         """
-        Fetch the latest storage and price data and return a NatGasSnapshot.
-        Both series are fetched concurrently.
+        Fetch storage and price data and return a NatGasSnapshot.
+
+        When ``target_date`` is provided and is before today, the snapshot is
+        computed from the most recent available EIA rows at or before that
+        date.  When omitted, or when ``target_date`` is today/current, the
+        current latest-value behavior is preserved.
         """
         import asyncio
+        today = datetime.now(timezone.utc).date()
+        historical_end = target_date if target_date is not None and target_date < today else None
         storage_data, price_data = await asyncio.gather(
-            self._fetch_series(_STORAGE_SERIES, length=_STORAGE_FETCH),
-            self._fetch_series(_PRICE_SERIES,   length=_PRICE_WINDOW),
+            self._fetch_series(
+                _STORAGE_SERIES,
+                length=_STORAGE_FETCH,
+                end_date=historical_end,
+            ),
+            self._fetch_series(
+                _PRICE_SERIES,
+                length=_PRICE_WINDOW,
+                end_date=historical_end,
+            ),
         )
 
         # ---- storage ----
@@ -147,9 +162,16 @@ class EIAClient:
     # Internal helpers
     # ------------------------------------------------------------------
 
-    async def _fetch_series(self, series_id: str, length: int) -> list[dict]:
+    async def _fetch_series(
+        self,
+        series_id: str,
+        length: int,
+        end_date: date | None = None,
+    ) -> list[dict]:
         """
-        Fetch `length` most-recent data points for `series_id`.
+        Fetch `length` data points for `series_id`, optionally ending at
+        `end_date`.
+
         Returns a list of record dicts, newest first.
         Raises IOError on HTTP or parsing failure.
         """
@@ -158,7 +180,11 @@ class EIAClient:
             "api_key": self._api_key,
             "length": length,
             "offset": 0,
+            "sort[0][column]": "period",
+            "sort[0][direction]": "desc",
         }
+        if end_date is not None:
+            params["end"] = end_date.isoformat()
         try:
             resp = await self._client.get(url, params=params)
             resp.raise_for_status()
@@ -173,4 +199,37 @@ class EIAClient:
         data = body.get("response", {}).get("data", [])
         if not data:
             raise IOError(f"EIA returned empty data array for {series_id}")
-        return data
+        filtered = _rows_at_or_before(data, end_date)
+        if not filtered:
+            detail = f" at or before {end_date}" if end_date is not None else ""
+            raise IOError(f"EIA returned no usable data for {series_id}{detail}")
+        return filtered[:length]
+
+
+def _rows_at_or_before(rows: list[dict], end_date: date | None) -> list[dict]:
+    dated_rows: list[tuple[date, dict]] = []
+    undated_rows: list[dict] = []
+    for row in rows:
+        row_date = _row_period_date(row)
+        if row_date is None:
+            undated_rows.append(row)
+            continue
+        if end_date is None or row_date <= end_date:
+            dated_rows.append((row_date, row))
+
+    if dated_rows:
+        return [row for _, row in sorted(dated_rows, key=lambda item: item[0], reverse=True)]
+    return undated_rows
+
+
+def _row_period_date(row: dict) -> date | None:
+    raw = row.get("period") or row.get("date")
+    if raw is None:
+        return None
+    text = str(raw).strip()
+    if len(text) >= 10:
+        text = text[:10]
+    try:
+        return date.fromisoformat(text)
+    except ValueError:
+        return None

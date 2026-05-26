@@ -1,49 +1,37 @@
 """
-NASDAQClient — fetches ZC (corn) front-month futures settlement prices via
-the Nasdaq Data Link (formerly Quandl) REST API.
+NASDAQClient — fetches ZC (corn) front-month futures prices via yfinance.
 
-API
----
-    GET https://data.nasdaq.com/api/v3/datasets/CME/ZC1.json
-        ?api_key=<NASDAQ_API_KEY>
-        &rows=<N>
+The class name and snapshot shape are retained for compatibility with the
+existing corn ingestion pipeline.
 
-    Dataset  : CME/ZC1  — CBOT Corn Futures, Continuous Front Month
-    Units    : cents per bushel  (1 USD/bu = 100 cents/bu)
-    Frequency: daily business days
-    Columns  : Date | Open | High | Low | Settle | Volume | Open Interest
-
-    The API returns newest-first by default.
-
-    API key registration (free tier available):
-        https://data.nasdaq.com/sign-up
-
-Environment variable
---------------------
-    NASDAQ_API_KEY   — required (load from .env via python-dotenv)
+Market data
+-----------
+    ticker   : ZC=F  — CBOT corn front-month futures
+    source   : Yahoo Finance via yfinance
+    interval : daily
 
 Derived variable
 ----------------
-    CornPriceUp = settle_cents_per_bushel > rolling_20d_avg_cents
+    CornPriceUp = latest_close_cents_per_bushel > rolling_20d_avg_cents
 
-    where rolling_20d_avg_cents is the simple average of the 20 most recent
-    settlement prices preceding the latest reading.
+    where rolling_20d_avg_cents is the simple average of up to the 20 most
+    recent daily close prices preceding the latest reading.
 """
 from __future__ import annotations
 
+import asyncio
 import logging
-import statistics
 from dataclasses import dataclass
 from datetime import date
-from typing import Any
+from typing import Any, Callable
 
-import httpx
+import pandas as pd
+import yfinance as yf
 
 logger = logging.getLogger(__name__)
 
-_BASE_URL      = "https://data.nasdaq.com/api/v3/datasets/CME/ZC1.json"
-_PRICE_ROWS    = 21   # 1 latest + 20 for rolling average
-_SETTLE_INDEX  = 4    # column index of "Settle" in CME/ZC1 data rows
+_TICKER = "ZC=F"
+_PRICE_ROWS = 21   # 1 latest + up to 20 for rolling average
 
 
 # ---------------------------------------------------------------------------
@@ -53,9 +41,9 @@ _SETTLE_INDEX  = 4    # column index of "Settle" in CME/ZC1 data rows
 @dataclass
 class CornNASDAQSnapshot:
     target_date: date
-    settle_cents_per_bushel: float   # latest ZC front-month settlement price
+    settle_cents_per_bushel: float   # latest ZC front-month close price
     rolling_20d_avg_cents: float     # 20-day simple moving average
-    price_up: bool                   # True if latest settle > 20d avg
+    price_up: bool                   # True if latest close > 20d avg
 
 
 # ---------------------------------------------------------------------------
@@ -64,33 +52,23 @@ class CornNASDAQSnapshot:
 
 class NASDAQClient:
     """
-    Asynchronous client for Nasdaq Data Link (formerly Quandl) CME ZC1.
+    Asynchronous wrapper around yfinance.download for ZC=F.
 
     Parameters
     ----------
-    api_key : str
-        Nasdaq Data Link API key.  Obtain free at https://data.nasdaq.com/sign-up
-    client : httpx.AsyncClient, optional
-        Injected HTTP client.  If provided, the caller owns it (not closed
-        on exit).  Pass an AsyncMock here in tests.
+    download_fn : callable, optional
+        Injected replacement for yfinance.download.  Tests can use this to
+        avoid network calls.
     """
 
     def __init__(
         self,
-        api_key: str,
-        client: httpx.AsyncClient | None = None,
+        download_fn: Callable[..., Any] | None = None,
     ) -> None:
-        if not api_key:
-            raise ValueError("NASDAQ_API_KEY is required but not set")
-        self._api_key = api_key
-        self._injected = client is not None
-        self._client: httpx.AsyncClient = client or httpx.AsyncClient(
-            timeout=httpx.Timeout(30.0),
-        )
+        self._download = download_fn or yf.download
 
     async def aclose(self) -> None:
-        if not self._injected:
-            await self._client.aclose()
+        return None
 
     async def __aenter__(self) -> "NASDAQClient":
         return self
@@ -104,45 +82,35 @@ class NASDAQClient:
 
     async def fetch_snapshot(self, target_date: date) -> CornNASDAQSnapshot:
         """
-        Fetch the last _PRICE_ROWS days of ZC settlement prices and return
-        a CornNASDAQSnapshot.
+        Fetch one month of daily ZC=F prices and return a CornNASDAQSnapshot.
 
-        Raises IOError if the API cannot return usable data.
+        Raises IOError if yfinance returns no usable close prices.
         """
-        rows = await self._fetch_settle_rows()
-        return self.build_snapshot(target_date, rows)
+        history = await self._fetch_price_history()
+        return self.build_snapshot(target_date, history)
 
     # ------------------------------------------------------------------
     # Pure snapshot builder (no I/O — testable synchronously)
     # ------------------------------------------------------------------
 
     @staticmethod
-    def build_snapshot(target_date: date, rows: list[list]) -> CornNASDAQSnapshot:
+    def build_snapshot(target_date: date, history: Any) -> CornNASDAQSnapshot:
         """
-        Map raw Nasdaq Data Link CME/ZC1 data rows to a CornNASDAQSnapshot.
-        Static and synchronous so it can be unit-tested without network calls.
+        Map yfinance daily price history to a CornNASDAQSnapshot.
 
-        Parameters
-        ----------
-        rows : list[list]
-            Newest-first data rows from the Nasdaq Data Link JSON response.
-            Each row has the column layout:
-            [Date, Open, High, Low, Settle, Volume, Open Interest]
-
-        Raises IOError if fewer than 2 rows are present.
+        Raises IOError if fewer than 2 close prices are present.
         """
-        if len(rows) < 2:
+        prices = _extract_close_prices(history)
+        if len(prices) < 2:
             raise IOError(
-                f"Nasdaq ZC1 returned {len(rows)} row(s); need ≥2 to compute "
-                "the 20-day rolling average."
+                f"yfinance {_TICKER} returned {len(prices)} close price(s); "
+                "need at least 2 to compute the rolling average."
             )
 
-        prices = _extract_settle_prices(rows)
-        if not prices:
-            raise IOError("No valid settlement prices in Nasdaq ZC1 response")
-
-        latest = prices[0]
-        avg    = sum(prices[1:]) / len(prices[1:]) if len(prices) > 1 else latest
+        window = prices[-_PRICE_ROWS:]
+        latest = window[-1]
+        prior = window[:-1]
+        avg = sum(prior) / len(prior)
 
         return CornNASDAQSnapshot(
             target_date=target_date,
@@ -155,49 +123,76 @@ class NASDAQClient:
     # Internal helpers
     # ------------------------------------------------------------------
 
-    async def _fetch_settle_rows(self) -> list[list]:
+    async def _fetch_price_history(self) -> Any:
         """
-        Fetch _PRICE_ROWS most-recent rows from CME/ZC1.
-        Returns newest-first list of data arrays.
-        Raises IOError on HTTP or parse failure.
+        Fetch daily ZC=F price history.
+        Returns the yfinance DataFrame.
         """
-        params = {
-            "api_key": self._api_key,
-            "rows": _PRICE_ROWS,
-        }
         try:
-            resp = await self._client.get(_BASE_URL, params=params)
-            resp.raise_for_status()
-            body = resp.json()
-        except httpx.HTTPStatusError as exc:
-            raise IOError(
-                f"Nasdaq API HTTP {exc.response.status_code} for CME/ZC1"
-            ) from exc
+            history = await asyncio.to_thread(self._download_history)
         except Exception as exc:
-            raise IOError(f"Nasdaq API request failed for CME/ZC1: {exc}") from exc
+            raise IOError(f"yfinance request failed for {_TICKER}: {exc}") from exc
 
-        data = body.get("dataset", {}).get("data", [])
-        if not data:
-            raise IOError("Nasdaq API returned empty data array for CME/ZC1")
-        return data
+        if history is None or getattr(history, "empty", False):
+            raise IOError(f"yfinance returned empty price history for {_TICKER}")
+        return history
+
+    def _download_history(self) -> Any:
+        try:
+            return self._download(
+                ticker=_TICKER,
+                period="1mo",
+                interval="1d",
+            )
+        except TypeError as exc:
+            if "ticker" not in str(exc):
+                raise
+            return self._download(
+                tickers=_TICKER,
+                period="1mo",
+                interval="1d",
+            )
 
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _extract_settle_prices(rows: list[list]) -> list[float]:
-    """
-    Extract settlement prices from data rows.
-    Settle is at column index _SETTLE_INDEX (0-based).
-    Skips rows where the value is None or non-numeric.
-    """
-    out: list[float] = []
-    for row in rows:
+def _extract_close_prices(history: Any) -> list[float]:
+    """Extract chronological daily close prices from a yfinance DataFrame."""
+    close = _close_series(history)
+    prices: list[float] = []
+    for raw in close.dropna().tolist():
         try:
-            val = row[_SETTLE_INDEX]
-            if val is not None:
-                out.append(float(val))
-        except (IndexError, TypeError, ValueError) as exc:
-            logger.warning("Skipping ZC1 row with bad settle value: %s", exc)
-    return out
+            prices.append(float(raw))
+        except (TypeError, ValueError) as exc:
+            logger.warning("Skipping %s row with bad close value: %s", _TICKER, exc)
+    return prices
+
+
+def _close_series(history: Any):
+    if not isinstance(history, pd.DataFrame):
+        raise IOError(f"yfinance {_TICKER} response is not a DataFrame")
+
+    if isinstance(history.columns, pd.MultiIndex):
+        names = list(history.columns.names)
+        if "Price" in names:
+            close = history.xs("Close", axis=1, level="Price")
+        elif "Close" in history.columns.get_level_values(0):
+            close = history["Close"]
+        elif "Close" in history.columns.get_level_values(-1):
+            close = history.xs("Close", axis=1, level=-1)
+        else:
+            raise IOError(f"yfinance {_TICKER} response has no Close column")
+
+        if isinstance(close, pd.DataFrame):
+            if _TICKER in close.columns:
+                return close[_TICKER]
+            if len(close.columns) == 1:
+                return close.iloc[:, 0]
+            raise IOError(f"yfinance {_TICKER} Close data is ambiguous")
+        return close
+
+    if "Close" not in history.columns:
+        raise IOError(f"yfinance {_TICKER} response has no Close column")
+    return history["Close"]

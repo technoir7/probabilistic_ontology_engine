@@ -81,22 +81,49 @@ class IngestionScheduler:
 
     async def run_once(self, target_date: date | None = None) -> bool:
         """
-        Fetch and ingest data for `target_date` (defaults to yesterday UTC).
+        Fetch, ingest, and learn from data for `target_date` (defaults to
+        yesterday UTC).
 
         Returns True on success, False if fetching failed.
+
+        Note: ingestion and learning are both attempted.  A learning failure
+        is logged but does not make the run return False — the evidence record
+        is still persisted.
         """
+        explicit_target_date = target_date is not None
         if target_date is None:
             target_date = (datetime.now(timezone.utc) - timedelta(days=1)).date()
 
         logger.info("Ingesting natural gas data for %s", target_date)
         try:
-            record = await self._pipeline.fetch_evidence(target_date)
+            record = await self._pipeline.fetch_evidence(
+                target_date,
+                eia_target_date=target_date if explicit_target_date else None,
+                use_latest_eia=not explicit_target_date,
+            )
             self._engine.ingest(record)
             logger.info("Ingested evidence_id=%s for %s", record.evidence_id, target_date)
-            return True
         except Exception as exc:
             logger.error("Ingestion failed for %s: %s", target_date, exc)
             return False
+
+        # Trigger the learning / evolution cycle for every ingested record.
+        # This updates candidate CPT parameters, edge existence probabilities,
+        # candidate scores (evidence_count, log_score), and introduces variants.
+        domain_id = self._engine.active_domain
+        if domain_id:
+            try:
+                self._engine.learn([record], domain_id)
+                logger.debug(
+                    "Learning cycle complete for natural-gas-v1 @ %s", target_date
+                )
+            except Exception as exc:
+                logger.error(
+                    "Learning cycle failed for natural-gas-v1 @ %s: %s",
+                    target_date, exc, exc_info=True,
+                )
+
+        return True
 
     async def backfill(self) -> int:
         """

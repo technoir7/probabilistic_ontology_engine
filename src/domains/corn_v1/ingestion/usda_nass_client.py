@@ -43,6 +43,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 import statistics
 from dataclasses import dataclass
 from datetime import date, timedelta
@@ -107,7 +108,7 @@ class USDANASSClient:
         api_key: str = "",
         client: httpx.AsyncClient | None = None,
     ) -> None:
-        self._api_key = api_key
+        self._api_key = api_key or os.environ.get("NASS_API_KEY", "")
         self._injected = client is not None
         self._client: httpx.AsyncClient = client or httpx.AsyncClient(
             timeout=httpx.Timeout(30.0),
@@ -275,7 +276,7 @@ class USDANASSClient:
             "state_alpha": "US",
         }
         if self._api_key:
-            params["key"] = self._api_key
+            params["key"] = self._api_key   # USDA QuickStats expects "key=", not "api_key="
         return params
 
 

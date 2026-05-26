@@ -15,10 +15,6 @@ Variables (all BOOLEAN):
                                 (BU/AC) is below the prior crop year's final yield
                         False = current forecast matches or exceeds prior year
 
-    ExportDemandHigh    True  = weekly corn export inspections (metric tons) exceed the
-                                4-week rolling average — a signal of strong export demand
-                        False = at or below rolling average
-
     CornPriceUp         True  = ZC front-month futures settlement price is above the
                                 20-day rolling average
                         False = at or below the rolling average
@@ -30,10 +26,8 @@ Candidate structures:
                DroughtIndex    → YieldForecastDown
                YieldForecastDown → CornPriceUp
 
-    D*   — demand-dominant: export demand is the primary price driver;
-             yield effects are secondary:
+    D*   — demand-dominant: yield effects are the primary price driver:
                YieldForecastDown  → CornPriceUp
-               ExportDemandHigh   → CornPriceUp
 
     Null — minimal structure: only the obvious supply/price link:
                YieldForecastDown → CornPriceUp
@@ -42,6 +36,7 @@ from __future__ import annotations
 
 from uuid import uuid4
 
+from ...engine.variable_identity import stable_variable_id
 from ...engine.schemas import (
     CandidateStatus,
     DependencyEdge,
@@ -60,7 +55,7 @@ from ...engine.schemas import (
 
 _VARIABLE_DEFS: dict[str, Variable] = {
     name: Variable(
-        variable_id=uuid4(),
+        variable_id=stable_variable_id("corn-v1", name),
         name=name,
         domain_type=DomainType.BOOLEAN,
         support=[True, False],
@@ -69,7 +64,6 @@ _VARIABLE_DEFS: dict[str, Variable] = {
         "PlantingDelayed",
         "DroughtIndex",
         "YieldForecastDown",
-        "ExportDemandHigh",
         "CornPriceUp",
     ]
 }
@@ -111,7 +105,6 @@ def make_weather_dominant_candidate(module_id: str = "corn-v1") -> OntologyCandi
 
     Weather conditions (planting delays and drought stress) are the primary
     drivers of yield shortfalls, which drive corn price higher.
-    ExportDemandHigh is absent — this hypothesis treats export demand as noise.
     """
     return OntologyCandidate(
         candidate_id=uuid4(),
@@ -129,10 +122,10 @@ def make_weather_dominant_candidate(module_id: str = "corn-v1") -> OntologyCandi
 
 def make_demand_dominant_candidate(module_id: str = "corn-v1") -> OntologyCandidate:
     """
-    D*: YieldForecastDown → CornPriceUp ← ExportDemandHigh
+    D*: YieldForecastDown → CornPriceUp
 
-    Export demand and yield signals jointly drive corn price.
-    Weather effects are assumed already priced in; no planting/drought edges.
+    Yield signals drive corn price. Weather effects are assumed already priced
+    in; no planting/drought edges.
     """
     return OntologyCandidate(
         candidate_id=uuid4(),
@@ -141,9 +134,8 @@ def make_demand_dominant_candidate(module_id: str = "corn-v1") -> OntologyCandid
         variables=_var_list(),
         edges=[
             _edge("YieldForecastDown", "CornPriceUp", prior=0.60),
-            _edge("ExportDemandHigh",  "CornPriceUp", prior=0.70),
         ],
-        description="D*: demand-dominant (yield + export demand → price)",
+        description="D*: demand-dominant (yield → price)",
     )
 
 

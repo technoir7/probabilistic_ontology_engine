@@ -6,7 +6,7 @@ import logging
 import math
 import os
 from contextlib import asynccontextmanager
-from datetime import datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable, Literal, Optional
 from uuid import UUID
@@ -18,9 +18,12 @@ from pydantic import BaseModel
 from ...domains.corn_v1.domain import CornV1
 from ...domains.corn_v1.ingestion.nasdaq_client import NASDAQClient as CornNASDAQClient
 from ...domains.corn_v1.ingestion.pipeline import CornPipeline
-from ...domains.corn_v1.ingestion.usda_fas_client import USDAFASClient as CornFASClient
 from ...domains.corn_v1.ingestion.usda_nass_client import USDANASSClient as CornNASSClient
 from ...domains.corn_v1.scheduler import IngestionScheduler as CornScheduler
+from ...domains.macro_regime_v1.domain import MacroRegimeV1
+from ...domains.macro_regime_v1.ingestion.fred_client import FREDClient
+from ...domains.macro_regime_v1.ingestion.pipeline import MacroRegimePipeline
+from ...domains.macro_regime_v1.scheduler import MacroRegimeScheduler
 from ...domains.natural_gas_v1.domain import NaturalGasV1
 from ...domains.natural_gas_v1.ingestion.eia_client import EIAClient
 from ...domains.natural_gas_v1.ingestion.noaa_client import NOAAClient
@@ -29,21 +32,38 @@ from ...domains.natural_gas_v1.scheduler import IngestionScheduler as NaturalGas
 from ...domains.soybean_v1.domain import SoybeanV1
 from ...domains.soybean_v1.ingestion.nasdaq_client import NASDAQClient as SoyNASDAQClient
 from ...domains.soybean_v1.ingestion.pipeline import SoybeanPipeline
-from ...domains.soybean_v1.ingestion.usda_fas_client import USDAFASClient as SoyFASClient
 from ...domains.soybean_v1.ingestion.usda_nass_client import USDANASSClient as SoyNASSClient
 from ...domains.soybean_v1.scheduler import IngestionScheduler as SoybeanScheduler
+from ...domains.agriculture_weekly import (
+    is_agriculture_domain,
+    is_duplicate_recent_state,
+    latest_complete_week_ending,
+    latest_week_ending_on_or_before,
+    weekly_backfill_dates,
+)
 from ..engine import ProbabilisticOntologyEngine
-from ..schemas import InferenceQuery, OntologyCandidate, PopulationAggregation, QueryType
+from ..schemas import (
+    EvidenceRecord,
+    InferenceQuery,
+    OntologyCandidate,
+    PopulationAggregation,
+    QueryType,
+)
+from ..config import get_structure_mode_config
+from ..services.evidence_diagnostics import build_entropy_diagnostics
+from ..services.evidence_geometry import build_evidence_geometry_diagnostics
+from ..services.structure_diagnostics import build_structure_diagnostics
 
 logger = logging.getLogger(__name__)
 
-REQUIRED_ENV_VARS = ("EIA_API_KEY", "NASDAQ_API_KEY")
+REQUIRED_ENV_VARS = ("EIA_API_KEY",)
 
 # Short name → (domain_module_id, display_name)
 _DOMAIN_MAP: dict[str, tuple[str, str]] = {
     "ng": ("natural-gas-v1", "Natural Gas"),
     "zc": ("corn-v1", "Corn"),
     "zs": ("soybean-v1", "Soybeans"),
+    "mr": ("macro-regime-v1", "Macro Regime"),
 }
 
 
@@ -139,6 +159,24 @@ class LineageOut(BaseModel):
     events: list[LineageEventOut]
 
 
+class ParadigmShiftEventOut(BaseModel):
+    shift_id: str
+    generation: int
+    timestamp: str
+    previous_dominant_id: str
+    previous_dominant_name: str
+    new_dominant_id: str
+    new_dominant_name: str
+    evidence_count_at_shift: int
+
+
+class ParadigmShiftsOut(BaseModel):
+    domain: str
+    domain_module_id: str
+    total_shifts: int
+    events: list[ParadigmShiftEventOut]
+
+
 class EvidenceRecordOut(BaseModel):
     id: str
     timestamp: str
@@ -151,6 +189,108 @@ class EvidenceRecordOut(BaseModel):
 class EvidenceOut(BaseModel):
     domain: str
     records: list[EvidenceRecordOut]
+
+
+class IngestTriggerOut(BaseModel):
+    domain: str
+    evidence_records_ingested: int
+    population_status: PopStatusOut
+
+
+class IngestBackfillOut(BaseModel):
+    domain: str
+    days_requested: int
+    days_successfully_ingested: int
+
+
+class VariableEntropyDebugOut(BaseModel):
+    value_counts: dict[str, int]
+    observed_count: int
+    missing_count: int
+    entropy: float
+
+
+class ObservedPatternOut(BaseModel):
+    pattern: dict[str, Any]
+    count: int
+
+
+class PairwiseMutualInformationOut(BaseModel):
+    variable_x: str
+    variable_y: str
+    joint_observed_count: int
+    mutual_information: float
+
+
+class EntropyDebugOut(BaseModel):
+    domain: str
+    domain_key: str
+    domain_module_id: str
+    total_evidence_rows: int
+    variables: dict[str, VariableEntropyDebugOut]
+    unique_observed_patterns: list[ObservedPatternOut]
+    pairwise_mutual_information: list[PairwiseMutualInformationOut]
+
+
+# ── Learning diagnostics response model ───────────────────────────────────────
+
+class LearningPipelineStatusOut(BaseModel):
+    """Flags showing which code paths call engine.learn()."""
+    scheduler_calls_learn: bool
+    backfill_calls_learn: bool
+    trigger_calls_learn: bool
+
+
+class LearningDebugOut(BaseModel):
+    domain: str
+    domain_module_id: str
+    total_evidence_records: int
+    active_candidates: int
+    dominant_evidence_count: int     # evidence_count of the current dominant
+    dominant_log_score: float
+    learn_calls_this_session: int    # how many times learn() was called since restart
+    last_learn_timestamp: Optional[str]   # ISO timestamp or null
+    records_scored_this_session: int
+    last_mutation_total_attempts: int
+    last_mutation_introduced: int
+    current_generation: int
+    pipeline_status: LearningPipelineStatusOut
+
+
+# ── Structure diagnostics response models ─────────────────────────────────────
+
+class CandidateDiagOut(BaseModel):
+    candidate_id: str
+    description: str
+    generation: int
+    status: str                                  # "ACTIVE" | "PRUNED" | "ARCHIVED"
+    edge_structure: list[tuple[str, str]]        # sorted (parent, child) name pairs
+    active_edge_count: int
+    total_edge_count: int
+    evidence_count: int
+    log_score: float
+    avg_ll: float
+    bic_penalty_raw: float
+    bic_score_strict: float
+    bic_score_explore: float
+    is_dominant: bool
+
+
+class MutationCycleDiagOut(BaseModel):
+    total_attempts: int
+    dag_violations: int
+    duplicate_rejections: int
+    introduced: int
+
+
+class StructureDiagOut(BaseModel):
+    domain: str
+    domain_module_id: str
+    env_mode: str            # "strict" | "explore" (from POE_STRUCTURE_MODE)
+    env_bic_multiplier: float
+    total_evidence_records: int
+    candidates: list[CandidateDiagOut]
+    last_mutation_cycle: MutationCycleDiagOut
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -276,6 +416,213 @@ def _build_engine(domain_module: Any, db_path: Path) -> ProbabilisticOntologyEng
     return engine
 
 
+def _build_population_status(
+    engine: ProbabilisticOntologyEngine,
+    domain_id: str,
+    display_name: str,
+) -> PopStatusOut:
+    pop = engine.get_population(domain_id)
+    summary = pop.summary()
+    dom = pop.dominant()
+
+    thresholds = engine._modules[domain_id].existence_thresholds()
+    explore_lo, explore_hi = thresholds.explore_band
+    frontier_count = 0
+    if dom:
+        for edge in dom.get_active_edges():
+            if explore_lo <= edge.existence_probability <= explore_hi:
+                frontier_count += 1
+
+    last_ts = engine.evidence_store.latest_timestamp(domain_id)
+
+    dom_name = (dom.description or "Hypothesis A") if dom else "none"
+    dom_cid = str(dom.candidate_id) if dom else ""
+    gens_dominant = max(0, pop.generation - dom.generation) if dom else 0
+
+    return PopStatusOut(
+        domain=display_name,
+        structure_entropy=summary["structure_entropy"],
+        active_candidates=summary["active_candidates"],
+        max_candidates=pop.max_population_size,
+        current_generation=pop.generation,
+        dominant_hypothesis=DominantHypothesis(
+            name=dom_name,
+            candidate_id=dom_cid,
+            generations_dominant=gens_dominant,
+        ),
+        paradigm_shifts_this_window=pop.paradigm_shift_count,
+        frontier_edge_count=frontier_count,
+        last_evidence_cycle_ago=_time_ago(last_ts),
+        engine_status="online",
+    )
+
+
+def _resolve_query_candidate(
+    pop: Any,
+    raw_candidate_id: str | None,
+) -> OntologyCandidate:
+    active = pop.active_candidates()
+    if not active:
+        raise HTTPException(status_code=503, detail="No active candidates")
+
+    if not raw_candidate_id:
+        cand = pop.dominant()
+        if cand is None:
+            raise HTTPException(status_code=503, detail="No active candidates")
+        return cand
+
+    raw = raw_candidate_id.strip()
+    for cand in active:
+        label = getattr(cand, "label", None)
+        if str(cand.candidate_id) == raw or label == raw:
+            return cand
+
+    try:
+        target_uuid = UUID(raw)
+    except ValueError:
+        cand = pop.dominant()
+        return cand or active[0]
+
+    for cand in active:
+        if cand.candidate_id == target_uuid:
+            return cand
+
+    raise HTTPException(status_code=404, detail=f"Candidate '{raw_candidate_id}' not found")
+
+
+def _ingest_lock(state: Any, domain_key: str) -> asyncio.Lock:
+    locks: dict[str, asyncio.Lock] = getattr(state, "ingest_locks", {})
+    if domain_key not in locks:
+        locks[domain_key] = asyncio.Lock()
+        state.ingest_locks = locks
+    return locks[domain_key]
+
+
+def _require_domain_env(domain_key: str) -> None:
+    if domain_key == "ng":
+        _require_env(("EIA_API_KEY",))
+    if domain_key == "mr":
+        _require_env(("FRED_API_KEY",))
+
+
+async def _fetch_evidence_record(domain_key: str, target_date: date) -> EvidenceRecord:
+    _require_domain_env(domain_key)
+
+    if domain_key == "ng":
+        noaa = NOAAClient()
+        eia = EIAClient(api_key=os.environ["EIA_API_KEY"])
+        async with noaa, eia:
+            return await NaturalGasPipeline(noaa, eia).fetch_evidence(target_date)
+
+    if domain_key == "zc":
+        nass = CornNASSClient(api_key=os.environ.get("NASS_API_KEY", ""))
+        nasdaq = CornNASDAQClient()
+        async with nass, nasdaq:
+            return await CornPipeline(nass, nasdaq).fetch_evidence(target_date)
+
+    if domain_key == "zs":
+        nass = SoyNASSClient(api_key=os.environ.get("NASS_API_KEY", ""))
+        nasdaq = SoyNASDAQClient()
+        async with nass, nasdaq:
+            return await SoybeanPipeline(nass, nasdaq).fetch_evidence(target_date)
+
+    if domain_key == "mr":
+        fred = FREDClient(api_key=os.environ["FRED_API_KEY"])
+        async with fred:
+            return await MacroRegimePipeline(fred).fetch_evidence(target_date)
+
+    raise ValueError(f"Unknown domain '{domain_key}'")
+
+
+async def _ingest_domain_evidence(
+    *,
+    domain_key: str,
+    engine: ProbabilisticOntologyEngine,
+    domain_id: str,
+    target_date: date | None = None,
+) -> int:
+    if target_date is None:
+        if is_agriculture_domain(domain_id):
+            target_date = latest_complete_week_ending(datetime.now(timezone.utc).date())
+        else:
+            target_date = (datetime.now(timezone.utc) - timedelta(days=1)).date()
+    elif is_agriculture_domain(domain_id):
+        target_date = latest_week_ending_on_or_before(target_date)
+
+    record = await _fetch_evidence_record(domain_key, target_date)
+    if is_agriculture_domain(domain_id):
+        recent = engine.evidence_store.load_recent(domain_id, limit=1)
+        if is_duplicate_recent_state(record, recent):
+            logger.info(
+                "Skipping duplicate %s state for week ending %s",
+                domain_id,
+                target_date,
+            )
+            return 0
+    before = engine.evidence_store.count(domain_id)
+    engine.ingest(record)
+    after = engine.evidence_store.count(domain_id)
+    ingested = after - before
+    if ingested > 0:
+        engine.learn([record], domain_id)
+    return ingested
+
+
+async def _backfill_if_empty(
+    *,
+    domain_key: str,
+    engine: ProbabilisticOntologyEngine,
+    domain_id: str,
+    display_name: str,
+    backfill_days: int,
+    lock: asyncio.Lock,
+) -> int:
+    if backfill_days <= 0:
+        return 0
+
+    today = datetime.now(timezone.utc).date()
+    successes = 0
+    async with lock:
+        existing = engine.evidence_store.count(domain_id)
+        if existing > 0:
+            logger.info(
+                "Skipping %s startup backfill; evidence_count=%d",
+                display_name,
+                existing,
+            )
+            return 0
+
+        logger.info(
+            "Running %d-day %s startup backfill; evidence_count=0",
+            backfill_days,
+            display_name,
+        )
+        if is_agriculture_domain(domain_id):
+            targets = weekly_backfill_dates(backfill_days, today)
+        else:
+            targets = [today - timedelta(days=delta) for delta in range(backfill_days, 0, -1)]
+        for target in targets:
+            try:
+                successes += await _ingest_domain_evidence(
+                    domain_key=domain_key,
+                    engine=engine,
+                    domain_id=domain_id,
+                    target_date=target,
+                )
+            except Exception as exc:
+                logger.error(
+                    "%s startup backfill failed for %s: %s",
+                    display_name,
+                    target,
+                    exc,
+                    exc_info=True,
+                )
+            await asyncio.sleep(1.0)
+
+    logger.info("%s startup backfill complete: %d days ingested", display_name, successes)
+    return successes
+
+
 # ── Lifespan ──────────────────────────────────────────────────────────────────
 
 @asynccontextmanager
@@ -291,14 +638,22 @@ async def lifespan(app: FastAPI):
     ng_engine = _build_engine(NaturalGasV1(), data_dir / "natural_gas.db")
     zc_engine = _build_engine(CornV1(), data_dir / "corn.db")
     zs_engine = _build_engine(SoybeanV1(), data_dir / "soybean.db")
+    mr_engine = _build_engine(MacroRegimeV1(), data_dir / "macro_regime.db")
 
     app.state.engines: dict[str, ProbabilisticOntologyEngine] = {
         "ng": ng_engine,
         "zc": zc_engine,
         "zs": zs_engine,
+        "mr": mr_engine,
     }
     app.state.scheduler_tasks: list[asyncio.Task] = []
     app.state.scheduler_enabled = scheduler_enabled
+    app.state.ingest_locks: dict[str, asyncio.Lock] = {
+        "ng": asyncio.Lock(),
+        "zc": asyncio.Lock(),
+        "zs": asyncio.Lock(),
+        "mr": asyncio.Lock(),
+    }
 
     if scheduler_enabled:
         _require_env(REQUIRED_ENV_VARS)
@@ -309,30 +664,50 @@ async def lifespan(app: FastAPI):
                     api_key=os.environ["EIA_API_KEY"],
                     run_hour_utc=_env_int("NATURAL_GAS_RUN_HOUR_UTC", 7),
                     backfill_days=backfill_days,
+                    lock=app.state.ingest_locks["ng"],
                 ),
                 name="natural-gas-evidence-scheduler",
             ),
             asyncio.create_task(
                 _run_corn_scheduler(
                     engine=zc_engine,
-                    nasdaq_api_key=os.environ["NASDAQ_API_KEY"],
                     nass_api_key=os.environ.get("NASS_API_KEY", ""),
                     run_hour_utc=_env_int("CORN_RUN_HOUR_UTC", 8),
                     backfill_days=backfill_days,
+                    lock=app.state.ingest_locks["zc"],
                 ),
                 name="corn-evidence-scheduler",
             ),
             asyncio.create_task(
                 _run_soybean_scheduler(
                     engine=zs_engine,
-                    nasdaq_api_key=os.environ["NASDAQ_API_KEY"],
                     nass_api_key=os.environ.get("NASS_API_KEY", ""),
                     run_hour_utc=_env_int("SOYBEAN_RUN_HOUR_UTC", 9),
                     backfill_days=backfill_days,
+                    lock=app.state.ingest_locks["zs"],
                 ),
                 name="soybean-evidence-scheduler",
             ),
         ]
+        # Macro regime scheduler is optional (FRED_API_KEY may not be set)
+        fred_api_key = os.environ.get("FRED_API_KEY", "")
+        if fred_api_key:
+            backfill_weeks = _env_int("MACRO_REGIME_BACKFILL_WEEKS", max(backfill_days // 7, 8))
+            tasks.append(asyncio.create_task(
+                _run_macro_regime_scheduler(
+                    engine=mr_engine,
+                    fred_api_key=fred_api_key,
+                    run_hour_utc=_env_int("MACRO_REGIME_RUN_HOUR_UTC", 9),
+                    backfill_weeks=backfill_weeks,
+                    lock=app.state.ingest_locks["mr"],
+                ),
+                name="macro-regime-evidence-scheduler",
+            ))
+        else:
+            logger.info(
+                "FRED_API_KEY not set — macro regime scheduler disabled; "
+                "engine initialised but no data will be fetched automatically."
+            )
         for task in tasks:
             task.add_done_callback(_log_scheduler_exit)
         app.state.scheduler_tasks = tasks
@@ -392,40 +767,240 @@ async def runtime_status() -> dict[str, Any]:
 @app.get("/v1/population/status", response_model=PopStatusOut)
 async def population_status(domain: str = Query("ng")) -> PopStatusOut:
     engine, domain_id, display_name = _resolve_domain(domain, app.state)
+    return _build_population_status(engine, domain_id, display_name)
+
+
+@app.get("/v1/debug/entropy", response_model=EntropyDebugOut)
+async def debug_entropy(domain: str = Query("ng")) -> EntropyDebugOut:
+    domain_key = domain.lower()
+    engine, domain_id, display_name = _resolve_domain(domain_key, app.state)
     pop = engine.get_population(domain_id)
-    summary = pop.summary()
-    dom = pop.dominant()
+    candidates = pop.candidates
+    variables = candidates[0].variables if candidates else []
+    diagnostics = build_entropy_diagnostics(
+        records=engine.evidence_store.load_all(domain_id),
+        variables=variables,
+    )
 
-    # Frontier edges: explore-band edges on the dominant candidate
-    thresholds = engine._modules[domain_id].existence_thresholds()
-    explore_lo, explore_hi = thresholds.explore_band
-    frontier_count = 0
-    if dom:
-        for edge in dom.get_active_edges():
-            if explore_lo <= edge.existence_probability <= explore_hi:
-                frontier_count += 1
-
-    last_ts = engine.evidence_store.latest_timestamp(domain_id)
-
-    dom_name = (dom.description or "Hypothesis A") if dom else "none"
-    dom_cid = str(dom.candidate_id) if dom else ""
-    gens_dominant = max(0, pop.generation - dom.generation) if dom else 0
-
-    return PopStatusOut(
+    return EntropyDebugOut(
         domain=display_name,
-        structure_entropy=summary["structure_entropy"],
-        active_candidates=summary["active_candidates"],
-        max_candidates=pop.max_population_size,
+        domain_key=domain_key,
+        domain_module_id=domain_id,
+        **diagnostics,
+    )
+
+
+@app.get("/v1/debug/evidence-geometry")
+async def debug_evidence_geometry(domain: str = Query("ng")) -> dict[str, Any]:
+    domain_key = domain.lower()
+    engine, domain_id, display_name = _resolve_domain(domain_key, app.state)
+    pop = engine.get_population(domain_id)
+    candidates = pop.candidates
+    variables = candidates[0].variables if candidates else []
+    diagnostics = build_evidence_geometry_diagnostics(
+        records=engine.evidence_store.load_all(domain_id),
+        variables=variables,
+    )
+
+    return {
+        "domain": display_name,
+        "domain_key": domain_key,
+        "domain_module_id": domain_id,
+        **diagnostics,
+    }
+
+
+@app.get("/v1/debug/learning", response_model=LearningDebugOut)
+async def debug_learning(domain: str = Query("ng")) -> LearningDebugOut:
+    """
+    Learning-pipeline diagnostics.
+
+    Returns:
+    - Evidence record count vs candidate scoring counts
+    - How many times ``engine.learn()`` has been called in the current session
+    - Last learn timestamp
+    - Mutation cycle stats
+    - Pipeline status flags (which code paths call learn)
+
+    Useful for diagnosing the "evidence accumulates but candidates never
+    score / evolve" failure mode that occurs when the scheduler calls
+    ``engine.ingest()`` without ``engine.learn()``.
+    """
+    domain_key = domain.lower()
+    engine, domain_id, display_name = _resolve_domain(domain_key, app.state)
+
+    pop = engine.get_population(domain_id)
+    dom = pop.dominant()
+    active = pop.active_candidates()
+    mutation_stats = engine.population_manager.last_mutation_stats(domain_id)
+
+    return LearningDebugOut(
+        domain=display_name,
+        domain_module_id=domain_id,
+        total_evidence_records=engine.evidence_store.count(domain_id),
+        active_candidates=len(active),
+        dominant_evidence_count=dom.evidence_count if dom else 0,
+        dominant_log_score=dom.log_score if dom else 0.0,
+        learn_calls_this_session=engine._learn_call_count.get(domain_id, 0),
+        last_learn_timestamp=engine._learn_last_ts.get(domain_id),
+        records_scored_this_session=engine._learn_records_total.get(domain_id, 0),
+        last_mutation_total_attempts=mutation_stats.get("total_attempts", 0),
+        last_mutation_introduced=mutation_stats.get("introduced", 0),
         current_generation=pop.generation,
-        dominant_hypothesis=DominantHypothesis(
-            name=dom_name,
-            candidate_id=dom_cid,
-            generations_dominant=gens_dominant,
+        pipeline_status=LearningPipelineStatusOut(
+            # All three scheduler run_once() methods now call engine.learn()
+            scheduler_calls_learn=True,
+            # _backfill_if_empty() uses _ingest_domain_evidence() which calls learn()
+            backfill_calls_learn=True,
+            # /v1/ingest/trigger uses _ingest_domain_evidence() which calls learn()
+            trigger_calls_learn=True,
         ),
-        paradigm_shifts_this_window=pop.paradigm_shift_count,
-        frontier_edge_count=frontier_count,
-        last_evidence_cycle_ago=_time_ago(last_ts),
-        engine_status="online",
+    )
+
+
+@app.get("/v1/debug/structure", response_model=StructureDiagOut)
+async def debug_structure(domain: str = Query("ng")) -> StructureDiagOut:
+    """
+    Per-candidate structure-learning diagnostics.
+
+    Returns BIC scores under both strict (multiplier=1.0) and explore
+    (multiplier=0.25) regimes so operators can distinguish genuine graph
+    sparsity from over-regularisation.  Also reports mutation-cycle stats
+    (attempts, DAG violations, duplicate rejections, introductions) from the
+    most recent ``introduce_variants()`` call.
+
+    The ``env_mode`` and ``env_bic_multiplier`` fields reflect the current
+    value of the ``POE_STRUCTURE_MODE`` environment variable.  Setting it to
+    ``explore`` does **not** change live population management — it only
+    controls which multiplier is shown in ``env_bic_multiplier``.
+    """
+    domain_key = domain.lower()
+    engine, domain_id, display_name = _resolve_domain(domain_key, app.state)
+
+    pop = engine.get_population(domain_id)
+    mutation_stats = engine.population_manager.last_mutation_stats(domain_id)
+    total_evidence = engine.evidence_store.count(domain_id)
+
+    try:
+        cfg = get_structure_mode_config()
+    except RuntimeError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    diags = build_structure_diagnostics(
+        pop=pop,
+        mutation_stats=mutation_stats,
+        total_evidence_records=total_evidence,
+        env_mode=cfg.mode,
+        env_bic_multiplier=cfg.bic_penalty_multiplier,
+    )
+
+    return StructureDiagOut(
+        domain=display_name,
+        domain_module_id=diags.domain_module_id,
+        env_mode=diags.env_mode,
+        env_bic_multiplier=diags.env_bic_multiplier,
+        total_evidence_records=diags.total_evidence_records,
+        candidates=[
+            CandidateDiagOut(
+                candidate_id=cd.candidate_id,
+                description=cd.description,
+                generation=cd.generation,
+                status=cd.status,
+                edge_structure=cd.edge_structure,
+                active_edge_count=cd.active_edge_count,
+                total_edge_count=cd.total_edge_count,
+                evidence_count=cd.evidence_count,
+                log_score=cd.log_score,
+                avg_ll=cd.avg_ll,
+                bic_penalty_raw=cd.bic_penalty_raw,
+                bic_score_strict=cd.bic_score_strict,
+                bic_score_explore=cd.bic_score_explore,
+                is_dominant=cd.is_dominant,
+            )
+            for cd in diags.candidates
+        ],
+        last_mutation_cycle=MutationCycleDiagOut(
+            total_attempts=diags.last_mutation_cycle.total_attempts,
+            dag_violations=diags.last_mutation_cycle.dag_violations,
+            duplicate_rejections=diags.last_mutation_cycle.duplicate_rejections,
+            introduced=diags.last_mutation_cycle.introduced,
+        ),
+    )
+
+
+@app.post("/v1/ingest/trigger", response_model=IngestTriggerOut)
+async def ingest_trigger(domain: str = Query("ng")) -> IngestTriggerOut:
+    domain_key = domain.lower()
+    engine, domain_id, display_name = _resolve_domain(domain_key, app.state)
+    lock = _ingest_lock(app.state, domain_key)
+
+    async with lock:
+        try:
+            ingested = await _ingest_domain_evidence(
+                domain_key=domain_key,
+                engine=engine,
+                domain_id=domain_id,
+            )
+        except RuntimeError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+        except Exception as exc:
+            logger.error(
+                "Manual ingestion trigger failed for %s: %s",
+                display_name,
+                exc,
+                exc_info=True,
+            )
+            raise HTTPException(
+                status_code=502,
+                detail=f"Ingestion failed for domain '{domain_key}'",
+            ) from exc
+
+    return IngestTriggerOut(
+        domain=display_name,
+        evidence_records_ingested=ingested,
+        population_status=_build_population_status(engine, domain_id, display_name),
+    )
+
+
+@app.post("/v1/ingest/backfill", response_model=IngestBackfillOut)
+async def ingest_backfill(
+    domain: str = Query("ng"),
+    days: int = Query(90, ge=1),
+) -> IngestBackfillOut:
+    domain_key = domain.lower()
+    engine, domain_id, display_name = _resolve_domain(domain_key, app.state)
+    lock = _ingest_lock(app.state, domain_key)
+
+    today = datetime.now(timezone.utc).date()
+    successes = 0
+    if is_agriculture_domain(domain_id):
+        targets = weekly_backfill_dates(days, today)
+    else:
+        targets = [today - timedelta(days=delta) for delta in range(days, 0, -1)]
+    async with lock:
+        for target in targets:
+            try:
+                successes += await _ingest_domain_evidence(
+                    domain_key=domain_key,
+                    engine=engine,
+                    domain_id=domain_id,
+                    target_date=target,
+                )
+            except RuntimeError as exc:
+                raise HTTPException(status_code=503, detail=str(exc)) from exc
+            except Exception as exc:
+                logger.error(
+                    "Manual %s backfill failed for %s: %s",
+                    display_name,
+                    target,
+                    exc,
+                    exc_info=True,
+                )
+
+    return IngestBackfillOut(
+        domain=display_name,
+        days_requested=days,
+        days_successfully_ingested=successes,
     )
 
 
@@ -478,20 +1053,7 @@ async def inference_query(body: QueryBodyIn) -> InferenceOut:
     engine, domain_id, display_name = _resolve_domain(body.domain, app.state)
     pop = engine.get_population(domain_id)
 
-    # Resolve candidate
-    cand: OntologyCandidate | None = None
-    if body.candidate_id:
-        target_uuid = UUID(body.candidate_id)
-        for c in pop.active_candidates():
-            if c.candidate_id == target_uuid:
-                cand = c
-                break
-        if cand is None:
-            raise HTTPException(status_code=404, detail=f"Candidate '{body.candidate_id}' not found")
-    else:
-        cand = pop.dominant()
-        if cand is None:
-            raise HTTPException(status_code=503, detail="No active candidates")
+    cand = _resolve_query_candidate(pop, body.candidate_id)
 
     # Fuzzy-resolve target variable
     target_var = _find_variable_fuzzy(cand, body.target_variable)
@@ -571,10 +1133,35 @@ async def population_lineage(candidate_id: str, domain: str = Query("ng")) -> Li
     engine, domain_id, display_name = _resolve_domain(domain, app.state)
     pop = engine.get_population(domain_id)
 
-    # Find the requested candidate (active or pruned)
+    # Find the requested candidate (active or pruned) in the specified domain first.
     all_cands = {str(c.candidate_id): c for c in pop.candidates}
+
+    # Cross-domain fallback: if the candidate isn't in the specified domain's
+    # population, search all other loaded engines.  This handles the common
+    # case where the caller omits ?domain=<key> or passes the wrong one
+    # (e.g. calling lineage with an MR UUID while domain defaults to "ng").
     if candidate_id not in all_cands:
-        raise HTTPException(status_code=404, detail=f"Candidate '{candidate_id}' not found")
+        engines_map: dict[str, ProbabilisticOntologyEngine] = getattr(
+            app.state, "engines", {}
+        )
+        found = False
+        for dk, alt_engine in engines_map.items():
+            if dk == domain.lower():
+                continue  # already searched this one
+            alt_dm_id, alt_display = _DOMAIN_MAP[dk]
+            alt_pop = alt_engine.get_population(alt_dm_id)
+            alt_cands = {str(c.candidate_id): c for c in alt_pop.candidates}
+            if candidate_id in alt_cands:
+                pop = alt_pop
+                all_cands = alt_cands
+                domain_id = alt_dm_id
+                display_name = alt_display
+                found = True
+                break
+        if not found:
+            raise HTTPException(
+                status_code=404, detail=f"Candidate '{candidate_id}' not found"
+            )
 
     target_cand = all_cands[candidate_id]
 
@@ -633,6 +1220,47 @@ async def population_lineage(candidate_id: str, domain: str = Query("ng")) -> Li
     )
 
 
+@app.get("/v1/population/shifts", response_model=ParadigmShiftsOut)
+async def population_shifts(domain: str = Query("ng")) -> ParadigmShiftsOut:
+    """
+    Return the full chronological history of paradigm shifts for a domain.
+
+    A paradigm shift is recorded each time the dominant candidate changes
+    during a learning cycle.  Events are written by PopulationManager.end_cycle()
+    and persisted to the ``paradigm_shifts`` SQLite table.
+
+    Note: Events are only available from the point when shift logging was first
+    enabled.  Older engines that ran before this feature was introduced will
+    return an empty list even if shifts occurred historically — the
+    ``dominant_hypothesis.candidate_id`` in /v1/population/status still reflects
+    the current dominant, and ``paradigm_shifts_this_window`` in that response
+    gives the cumulative shift count since startup.
+    """
+    engine, domain_id, display_name = _resolve_domain(domain, app.state)
+    raw = engine.population_store.load_shift_events(domain_id)
+
+    events = [
+        ParadigmShiftEventOut(
+            shift_id=row["shift_id"],
+            generation=row["generation"],
+            timestamp=row["shift_ts"],
+            previous_dominant_id=row["prev_dominant_id"],
+            previous_dominant_name=row["prev_dominant_name"],
+            new_dominant_id=row["new_dominant_id"],
+            new_dominant_name=row["new_dominant_name"],
+            evidence_count_at_shift=row["evidence_count_at_shift"],
+        )
+        for row in raw
+    ]
+
+    return ParadigmShiftsOut(
+        domain=display_name,
+        domain_module_id=domain_id,
+        total_shifts=len(events),
+        events=events,
+    )
+
+
 @app.get("/v1/evidence/recent", response_model=EvidenceOut)
 async def evidence_recent(
     domain: str = Query("ng"),
@@ -671,12 +1299,106 @@ async def evidence_recent(
 
 # ── Scheduler coroutines ──────────────────────────────────────────────────────
 
+async def _run_macro_regime_scheduler(
+    *,
+    engine: ProbabilisticOntologyEngine,
+    fred_api_key: str,
+    run_hour_utc: int,
+    backfill_weeks: int,
+    lock: asyncio.Lock,
+) -> None:
+    """
+    Weekly macro regime ingestion scheduler.
+
+    Runs on Mondays at run_hour_utc UTC.  On startup, backfills the last
+    backfill_weeks weeks if the engine has no evidence yet.
+
+    Cadence rationale: weekly because WALCL (Fed balance sheet) publishes
+    weekly (Thursday), and macro regime variables evolve on a weekly-to-monthly
+    timescale.  Daily cadence would be noisy and epistemically wasteful.
+    """
+    from ...domains.macro_regime_v1.ingestion.pipeline import _last_friday
+    fred = FREDClient(api_key=fred_api_key)
+    pipeline = MacroRegimePipeline(fred)
+    scheduler = MacroRegimeScheduler(
+        engine=engine,
+        pipeline=pipeline,
+        run_hour_utc=run_hour_utc,
+        backfill_weeks=0,
+    )
+    await _backfill_macro_if_empty(
+        engine=engine,
+        pipeline=pipeline,
+        domain_id="macro-regime-v1",
+        display_name="Macro Regime",
+        backfill_weeks=backfill_weeks,
+        lock=lock,
+    )
+    async with fred:
+        await scheduler.run_forever()
+
+
+async def _backfill_macro_if_empty(
+    *,
+    engine: ProbabilisticOntologyEngine,
+    pipeline: MacroRegimePipeline,
+    domain_id: str,
+    display_name: str,
+    backfill_weeks: int,
+    lock: asyncio.Lock,
+) -> int:
+    """Backfill macro regime if the engine has no evidence records."""
+    if backfill_weeks <= 0:
+        return 0
+
+    from datetime import timedelta
+    from ...domains.macro_regime_v1.scheduler import _weekly_backfill_dates
+
+    today = datetime.now(timezone.utc).date()
+    successes = 0
+    async with lock:
+        existing = engine.evidence_store.count(domain_id)
+        if existing > 0:
+            logger.info(
+                "Skipping %s startup backfill; evidence_count=%d",
+                display_name,
+                existing,
+            )
+            return 0
+
+        logger.info(
+            "Running %d-week %s startup backfill; evidence_count=0",
+            backfill_weeks,
+            display_name,
+        )
+        targets = _weekly_backfill_dates(backfill_weeks, today)
+        for target in targets:
+            try:
+                record = await pipeline.fetch_evidence(target)
+                before = engine.evidence_store.count(domain_id)
+                engine.ingest(record)
+                after = engine.evidence_store.count(domain_id)
+                if after > before:
+                    engine.learn([record], domain_id)
+                    successes += 1
+            except Exception as exc:
+                logger.error(
+                    "%s backfill failed for %s: %s",
+                    display_name, target, exc, exc_info=True,
+                )
+            await asyncio.sleep(2.0)
+
+    logger.info("%s startup backfill complete: %d weeks ingested", display_name, successes)
+    return successes
+
+
 async def _run_natural_gas_scheduler(
     *,
     engine: ProbabilisticOntologyEngine,
     api_key: str,
     run_hour_utc: int,
     backfill_days: int,
+    lock: asyncio.Lock,
 ) -> None:
     noaa = NOAAClient()
     eia = EIAClient(api_key=api_key)
@@ -685,7 +1407,15 @@ async def _run_natural_gas_scheduler(
         engine=engine,
         pipeline=pipeline,
         run_hour_utc=run_hour_utc,
+        backfill_days=0,
+    )
+    await _backfill_if_empty(
+        domain_key="ng",
+        engine=engine,
+        domain_id="natural-gas-v1",
+        display_name="Natural Gas",
         backfill_days=backfill_days,
+        lock=lock,
     )
     async with noaa, eia:
         await scheduler.run_forever()
@@ -694,44 +1424,58 @@ async def _run_natural_gas_scheduler(
 async def _run_corn_scheduler(
     *,
     engine: ProbabilisticOntologyEngine,
-    nasdaq_api_key: str,
     nass_api_key: str,
     run_hour_utc: int,
     backfill_days: int,
+    lock: asyncio.Lock,
 ) -> None:
     nass = CornNASSClient(api_key=nass_api_key)
-    fas = CornFASClient()
-    nasdaq = CornNASDAQClient(api_key=nasdaq_api_key)
-    pipeline = CornPipeline(nass, fas, nasdaq)
+    nasdaq = CornNASDAQClient()
+    pipeline = CornPipeline(nass, nasdaq)
     scheduler = CornScheduler(
         engine=engine,
         pipeline=pipeline,
         run_hour_utc=run_hour_utc,
-        backfill_days=backfill_days,
+        backfill_days=0,
     )
-    async with nass, fas, nasdaq:
+    await _backfill_if_empty(
+        domain_key="zc",
+        engine=engine,
+        domain_id="corn-v1",
+        display_name="Corn",
+        backfill_days=backfill_days,
+        lock=lock,
+    )
+    async with nass, nasdaq:
         await scheduler.run_forever()
 
 
 async def _run_soybean_scheduler(
     *,
     engine: ProbabilisticOntologyEngine,
-    nasdaq_api_key: str,
     nass_api_key: str,
     run_hour_utc: int,
     backfill_days: int,
+    lock: asyncio.Lock,
 ) -> None:
     nass = SoyNASSClient(api_key=nass_api_key)
-    fas = SoyFASClient()
-    nasdaq = SoyNASDAQClient(api_key=nasdaq_api_key)
-    pipeline = SoybeanPipeline(nass, fas, nasdaq)
+    nasdaq = SoyNASDAQClient()
+    pipeline = SoybeanPipeline(nass, nasdaq)
     scheduler = SoybeanScheduler(
         engine=engine,
         pipeline=pipeline,
         run_hour_utc=run_hour_utc,
-        backfill_days=backfill_days,
+        backfill_days=0,
     )
-    async with nass, fas, nasdaq:
+    await _backfill_if_empty(
+        domain_key="zs",
+        engine=engine,
+        domain_id="soybean-v1",
+        display_name="Soybeans",
+        backfill_days=backfill_days,
+        lock=lock,
+    )
+    async with nass, nasdaq:
         await scheduler.run_forever()
 
 

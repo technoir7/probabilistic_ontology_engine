@@ -318,6 +318,58 @@ def _make_eia_http_response(series_id_fragment: str) -> MagicMock:
     return resp
 
 
+def _make_historical_eia_http_response(series_id_fragment: str) -> MagicMock:
+    """Mock EIA response containing latest and historical rows together."""
+    resp = MagicMock()
+    resp.raise_for_status = MagicMock()
+
+    if "NW2_EPG0_SWO" in series_id_fragment:
+        resp.json = MagicMock(return_value={
+            "response": {
+                "data": [
+                    {"period": "2025-01-20", "value": "120.0"},
+                    {"period": "2025-01-13", "value": "130.0"},
+                    {"period": "2025-01-06", "value": "100.0"},
+                    {"period": "2024-12-30", "value": "90.0"},
+                ]
+            }
+        })
+    else:
+        price_rows = [
+            {"period": "2025-01-20", "value": "6.0"},
+            {"period": "2025-01-19", "value": "4.0"},
+            {"period": "2025-01-18", "value": "4.0"},
+            {"period": "2025-01-17", "value": "4.0"},
+            {"period": "2025-01-16", "value": "4.0"},
+            {"period": "2025-01-15", "value": "4.0"},
+            {"period": "2025-01-14", "value": "4.0"},
+            {"period": "2025-01-13", "value": "4.0"},
+            {"period": "2025-01-12", "value": "4.0"},
+            {"period": "2025-01-11", "value": "4.0"},
+            {"period": "2025-01-10", "value": "2.0"},
+        ]
+        price_rows.extend(
+            {"period": f"2025-01-{day:02d}", "value": "4.0"}
+            for day in range(9, 0, -1)
+        )
+        price_rows.extend(
+            {"period": f"2024-12-{day:02d}", "value": "4.0"}
+            for day in range(31, 10, -1)
+        )
+        resp.json = MagicMock(return_value={"response": {"data": price_rows}})
+
+    return resp
+
+
+def _natural_gas_values(record) -> dict[str, bool]:
+    variables = get_variables()
+    by_id = {v.variable_id: name for name, v in variables.items()}
+    return {
+        by_id[a.variable_id]: a.observed_value
+        for a in record.observed_assignments
+    }
+
+
 def test_fetch_evidence_full_async():
     """
     End-to-end test of NaturalGasPipeline.fetch_evidence() with both HTTP
@@ -377,3 +429,81 @@ def test_fetch_evidence_full_async():
 
     # --- EIA was called 2 times (storage + price series) ---
     assert eia_http_mock.get.call_count == 2
+
+
+def test_eia_fetch_snapshot_uses_historical_target_date():
+    """
+    The mocked API returns both latest and older rows every time.  Historical
+    target dates must select the rows at or before that date, not row 0.
+    """
+    seen_ends: list[str] = []
+
+    def eia_get_side_effect(url, **kwargs):
+        seen_ends.append(kwargs["params"]["end"])
+        return _make_historical_eia_http_response(url)
+
+    eia_http_mock = AsyncMock()
+    eia_http_mock.get = AsyncMock(side_effect=eia_get_side_effect)
+    eia = EIAClient(api_key="test-key-unused", client=eia_http_mock)
+
+    jan_10 = asyncio.run(eia.fetch_snapshot(date(2025, 1, 10)))
+    jan_20 = asyncio.run(eia.fetch_snapshot(date(2025, 1, 20)))
+
+    assert jan_10.storage_current_bcf == 100.0
+    assert jan_10.storage_prev_bcf == 90.0
+    assert jan_10.storage_draw is False
+    assert jan_10.latest_price == 2.0
+    assert jan_10.price_up is False
+
+    assert jan_20.storage_current_bcf == 120.0
+    assert jan_20.storage_prev_bcf == 130.0
+    assert jan_20.storage_draw is True
+    assert jan_20.latest_price == 6.0
+    assert jan_20.price_up is True
+
+    assert seen_ends == [
+        "2025-01-10",
+        "2025-01-10",
+        "2025-01-20",
+        "2025-01-20",
+    ]
+
+
+def test_backfill_style_fetches_do_not_duplicate_latest_eia_values():
+    """
+    Backfill-style pipeline calls with different target dates should produce
+    different EIA-derived assignments when historical rows differ.
+    """
+
+    class FakeNOAA:
+        async def fetch_daily_obs(self, target_date: date) -> DailyClimateObs:
+            return _make_climate_obs(temp_c=0.0, target_date=target_date)
+
+    def eia_get_side_effect(url, **kwargs):
+        return _make_historical_eia_http_response(url)
+
+    eia_http_mock = AsyncMock()
+    eia_http_mock.get = AsyncMock(side_effect=eia_get_side_effect)
+    eia = EIAClient(api_key="test-key-unused", client=eia_http_mock)
+    pipeline = NaturalGasPipeline(FakeNOAA(), eia)
+
+    jan_10_record = asyncio.run(pipeline.fetch_evidence(date(2025, 1, 10)))
+    jan_20_record = asyncio.run(pipeline.fetch_evidence(date(2025, 1, 20)))
+
+    jan_10_values = _natural_gas_values(jan_10_record)
+    jan_20_values = _natural_gas_values(jan_20_record)
+
+    assert jan_10_values["StorageDraw"] is False
+    assert jan_10_values["PriceUp"] is False
+    assert jan_20_values["StorageDraw"] is True
+    assert jan_20_values["PriceUp"] is True
+    assert jan_10_values != jan_20_values
+
+
+def test_source_ref_uses_requested_target_date():
+    obs = _make_climate_obs(temp_c=0.0, target_date=date(2025, 1, 10))
+    snap = _make_gas_snapshot()
+
+    record = NaturalGasPipeline.build_evidence_record(obs, snap)
+
+    assert record.source_ref.endswith("@2025-01-10")

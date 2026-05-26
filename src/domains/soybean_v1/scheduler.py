@@ -1,5 +1,5 @@
 """
-IngestionScheduler — daily data ingestion loop for the soybean (ZS) domain.
+IngestionScheduler — weekly data ingestion loop for the soybean (ZS) domain.
 
 Runs as a standalone async process.  On startup it optionally backfills the
 last `backfill_days` days of data, then sleeps until the next scheduled run
@@ -7,8 +7,7 @@ time and repeats indefinitely.
 
 Default schedule: 09:00 UTC daily.  This is after USDA NASS publishes its
 Monday weekly crop progress reports (released 15:00 ET Monday = 20:00 UTC)
-for the preceding week; and after FAS weekly export inspection summaries are
-available (published Tuesday mornings).  Nasdaq ZS1 settlement prices are
+for the preceding week. Yahoo Finance ZS=F close prices are
 available the evening of each trading day.  The 09:00 UTC slot is one hour
 after the corn scheduler (08:00 UTC) to stagger API calls.
 
@@ -24,7 +23,7 @@ Programmatic usage
 
 Environment variables
 ---------------------
-    NASDAQ_API_KEY   — required (loaded from .env if python-dotenv is installed)
+    None required for soybean price data. NASS_API_KEY is optional for USDA NASS.
 """
 from __future__ import annotations
 
@@ -34,10 +33,15 @@ import os
 from datetime import date, datetime, timedelta, timezone
 
 from ...engine.engine import ProbabilisticOntologyEngine
+from ..agriculture_weekly import (
+    is_duplicate_recent_state,
+    latest_complete_week_ending,
+    latest_week_ending_on_or_before,
+    weekly_backfill_dates,
+)
 from .domain import SoybeanV1, get_variables
 from .ingestion.nasdaq_client import NASDAQClient
 from .ingestion.pipeline import SoybeanPipeline
-from .ingestion.usda_fas_client import USDAFASClient
 from .ingestion.usda_nass_client import USDANASSClient
 
 logger = logging.getLogger(__name__)
@@ -45,14 +49,14 @@ logger = logging.getLogger(__name__)
 
 class IngestionScheduler:
     """
-    Daily ingestion scheduler for the soybean domain.
+    Weekly ingestion scheduler for the soybean domain.
 
     Parameters
     ----------
     engine : ProbabilisticOntologyEngine
         A registered and activated engine.
     pipeline : SoybeanPipeline
-        Configured pipeline with NASS, FAS, and Nasdaq clients.
+        Configured pipeline with NASS and price clients.
     run_hour_utc : int
         Hour of day (UTC, 0–23) at which to run the daily fetch.  Default 9.
     backfill_days : int
@@ -65,11 +69,13 @@ class IngestionScheduler:
         engine: ProbabilisticOntologyEngine,
         pipeline: SoybeanPipeline,
         run_hour_utc: int = 9,
+        run_weekday_utc: int = 1,
         backfill_days: int = 7,
     ) -> None:
         self._engine       = engine
         self._pipeline     = pipeline
         self._run_hour     = run_hour_utc
+        self._run_weekday  = run_weekday_utc
         self._backfill_days = backfill_days
 
     # ------------------------------------------------------------------
@@ -78,35 +84,69 @@ class IngestionScheduler:
 
     async def run_once(self, target_date: date | None = None) -> bool:
         """
-        Fetch and ingest data for `target_date` (defaults to yesterday UTC).
+        Fetch, ingest, and learn from data for `target_date` (defaults to
+        the latest completed ISO week-ending Sunday).
+
         Returns True on success, False if fetching failed.
+
+        Note: ingestion and learning are both attempted.  A learning failure
+        is logged but does not make the run return False — the evidence record
+        is still persisted.
         """
         if target_date is None:
-            target_date = (datetime.now(timezone.utc) - timedelta(days=1)).date()
+            target_date = latest_complete_week_ending(datetime.now(timezone.utc).date())
+        else:
+            target_date = latest_week_ending_on_or_before(target_date)
 
         logger.info("Ingesting soybean data for %s", target_date)
         try:
             record = await self._pipeline.fetch_evidence(target_date)
+            domain_id = self._engine.active_domain
+            recent = (
+                self._engine.evidence_store.load_recent(domain_id, limit=1)
+                if domain_id
+                else []
+            )
+            if is_duplicate_recent_state(record, recent):
+                logger.info("Skipping duplicate soybean state for week ending %s", target_date)
+                return True
             self._engine.ingest(record)
             logger.info(
                 "Ingested evidence_id=%s for %s", record.evidence_id, target_date
             )
-            return True
         except Exception as exc:
             logger.error("Ingestion failed for %s: %s", target_date, exc)
             return False
 
+        # Trigger the learning / evolution cycle for every ingested record.
+        domain_id = self._engine.active_domain
+        if domain_id:
+            try:
+                self._engine.learn([record], domain_id)
+                logger.debug(
+                    "Learning cycle complete for soybean-v1 @ %s", target_date
+                )
+            except Exception as exc:
+                logger.error(
+                    "Learning cycle failed for soybean-v1 @ %s: %s",
+                    target_date, exc, exc_info=True,
+                )
+
+        return True
+
     async def backfill(self) -> int:
         """
-        Ingest the last `backfill_days` days sequentially (oldest first).
-        Returns the count of successfully ingested days.
+        Ingest weekly records covering the prior `backfill_days` window.
+        Returns the count of records actually inserted.
         """
         today = datetime.now(timezone.utc).date()
         successes = 0
-        for delta in range(self._backfill_days, 0, -1):
-            target = today - timedelta(days=delta)
+        domain_id = self._engine.active_domain
+        for target in weekly_backfill_dates(self._backfill_days, today):
+            before = self._engine.evidence_store.count(domain_id) if domain_id else 0
             ok = await self.run_once(target)
-            if ok:
+            after = self._engine.evidence_store.count(domain_id) if domain_id else before
+            if ok and after > before:
                 successes += 1
             await asyncio.sleep(1.0)   # polite pause between API requests
         return successes
@@ -127,11 +167,12 @@ class IngestionScheduler:
 
         while True:
             now = datetime.now(timezone.utc)
-            next_run = now.replace(
+            days_ahead = (self._run_weekday - now.weekday()) % 7
+            next_run = (now + timedelta(days=days_ahead)).replace(
                 hour=self._run_hour, minute=0, second=0, microsecond=0
             )
             if next_run <= now:
-                next_run += timedelta(days=1)
+                next_run += timedelta(weeks=1)
 
             sleep_s = (next_run - now).total_seconds()
             logger.info(
@@ -164,23 +205,14 @@ async def _main() -> None:
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
     )
 
-    nasdaq_key = os.environ.get("NASDAQ_API_KEY", "")
-    if not nasdaq_key:
-        raise SystemExit(
-            "NASDAQ_API_KEY environment variable is not set. "
-            "Add it to .env or export it before running.  "
-            "Free registration at https://data.nasdaq.com/sign-up"
-        )
-
     engine = ProbabilisticOntologyEngine(db_path="soybean.db", random_seed=42)
     domain = SoybeanV1()
     engine.register_domain(domain)
     engine.activate_domain(domain.module_id())
 
     nass   = USDANASSClient()
-    fas    = USDAFASClient()
-    nasdaq = NASDAQClient(api_key=nasdaq_key)
-    pipeline = SoybeanPipeline(nass, fas, nasdaq)
+    nasdaq = NASDAQClient()
+    pipeline = SoybeanPipeline(nass, nasdaq)
 
     scheduler = IngestionScheduler(
         engine=engine,
@@ -190,7 +222,7 @@ async def _main() -> None:
     )
 
     try:
-        async with nass, fas, nasdaq:
+        async with nass, nasdaq:
             await scheduler.run_forever()
     except KeyboardInterrupt:
         logger.info("Soybean scheduler stopped by user")

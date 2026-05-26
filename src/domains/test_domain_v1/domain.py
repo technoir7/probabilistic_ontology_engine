@@ -16,6 +16,7 @@ from __future__ import annotations
 
 from uuid import UUID, uuid4
 
+from ...engine.variable_identity import stable_variable_id
 from ...engine.schemas import (
     DependencyEdge,
     DependencyKind,
@@ -32,7 +33,7 @@ from ...engine.schemas import (
 
 _VARIABLE_DEFS: dict[str, Variable] = {
     name: Variable(
-        variable_id=uuid4(),
+        variable_id=stable_variable_id("test-domain-v1", name),
         name=name,
         domain_type=DomainType.BOOLEAN,
         support=[True, False],

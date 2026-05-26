@@ -11,7 +11,7 @@ from typing import Any, Optional
 from uuid import UUID, uuid4
 
 import networkx as nx
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 # ---------------------------------------------------------------------------
@@ -43,6 +43,7 @@ class MissingnessType(str, Enum):
     MISSING = "MISSING"
     IMPUTED = "IMPUTED"
     REDACTED = "REDACTED"
+    SOFT_OBSERVED = "SOFT_OBSERVED"   # probabilistic/soft observation
 
 
 class SourceType(str, Enum):
@@ -95,6 +96,35 @@ class ObservedAssignment(BaseModel):
     observed_value: Any
     missingness: MissingnessType = MissingnessType.OBSERVED
     confidence: float = 1.0
+    probabilities: Optional[dict] = None
+    """
+    Optional soft-evidence distribution over the variable's support.
+
+    Keys are variable support values (e.g. ``True``/``False`` for BOOLEAN),
+    values are probabilities that must sum to approximately 1.0.
+
+    * When *missingness* is ``OBSERVED``, this field is ``None``; the hard
+      value in *observed_value* carries the full weight.
+    * When *missingness* is ``SOFT_OBSERVED``, this dict provides the
+      fractional weights used by the learning service.  *observed_value*
+      is kept as the MAP (highest-probability) value for backward
+      compatibility with callers that only read the hard field.
+
+    Example (Boolean)::
+
+        probabilities={True: 0.64, False: 0.36}
+    """
+
+    @model_validator(mode="after")
+    def _validate_probabilities(self) -> "ObservedAssignment":
+        if self.probabilities is not None:
+            total = sum(float(v) for v in self.probabilities.values())
+            if abs(total - 1.0) > 0.02:
+                raise ValueError(
+                    f"ObservedAssignment.probabilities must sum to 1.0 ± 0.02, "
+                    f"got {total:.4f} for variable {self.variable_id}"
+                )
+        return self
 
 
 class EvidenceRecord(BaseModel):
@@ -104,6 +134,28 @@ class EvidenceRecord(BaseModel):
     source_type: SourceType = SourceType.SIMULATION
     source_ref: str = ""
     confidence: float = 1.0
+
+
+# ---------------------------------------------------------------------------
+# ParadigmShiftEvent — persisted record of a dominant-candidate change
+# ---------------------------------------------------------------------------
+
+class ParadigmShiftEvent(BaseModel):
+    """
+    Immutable record written each time the dominant candidate changes in a domain.
+
+    Written by PopulationManager.end_cycle() whenever update_dominant() returns
+    True (i.e. the winning candidate changed since the previous cycle).
+    """
+    shift_id: UUID = Field(default_factory=uuid4)
+    domain_module_id: str
+    generation: int
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    previous_dominant_id: UUID
+    previous_dominant_name: str = ""
+    new_dominant_id: UUID
+    new_dominant_name: str = ""
+    evidence_count_at_shift: int = 0
 
 
 # ---------------------------------------------------------------------------
@@ -208,8 +260,17 @@ class OntologyPopulation(BaseModel):
     def active_candidates(self) -> list[OntologyCandidate]:
         return [c for c in self.candidates if c.status == CandidateStatus.ACTIVE]
 
-    def _avg_score(self, c: OntologyCandidate) -> float:
-        """BIC-corrected average log-likelihood; counts ALL edges (incl. disabled)."""
+    def _avg_score(self, c: OntologyCandidate, multiplier: float = 1.0) -> float:
+        """
+        BIC-corrected average log-likelihood; counts ALL edges (incl. disabled).
+
+        Parameters
+        ----------
+        multiplier : float, default 1.0
+            Scale factor applied to the BIC penalty term.  The production
+            system always uses the default (1.0).  The diagnostic endpoint
+            passes 0.25 for the ``bic_score_explore`` side-by-side column.
+        """
         n = c.evidence_count
         if n == 0:
             return float("-inf")
@@ -218,7 +279,7 @@ class OntologyPopulation(BaseModel):
         for v in c.variables:
             n_parents = sum(1 for e in c.edges if e.child_variable_id == v.variable_id)
             k += 2 ** n_parents
-        bic_penalty = 0.5 * k * math.log(max(n, 2)) / n
+        bic_penalty = 0.5 * k * math.log(max(n, 2)) / n * multiplier
         return avg_ll - bic_penalty
 
     def dominant(self) -> Optional[OntologyCandidate]:

@@ -100,10 +100,9 @@ Copy `.env.example` to `.env` and fill in:
 
 ```bash
 EIA_API_KEY=...       # api.eia.gov — free registration
-NASDAQ_API_KEY=...    # data.nasdaq.com — free registration
 ```
 
-NOAA data (api.weather.gov) requires no key.
+NOAA data (api.weather.gov) and Yahoo Finance futures prices require no key.
 
 ---
 
@@ -113,7 +112,7 @@ Two domains are currently implemented:
 
 **Natural gas (NG)** — variables: `TempAnom`, `HeatingDem`, `StorageDraw`, `PriceUp`. Evidence from NOAA daily temperature observations and EIA weekly storage reports + Henry Hub spot price. Scheduler runs daily at 07:00 UTC.
 
-**Corn (ZC)** — variables: `PlantingDelayed`, `DroughtIndex`, `YieldForecastDown`, `ExportDemandHigh`, `CornPriceUp`. Evidence from USDA NASS crop reports, USDA FAS export inspections, and Nasdaq ZC1 front-month futures. Scheduler runs daily at 08:00 UTC. NASS data is seasonal — off-season variables are marked `MISSING` rather than defaulting to false.
+**Corn (ZC)** — variables: `PlantingDelayed`, `DroughtIndex`, `YieldForecastDown`, `ExportDemandHigh`, `CornPriceUp`. Evidence from USDA NASS crop reports, USDA FAS export inspections, and Yahoo Finance `ZC=F` front-month futures. Scheduler runs daily at 08:00 UTC. NASS data is seasonal — off-season variables are marked `MISSING` rather than defaulting to false.
 
 ### Implementing a new domain
 

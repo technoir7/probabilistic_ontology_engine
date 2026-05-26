@@ -1,27 +1,24 @@
 """
 Integration tests — soybean (ZS) domain ingestion pipeline.
 
-All three external APIs (USDA NASS, USDA FAS, Nasdaq Data Link) are mocked
-via injected httpx.AsyncClient; no network calls are made.
+External data sources are mocked; no network calls are made.
 
 Test inventory
 --------------
-TEST-ZS-01  build_evidence_record maps all 5 variable UUIDs correctly
+TEST-ZS-01  build_evidence_record maps all 4 variable UUIDs correctly
 TEST-ZS-02  PlantingDelayed=True when progress is >5 pp behind 5-yr average
 TEST-ZS-03  PlantingDelayed=False when progress is within threshold
 TEST-ZS-04  DroughtIndex=True when GOOD+EXCELLENT < 55%
 TEST-ZS-05  DroughtIndex=False when GOOD+EXCELLENT ≥ 55%
 TEST-ZS-06  YieldForecastDown=True when current forecast < prior year final
 TEST-ZS-07  YieldForecastDown=False when current forecast ≥ prior year final
-TEST-ZS-08  ExportDemandHigh=True when current week > 4-wk rolling average
-TEST-ZS-09  ExportDemandHigh=False when current week ≤ rolling average
 TEST-ZS-10  SoyPriceUp=True when settle > 20-day rolling average
 TEST-ZS-11  SoyPriceUp=False when settle ≤ 20-day rolling average
 TEST-ZS-12  Off-season NASS data → MISSING missingness and confidence=0.0
 TEST-ZS-13  In-season NASS observed data → confidence=1.0
-TEST-ZS-14  FAS and Nasdaq assignments always OBSERVED with confidence=1.0
+TEST-ZS-14  Price assignment always OBSERVED with confidence=1.0
 TEST-ZS-15  USDANASSClient.build_snapshot parses raw API rows correctly
-TEST-ZS-16  Full async pipeline fetch_evidence with all 3 mocked httpx clients
+TEST-ZS-16  Full async pipeline fetch_evidence with mocked clients
 """
 from __future__ import annotations
 
@@ -34,18 +31,16 @@ from unittest.mock import AsyncMock, MagicMock
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
+import pandas as pd
 import pytest
 
 from src.domains.soybean_v1.domain import get_variables
+from src.domains.soybean_v1.ingestion import nasdaq_client as soybean_nasdaq_client
 from src.domains.soybean_v1.ingestion.nasdaq_client import (
     SoybeanNASDAQSnapshot,
     NASDAQClient,
 )
 from src.domains.soybean_v1.ingestion.pipeline import SoybeanPipeline
-from src.domains.soybean_v1.ingestion.usda_fas_client import (
-    SoybeanFASSnapshot,
-    USDAFASClient,
-)
 from src.domains.soybean_v1.ingestion.usda_nass_client import (
     SoybeanNASSSnapshot,
     USDANASSClient,
@@ -104,20 +99,6 @@ def _make_nass_snapshot(
     )
 
 
-def _make_fas_snapshot(
-    *,
-    target_date: date = _MAY_18_2025,
-    current_week_exports_mt: float = 1_500_000.0,
-    rolling_4wk_avg_mt: float = 1_200_000.0,
-) -> SoybeanFASSnapshot:
-    return SoybeanFASSnapshot(
-        target_date=target_date,
-        current_week_exports_mt=current_week_exports_mt,
-        rolling_4wk_avg_mt=rolling_4wk_avg_mt,
-        export_demand_high=current_week_exports_mt > rolling_4wk_avg_mt,
-    )
-
-
 def _make_nasdaq_snapshot(
     *,
     target_date: date = _MAY_18_2025,
@@ -142,13 +123,12 @@ def _assignment_map(record) -> dict:
 # ---------------------------------------------------------------------------
 
 def test_build_evidence_record_maps_all_uuids():
-    """All five assignments carry the canonical variable UUIDs from get_variables()."""
+    """All four assignments carry the canonical variable UUIDs from get_variables()."""
     variables = get_variables()
     nass   = _make_nass_snapshot()
-    fas    = _make_fas_snapshot()
     nasdaq = _make_nasdaq_snapshot()
 
-    record = SoybeanPipeline.build_evidence_record(nass, fas, nasdaq)
+    record = SoybeanPipeline.build_evidence_record(nass, nasdaq)
     assignment_ids = {a.variable_id for a in record.observed_assignments}
     expected_ids   = {v.variable_id for v in variables.values()}
 
@@ -169,7 +149,7 @@ def test_planting_delayed_when_behind_5yr_avg():
     """
     variables = get_variables()
     nass   = _make_nass_snapshot(planting_progress_pct=75.0, planting_5yr_avg_pct=85.0)
-    record = SoybeanPipeline.build_evidence_record(nass, _make_fas_snapshot(), _make_nasdaq_snapshot())
+    record = SoybeanPipeline.build_evidence_record(nass, _make_nasdaq_snapshot())
     amap   = _assignment_map(record)
     assert amap[variables["PlantingDelayed"].variable_id].observed_value is True
 
@@ -180,7 +160,7 @@ def test_planting_on_pace_when_within_threshold():
     """
     variables = get_variables()
     nass   = _make_nass_snapshot(planting_progress_pct=82.0, planting_5yr_avg_pct=85.0)
-    record = SoybeanPipeline.build_evidence_record(nass, _make_fas_snapshot(), _make_nasdaq_snapshot())
+    record = SoybeanPipeline.build_evidence_record(nass, _make_nasdaq_snapshot())
     amap   = _assignment_map(record)
     assert amap[variables["PlantingDelayed"].variable_id].observed_value is False
 
@@ -193,7 +173,7 @@ def test_drought_index_when_below_threshold():
     """condition_good_exc_pct=50 < 55 → DroughtIndex=True."""
     variables = get_variables()
     nass   = _make_nass_snapshot(condition_good_exc_pct=50.0)
-    record = SoybeanPipeline.build_evidence_record(nass, _make_fas_snapshot(), _make_nasdaq_snapshot())
+    record = SoybeanPipeline.build_evidence_record(nass, _make_nasdaq_snapshot())
     amap   = _assignment_map(record)
     assert amap[variables["DroughtIndex"].variable_id].observed_value is True
 
@@ -202,7 +182,7 @@ def test_no_drought_when_above_threshold():
     """condition_good_exc_pct=62 ≥ 55 → DroughtIndex=False."""
     variables = get_variables()
     nass   = _make_nass_snapshot(condition_good_exc_pct=62.0)
-    record = SoybeanPipeline.build_evidence_record(nass, _make_fas_snapshot(), _make_nasdaq_snapshot())
+    record = SoybeanPipeline.build_evidence_record(nass, _make_nasdaq_snapshot())
     amap   = _assignment_map(record)
     assert amap[variables["DroughtIndex"].variable_id].observed_value is False
 
@@ -215,7 +195,7 @@ def test_yield_forecast_down_when_below_prior_year():
     """forecast=51.5 < prior=53.2 → YieldForecastDown=True."""
     variables = get_variables()
     nass   = _make_nass_snapshot(yield_forecast_bu_ac=51.5, yield_prior_year_bu_ac=53.2)
-    record = SoybeanPipeline.build_evidence_record(nass, _make_fas_snapshot(), _make_nasdaq_snapshot())
+    record = SoybeanPipeline.build_evidence_record(nass, _make_nasdaq_snapshot())
     amap   = _assignment_map(record)
     assert amap[variables["YieldForecastDown"].variable_id].observed_value is True
 
@@ -224,70 +204,28 @@ def test_yield_not_down_when_above_prior_year():
     """forecast=54.0 > prior=53.2 → YieldForecastDown=False."""
     variables = get_variables()
     nass   = _make_nass_snapshot(yield_forecast_bu_ac=54.0, yield_prior_year_bu_ac=53.2)
-    record = SoybeanPipeline.build_evidence_record(nass, _make_fas_snapshot(), _make_nasdaq_snapshot())
+    record = SoybeanPipeline.build_evidence_record(nass, _make_nasdaq_snapshot())
     amap   = _assignment_map(record)
     assert amap[variables["YieldForecastDown"].variable_id].observed_value is False
 
 
 # ---------------------------------------------------------------------------
-# TEST-ZS-08 / TEST-ZS-09 — ExportDemandHigh (via FAS snapshot builder)
+# TEST-ZS-10 / TEST-ZS-11 — SoyPriceUp (via yfinance snapshot builder)
 # ---------------------------------------------------------------------------
 
-def test_export_demand_high_when_above_rolling_avg():
-    """
-    FAS rows: current=1,500,000 MT; prior 4 wks average=1,200,000 MT
-    → ExportDemandHigh=True
-    """
-    variables = get_variables()
-    rows = [
-        {"yearperiod": "2025 W20", "value": "1500000"},
-        {"yearperiod": "2025 W19", "value": "1200000"},
-        {"yearperiod": "2025 W18", "value": "1100000"},
-        {"yearperiod": "2025 W17", "value": "1150000"},
-        {"yearperiod": "2025 W16", "value": "1250000"},
-    ]
-    snap = USDAFASClient.build_snapshot(_MAY_18_2025, rows)
-    assert snap.export_demand_high is True
-    assert snap.current_week_exports_mt == 1_500_000.0
-    assert abs(snap.rolling_4wk_avg_mt - 1_175_000.0) < 1.0   # (1.2e6+1.1e6+1.15e6+1.25e6)/4
-
-
-def test_export_demand_not_high_when_below_rolling_avg():
-    """
-    FAS rows: current=800,000 MT; prior 4 wks average=1,200,000 MT
-    → ExportDemandHigh=False
-    """
-    rows = [
-        {"yearperiod": "2025 W20", "value": "800000"},
-        {"yearperiod": "2025 W19", "value": "1200000"},
-        {"yearperiod": "2025 W18", "value": "1200000"},
-        {"yearperiod": "2025 W17", "value": "1200000"},
-        {"yearperiod": "2025 W16", "value": "1200000"},
-    ]
-    snap = USDAFASClient.build_snapshot(_MAY_18_2025, rows)
-    assert snap.export_demand_high is False
-    assert snap.rolling_4wk_avg_mt == 1_200_000.0
-
-
-# ---------------------------------------------------------------------------
-# TEST-ZS-10 / TEST-ZS-11 — SoyPriceUp (via Nasdaq snapshot builder)
-# ---------------------------------------------------------------------------
-
-def _make_zs1_rows(latest_settle: float, prior_settle: float, n_prior: int = 20) -> list[list]:
-    """
-    Build mock CHRIS/CME_S1 data rows in Nasdaq Data Link format.
-    [Date, Open, High, Low, Settle, Volume, OpenInterest]
-    """
-    rows = [["2025-05-18", latest_settle, latest_settle + 10, latest_settle - 10, latest_settle, 85000, 320000]]
-    for i in range(1, n_prior + 1):
-        rows.append([f"2025-05-{17 - i:02d}", prior_settle, prior_settle + 8, prior_settle - 8, prior_settle, 80000, 315000])
-    return rows
+def _make_zs1_history(latest_settle: float, prior_settle: float, n_prior: int = 20) -> pd.DataFrame:
+    """Build mock yfinance ZS=F daily price history in chronological order."""
+    prices = [prior_settle] * n_prior + [latest_settle]
+    return pd.DataFrame(
+        {"Close": prices},
+        index=pd.date_range(end="2025-05-18", periods=len(prices), freq="D"),
+    )
 
 
 def test_soy_price_up_when_settle_above_avg():
     """settle=1380.50, 20d avg=1320.0 → SoyPriceUp=True."""
-    rows = _make_zs1_rows(latest_settle=1380.50, prior_settle=1320.0, n_prior=20)
-    snap = NASDAQClient.build_snapshot(_MAY_18_2025, rows)
+    history = _make_zs1_history(latest_settle=1380.50, prior_settle=1320.0, n_prior=20)
+    snap = NASDAQClient.build_snapshot(_MAY_18_2025, history)
     assert snap.price_up is True
     assert snap.settle_cents_per_bushel == 1380.50
     assert abs(snap.rolling_20d_avg_cents - 1320.0) < 0.01
@@ -295,8 +233,8 @@ def test_soy_price_up_when_settle_above_avg():
 
 def test_soy_price_not_up_when_settle_below_avg():
     """settle=1280.0, 20d avg=1320.0 → SoyPriceUp=False."""
-    rows = _make_zs1_rows(latest_settle=1280.0, prior_settle=1320.0, n_prior=20)
-    snap = NASDAQClient.build_snapshot(_MAY_18_2025, rows)
+    history = _make_zs1_history(latest_settle=1280.0, prior_settle=1320.0, n_prior=20)
+    snap = NASDAQClient.build_snapshot(_MAY_18_2025, history)
     assert snap.price_up is False
 
 
@@ -320,7 +258,7 @@ def test_off_season_nass_yields_missing_assignments():
         yield_forecast_bu_ac=None,
         yield_prior_year_bu_ac=None,
     )
-    record = SoybeanPipeline.build_evidence_record(nass, _make_fas_snapshot(), _make_nasdaq_snapshot())
+    record = SoybeanPipeline.build_evidence_record(nass, _make_nasdaq_snapshot())
     amap = _assignment_map(record)
 
     for var_name in ("PlantingDelayed", "DroughtIndex", "YieldForecastDown"):
@@ -341,38 +279,49 @@ def test_off_season_nass_yields_missing_assignments():
 # ---------------------------------------------------------------------------
 
 def test_in_season_nass_observed_and_confident():
-    """When NASS data is available, assignments are OBSERVED with confidence=1.0."""
+    """
+    When NASS data is available, assignments carry soft evidence (SOFT_OBSERVED)
+    with confidence=1.0 and a valid probability distribution.
+    The hard boolean MAP value is preserved in observed_value.
+    """
     variables = get_variables()
     nass   = _make_nass_snapshot()   # all fields populated
-    record = SoybeanPipeline.build_evidence_record(nass, _make_fas_snapshot(), _make_nasdaq_snapshot())
+    record = SoybeanPipeline.build_evidence_record(nass, _make_nasdaq_snapshot())
     amap   = _assignment_map(record)
 
     for var_name in ("PlantingDelayed", "DroughtIndex", "YieldForecastDown"):
         a = amap[variables[var_name].variable_id]
-        assert a.missingness == MissingnessType.OBSERVED, (
-            f"{var_name} should be OBSERVED but got {a.missingness}"
+        assert a.missingness == MissingnessType.SOFT_OBSERVED, (
+            f"{var_name} should be SOFT_OBSERVED but got {a.missingness}"
         )
         assert a.confidence == 1.0
+        assert a.probabilities is not None, f"{var_name} should have probabilities"
+        total = sum(a.probabilities.values())
+        assert abs(total - 1.0) < 0.02, (
+            f"{var_name} probabilities should sum to 1.0, got {total:.4f}"
+        )
 
 
 # ---------------------------------------------------------------------------
-# TEST-ZS-14 — FAS and Nasdaq are always OBSERVED with confidence=1.0
+# TEST-ZS-14 — Price data is always OBSERVED with confidence=1.0
 # ---------------------------------------------------------------------------
 
-def test_fas_and_nasdaq_always_observed_and_confident():
-    """ExportDemandHigh and SoyPriceUp are always OBSERVED, confidence=1.0."""
+def test_price_always_observed_and_confident():
+    """
+    SoyPriceUp is always SOFT_OBSERVED (sigmoid-calibrated), confidence=1.0.
+    The hard boolean MAP remains in observed_value.
+    """
     variables = get_variables()
-    # Use off-season NASS (would be MISSING) — FAS/Nasdaq should still be OBSERVED
+    # Use off-season NASS (would be MISSING) — price should still be soft-observed
     nass   = _make_nass_snapshot(planting_progress_pct=None, condition_good_exc_pct=None, yield_forecast_bu_ac=None)
-    record = SoybeanPipeline.build_evidence_record(nass, _make_fas_snapshot(), _make_nasdaq_snapshot())
+    record = SoybeanPipeline.build_evidence_record(nass, _make_nasdaq_snapshot())
     amap   = _assignment_map(record)
 
-    for var_name in ("ExportDemandHigh", "SoyPriceUp"):
-        a = amap[variables[var_name].variable_id]
-        assert a.missingness == MissingnessType.OBSERVED, (
-            f"{var_name} should always be OBSERVED"
-        )
-        assert a.confidence == 1.0
+    a = amap[variables["SoyPriceUp"].variable_id]
+    assert a.missingness == MissingnessType.SOFT_OBSERVED
+    assert a.confidence == 1.0
+    assert a.probabilities is not None
+    assert abs(sum(a.probabilities.values()) - 1.0) < 0.02
 
 
 # ---------------------------------------------------------------------------
@@ -489,38 +438,21 @@ def _nass_get_side_effect(year: int):
     return side_effect
 
 
-def _make_fas_http_response() -> MagicMock:
-    """FAS: current=1,500,000 MT → 4wk avg=1,175,000 → ExportDemandHigh=True."""
-    return _make_http_response({
-        "datalist": [
-            {"yearperiod": "2025 W20", "value": "1500000"},
-            {"yearperiod": "2025 W19", "value": "1200000"},
-            {"yearperiod": "2025 W18", "value": "1100000"},
-            {"yearperiod": "2025 W17", "value": "1150000"},
-            {"yearperiod": "2025 W16", "value": "1250000"},
-        ]
-    })
+def _make_zs1_yfinance_history() -> pd.DataFrame:
+    """yfinance ZS=F: latest=1380.50, 20d avg=1320.0 → SoyPriceUp=True."""
+    return _make_zs1_history(latest_settle=1380.50, prior_settle=1320.0, n_prior=20)
 
 
-def _make_nasdaq_http_response() -> MagicMock:
-    """Nasdaq CME_S1: latest=1380.50, 20d avg=1320.0 → SoyPriceUp=True."""
-    rows = [["2025-05-18", 1382.0, 1390.0, 1378.0, 1380.50, 85000, 320000]]
-    for i in range(1, 21):
-        rows.append([f"2025-05-{17 - i:02d}", 1320.0, 1328.0, 1312.0, 1320.0, 80000, 315000])
-    return _make_http_response({"dataset": {"data": rows}})
-
-
-def test_fetch_evidence_full_async():
+def test_fetch_evidence_full_async(monkeypatch):
     """
-    End-to-end test of SoybeanPipeline.fetch_evidence() with all three HTTP
-    clients mocked.  No real network calls are made.
+    End-to-end test of SoybeanPipeline.fetch_evidence() with external data
+    sources mocked. No real network calls are made.
 
     Setup:
         NASS planting: 75% current vs 85% 5yr avg → PlantingDelayed=True
         NASS conditions: 50% good/exc < 55 threshold → DroughtIndex=True
         NASS yield: 51.5 < 53.2 prior year → YieldForecastDown=True
-        FAS: 1,500,000 MT current > 1,175,000 MT avg → ExportDemandHigh=True
-        Nasdaq: 1380.50 settle > 1320.0 avg → SoyPriceUp=True
+        yfinance: 1380.50 close > 1320.0 avg → SoyPriceUp=True
     """
     variables = get_variables()
     year = _MAY_18_2025.year
@@ -530,22 +462,17 @@ def test_fetch_evidence_full_async():
     nass_http_mock.get = AsyncMock(side_effect=_nass_get_side_effect(year))
     nass = USDANASSClient(api_key="", client=nass_http_mock)
 
-    # --- mock FAS client ---
-    fas_http_mock = AsyncMock()
-    fas_http_mock.get = AsyncMock(return_value=_make_fas_http_response())
-    fas = USDAFASClient(client=fas_http_mock)
-
-    # --- mock Nasdaq client ---
-    nasdaq_http_mock = AsyncMock()
-    nasdaq_http_mock.get = AsyncMock(return_value=_make_nasdaq_http_response())
-    nasdaq = NASDAQClient(api_key="test-nasdaq-key", client=nasdaq_http_mock)
+    # --- mock yfinance price client ---
+    yfinance_download_mock = MagicMock(return_value=_make_zs1_yfinance_history())
+    monkeypatch.setattr(soybean_nasdaq_client.yf, "download", yfinance_download_mock)
+    nasdaq = NASDAQClient()
 
     # --- run async pipeline ---
-    pipeline = SoybeanPipeline(nass, fas, nasdaq)
+    pipeline = SoybeanPipeline(nass, nasdaq)
     record = asyncio.run(pipeline.fetch_evidence(_MAY_18_2025))
 
     # --- structural checks ---
-    assert len(record.observed_assignments) == 5
+    assert len(record.observed_assignments) == 4
     amap = _assignment_map(record)
     assert set(amap.keys()) == {v.variable_id for v in variables.values()}
 
@@ -553,24 +480,28 @@ def test_fetch_evidence_full_async():
     assert amap[variables["PlantingDelayed"].variable_id].observed_value  is True
     assert amap[variables["DroughtIndex"].variable_id].observed_value     is True
     assert amap[variables["YieldForecastDown"].variable_id].observed_value is True
-    assert amap[variables["ExportDemandHigh"].variable_id].observed_value  is True
     assert amap[variables["SoyPriceUp"].variable_id].observed_value        is True
 
     # --- missingness / confidence ---
+    # In-season NASS and price assignments are now SOFT_OBSERVED with
+    # sigmoid-calibrated probability distributions.
     for var_name in ("PlantingDelayed", "DroughtIndex", "YieldForecastDown"):
         a = amap[variables[var_name].variable_id]
-        assert a.missingness == MissingnessType.OBSERVED
+        assert a.missingness == MissingnessType.SOFT_OBSERVED
         assert a.confidence == 1.0
+        assert a.probabilities is not None
 
-    for var_name in ("ExportDemandHigh", "SoyPriceUp"):
-        a = amap[variables[var_name].variable_id]
-        assert a.missingness == MissingnessType.OBSERVED
-        assert a.confidence == 1.0
+    a = amap[variables["SoyPriceUp"].variable_id]
+    assert a.missingness == MissingnessType.SOFT_OBSERVED
+    assert a.confidence == 1.0
+    assert a.probabilities is not None
 
     # --- call count checks ---
     # NASS: 3 calls (planting + conditions + yield), all to same URL with different params
     assert nass_http_mock.get.call_count == 3
-    # FAS: 1 call
-    assert fas_http_mock.get.call_count == 1
-    # Nasdaq: 1 call
-    assert nasdaq_http_mock.get.call_count == 1
+    # yfinance: 1 call
+    yfinance_download_mock.assert_called_once_with(
+        ticker="ZS=F",
+        period="1mo",
+        interval="1d",
+    )

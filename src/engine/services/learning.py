@@ -14,6 +14,10 @@ from typing import Any
 from uuid import UUID
 
 from ..schemas import EvidenceRecord, MissingnessType, OntologyCandidate
+from ..variable_identity import normalize_evidence_record_variable_ids
+
+_SOFT = MissingnessType.SOFT_OBSERVED
+_HARD = MissingnessType.OBSERVED
 from ..stores.parameter_store import CPTData, ParameterStore
 
 
@@ -58,12 +62,14 @@ class LearningService:
         Fully-observed records → exact update.
         Partially-observed records → forward mean-field imputation (single pass).
         """
+        batch = _normalize_batch_variable_ids(batch, candidate)
         vid_to_name = {str(v.variable_id): v.name for v in candidate.variables}
         topo_order = candidate.topological_order()
         all_names = {v.name for v in candidate.variables}
 
         for record in batch:
-            observed: dict[str, Any] = {}
+            observed: dict[str, Any] = {}        # hard (OBSERVED) assignments
+            soft_evidence: dict[str, dict[Any, float]] = {}  # SOFT_OBSERVED dists
             missing_names: list[str] = []
 
             for assignment in record.observed_assignments:
@@ -71,20 +77,31 @@ class LearningService:
                 if vid not in vid_to_name:
                     continue
                 vname = vid_to_name[vid]
-                if assignment.missingness == MissingnessType.OBSERVED:
+                if assignment.missingness == _HARD:
                     observed[vname] = assignment.observed_value
+                elif assignment.missingness == _SOFT:
+                    if assignment.probabilities:
+                        soft_evidence[vname] = dict(assignment.probabilities)
+                    else:
+                        # Probabilities absent → degrade to hard observation
+                        observed[vname] = assignment.observed_value
                 else:
+                    # MISSING / IMPUTED / REDACTED
                     missing_names.append(vname)
 
             # Variables in candidate but absent from evidence are treated as missing
             for vname in all_names:
-                if vname not in observed and vname not in missing_names:
+                if vname not in observed and vname not in soft_evidence and vname not in missing_names:
                     missing_names.append(vname)
 
-            if not missing_names:
+            if not missing_names and not soft_evidence:
+                # All variables are hard-observed → fast exact path
                 self._accumulate_fully_observed(candidate, observed)
             else:
-                self._accumulate_mean_field(candidate, observed, topo_order)
+                # Some variables are soft-observed or missing → mean-field path
+                self._accumulate_mean_field(
+                    candidate, observed, topo_order, soft_evidence or None
+                )
 
     def _accumulate_fully_observed(
         self,
@@ -114,16 +131,30 @@ class LearningService:
         candidate: OntologyCandidate,
         observed: dict[str, Any],
         topo_order: list,
+        soft_by_name: dict[str, dict[Any, float]] | None = None,
     ) -> None:
         """
         Single-pass forward imputation.
-        Computes soft distributions for unobserved variables in topological order,
-        then accumulates fractional counts.
+
+        Initialises soft_obs from hard observations and (when provided) from
+        pre-computed soft distributions for SOFT_OBSERVED variables.  Then
+        computes soft distributions for any remaining unobserved variables in
+        topological order, and accumulates fractional counts.
+
+        Parameters
+        ----------
+        soft_by_name:
+            Pre-seeded soft distributions for SOFT_OBSERVED variables.
+            These override any imputed distribution for that variable.
         """
         # Initialize soft_obs with hard observations
         soft_obs: dict[str, dict[Any, float]] = {
             vname: {val: 1.0} for vname, val in observed.items()
         }
+        # Inject soft evidence — already normalised upstream
+        if soft_by_name:
+            for vname, probs in soft_by_name.items():
+                soft_obs[vname] = dict(probs)
 
         # Forward pass: compute soft distributions for unobserved variables
         for var in topo_order:
@@ -231,8 +262,15 @@ class LearningService:
 
         Accumulates the final expected sufficient statistics into the CPT counts.
         """
+        batch = _normalize_batch_variable_ids(batch, candidate)
         vid_to_name = {str(v.variable_id): v.name for v in candidate.variables}
         all_names = {v.name for v in candidate.variables}
+
+        # TODO: accumulate_em does not yet handle SOFT_OBSERVED evidence.
+        # SOFT_OBSERVED assignments are currently treated as OBSERVED (MAP value)
+        # for the EM E-step, which is a first-order approximation.  A full
+        # treatment would propagate the soft distribution through pgmpy's
+        # VariableElimination; deferring to avoid destabilising the EM loop.
 
         # Split records into fully-observed and partially-observed
         fully_obs_list: list[dict[str, Any]] = []
@@ -246,8 +284,18 @@ class LearningService:
                 if vid not in vid_to_name:
                     continue
                 vname = vid_to_name[vid]
-                if assignment.missingness == MissingnessType.OBSERVED:
+                if assignment.missingness == _HARD:
                     observed[vname] = assignment.observed_value
+                elif assignment.missingness == _SOFT:
+                    # TODO: use fractional accumulation instead of MAP here
+                    if assignment.probabilities:
+                        map_val = max(
+                            assignment.probabilities.items(),
+                            key=lambda kv: kv[1],
+                        )[0]
+                        observed[vname] = map_val
+                    else:
+                        observed[vname] = assignment.observed_value
                 else:
                     has_missing = True
 
@@ -410,37 +458,82 @@ class LearningService:
         candidate: OntologyCandidate,
     ) -> float:
         """
-        Compute sum_{record} sum_{observed X} log P(X=x | Pa(X)).
-        Uses smoothed CPT probabilities.
+        Compute the expected log-likelihood over a batch.
+
+        Hard evidence (OBSERVED):
+            contrib = log P(X=x | Pa(X))
+
+        Soft evidence (SOFT_OBSERVED):
+            contrib = Σ_x  P_obs(X=x) * log P_model(X=x | Pa(X))
+
+        For hard parents the exact parent configuration is used.
+        For soft parents the MAP value (argmax of the observation distribution)
+        is used as a first-order approximation.  For missing parents the
+        contribution of that variable is skipped (zero contribution, no crash).
+
+        Uses Laplace-smoothed CPT probabilities.
         """
+        batch = _normalize_batch_variable_ids(batch, candidate)
         vid_to_name = {str(v.variable_id): v.name for v in candidate.variables}
         total_ll = 0.0
 
         for record in batch:
-            observed: dict[str, Any] = {}
+            # Build per-variable distributions for this record.
+            # var_dists[vname] = {value → probability}
+            var_dists: dict[str, dict[Any, float]] = {}
+
             for assignment in record.observed_assignments:
                 vid = str(assignment.variable_id)
                 if vid not in vid_to_name:
                     continue
-                if assignment.missingness == MissingnessType.OBSERVED:
-                    observed[vid_to_name[vid]] = assignment.observed_value
+                vname = vid_to_name[vid]
+                if assignment.missingness == _HARD:
+                    var_dists[vname] = {assignment.observed_value: 1.0}
+                elif assignment.missingness == _SOFT:
+                    if assignment.probabilities:
+                        var_dists[vname] = dict(assignment.probabilities)
+                    else:
+                        # Degrade to hard observation
+                        var_dists[vname] = {assignment.observed_value: 1.0}
+                # MISSING / IMPUTED / REDACTED → not added; skipped below
 
             for var in candidate.variables:
-                if var.name not in observed:
+                if var.name not in var_dists:
                     continue
                 if not self.ps.has(candidate.candidate_id, var.name):
                     continue
                 cpt_data = self.ps.get(candidate.candidate_id, var.name)
                 parent_vars = candidate.get_parents(var.variable_id)
+
                 parent_assignment: dict[str, Any] = {}
                 all_obs = True
                 for pv in parent_vars:
-                    if pv.name not in observed:
+                    if pv.name not in var_dists:
+                        # Parent missing → skip this variable's contribution
                         all_obs = False
                         break
-                    parent_assignment[pv.name] = observed[pv.name]
+                    pv_dist = var_dists[pv.name]
+                    # Use MAP value for parent (exact for hard; approx for soft)
+                    parent_assignment[pv.name] = max(
+                        pv_dist.items(), key=lambda kv: kv[1]
+                    )[0]
                 if not all_obs:
                     continue
-                total_ll += cpt_data.log_prob(observed[var.name], parent_assignment)
+
+                # Expected log-likelihood: Σ_x P_obs(x) * log P_model(x | Pa)
+                for val, p_obs in var_dists[var.name].items():
+                    if p_obs > 1e-12:
+                        total_ll += p_obs * cpt_data.log_prob(val, parent_assignment)
 
         return total_ll
+
+
+def _normalize_batch_variable_ids(
+    batch: list[EvidenceRecord],
+    candidate: OntologyCandidate,
+) -> list[EvidenceRecord]:
+    normalized = []
+    for record in batch:
+        fixed, _ = normalize_evidence_record_variable_ids(record, candidate.variables)
+        normalized.append(fixed)
+    return normalized

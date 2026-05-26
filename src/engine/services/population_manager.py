@@ -56,6 +56,9 @@ class PopulationManager:
         self._populations: dict[str, OntologyPopulation] = {}
         # Admissible edge pairs per domain: {domain_id: set of (parent_name, child_name)}
         self._admissible_edges: dict[str, set[tuple[str, str]]] = {}
+        # Mutation-cycle diagnostics from the most recent introduce_variants() call
+        # {domain_module_id: {total_attempts, dag_violations, duplicate_rejections, introduced}}
+        self._last_mutation_stats: dict[str, dict[str, int]] = {}
 
     # ------------------------------------------------------------------
     # Initialization
@@ -132,11 +135,11 @@ class PopulationManager:
                 self.pop_store.append_score_record(c.candidate_id, log_likelihood, batch_index)
                 break
 
-    def _avg_score(self, candidate: OntologyCandidate) -> float:
+    def _avg_score(self, candidate: OntologyCandidate, multiplier: float = 1.0) -> float:
         """
         BIC-corrected average log-likelihood (for fair cross-candidate comparison).
 
-        BIC = log_lik - 0.5 * k * log(N)
+        BIC = log_lik - 0.5 * k * log(N) * multiplier
         where k = total free parameters in the model.
 
         For BOOLEAN variables with boolean parents:
@@ -146,6 +149,14 @@ class PopulationManager:
         This penalizes candidates that explored extra edges even if later pruned,
         preventing warm-started variants from gaming the score by adding then
         pruning spurious edges.
+
+        Parameters
+        ----------
+        multiplier : float, default 1.0
+            Scale factor applied to the BIC penalty.  The live system always
+            uses 1.0 (strict).  The diagnostic endpoint passes 0.25 for the
+            ``bic_score_explore`` side-by-side column without affecting
+            production scoring.
         """
         n = candidate.evidence_count
         if n == 0:
@@ -159,7 +170,7 @@ class PopulationManager:
                 if e.child_variable_id == v.variable_id
             )
             k += 2 ** n_parents
-        bic_penalty = 0.5 * k * math.log(max(n, 2)) / n
+        bic_penalty = 0.5 * k * math.log(max(n, 2)) / n * multiplier
         return avg_ll - bic_penalty
 
     # ------------------------------------------------------------------
@@ -227,6 +238,10 @@ class PopulationManager:
         attempts = 0
         max_attempts = slots * 10
 
+        # Mutation-cycle diagnostics
+        _dag_violations = 0
+        _duplicate_rejections = 0
+
         while len(new_candidates) < slots and attempts < max_attempts:
             attempts += 1
             parent_cand = survivors[attempts % len(survivors)]
@@ -234,11 +249,13 @@ class PopulationManager:
             if variant is None:
                 continue
             if not variant.is_dag():
+                _dag_violations += 1
                 continue
             # Avoid duplicates
             sig = variant.edge_structure_signature()
             existing_sigs = {c.edge_structure_signature() for c in active + new_candidates}
             if sig in existing_sigs:
+                _duplicate_rejections += 1
                 continue
 
             pop.candidates.append(variant)
@@ -262,6 +279,14 @@ class PopulationManager:
                         self.ps.update_parents(variant.candidate_id, var.name, parent_names)
 
             new_candidates.append(variant)
+
+        # Record mutation diagnostics for this cycle
+        self._last_mutation_stats[domain_module_id] = {
+            "total_attempts": attempts,
+            "dag_violations": _dag_violations,
+            "duplicate_rejections": _duplicate_rejections,
+            "introduced": len(new_candidates),
+        }
 
         return new_candidates
 
@@ -364,17 +389,88 @@ class PopulationManager:
         return variant
 
     # ------------------------------------------------------------------
+    # Diagnostic accessors
+    # ------------------------------------------------------------------
+
+    def last_mutation_stats(self, domain_module_id: str) -> dict[str, int]:
+        """
+        Return mutation-cycle diagnostics from the most recent
+        ``introduce_variants()`` call for *domain_module_id*.
+
+        Returns an empty dict if no cycle has been completed yet.
+
+        Keys
+        ----
+        total_attempts
+            Total times the variant-generation loop ran (some attempts produce
+            no variant when the admissible edge set is exhausted or empty).
+        dag_violations
+            Variants rejected because adding the edge created a cycle.
+        duplicate_rejections
+            Variants rejected because an identical edge signature already
+            exists in the active population.
+        introduced
+            Variants successfully added to the population.
+        """
+        return dict(self._last_mutation_stats.get(domain_module_id, {}))
+
+    # ------------------------------------------------------------------
     # Post-cycle bookkeeping
     # ------------------------------------------------------------------
 
     def end_cycle(self, domain_module_id: str) -> dict:
         """
         Call at end of each learning cycle:
-          1. Update dominant candidate.
-          2. Save population metadata.
+          1. Detect dominant-candidate change and persist a ParadigmShiftEvent.
+          2. Update dominant candidate pointer in the population.
+          3. Save population metadata.
         Returns summary dict.
         """
         pop = self._populations[domain_module_id]
-        pop.update_dominant()
+
+        # Snapshot the previous dominant BEFORE update_dominant() changes
+        # active_candidate_id.  We need both the ID and the display name.
+        prev_id = pop.active_candidate_id
+        prev_cand = (
+            next(
+                (c for c in pop.candidates if c.candidate_id == prev_id),
+                None,
+            )
+            if prev_id is not None
+            else None
+        )
+
+        shifted = pop.update_dominant()
+
+        # Write a durable shift event whenever the dominant changes.
+        # We do NOT write on the very first cycle (prev_cand is None) because
+        # there was no previous dominant — that is initialisation, not a shift.
+        if shifted and prev_cand is not None:
+            new_dom = pop.dominant()
+            if new_dom is not None:
+                try:
+                    self.pop_store.append_shift_event(
+                        domain_module_id=domain_module_id,
+                        generation=pop.generation,
+                        prev_dominant_id=prev_cand.candidate_id,
+                        prev_dominant_name=(
+                            prev_cand.description
+                            or str(prev_cand.candidate_id)[:8]
+                        ),
+                        new_dominant_id=new_dom.candidate_id,
+                        new_dominant_name=(
+                            new_dom.description
+                            or str(new_dom.candidate_id)[:8]
+                        ),
+                        evidence_count_at_shift=new_dom.evidence_count,
+                    )
+                except Exception as exc:
+                    # Shift logging must never crash the learning loop.
+                    import logging
+                    logging.getLogger(__name__).warning(
+                        "Failed to persist paradigm-shift event for %s: %s",
+                        domain_module_id, exc,
+                    )
+
         self.pop_store.save_population(pop)
         return pop.summary()

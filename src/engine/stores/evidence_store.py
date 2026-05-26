@@ -85,7 +85,8 @@ class EvidenceStore:
     # ------------------------------------------------------------------
     def load_all(self, domain_module_id: str) -> list[EvidenceRecord]:
         cur = self._conn.execute(
-            "SELECT assignments FROM evidence_records WHERE domain_module=? ORDER BY timestamp",
+            """SELECT evidence_id, timestamp, source_type, source_ref, confidence, assignments
+               FROM evidence_records WHERE domain_module=? ORDER BY timestamp""",
             (domain_module_id,),
         )
         return [_row_to_record(row) for row in cur.fetchall()]
@@ -120,6 +121,58 @@ class EvidenceStore:
         return records
 
     # ------------------------------------------------------------------
+    def migrate_variable_ids_by_position(
+        self,
+        domain_module_id: str,
+        variables: list,
+    ) -> dict[str, int]:
+        """
+        Rewrite legacy evidence assignment UUIDs to stable IDs when safe.
+
+        Older domain modules generated variable UUIDs at import time.  If a
+        stored record has zero current-ID matches but the same assignment count
+        as the current domain variables, the domain pipeline's assignment order
+        gives us a safe compatibility path.
+        """
+        current_ids = {str(variable.variable_id) for variable in variables}
+        cur = self._conn.execute(
+            "SELECT evidence_id, assignments FROM evidence_records WHERE domain_module=?",
+            (domain_module_id,),
+        )
+        migrated_records = 0
+        migrated_assignments = 0
+        mismatched_records = 0
+        for evidence_id, assignments_json in cur.fetchall():
+            assignments = json.loads(assignments_json) if assignments_json else []
+            if len(assignments) != len(variables):
+                mismatched_records += 1
+                continue
+            matched = sum(
+                1 for assignment in assignments
+                if str(assignment.get("variable_id")) in current_ids
+            )
+            if matched == len(assignments):
+                continue
+            if matched > 0:
+                mismatched_records += 1
+                continue
+            for variable, assignment in zip(variables, assignments):
+                assignment["variable_id"] = str(variable.variable_id)
+            self._conn.execute(
+                "UPDATE evidence_records SET assignments=? WHERE evidence_id=?",
+                (json.dumps(assignments), evidence_id),
+            )
+            migrated_records += 1
+            migrated_assignments += len(assignments)
+        if migrated_records:
+            self._conn.commit()
+        return {
+            "migrated_records": migrated_records,
+            "migrated_assignments": migrated_assignments,
+            "mismatched_records": mismatched_records,
+        }
+
+    # ------------------------------------------------------------------
     def latest_timestamp(self, domain_module_id: str) -> str | None:
         """Return the ISO timestamp of the most recent record, or None."""
         cur = self._conn.execute(
@@ -140,7 +193,7 @@ class EvidenceStore:
 
 def _row_to_record(row: tuple) -> EvidenceRecord:
     from ..schemas import ObservedAssignment, MissingnessType, SourceType
-    assignments_data = json.loads(row[0])
+    assignments_data = json.loads(row[5])
     assignments = []
     for a in assignments_data:
         assignments.append(ObservedAssignment(
@@ -148,5 +201,13 @@ def _row_to_record(row: tuple) -> EvidenceRecord:
             observed_value=a["observed_value"],
             missingness=MissingnessType(a.get("missingness", "OBSERVED")),
             confidence=a.get("confidence", 1.0),
+            probabilities=a.get("probabilities"),
         ))
-    return EvidenceRecord(observed_assignments=assignments)
+    return EvidenceRecord(
+        evidence_id=UUID(row[0]),
+        timestamp=datetime.fromisoformat(row[1]),
+        observed_assignments=assignments,
+        source_type=SourceType(row[2]),
+        source_ref=row[3] or "",
+        confidence=row[4],
+    )

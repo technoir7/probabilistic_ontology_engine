@@ -32,6 +32,7 @@ from __future__ import annotations
 
 from uuid import uuid4
 
+from ...engine.variable_identity import stable_variable_id
 from ...engine.schemas import (
     CandidateStatus,
     DependencyEdge,
@@ -50,7 +51,7 @@ from ...engine.schemas import (
 
 _VARIABLE_DEFS: dict[str, Variable] = {
     name: Variable(
-        variable_id=uuid4(),
+        variable_id=stable_variable_id("natural-gas-v1", name),
         name=name,
         domain_type=DomainType.BOOLEAN,
         support=[True, False],

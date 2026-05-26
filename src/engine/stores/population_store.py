@@ -53,6 +53,25 @@ CREATE TABLE IF NOT EXISTS candidate_scores (
 )
 """
 
+_SHIFTS_TABLE = """
+CREATE TABLE IF NOT EXISTS paradigm_shifts (
+    shift_id                TEXT PRIMARY KEY,
+    domain_module_id        TEXT NOT NULL,
+    generation              INT  NOT NULL,
+    shift_ts                TEXT NOT NULL,
+    prev_dominant_id        TEXT NOT NULL,
+    prev_dominant_name      TEXT NOT NULL DEFAULT '',
+    new_dominant_id         TEXT NOT NULL,
+    new_dominant_name       TEXT NOT NULL DEFAULT '',
+    evidence_count_at_shift INT  NOT NULL DEFAULT 0
+)
+"""
+
+_SHIFTS_INDEX = """
+CREATE INDEX IF NOT EXISTS idx_paradigm_shifts_domain
+ON paradigm_shifts (domain_module_id, shift_ts ASC)
+"""
+
 
 class PopulationStore:
 
@@ -64,6 +83,8 @@ class PopulationStore:
         self._conn.execute(_POPULATIONS_TABLE)
         self._conn.execute(_CANDIDATES_TABLE)
         self._conn.execute(_SCORES_TABLE)
+        self._conn.execute(_SHIFTS_TABLE)
+        self._conn.execute(_SHIFTS_INDEX)
         self._conn.commit()
 
     # ------------------------------------------------------------------
@@ -167,3 +188,66 @@ class PopulationStore:
             ),
         )
         self._conn.commit()
+
+    # ------------------------------------------------------------------
+    # Paradigm shift events
+    # ------------------------------------------------------------------
+
+    def append_shift_event(
+        self,
+        *,
+        domain_module_id: str,
+        generation: int,
+        prev_dominant_id: UUID,
+        prev_dominant_name: str,
+        new_dominant_id: UUID,
+        new_dominant_name: str,
+        evidence_count_at_shift: int,
+    ) -> None:
+        """Persist one paradigm-shift event (dominant candidate changed)."""
+        from uuid import uuid4
+        self._conn.execute(
+            """
+            INSERT INTO paradigm_shifts
+              (shift_id, domain_module_id, generation, shift_ts,
+               prev_dominant_id, prev_dominant_name,
+               new_dominant_id, new_dominant_name,
+               evidence_count_at_shift)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                str(uuid4()),
+                domain_module_id,
+                generation,
+                datetime.utcnow().isoformat(),
+                str(prev_dominant_id),
+                prev_dominant_name,
+                str(new_dominant_id),
+                new_dominant_name,
+                evidence_count_at_shift,
+            ),
+        )
+        self._conn.commit()
+
+    def load_shift_events(self, domain_module_id: str) -> list[dict]:
+        """
+        Return all paradigm-shift events for a domain in chronological order.
+
+        Each dict contains:
+            shift_id, domain_module_id, generation, shift_ts,
+            prev_dominant_id, prev_dominant_name,
+            new_dominant_id, new_dominant_name, evidence_count_at_shift
+        """
+        cur = self._conn.execute(
+            """
+            SELECT shift_id, domain_module_id, generation, shift_ts,
+                   prev_dominant_id, prev_dominant_name,
+                   new_dominant_id, new_dominant_name,
+                   evidence_count_at_shift
+            FROM paradigm_shifts
+            WHERE domain_module_id = ?
+            ORDER BY shift_ts ASC
+            """,
+            (domain_module_id,),
+        )
+        return [dict(row) for row in cur.fetchall()]
