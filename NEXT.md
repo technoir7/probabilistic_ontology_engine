@@ -4,34 +4,84 @@ Priority order for the next development session.
 
 ---
 
-## 1. Get a new NASS API key and run ZC/ZS backfill
+## 1. Run ZC/ZS backfill with VPN active
 
-The current `NASS_API_KEY` is invalid. Get a new key from:
+NASS API access is blocked by IP, the same class of issue as FRED. ProtonVPN Switzerland resolves it.
 
-```text
-https://quickstats.nass.usda.gov
-```
-
-Then update `.env` and run corn/soybean backfills.
+Run corn and soybean backfills with ProtonVPN Switzerland active.
 
 Expected outcome:
 - ZC and ZS weekly evidence stores populate with valid NASS-derived agricultural records.
 - Evidence geometry should show weekly cadence rather than daily oversampling for new data.
-- Agriculture graphs should be evaluated after valid weekly NASS evidence exists.
+- Agriculture graphs can then be evaluated against meaningful weekly state transitions.
 
 ---
 
-## 2. Run longer MR backfills periodically to accumulate shift history
+## 2. Add sovereign debt stress domain or credit cycle domain
 
-MR has a 730-day backfill completed and FRED is working through ProtonVPN.
+Next major domain expansion should target macro-financial stress outside the current MR variable set.
 
-Keep running longer periodic MR backfills while the paradigm-shift event log matures. This gives the frontend `ParadigmShiftTimeline` more real events to display and gives the ontology population more regime transitions to score.
+Good candidates:
+- sovereign debt stress
+- credit cycle
 
-Operational note: ProtonVPN must be active for FRED API calls.
+Keep the scope narrow enough to preserve interpretability and avoid a large ontology redesign.
 
 ---
 
-## 3. TemplateRules not implemented in `_derive_admissible_edges`
+## 3. Run 1095-day MR backfill
+
+Run a 1095-day, three-year MR backfill to capture the full 2022 tightening cycle more clearly.
+
+Why:
+- 730 days gives a useful recent window.
+- 1095 days should cover a fuller tightening/regime-shift arc.
+- More shift history should make MR a better flagship demo for ontology evolution.
+
+Requirement: ProtonVPN Switzerland active and `FRED_API_KEY` valid.
+
+---
+
+## 4. Crypto domain
+
+Consider a crypto regime domain using Glassnode and/or Dune APIs.
+
+Likely focus:
+- liquidity/risk-on behavior
+- stablecoin flows
+- exchange reserves
+- funding/open interest where available
+- on-chain stress proxies
+
+---
+
+## 5. AI regime domain
+
+Consider an AI regime domain using earnings NLP, semiconductor data, and job postings.
+
+Likely focus:
+- earnings-call AI intensity
+- semiconductor demand/supply proxies
+- capex announcements
+- AI labor demand
+- equity market risk-on effects
+
+---
+
+## 6. Geopolitics domain
+
+Consider a geopolitics domain using GDELT and trade-flow data.
+
+Likely focus:
+- conflict/event intensity
+- trade disruption
+- sanctions/export controls
+- commodity/geographic exposure
+- policy uncertainty
+
+---
+
+## 7. TemplateRules not implemented in `_derive_admissible_edges`
 
 `_derive_admissible_edges` still admits broad all-pairs candidate edges.
 
@@ -44,7 +94,7 @@ Examples:
 
 ---
 
-## 4. API regression tests: `tests/integration/test_api.py` not written
+## 8. API regression tests: `tests/integration/test_api.py` not written
 
 Many endpoint-specific tests exist, but there is still no consolidated API regression file.
 
@@ -56,13 +106,14 @@ Add `tests/integration/test_api.py` covering:
 - inference query fuzzy target resolution
 - lineage cross-domain fallback
 - shifts endpoint
+- narrative snapshot export endpoint
 - evidence recent
 - debug endpoints
 - unknown domain errors
 
 ---
 
-## 5. ParameterStore: save on `learn()` only
+## 9. ParameterStore: save on `learn()` only
 
 Parameter persistence exists, but it is still tied to learn/update cycles rather than continuous flushing.
 
@@ -75,7 +126,7 @@ Potential fix:
 
 ---
 
-## 6. Inference aggregation uses raw `log_score`, not BIC-corrected score
+## 10. Inference aggregation uses raw `log_score`, not BIC-corrected score
 
 `InferenceService` still uses raw `log_score` in aggregation paths.
 
@@ -88,24 +139,8 @@ Fix direction:
 
 ---
 
-## 7. Frontend lineage timeline is still sparse
+## 11. Consider inline LLM interpretation in dashboard
 
-`ParadigmShiftTimeline` is wired to the live shifts endpoint, but history only accumulates going forward from when the event log exists.
+The current export workflow intentionally downloads prompt + JSON for offline LLM interpretation.
 
-Options:
-- accept sparsity until enough live/backfilled shifts accumulate
-- reconstruct historical shifts from score history if feasible
-- annotate UI when the shift log starts after the evidence window
-
----
-
-## 8. Consider 1095-day MR backfill
-
-Run a 1095-day, three-year MR backfill to capture the 2022 tightening cycle more fully.
-
-Why:
-- 730 days gives a useful recent window.
-- 1095 days should cover a fuller tightening/regime-shift arc.
-- More shift history should make MR a better flagship demo for ontology evolution.
-
-Requirement: ProtonVPN active and `FRED_API_KEY` valid.
+Inline interpretation could improve UX, but it adds API cost and product-surface complexity. Keep this as a later dashboard decision rather than a backend prerequisite.

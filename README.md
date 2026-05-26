@@ -1,10 +1,10 @@
 # Probabilistic Ontology Engine
 
-Backend for the Epistemic State Monitor. The engine maintains a population of competing probabilistic ontology structures, learns from evidence, tracks edge existence uncertainty, and records paradigm shifts when the dominant explanatory structure changes.
+Backend for the Epistemic State Monitor: a probabilistic ontology engine for macro-financial regime analysis. The project is framed as an epistemic analysis tool, not a prediction engine. It maintains competing probabilistic ontology structures, learns from evidence, tracks edge uncertainty, and records paradigm shifts when the dominant explanatory structure changes.
 
 ## Current Flagship Domain
 
-The flagship domain is now **macro_regime_v1** (`mr`): a weekly macro-financial regime ontology sourced from FRED.
+The flagship domain is **macro_regime_v1** (`mr`): a weekly macro-financial regime ontology sourced from FRED.
 
 It tracks eight Boolean variables:
 - `YieldCurveInverted`
@@ -26,29 +26,45 @@ FRED series used:
 - `UNRATE`
 - `NASDAQCOM`
 
-Macro regime evidence is weekly. A 730-day MR backfill has been run. Consider 1095 days if you want to capture the full 2022 tightening cycle.
+Macro regime evidence is weekly. A 730-day MR backfill has been run. A 1095-day backfill is the next useful expansion if you want to capture the full 2022 tightening cycle.
 
-**FRED access note:** FRED currently works via ProtonVPN. Keep the VPN active when running MR ingestion or backfills; the normal IP path is blocked.
+## Active Domains
 
-## Other Domains
-
+- `mr` / `macro-regime-v1`: flagship weekly macro-financial regime domain using FRED.
 - `ng` / `natural-gas-v1`: daily natural gas domain using NOAA + EIA. A 365-day backfill has been run.
-- `zc` / `corn-v1`: weekly corn domain using USDA NASS + Yahoo Finance `ZC=F`.
-- `zs` / `soybean-v1`: weekly soybean domain using USDA NASS + Yahoo Finance `ZS=F`.
+- `zc` / `corn-v1`: partial weekly corn domain using USDA NASS + Yahoo Finance `ZC=F`.
+- `zs` / `soybean-v1`: partial weekly soybean domain using USDA NASS + Yahoo Finance `ZS=F`.
 - `test-domain-v1`: synthetic domain for learning and population tests.
 
 Agriculture is weekly because evidence-geometry diagnostics showed daily corn/soy records were heavily oversampled and low-entropy.
 
-Current blocker: `NASS_API_KEY` is invalid. Get a new key from `https://quickstats.nass.usda.gov` before running ZC/ZS backfills.
+ZC/ZS are partial because NASS access is blocked on the current non-VPN IP path. The key is valid; rerun ZC/ZS backfills with ProtonVPN Switzerland active.
+
+## Narrative Export Workflow
+
+The dashboard supports offline LLM interpretation without sending data to an LLM service from the app:
+
+1. Open the dashboard and select `MR`, `NG`, `ZC`, or `ZS`.
+2. Click `[ EXPORT SNAPSHOT ]`.
+3. The browser downloads a `.txt` file containing an interpretation prompt plus structured JSON.
+4. Paste that text into an LLM session for narrative interpretation.
+
+The backend endpoint is:
+
+```text
+GET /v1/export/narrative-snapshot?domain=mr|ng|zc|zs
+```
+
+The exported regime state uses BN inference posteriors, not soft priors.
 
 ## Architecture
 
 The engine has three belief levels:
 
 ```text
-Level 3 — Structure:  population of candidate DAGs; dominant hypothesis and shifts
-Level 2 — Edges:      edge existence probabilities updated from evidence
-Level 1 — Parameters: CPT counts learned from hard, missing, and soft evidence
+Level 3 - Structure:  population of candidate DAGs; dominant hypothesis and shifts
+Level 2 - Edges:      edge existence probabilities updated from evidence
+Level 1 - Parameters: CPT counts learned from hard, missing, and soft evidence
 ```
 
 Core services:
@@ -71,18 +87,22 @@ Primary routes:
 - `GET /v1/evidence/recent?domain=...`
 - `POST /v1/ingest/trigger?domain=...`
 - `POST /v1/ingest/backfill?domain=...&days=...`
+- `GET /v1/export/narrative-snapshot?domain=...`
 - `GET /v1/debug/evidence-geometry?domain=...`
 - `GET /v1/debug/learning?domain=...`
 - `GET /v1/debug/structure?domain=...`
 
-Paradigm shifts are persisted in the `paradigm_shifts` table and exposed through `/v1/population/shifts`.
+Paradigm shifts are persisted in the `paradigm_shifts` table and exposed through `/v1/population/shifts`. The frontend timeline reads this live endpoint.
 
 ## Frontend
 
 The sibling `epistemic-monitor` frontend is wired to this API. Current UI state:
 - MR tab is first.
 - `RegimeStatePanel` is live.
+- `[ EXPORT SNAPSHOT ]` is available on MR, NG, ZC, and ZS tabs.
+- Export downloads prompt + JSON as a `.txt` file for offline LLM interpretation.
 - `ParadigmShiftTimeline` reads the live shifts endpoint.
+- Paradigm shift timeline height fix is applied.
 - Tooltips are working.
 - Header title is `PROBABILISTIC ONTOLOGY ENGINE`.
 - Subtitle is `EPISTEMIC STATE MONITOR`.
@@ -100,12 +120,12 @@ Environment:
 ```bash
 EIA_API_KEY=...
 FRED_API_KEY=...
-NASS_API_KEY=...      # replace current invalid key before ag backfills
+NASS_API_KEY=...
 EVIDENCE_SCHEDULER_ENABLED=true
 POE_DATA_DIR=.
 ```
 
-For MR ingestion/backfills, ProtonVPN must be active.
+VPN requirement: ProtonVPN Switzerland must be active for both FRED and NASS API access. The current issue is provider/IP blocking, not invalid keys.
 
 ## Tests
 
@@ -113,7 +133,7 @@ Current expected result:
 
 ```bash
 .venv/bin/python -m pytest tests/ -v
-# 183 passed
+# 204 passed
 ```
 
 See `SNAPSHOT.md` for the detailed current-state handoff and `NEXT.md` for the active priority queue.

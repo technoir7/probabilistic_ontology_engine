@@ -1,4 +1,4 @@
-# Codebase Snapshot — 2026-05-26
+# Codebase Snapshot - 2026-05-26
 
 Current handoff snapshot for `probabilistic_ontology_engine`. This is a state document, not marketing copy.
 
@@ -8,29 +8,31 @@ Current handoff snapshot for `probabilistic_ontology_engine`. This is a state do
 
 - Backend: FastAPI + Pydantic v2 probabilistic ontology engine.
 - Frontend: Next.js dashboard in sibling `epistemic-monitor`, wired to live backend APIs.
-- Current test status: **183/183 passing** with `.venv/bin/python -m pytest tests/ -v`.
+- Current test status: **204/204 passing** with `.venv/bin/python -m pytest tests/ -v`.
+- Primary use: epistemic analysis for macro-financial regime interpretation, not prediction.
 - Flagship domain: **macro_regime_v1** (`mr`) using FRED macro-financial series.
+- Active dashboard domains: MR, NG, ZC, ZS.
 - Backfill state:
   - NG: 365-day backfill completed.
   - MR: 730-day backfill completed.
-  - ZC/ZS: blocked on invalid `NASS_API_KEY`; get a new key from `https://quickstats.nass.usda.gov`.
-- FRED access: working when ProtonVPN is active. FRED currently blocks the normal IP path; keep the VPN up for MR ingestion/backfills.
+  - ZC/ZS: partial. NASS access is blocked on the normal IP path; run backfill with ProtonVPN Switzerland active.
+- API access note: FRED and NASS keys are valid, but both providers currently require ProtonVPN Switzerland because the normal IP path is blocked.
 
 ---
 
 ## Domains
 
-### `macro_regime_v1` — **current flagship**
+### `macro_regime_v1` - **current flagship**
 
 Path: `src/domains/macro_regime_v1/`
 
-Purpose: stress-test ontology evolution under macro-financial regime shifts, heterogeneous frequencies, noisy evidence, and competing causal narratives.
+Purpose: stress-test ontology evolution under macro-financial regime shifts, heterogeneous frequencies, noisy evidence, and competing causal narratives. This is the primary domain for epistemic regime analysis.
 
 Cadence: weekly. The scheduler uses prior-week data and runs weekly because WALCL is weekly, CPI/UNRATE are monthly, and daily market series are better treated as weekly regime signals than as daily ontology shocks.
 
 Data source: FRED API via `FRED_API_KEY`.
 
-Important runtime note: FRED API calls currently require ProtonVPN to be active because the non-VPN IP path is blocked.
+Important runtime note: FRED API calls currently require ProtonVPN Switzerland to be active because the non-VPN IP path is blocked.
 
 Variables, all Boolean:
 - `YieldCurveInverted` from `T10Y2Y`
@@ -81,7 +83,7 @@ Data sources:
 
 Cadence: weekly. Agriculture was moved away from daily oversampling after evidence-geometry diagnostics showed daily records compress strongly into weekly states with very low entropy.
 
-Current blocker: `NASS_API_KEY` is invalid. Get a new key from `https://quickstats.nass.usda.gov`, then run ZC backfill.
+Current state: partial. NASS API access is blocked by the current IP path, not by an invalid key. Run ZC backfill with ProtonVPN Switzerland active.
 
 ### `soybean_v1`
 
@@ -95,7 +97,7 @@ Data sources:
 
 Cadence: weekly. Same oversampling rationale as corn.
 
-Current blocker: `NASS_API_KEY` is invalid. Get a new key from `https://quickstats.nass.usda.gov`, then run ZS backfill.
+Current state: partial. NASS API access is blocked by the current IP path, not by an invalid key. Run ZS backfill with ProtonVPN Switzerland active.
 
 ### `test_domain_v1`
 
@@ -146,7 +148,7 @@ Known design limitation: parent candidate selection for variants still uses raw 
 
 ### Explore/exploit MI
 
-`ExploreExploitService._empirical_mi` is now implemented. It is no longer a stub returning `0.0`.
+`ExploreExploitService._empirical_mi` is implemented. It is no longer a stub returning `0.0`.
 
 Behavior covered by tests:
 - empty/single/constant cases return zero
@@ -178,10 +180,10 @@ Important limitation: `ParameterStore` persistence is tied to learn/update cycle
 FastAPI app: `src/engine/api/app.py`.
 
 Domain keys:
-- `mr` → `macro-regime-v1`
-- `ng` → `natural-gas-v1`
-- `zc` → `corn-v1`
-- `zs` → `soybean-v1`
+- `mr` -> `macro-regime-v1`
+- `ng` -> `natural-gas-v1`
+- `zc` -> `corn-v1`
+- `zs` -> `soybean-v1`
 
 Core endpoints:
 - `GET /health`
@@ -194,12 +196,15 @@ Core endpoints:
 - `GET /v1/evidence/recent?domain=`
 - `POST /v1/ingest/trigger?domain=`
 - `POST /v1/ingest/backfill?domain=&days=`
+- `GET /v1/export/narrative-snapshot?domain=`
 - `GET /v1/debug/entropy?domain=`
 - `GET /v1/debug/evidence-geometry?domain=`
 - `GET /v1/debug/learning?domain=`
 - `GET /v1/debug/structure?domain=`
 
-Recent fixes:
+Recent fixes and additions:
+- Narrative snapshot export is live at `GET /v1/export/narrative-snapshot?domain=`.
+- Narrative snapshot regime state now uses BN inference posteriors, not soft priors.
 - Cross-domain lineage fallback works. A candidate UUID can be resolved even if the requested/default domain is wrong.
 - Domain-level paradigm shifts are persisted in `paradigm_shifts`.
 - `GET /v1/population/shifts?domain=` returns chronological shift events.
@@ -213,14 +218,17 @@ Frontend repo: sibling `epistemic-monitor`.
 Current dashboard state:
 - MR tab added as the first tab.
 - `RegimeStatePanel` added for macro-regime state.
+- `[ EXPORT SNAPSHOT ]` button added to all four domain tabs: MR, NG, ZC, ZS.
+- Export downloads a `.txt` file containing an interpretation prompt plus JSON snapshot for offline LLM analysis.
 - `ParadigmShiftTimeline` wired to live `GET /v1/population/shifts?domain=` endpoint.
+- Paradigm shift timeline height fix applied.
 - Tooltips are working.
 - Cross-domain candidate/lineage interactions use backend fallback behavior.
 - Title changed to `PROBABILISTIC ONTOLOGY ENGINE`.
 - Subtitle changed to `EPISTEMIC STATE MONITOR`.
 
-Known limitation:
-- Lineage timeline is still sparse because persisted shift history only accumulates going forward from the event-log implementation unless historical shifts are reconstructed.
+Known frontend limitation:
+- Lineage/shift history is still sparse because persisted shift history only accumulates going forward from the event-log implementation unless historical shifts are reconstructed or longer backfills generate new transitions.
 
 ---
 
@@ -230,25 +238,50 @@ Required or useful variables:
 
 ```bash
 EIA_API_KEY=...       # required for NG
-FRED_API_KEY=...      # required for MR
-NASS_API_KEY=...      # currently invalid; replace before ZC/ZS backfill
+FRED_API_KEY=...      # required for MR; key is valid
+NASS_API_KEY=...      # required for ZC/ZS; key is valid
 POE_DATA_DIR=.        # optional data directory
 EVIDENCE_SCHEDULER_ENABLED=true|false
 ```
 
-FRED note: keep ProtonVPN active when running MR ingestion/backfills. The FRED API works through VPN; without it, requests may fail due to IP blocking.
+Access note: ProtonVPN Switzerland must be active for FRED and NASS ingestion/backfills. The current blocker is IP access, not invalid API keys.
+
+---
+
+## Current Narrative Workflow
+
+Primary interpretation loop:
+
+1. Run or open the dashboard.
+2. Select one of `MR`, `NG`, `ZC`, or `ZS`.
+3. Click `[ EXPORT SNAPSHOT ]`.
+4. Use the downloaded `.txt` file, which contains an LLM prompt plus structured JSON state.
+5. Paste the file into an offline or external LLM session for epistemic interpretation.
+
+This keeps the dashboard as an epistemic state monitor and avoids adding inline LLM costs by default.
 
 ---
 
 ## Known Limitations
 
-- `NASS_API_KEY` is invalid; ZC/ZS backfills are blocked until a new QuickStats key is issued.
+- ZC/ZS backfills are partial until NASS backfill is rerun with ProtonVPN Switzerland active.
 - TemplateRules are not implemented. `_derive_admissible_edges` still admits broad all-pairs candidate edges.
 - API regression coverage in a single `tests/integration/test_api.py` file is still not written, though many endpoint-specific integration tests exist.
 - `ParameterStore` saves on learn/update cycles only.
 - Inference aggregation still uses raw `log_score` weighting in places rather than the same BIC-corrected ranking used by population management.
 - MR shift history is limited by backfill window and by when the shift event log began.
-- Consider a 1095-day MR backfill to cover the 2022 tightening cycle more fully.
+- Inline LLM interpretation is not built into the dashboard; this remains a cost/UX consideration.
+
+---
+
+## Roadmap Domains
+
+Candidate next domains:
+- sovereign debt stress
+- credit cycle
+- crypto regime
+- AI regime
+- geopolitics
 
 ---
 
@@ -258,7 +291,7 @@ Current expected result:
 
 ```bash
 .venv/bin/python -m pytest tests/ -v
-# 183 passed
+# 204 passed
 ```
 
 Warnings remain mostly from datetime deprecations and dependencies; they are non-fatal.
