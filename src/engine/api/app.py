@@ -20,6 +20,12 @@ from ...domains.corn_v1.ingestion.nasdaq_client import NASDAQClient as CornNASDA
 from ...domains.corn_v1.ingestion.pipeline import CornPipeline
 from ...domains.corn_v1.ingestion.usda_nass_client import USDANASSClient as CornNASSClient
 from ...domains.corn_v1.scheduler import IngestionScheduler as CornScheduler
+from ...domains.ai_regime_v1.domain import AIRegimeV1
+from ...domains.ai_regime_v1.ingestion.edgar_client import EDGARClient as AIEdgarClient
+from ...domains.ai_regime_v1.ingestion.fred_client import FREDClient as AIFredClient
+from ...domains.ai_regime_v1.ingestion.pipeline import AIRegimePipeline
+from ...domains.ai_regime_v1.ingestion.yfinance_client import AIYFinanceClient
+from ...domains.ai_regime_v1.scheduler import AIRegimeScheduler
 from ...domains.macro_regime_v1.domain import MacroRegimeV1
 from ...domains.macro_regime_v1.ingestion.fred_client import FREDClient
 from ...domains.macro_regime_v1.ingestion.pipeline import MacroRegimePipeline
@@ -64,6 +70,7 @@ _DOMAIN_MAP: dict[str, tuple[str, str]] = {
     "zc": ("corn-v1", "Corn"),
     "zs": ("soybean-v1", "Soybeans"),
     "mr": ("macro-regime-v1", "Macro Regime"),
+    "ai": ("ai-regime-v1", "AI Regime"),
 }
 
 
@@ -582,7 +589,7 @@ def _ingest_lock(state: Any, domain_key: str) -> asyncio.Lock:
 def _require_domain_env(domain_key: str) -> None:
     if domain_key == "ng":
         _require_env(("EIA_API_KEY",))
-    if domain_key == "mr":
+    if domain_key in ("mr", "ai"):
         _require_env(("FRED_API_KEY",))
 
 
@@ -611,6 +618,13 @@ async def _fetch_evidence_record(domain_key: str, target_date: date) -> Evidence
         fred = FREDClient(api_key=os.environ["FRED_API_KEY"])
         async with fred:
             return await MacroRegimePipeline(fred).fetch_evidence(target_date)
+
+    if domain_key == "ai":
+        fred = AIFredClient(api_key=os.environ["FRED_API_KEY"])
+        yf_client = AIYFinanceClient()
+        edgar = AIEdgarClient()
+        async with fred, edgar, yf_client:
+            return await AIRegimePipeline(yf_client, fred, edgar).fetch_evidence(target_date)
 
     raise ValueError(f"Unknown domain '{domain_key}'")
 
@@ -720,12 +734,14 @@ async def lifespan(app: FastAPI):
     zc_engine = _build_engine(CornV1(), data_dir / "corn.db")
     zs_engine = _build_engine(SoybeanV1(), data_dir / "soybean.db")
     mr_engine = _build_engine(MacroRegimeV1(), data_dir / "macro_regime.db")
+    ai_engine = _build_engine(AIRegimeV1(), data_dir / "ai_regime.db")
 
     app.state.engines: dict[str, ProbabilisticOntologyEngine] = {
         "ng": ng_engine,
         "zc": zc_engine,
         "zs": zs_engine,
         "mr": mr_engine,
+        "ai": ai_engine,
     }
     app.state.scheduler_tasks: list[asyncio.Task] = []
     app.state.scheduler_enabled = scheduler_enabled
@@ -734,6 +750,7 @@ async def lifespan(app: FastAPI):
         "zc": asyncio.Lock(),
         "zs": asyncio.Lock(),
         "mr": asyncio.Lock(),
+        "ai": asyncio.Lock(),
     }
 
     if scheduler_enabled:
@@ -784,10 +801,22 @@ async def lifespan(app: FastAPI):
                 ),
                 name="macro-regime-evidence-scheduler",
             ))
+            # AI regime scheduler reuses FRED_API_KEY
+            ai_backfill_weeks = _env_int("AI_REGIME_BACKFILL_WEEKS", max(backfill_days // 7, 8))
+            tasks.append(asyncio.create_task(
+                _run_ai_regime_scheduler(
+                    engine=ai_engine,
+                    fred_api_key=fred_api_key,
+                    run_hour_utc=_env_int("AI_REGIME_RUN_HOUR_UTC", 9),
+                    backfill_weeks=ai_backfill_weeks,
+                    lock=app.state.ingest_locks["ai"],
+                ),
+                name="ai-regime-evidence-scheduler",
+            ))
         else:
             logger.info(
-                "FRED_API_KEY not set — macro regime scheduler disabled; "
-                "engine initialised but no data will be fetched automatically."
+                "FRED_API_KEY not set — macro regime and AI regime schedulers disabled; "
+                "engines initialised but no data will be fetched automatically."
             )
         for task in tasks:
             task.add_done_callback(_log_scheduler_exit)
@@ -1710,6 +1739,102 @@ async def _backfill_macro_if_empty(
             display_name,
         )
         targets = _weekly_backfill_dates(backfill_weeks, today)
+        for target in targets:
+            try:
+                record = await pipeline.fetch_evidence(target)
+                before = engine.evidence_store.count(domain_id)
+                engine.ingest(record)
+                after = engine.evidence_store.count(domain_id)
+                if after > before:
+                    engine.learn([record], domain_id)
+                    successes += 1
+            except Exception as exc:
+                logger.error(
+                    "%s backfill failed for %s: %s",
+                    display_name, target, exc, exc_info=True,
+                )
+            await asyncio.sleep(2.0)
+
+    logger.info("%s startup backfill complete: %d weeks ingested", display_name, successes)
+    return successes
+
+
+async def _run_ai_regime_scheduler(
+    *,
+    engine: ProbabilisticOntologyEngine,
+    fred_api_key: str,
+    run_hour_utc: int,
+    backfill_weeks: int,
+    lock: asyncio.Lock,
+) -> None:
+    """
+    Weekly AI regime ingestion scheduler.
+
+    Runs on Mondays at run_hour_utc UTC.  On startup, backfills the last
+    backfill_weeks weeks if the engine has no evidence yet.
+
+    Cadence rationale: weekly because AI regime variables evolve on a
+    weekly-to-quarterly timescale.  yfinance prices are aggregated weekly.
+    EDGAR data is cached.  FRED quarterly series are read at their latest
+    published value.
+    """
+    from ...domains.ai_regime_v1.ingestion.pipeline import _last_friday as _ai_last_friday
+
+    yf_client = AIYFinanceClient()
+    fred = AIFredClient(api_key=fred_api_key)
+    edgar = AIEdgarClient()
+    pipeline = AIRegimePipeline(yf_client, fred, edgar)
+    scheduler = AIRegimeScheduler(
+        engine=engine,
+        pipeline=pipeline,
+        run_hour_utc=run_hour_utc,
+        backfill_weeks=0,
+    )
+    await _backfill_ai_if_empty(
+        engine=engine,
+        pipeline=pipeline,
+        domain_id="ai-regime-v1",
+        display_name="AI Regime",
+        backfill_weeks=backfill_weeks,
+        lock=lock,
+    )
+    async with fred, edgar, yf_client:
+        await scheduler.run_forever()
+
+
+async def _backfill_ai_if_empty(
+    *,
+    engine: ProbabilisticOntologyEngine,
+    pipeline: AIRegimePipeline,
+    domain_id: str,
+    display_name: str,
+    backfill_weeks: int,
+    lock: asyncio.Lock,
+) -> int:
+    """Backfill AI regime if the engine has no evidence records."""
+    if backfill_weeks <= 0:
+        return 0
+
+    from ...domains.ai_regime_v1.ingestion.pipeline import _weekly_backfill_dates as _ai_backfill_dates
+
+    today = datetime.now(timezone.utc).date()
+    successes = 0
+    async with lock:
+        existing = engine.evidence_store.count(domain_id)
+        if existing > 0:
+            logger.info(
+                "Skipping %s startup backfill; evidence_count=%d",
+                display_name,
+                existing,
+            )
+            return 0
+
+        logger.info(
+            "Running %d-week %s startup backfill; evidence_count=0",
+            backfill_weeks,
+            display_name,
+        )
+        targets = _ai_backfill_dates(backfill_weeks, today)
         for target in targets:
             try:
                 record = await pipeline.fetch_evidence(target)

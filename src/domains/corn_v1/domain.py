@@ -178,10 +178,12 @@ class CornV1:
         ]
 
     def existence_thresholds(self) -> EdgeExistenceThresholdConfig:
+        # Seed ontologies are scaffolding. Expected to be displaced by
+        # data-driven structures as evidence accumulates.
         return EdgeExistenceThresholdConfig(
             prune_below=0.05,
             accept_above=0.90,
-            explore_band=(0.3, 0.7),
+            explore_band=(0.25, 0.75),
         )
 
     def initial_entities(self) -> list:
