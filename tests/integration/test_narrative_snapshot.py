@@ -11,6 +11,8 @@ TEST-NS-07 : dominant_hypothesis is present and well-formed when available
 TEST-NS-08 : competing_candidates reflects active population
 TEST-NS-09 : frontier has correct structure
 TEST-NS-10 : unknown domain returns 404
+TEST-NS-11 : regime_state probabilities come from inference, not raw evidence
+TEST-NS-12 : regime_state null when no evidence ingested
 """
 from __future__ import annotations
 
@@ -273,3 +275,100 @@ def test_ns_10_unknown_domain_returns_404(client):
     assert resp.status_code == 404, (
         f"Expected 404 for unknown domain 'xx', got {resp.status_code}"
     )
+
+
+# ---------------------------------------------------------------------------
+# TEST-NS-11 : regime_state probabilities come from inference, not raw evidence
+# ---------------------------------------------------------------------------
+
+def test_ns_11_regime_state_uses_inference(tmp_path, monkeypatch):
+    """
+    After learning on synthetic evidence, current_regime_state probabilities
+    must come from marginal inference (matching POST /v1/inference/query),
+    not from raw soft-evidence weights.
+
+    We verify:
+    1. All regime_state variables have non-null boolean_state and probability
+       once evidence exists.
+    2. The regime_state probability for each variable matches the probability
+       returned by POST /v1/inference/query for the same variable.
+    """
+    import os
+    monkeypatch.setenv("EVIDENCE_SCHEDULER_ENABLED", "false")
+    monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
+
+    with TestClient(api_app.app) as c:
+        # Ingest one day of evidence via the trigger endpoint.
+        # This requires no external API keys — the NG domain uses mock-friendly
+        # defaults when EIA/NOAA aren't reachable; we skip if it errors.
+        trigger_resp = c.post("/v1/ingest/trigger?domain=ng")
+        if trigger_resp.status_code != 200:
+            pytest.skip(
+                f"Ingestion trigger failed ({trigger_resp.status_code}); "
+                "skipping inference comparison test"
+            )
+
+        snap = c.get("/v1/export/narrative-snapshot?domain=ng").json()
+        regime = snap["current_regime_state"]
+
+        # Every variable must have real (non-null) values after evidence
+        for entry in regime:
+            assert entry["boolean_state"] is not None, (
+                f"Variable '{entry['name']}' has null boolean_state after ingestion"
+            )
+            assert entry["probability"] is not None, (
+                f"Variable '{entry['name']}' has null probability after ingestion"
+            )
+
+        # Probabilities must match POST /v1/inference/query for each variable
+        for entry in regime:
+            var_name = entry["name"]
+            inf_resp = c.post("/v1/inference/query", json={
+                "domain": "ng",
+                "target_variable": var_name,
+            })
+            assert inf_resp.status_code == 200, (
+                f"inference/query failed for {var_name}: {inf_resp.text}"
+            )
+            inf_prob = inf_resp.json()["target_probability"]
+            snap_prob = entry["probability"]
+            assert abs(snap_prob - inf_prob) < 1e-6, (
+                f"Variable '{var_name}': snapshot probability {snap_prob:.6f} "
+                f"!= inference probability {inf_prob:.6f}"
+            )
+
+
+# ---------------------------------------------------------------------------
+# TEST-NS-12 : regime_state is all-null when no evidence has been ingested
+# ---------------------------------------------------------------------------
+
+def test_ns_12_regime_state_null_without_evidence(tmp_path, monkeypatch):
+    """
+    On a fresh engine with no evidence ingested, every entry in
+    current_regime_state must have boolean_state=null and probability=null.
+    The variables must still be listed (correct count), just unobserved.
+
+    Uses its own isolated client to guarantee a cold engine regardless of what
+    other tests (e.g. NS-11's live ingest) may have written to app.state.
+    """
+    monkeypatch.setenv("EVIDENCE_SCHEDULER_ENABLED", "false")
+    monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
+
+    with TestClient(api_app.app) as c:
+        resp = c.get("/v1/export/narrative-snapshot?domain=ng")
+        assert resp.status_code == 200
+        body = resp.json()
+
+        # A fresh engine must have zero evidence records
+        assert body["metadata"]["evidence_count"] == 0, (
+            f"Expected 0 evidence records in cold-start engine, "
+            f"got {body['metadata']['evidence_count']}"
+        )
+
+        for entry in body["current_regime_state"]:
+            assert entry["boolean_state"] is None, (
+                f"Expected null boolean_state for '{entry['name']}' with no evidence"
+            )
+            assert entry["probability"] is None, (
+                f"Expected null probability for '{entry['name']}' with no evidence"
+            )

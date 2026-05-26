@@ -1366,48 +1366,40 @@ async def narrative_snapshot(domain: str = Query("ng")) -> NarrativeSnapshotOut:
         current_generation=pop.generation,
     )
 
-    # ── variable UUID → name map (from first candidate's variable list) ───────
-    id_to_name: dict[str, str] = {}
-    if pop.candidates:
-        for v in pop.candidates[0].variables:
-            id_to_name[str(v.variable_id)] = v.name
-
-    # ── current_regime_state: most recent evidence record ─────────────────────
+    # ── current_regime_state: marginal inference per variable ─────────────────
+    # Matches RegimeStatePanel: call inference for each variable and use the
+    # real posterior P(var=True) rather than raw soft-evidence weights.
     regime_state: list[NarrativeRegimeVariableOut] = []
-    recent_raw = engine.evidence_store.load_recent(domain_id, limit=1)
-    if recent_raw:
-        for assignment in recent_raw[0].get("assignments", []):
-            var_name = id_to_name.get(str(assignment.get("variable_id", "")), "unknown")
-            missingness = assignment.get("missingness", "OBSERVED")
-            if missingness in ("OBSERVED", "SOFT_OBSERVED"):
-                obs_val = assignment.get("observed_value")
-                # Normalize to Python bool
-                if obs_val is True:
-                    bool_state: Optional[bool] = True
-                elif obs_val is False:
-                    bool_state = False
-                else:
-                    bool_state = None
-                # Probability: from soft-evidence probabilities dict if present
-                probs = assignment.get("probabilities")
-                if probs and bool_state is not None:
-                    # Keys are lowercase strings "true"/"false" after JSON round-trip
-                    key = str(bool_state).lower()
-                    prob: Optional[float] = float(probs.get(key, probs.get(bool_state, 0.5)))
-                else:
-                    prob = float(assignment.get("confidence", 1.0)) if bool_state is not None else None
-            else:
-                bool_state = None
-                prob = None
+    variables = pop.candidates[0].variables if pop.candidates else []
+
+    if evidence_count == 0 or not variables:
+        # No evidence yet — list variables as unobserved so the LLM knows
+        # that scores are prior-only.
+        for v in variables:
             regime_state.append(NarrativeRegimeVariableOut(
-                name=var_name,
-                boolean_state=bool_state,
+                name=v.name, boolean_state=None, probability=None
+            ))
+    else:
+        for v in variables:
+            try:
+                iq = InferenceQuery(
+                    domain_module_id=domain_id,
+                    target_variables=[v.name],
+                    query_type=QueryType.MARGINAL,
+                    population_aggregation=PopulationAggregation.ACTIVE_ONLY,
+                )
+                raw_inf = engine.inference_service.query(iq, pop)
+                dist = raw_inf.get("posteriors", {}).get(v.name, {})
+                prob: float = float(
+                    dist.get("True", dist.get("true", next(iter(dist.values()), 0.5)))
+                )
+            except Exception:
+                prob = 0.5
+            regime_state.append(NarrativeRegimeVariableOut(
+                name=v.name,
+                boolean_state=prob > 0.5,
                 probability=prob,
             ))
-    elif pop.candidates:
-        # No evidence yet: list variables as unobserved
-        for v in pop.candidates[0].variables:
-            regime_state.append(NarrativeRegimeVariableOut(name=v.name, boolean_state=None, probability=None))
 
     # ── dominant_hypothesis ───────────────────────────────────────────────────
     dominant_out: Optional[NarrativeDominantHypothesisOut] = None
