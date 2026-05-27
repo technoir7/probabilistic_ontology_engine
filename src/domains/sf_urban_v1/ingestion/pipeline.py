@@ -313,9 +313,9 @@ def compute_snapshot(
     incidents = sfgov_data.get("incidents", [])
     businesses = sfgov_data.get("businesses", [])
 
-    info_emp = fred_data.get("SMU06418205101000001SA", [])
-    hosp_emp = fred_data.get("SMU06418207072000001SA", [])
-    total_emp = fred_data.get("SMU06418200000000001SA", [])
+    info_emp = fred_data.get("SANF806INFO", [])
+    hosp_emp = fred_data.get("SANF806LEIH", [])
+    total_emp = fred_data.get("SANF806NA", [])
 
     # TechHiringAccelerating
     sig, conf = _compute_tech_hiring(info_emp)
@@ -417,7 +417,7 @@ class SFUrbanPipeline:
             source_type=SourceType.API,
             source_ref=(
                 "SFGov:permits+incidents+businesses"
-                "|FRED:SMU06418205101000001SA+SMU06418207072000001SA+SMU06418200000000001SA"
+                "|FRED:SANF806INFO+SANF806LEIH+SANF806NA"
                 f"@week-ending-{target_date}"
             ),
             confidence=overall_conf,

@@ -29,3 +29,7 @@ packages = ["src"]
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
+addopts = "-m 'not live'"
+markers = [
+    "live: hit real external APIs — skip in CI, run manually with -m live",
+]

@@ -190,11 +190,14 @@ class SFGovClient:
         start_date = end_date - timedelta(days=lookback_days)
 
         url = f"{self.BASE_URL}/g8m3-pdis.json"
+        # Actual column names confirmed 2026-05-27: location_start_date / location_end_date
+        # (dataset uses datetime values like "2012-01-01T00:00:00.000"; Socrata SoQL
+        # requires the T00:00:00 datetime suffix in comparisons against datetime columns)
         params = {
-            "$select": "lic_start_dt,lic_end_dt",
+            "$select": "location_start_date,location_end_date",
             "$limit": "2000",
-            "$order": "lic_start_dt DESC",
-            "$where": f"lic_start_dt >= '{start_date.isoformat()}'",
+            "$order": "location_start_date DESC",
+            "$where": f"location_start_date >= '{start_date.isoformat()}T00:00:00'",
         }
 
         try:
@@ -208,10 +211,10 @@ class SFGovClient:
         result: list[SFBusinessObs] = []
         for rec in records:
             try:
-                start = _parse_date_flexible(rec.get("lic_start_dt", ""))
+                start = _parse_date_flexible(rec.get("location_start_date", ""))
                 if start is None:
                     continue
-                end_raw = rec.get("lic_end_dt", "")
+                end_raw = rec.get("location_end_date", "")
                 end = _parse_date_flexible(end_raw) if end_raw else None
                 result.append(SFBusinessObs(start_date=start, end_date=end))
             except Exception:

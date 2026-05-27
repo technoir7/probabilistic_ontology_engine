@@ -1,16 +1,19 @@
 """
 FREDClient — sf-urban-v1 FRED series fetcher.
 
-Series fetched
---------------
-SMU06418205101000001SA  SF-Oakland info employment (monthly, thousands)
-                        Used for: TechHiringAccelerating
+Series fetched (all Monthly, Seasonally Adjusted, San Francisco-Oakland-Fremont MSA)
+-------------------------------------------------------------------------------------
+SANF806INFO  All Employees: Information in SF-Oakland-Fremont, CA (thousands)
+             Used for: TechHiringAccelerating
 
-SMU06418207072000001SA  SF-Oakland leisure/hospitality employment (monthly, thousands)
-                        Used for: FootTrafficRecovering
+SANF806LEIH  All Employees: Leisure and Hospitality in SF-Oakland-Fremont, CA (thousands)
+             Used for: FootTrafficRecovering
 
-SMU06418200000000001SA  SF-Oakland total employment (monthly, thousands)
-                        Used for: PopulationFlowPositive (proxy)
+SANF806NA    All Employees: Total Nonfarm in SF-Oakland-Fremont, CA (thousands)
+             Used for: PopulationFlowPositive (proxy)
+
+Previous IDs SMU06418205101000001SA / SMU06418207072000001SA / SMU06418200000000001SA
+all returned HTTP 400 "series does not exist" — replaced 2026-05-27.
 """
 from __future__ import annotations
 
@@ -26,15 +29,15 @@ logger = logging.getLogger(__name__)
 _BASE_URL = "https://api.stlouisfed.org/fred/series/observations"
 
 FRED_SERIES: dict[str, str] = {
-    "info_emp":        "SMU06418205101000001SA",
-    "hospitality_emp": "SMU06418207072000001SA",
-    "total_emp":       "SMU06418200000000001SA",
+    "info_emp":        "SANF806INFO",   # Information sector, SF-Oakland-Fremont, Monthly SA
+    "hospitality_emp": "SANF806LEIH",  # Leisure & Hospitality, SF-Oakland-Fremont, Monthly SA
+    "total_emp":       "SANF806NA",    # Total Nonfarm, SF-Oakland-Fremont, Monthly SA
 }
 
 FETCH_LOOKBACK_DAYS: dict[str, int] = {
-    "SMU06418205101000001SA": 730,   # 2 years monthly for z-score
-    "SMU06418207072000001SA": 730,
-    "SMU06418200000000001SA": 730,
+    "SANF806INFO": 730,   # 2 years monthly for z-score
+    "SANF806LEIH": 730,
+    "SANF806NA":   730,
 }
 
 

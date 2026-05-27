@@ -1,4 +1,4 @@
-# Codebase Snapshot - 2026-05-26
+# Codebase Snapshot - 2026-05-27
 
 Current handoff snapshot for `probabilistic_ontology_engine`. This is a state document, not marketing copy.
 
@@ -8,100 +8,170 @@ Current handoff snapshot for `probabilistic_ontology_engine`. This is a state do
 
 - Backend: FastAPI + Pydantic v2 probabilistic ontology engine.
 - Frontend: Next.js dashboard in sibling `epistemic-monitor`, wired to live backend APIs.
-- Current test status: **204/204 passing** with `.venv/bin/python -m pytest tests/ -v`.
+- Current test status: **370 passed** (6 live tests deselected) with `.venv/bin/python -m pytest tests/ -v`.
+- Live tests run separately: `.venv/bin/python -m pytest tests/ -v -m live`.
 - Primary use: epistemic analysis for macro-financial regime interpretation, not prediction.
-- Flagship domain: **macro_regime_v1** (`mr`) using FRED macro-financial series.
-- Active dashboard domains: MR, NG, ZC, ZS.
-- Backfill state:
-  - NG: 365-day backfill completed.
-  - MR: 730-day backfill completed.
-  - ZC/ZS: partial. NASS access is blocked on the normal IP path; run backfill with ProtonVPN Switzerland active.
-- API access note: FRED and NASS keys are valid, but both providers currently require ProtonVPN Switzerland because the normal IP path is blocked.
+- Active dashboard domains: MR, NG, AI, SD, CC, ER, LM, CR, GP, SF (10 total).
+- Corn (`zc`) and soybean (`zs`) domains have been removed and replaced by SD, CC, ER, LM.
 
 ---
 
 ## Domains
 
-### `macro_regime_v1` - **current flagship**
+### `macro_regime_v1` — key `mr`
 
 Path: `src/domains/macro_regime_v1/`
 
-Purpose: stress-test ontology evolution under macro-financial regime shifts, heterogeneous frequencies, noisy evidence, and competing causal narratives. This is the primary domain for epistemic regime analysis.
+Purpose: weekly macro-financial regime ontology. Flagship domain for engine development.
 
-Cadence: weekly. The scheduler uses prior-week data and runs weekly because WALCL is weekly, CPI/UNRATE are monthly, and daily market series are better treated as weekly regime signals than as daily ontology shocks.
+Cadence: weekly. WALCL is weekly; CPI/UNRATE are monthly; daily market series treated as weekly regime signals.
 
-Data source: FRED API via `FRED_API_KEY`.
+Data: FRED API (`FRED_API_KEY`).
 
-Important runtime note: FRED API calls currently require ProtonVPN Switzerland to be active because the non-VPN IP path is blocked.
+Variables: `YieldCurveInverted`, `InflationShock`, `LiquidityStress`, `CreditSpreadStress`, `VolatilityShock`, `DollarStrength`, `EquityRiskOn`, `AIRiskOn`.
 
-Variables, all Boolean:
-- `YieldCurveInverted` from `T10Y2Y`
-- `InflationShock` from `CPIAUCSL`
-- `LiquidityStress` from `WALCL`
-- `CreditSpreadStress` from `BAMLH0A0HYM2`
-- `VolatilityShock` from `VIXCLS`
-- `DollarStrength` from `DEXUSEU`
-- `EquityRiskOn` from `UNRATE`
-- `AIRiskOn` from `NASDAQCOM`
+FRED series: `T10Y2Y`, `CPIAUCSL`, `WALCL`, `BAMLH0A0HYM2`, `VIXCLS`, `DEXUSEU`, `UNRATE`, `NASDAQCOM`.
 
-Seed candidates:
-- `T_monetary`: inflation-driven tightening chain
-- `T_credit`: credit-market-led regime
-- `T_ai_boom`: AI/productivity narrative dominant
-- `T_recession`: recessionary tightening cascade
-- `T_null`: volatility-only baseline
+Seed candidates: `T_monetary`, `T_credit`, `T_ai_boom`, `T_recession`, `T_null`.
 
-Implementation files:
-- `domain.py`: stable variable IDs, 8 variables, 5 seed candidates.
-- `ingestion/fred_client.py`: async FRED observations client.
-- `ingestion/pipeline.py`: derives weekly evidence and soft probabilities.
-- `scheduler.py`: weekly macro regime scheduler and backfill support.
+Backfill: 730-day MR backfill completed. A 1095-day backfill would capture the full 2022 tightening cycle.
 
-### `natural_gas_v1`
+---
+
+### `natural_gas_v1` — key `ng`
 
 Path: `src/domains/natural_gas_v1/`
 
+Cadence: daily. NG behaves meaningfully at daily cadence.
+
+Data: NOAA `api.weather.gov` for temperature; EIA API (`EIA_API_KEY`) for weekly storage and Henry Hub price.
+
 Variables: `TempAnom`, `HeatingDem`, `StorageDraw`, `PriceUp`.
 
-Data sources:
-- NOAA `api.weather.gov` for temperature observations.
-- EIA API for weekly storage and Henry Hub price.
+Backfill: 365-day backfill completed.
 
-Cadence: daily. NG behaves meaningfully at daily cadence and was not moved to weekly.
+---
 
-Backfill state: 365 days completed.
+### `ai_regime_v1` — key `ai`
 
-### `corn_v1`
+Path: `src/domains/ai_regime_v1/`
 
-Path: `src/domains/corn_v1/`
+Cadence: weekly.
 
-Variables: `PlantingDelayed`, `DroughtIndex`, `YieldForecastDown`, `CornPriceUp`.
+Data:
+- SEC EDGAR (`data.sec.gov/api/xbrl/companyfacts`) for hyperscaler capex — no API key required, but User-Agent header required.
+- yfinance: `^SOX` (Philadelphia Semiconductor Index), `QQQ`, `RSP`, `^VIX`.
+- FRED: `Y033RC1Q027SBEA` (IP investment, quarterly), `PRS85006092` (labor productivity, quarterly), `A191RL1Q225SBEA` (real GDP growth, quarterly).
 
-Data sources:
-- USDA NASS QuickStats for planting, condition, yield.
-- Yahoo Finance `ZC=F` for front-month futures.
+Variables: `SemiconductorMomentum`, `MarketConcentrationExtreme`, `HyperscalerCapexAccelerating`, `TechValuationDetached`, `IPInvestmentRising`, `LaborProductivityImproving`, `BroadEconomicLift`, `AIRiskPremiumCompressed`.
 
-Cadence: weekly. Agriculture was moved away from daily oversampling after evidence-geometry diagnostics showed daily records compress strongly into weekly states with very low entropy.
+Seed candidates: `InfrastructureBuildout`, `BubbleDetachment`, `WinnerTakeAll`, `ProductivityRegime`, `Null`.
 
-Current state: partial. NASS API access is blocked by the current IP path, not by an invalid key. Run ZC backfill with ProtonVPN Switzerland active.
+---
 
-### `soybean_v1`
+### `sovereign_debt_v1` — key `sd`
 
-Path: `src/domains/soybean_v1/`
+Path: `src/domains/sovereign_debt_v1/`
 
-Variables: `PlantingDelayed`, `DroughtIndex`, `YieldForecastDown`, `SoyPriceUp`.
+Cadence: weekly.
 
-Data sources:
-- USDA NASS QuickStats for planting, condition, yield.
-- Yahoo Finance `ZS=F` for front-month futures.
+Data: FRED (`DGS10`, `BAMLH0A0HYM2`, `DEXUSEU`, `WALCL`, `DTWEXBGS`, `GFDEBTN`, `M2SL`).
 
-Cadence: weekly. Same oversampling rationale as corn.
+Variables: `USYieldSpiking`, `SpreadWidening`, `DollarStrengthening`, `FedBalanceSheetShrinking`, `EMStressElevated`, `FiscalDominanceRisk`, `CreditDefaultRisk`, `GlobalLiquidityContracting`.
 
-Current state: partial. NASS API access is blocked by the current IP path, not by an invalid key. Run ZS backfill with ProtonVPN Switzerland active.
+Seed candidates: `USFiscalStress`, `DollarDominanceErosion`, `EMContagion`, `GlobalLiquidityCrunch`, `Null`.
+
+---
+
+### `credit_cycle_v1` — key `cc`
+
+Path: `src/domains/credit_cycle_v1/`
+
+Cadence: weekly.
+
+Data: FRED (`BAMLH0A0HYM2`, `DRTSCILM`, `TOTCI`, `BAMLC0A0CM`, `DGS5`).
+
+Variables: `HYSpreadElevated`, `LeveragedLoanStress`, `CorporateDefaultRisk`, `CreditImpulseNegative`, `BankLendingTightening`, `InvestmentGradeSpread`, `HighYieldIssuanceFalling`, `RefinancingStress`.
+
+Seed candidates: `MonetaryTightening`, `DefaultCycle`, `LiquidityWithdrawal`, `CreditNormalization`, `Null`.
+
+---
+
+### `energy_regime_v1` — key `er`
+
+Path: `src/domains/energy_regime_v1/`
+
+Cadence: weekly.
+
+Data: yfinance (`CL=F`, `NG=F`, `XLE`, `ICLN`) + FRED.
+
+Variables: `OilPriceSurge`, `NatGasPriceSurge`, `EnergyEquityMomentum`, `OPECSupplyConstraint`, `RenewablesDisplacement`, `EnergyInflationPersistent`, `GeopoliticalRiskElevated`, `DemandDestructionRisk`.
+
+Seed candidates: `SupplyShock`, `DemandDriven`, `GeopoliticalPremium`, `RenewablesTransition`, `Null`.
+
+---
+
+### `labor_market_v1` — key `lm`
+
+Path: `src/domains/labor_market_v1/`
+
+Cadence: weekly.
+
+Data: FRED (`UNRATE`, `CES0500000003`, `JTSJOL`, `ICSA`, `PRS85006092`, `CIVPART`, `CPIAUCSL`).
+
+Variables: `UnemploymentRising`, `WageInflationPersistent`, `JobOpeningsFalling`, `LayoffCycleBeginning`, `LaborProductivityWeak`, `ParticipationRateFalling`, `RealWageGrowthPositive`, `TightLaborMarket`.
+
+Seed candidates: `LaborTightening`, `LayoffCycle`, `StructuralShift`, `WagePriceSpiral`, `Null`.
+
+---
+
+### `crypto_regime_v1` — key `cr`
+
+Path: `src/domains/crypto_regime_v1/`
+
+Cadence: weekly.
+
+Data: CoinGecko (`/coins/bitcoin/market_chart`, `/coins/ethereum/market_chart`, `/global` for BTC dominance) + yfinance (`BTC-USD`, `QQQ`, `GLD`) + FRED. No API key required for CoinGecko public endpoints.
+
+Variables: `BTCMomentumPositive`, `AltcoinSeasonActive`, `OnChainActivityElevated`, `StablecoinFlowPositive`, `CryptoVolatilityShock`, `RiskAssetCorrelation`, `NarrativeMomentum`, `DollarDebasementNarrative`.
+
+Seed candidates: `LiquidityOverflow`, `DigitalGold`, `SpeculativeMania`, `UtilityAdoption`, `Null`.
+
+---
+
+### `geopolitics_v1` — key `gp`
+
+Path: `src/domains/geopolitics_v1/`
+
+Cadence: weekly.
+
+Data: GDELT (`api.gdeltproject.org/api/v2/doc/doc`) + FRED (`DCOILWTICO`, `PPIACO`, `DTWEXBGS`, `INDPRO`). No API key required for GDELT.
+
+Variables: `ConflictIntensityElevated`, `TradeDisruptionRisk`, `SanctionsPressureElevated`, `DiplomaticTensionHigh`, `SupplyChainStress`, `CurrencyWarSignal`, `EnergyWeaponizationRisk`, `GlobalTradeVolumeWeak`.
+
+Seed candidates: `GreatPowerCompetition`, `ResourceConflict`, `Deglobalization`, `RegionalInstability`, `Null`.
+
+---
+
+### `sf_urban_v1` — key `sf`
+
+Path: `src/domains/sf_urban_v1/`
+
+Cadence: weekly.
+
+Data:
+- FRED (monthly, seasonally adjusted, SF-Oakland-Fremont MSA): `SANF806INFO` (information sector employment), `SANF806LEIH` (leisure and hospitality), `SANF806NA` (total nonfarm). Previous series IDs (`SMU0641820*`) were invalid and returned HTTP 400; replaced 2026-05-27.
+- SF Open Data (Socrata): building permits (`i98e-djp9.json`), police incidents (`wg3w-h783.json`), business registrations (`g8m3-pdis.json`). The business registrations endpoint was broken by wrong column names (`lic_start_dt` / `lic_end_dt` do not exist); corrected to `location_start_date` / `location_end_date` with ISO datetime filter syntax.
+
+Variables: `TechHiringAccelerating`, `OfficeVacancyFalling`, `RetailClosureElevated`, `PermitActivityRising`, `CrimeIndexElevated`, `StartupFormationRising`, `FootTrafficRecovering`, `PopulationFlowPositive`.
+
+Seed candidates: `TechRebound`, `StructuralDecline`, `BifurcatedRecovery`, `BottomFormation`, `Null`.
+
+---
 
 ### `test_domain_v1`
 
-Synthetic test domain for Level 1-3 learning, edge existence, population management, lineage, and paradigm-shift behavior.
+Synthetic test domain for Level 1–3 learning, edge existence, population management, lineage, and paradigm-shift behavior.
 
 ---
 
@@ -115,63 +185,35 @@ Synthetic test domain for Level 1-3 learning, edge existence, population managem
 stable_variable_id(domain_module_id, variable_name)
 ```
 
-Variable IDs are derived from domain name + variable name. This fixes the old restart/import mismatch where persisted evidence UUIDs did not match freshly imported domain variable UUIDs.
+Variable IDs are derived from domain name + variable name, preserving evidence continuity across restarts.
 
 Compatibility:
 - `EvidenceStore.migrate_variable_ids_by_position()` rewrites legacy records when assignment order and shape match current variables.
-- Learning and evidence diagnostics also normalize legacy evidence when possible.
 - `GET /v1/debug/evidence-geometry` reports `variable_id_match_ratio`, mismatch counts, and fallback usage.
 
 ### Learning
 
-`LearningService` supports:
-- hard observations
-- missing observations
-- soft evidence through `MissingnessType.SOFT_OBSERVED`
-- log-likelihood scoring
-- compatibility normalization for legacy evidence IDs
-
-The core learning logic has not been redesigned.
+`LearningService` supports hard observations, missing observations, and soft evidence via `MissingnessType.SOFT_OBSERVED`. Log-likelihood scoring and compatibility normalization for legacy evidence IDs are implemented.
 
 ### Edge and population evolution
 
-`EdgeExistenceService` still updates edge existence using BIC-style with-vs-without-parent comparisons.
+`EdgeExistenceService` updates edge existence with BIC-style with-vs-without-parent comparisons.
 
-`PopulationManager`:
-- scores active candidates
-- prunes low scorers
-- introduces add/remove variants
-- tracks dominant candidate changes
-- persists domain-level paradigm shift events
+`PopulationManager`: scores active candidates, prunes low scorers, introduces add/remove variants, tracks dominant candidate changes, persists domain-level paradigm shift events.
 
-Known design limitation: parent candidate selection for variants still uses raw `log_score`, while some ranking uses BIC-corrected average score.
+Known design limitation: parent candidate selection for variants still uses raw `log_score`; some ranking uses BIC-corrected average score.
 
 ### Explore/exploit MI
 
-`ExploreExploitService._empirical_mi` is implemented. It is no longer a stub returning `0.0`.
-
-Behavior covered by tests:
-- empty/single/constant cases return zero
-- independent variables return near zero
-- perfectly correlated Booleans return positive MI, including 1 bit for 50/50 split
-- symmetry
-- missing records skipped
-- soft observations handled by MAP value
-- multi-valued variables supported
+`ExploreExploitService._empirical_mi` is implemented. Behavior is covered by tests.
 
 Integration into variant proposal remains limited; the service is implemented and tested, but not yet a major driver of ontology evolution.
 
 ### Persistence
 
-SQLite stores:
-- `evidence_records`
-- `ontology_populations`
-- `ontology_candidates`
-- score history
-- `paradigm_shifts`
-- parameter tables for CPT counts
+SQLite stores: `evidence_records`, `ontology_populations`, `ontology_candidates`, score history, `paradigm_shifts`, parameter tables for CPT counts.
 
-Important limitation: `ParameterStore` persistence is tied to learn/update cycles. It is not a continuously flushed WAL-style parameter stream.
+`ParameterStore` persistence is tied to learn/update cycles, not continuously flushed.
 
 ---
 
@@ -180,10 +222,16 @@ Important limitation: `ParameterStore` persistence is tied to learn/update cycle
 FastAPI app: `src/engine/api/app.py`.
 
 Domain keys:
-- `mr` -> `macro-regime-v1`
-- `ng` -> `natural-gas-v1`
-- `zc` -> `corn-v1`
-- `zs` -> `soybean-v1`
+- `mr` → `macro-regime-v1`
+- `ng` → `natural-gas-v1`
+- `ai` → `ai-regime-v1`
+- `sd` → `sovereign-debt-v1`
+- `cc` → `credit-cycle-v1`
+- `er` → `energy-regime-v1`
+- `lm` → `labor-market-v1`
+- `cr` → `crypto-regime-v1`
+- `gp` → `geopolitics-v1`
+- `sf` → `sf-urban-v1`
 
 Core endpoints:
 - `GET /health`
@@ -202,13 +250,6 @@ Core endpoints:
 - `GET /v1/debug/learning?domain=`
 - `GET /v1/debug/structure?domain=`
 
-Recent fixes and additions:
-- Narrative snapshot export is live at `GET /v1/export/narrative-snapshot?domain=`.
-- Narrative snapshot regime state now uses BN inference posteriors, not soft priors.
-- Cross-domain lineage fallback works. A candidate UUID can be resolved even if the requested/default domain is wrong.
-- Domain-level paradigm shifts are persisted in `paradigm_shifts`.
-- `GET /v1/population/shifts?domain=` returns chronological shift events.
-
 ---
 
 ## Frontend State
@@ -216,82 +257,66 @@ Recent fixes and additions:
 Frontend repo: sibling `epistemic-monitor`.
 
 Current dashboard state:
-- MR tab added as the first tab.
-- `RegimeStatePanel` added for macro-regime state.
-- `[ EXPORT SNAPSHOT ]` button added to all four domain tabs: MR, NG, ZC, ZS.
-- Export downloads a `.txt` file containing an interpretation prompt plus JSON snapshot for offline LLM analysis.
+- All 10 domain tabs are active: MR, NG, AI, SD, CC, ER, LM, CR, GP, SF.
+- `RegimeStatePanel` for macro-regime state.
+- `[ EXPORT SNAPSHOT ]` on all domain tabs.
+- Export downloads a `.txt` file containing an interpretation prompt plus JSON for offline LLM analysis.
 - `ParadigmShiftTimeline` wired to live `GET /v1/population/shifts?domain=` endpoint.
-- Paradigm shift timeline height fix applied.
-- Tooltips are working.
-- Cross-domain candidate/lineage interactions use backend fallback behavior.
-- Title changed to `PROBABILISTIC ONTOLOGY ENGINE`.
-- Subtitle changed to `EPISTEMIC STATE MONITOR`.
+- Title: `PROBABILISTIC ONTOLOGY ENGINE`. Subtitle: `EPISTEMIC STATE MONITOR`.
 
-Known frontend limitation:
-- Lineage/shift history is still sparse because persisted shift history only accumulates going forward from the event-log implementation unless historical shifts are reconstructed or longer backfills generate new transitions.
+Known frontend limitation: lineage/shift history is sparse until longer backfills accumulate more transitions.
 
 ---
 
 ## Environment
 
-Required or useful variables:
+Required variables:
 
 ```bash
-EIA_API_KEY=...       # required for NG
-FRED_API_KEY=...      # required for MR; key is valid
-NASS_API_KEY=...      # required for ZC/ZS; key is valid
-POE_DATA_DIR=.        # optional data directory
+FRED_API_KEY=...     # required for MR, AI, SD, CC, ER, LM, CR, GP, SF
+EIA_API_KEY=...      # required for NG
+POE_DATA_DIR=.       # optional data directory
 EVIDENCE_SCHEDULER_ENABLED=true|false
 ```
 
-Access note: ProtonVPN Switzerland must be active for FRED and NASS ingestion/backfills. The current blocker is IP access, not invalid API keys.
+No API key required: SF Open Data (Socrata), CoinGecko (public endpoints), GDELT.
+
+SEC EDGAR requires a `User-Agent` header identifying the application; no API key.
 
 ---
 
-## Current Narrative Workflow
+## Live Tests
 
-Primary interpretation loop:
+Live integration tests (hitting real external APIs) are marked `@pytest.mark.live` and excluded from the standard run:
 
-1. Run or open the dashboard.
-2. Select one of `MR`, `NG`, `ZC`, or `ZS`.
-3. Click `[ EXPORT SNAPSHOT ]`.
-4. Use the downloaded `.txt` file, which contains an LLM prompt plus structured JSON state.
-5. Paste the file into an offline or external LLM session for epistemic interpretation.
+```bash
+# Standard run (live tests excluded automatically):
+.venv/bin/python -m pytest tests/ -v
 
-This keeps the dashboard as an epistemic state monitor and avoids adding inline LLM costs by default.
+# Live tests only:
+.venv/bin/python -m pytest tests/ -v -m live
+```
+
+Current live test coverage: `tests/integration/test_sf_urban_live.py` (6 tests — FRED series SANF806INFO/SANF806LEIH/SANF806NA + SF Gov permits/crime/businesses).
 
 ---
 
 ## Known Limitations
 
-- ZC/ZS backfills are partial until NASS backfill is rerun with ProtonVPN Switzerland active.
-- TemplateRules are not implemented. `_derive_admissible_edges` still admits broad all-pairs candidate edges.
-- API regression coverage in a single `tests/integration/test_api.py` file is still not written, though many endpoint-specific integration tests exist.
+- `TemplateRules` not implemented in `_derive_admissible_edges` — still admits broad all-pairs candidate edges.
+- No consolidated API regression file (`tests/integration/test_api.py` not written).
 - `ParameterStore` saves on learn/update cycles only.
-- Inference aggregation still uses raw `log_score` weighting in places rather than the same BIC-corrected ranking used by population management.
-- MR shift history is limited by backfill window and by when the shift event log began.
-- Inline LLM interpretation is not built into the dashboard; this remains a cost/UX consideration.
-
----
-
-## Roadmap Domains
-
-Candidate next domains:
-- sovereign debt stress
-- credit cycle
-- crypto regime
-- AI regime
-- geopolitics
+- Inference aggregation uses raw `log_score` in places rather than BIC-corrected ranking.
+- Shift history is limited by backfill window and by when the shift event log began.
+- Inline LLM interpretation is not built into the dashboard; offline export workflow is the current path.
 
 ---
 
 ## Current Test Result
 
-Current expected result:
-
 ```bash
 .venv/bin/python -m pytest tests/ -v
-# 204 passed
+# 370 passed, 6 deselected (live)
 ```
 
-Warnings remain mostly from datetime deprecations and dependencies; they are non-fatal.
+Warnings are non-fatal datetime deprecations from dependencies.

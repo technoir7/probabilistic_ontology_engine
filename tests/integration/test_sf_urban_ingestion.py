@@ -175,11 +175,9 @@ def _make_full_data(
     }
 
     fred_data = {
-        "SMU06418205101000001SA": _make_fred_obs(
-            "SMU06418205101000001SA", 24, 200.0, tech_emp_trend
-        ),
-        "SMU06418207072000001SA": _make_fred_obs("SMU06418207072000001SA", 24, 150.0),
-        "SMU06418200000000001SA": _make_fred_obs("SMU06418200000000001SA", 24, 1200.0),
+        "SANF806INFO": _make_fred_obs("SANF806INFO", 24, 200.0, tech_emp_trend),
+        "SANF806LEIH": _make_fred_obs("SANF806LEIH", 24, 150.0),
+        "SANF806NA":   _make_fred_obs("SANF806NA",   24, 1200.0),
     }
     return sfgov_data, fred_data
 
@@ -455,12 +453,12 @@ def test_rising_tech_employment_drives_signal_high():
         else:
             # 12-24 months ago: lower baseline with variance
             val = 190.0 + (i % 5) * 3.0  # 190, 193, 196, 199, 202...
-        info_emp.append(FREDObservation(obs_date=d, value=val, series_id="SMU06418205101000001SA"))
+        info_emp.append(FREDObservation(obs_date=d, value=val, series_id="SANF806INFO"))
 
     fred_data = {
-        "SMU06418205101000001SA": info_emp,
-        "SMU06418207072000001SA": _make_fred_obs("SMU06418207072000001SA", 24, 150.0),
-        "SMU06418200000000001SA": _make_fred_obs("SMU06418200000000001SA", 24, 1200.0),
+        "SANF806INFO": info_emp,
+        "SANF806LEIH": _make_fred_obs("SANF806LEIH", 24, 150.0),
+        "SANF806NA":   _make_fred_obs("SANF806NA",   24, 1200.0),
     }
     sfgov_data = {
         "permits": _make_permits(),
@@ -485,12 +483,12 @@ def test_falling_tech_employment_drives_signal_low():
         d = _TARGET_DATE.replace(day=1) - timedelta(days=i * 30)
         # Values decreasing over time (newest = lowest)
         val = 200.0 - (24 - i) * 2.0  # 200 at oldest, 152 at newest
-        info_emp.append(FREDObservation(obs_date=d, value=max(val, 50.0), series_id="SMU06418205101000001SA"))
+        info_emp.append(FREDObservation(obs_date=d, value=max(val, 50.0), series_id="SANF806INFO"))
 
     fred_data = {
-        "SMU06418205101000001SA": info_emp,
-        "SMU06418207072000001SA": _make_fred_obs("SMU06418207072000001SA", 24, 150.0),
-        "SMU06418200000000001SA": _make_fred_obs("SMU06418200000000001SA", 24, 1200.0),
+        "SANF806INFO": info_emp,
+        "SANF806LEIH": _make_fred_obs("SANF806LEIH", 24, 150.0),
+        "SANF806NA":   _make_fred_obs("SANF806NA",   24, 1200.0),
     }
     sfgov_data = {
         "permits": _make_permits(),
