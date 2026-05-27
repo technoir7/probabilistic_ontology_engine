@@ -1,7 +1,7 @@
 """
 Tests for GET /v1/export/narrative-snapshot.
 
-TEST-NS-01 : endpoint returns 200 for all active domains (ng, zc, zs, mr)
+TEST-NS-01 : endpoint returns 200 for all active domains (ng, sd, cc, mr)
 TEST-NS-02 : response contains all required top-level keys
 TEST-NS-03 : current_regime_state has correct variable count per domain
 TEST-NS-04 : interpretation_hints is a non-empty list of strings
@@ -24,15 +24,15 @@ from src.engine.api import app as api_app
 # Expected variable counts per domain short key
 _DOMAIN_VAR_COUNTS: dict[str, int] = {
     "ng": 4,   # TempAnom, HeatingDem, StorageDraw, PriceUp
-    "zc": 4,   # PlantingDelayed, DroughtIndex, YieldForecastDown, CornPriceUp
-    "zs": 4,   # PlantingDelayed, DroughtIndex, YieldForecastDown, SoyPriceUp
+    "sd": 8,   # USYieldSpiking … GlobalLiquidityContracting
+    "cc": 8,   # HYSpreadElevated … RefinancingStress
     "mr": 8,   # YieldCurveInverted … AIRiskOn
 }
 
 _DOMAIN_MODULE_IDS: dict[str, str] = {
     "ng": "natural-gas-v1",
-    "zc": "corn-v1",
-    "zs": "soybean-v1",
+    "sd": "sovereign-debt-v1",
+    "cc": "credit-cycle-v1",
     "mr": "macro-regime-v1",
 }
 
@@ -76,7 +76,7 @@ def client(tmp_path_factory):
 # TEST-NS-01 : 200 for all domains
 # ---------------------------------------------------------------------------
 
-@pytest.mark.parametrize("domain", ["ng", "zc", "zs", "mr"])
+@pytest.mark.parametrize("domain", ["ng", "sd", "cc", "mr"])
 def test_ns_01_returns_200_all_domains(client, domain):
     """Snapshot endpoint must respond 200 for every active domain."""
     resp = client.get(f"/v1/export/narrative-snapshot?domain={domain}")
@@ -136,7 +136,7 @@ def test_ns_04_interpretation_hints_nonempty(client):
 # TEST-NS-05 : metadata fields have correct types and domain values
 # ---------------------------------------------------------------------------
 
-@pytest.mark.parametrize("domain", ["ng", "zc", "zs", "mr"])
+@pytest.mark.parametrize("domain", ["ng", "sd", "cc", "mr"])
 def test_ns_05_metadata_fields(client, domain):
     """metadata must contain correct domain_module_id and integer types."""
     resp = client.get(f"/v1/export/narrative-snapshot?domain={domain}")

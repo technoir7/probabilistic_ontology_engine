@@ -15,11 +15,6 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from ...domains.corn_v1.domain import CornV1
-from ...domains.corn_v1.ingestion.nasdaq_client import NASDAQClient as CornNASDAQClient
-from ...domains.corn_v1.ingestion.pipeline import CornPipeline
-from ...domains.corn_v1.ingestion.usda_nass_client import USDANASSClient as CornNASSClient
-from ...domains.corn_v1.scheduler import IngestionScheduler as CornScheduler
 from ...domains.ai_regime_v1.domain import AIRegimeV1
 from ...domains.ai_regime_v1.ingestion.edgar_client import EDGARClient as AIEdgarClient
 from ...domains.ai_regime_v1.ingestion.fred_client import FREDClient as AIFredClient
@@ -35,11 +30,23 @@ from ...domains.natural_gas_v1.ingestion.eia_client import EIAClient
 from ...domains.natural_gas_v1.ingestion.noaa_client import NOAAClient
 from ...domains.natural_gas_v1.ingestion.pipeline import NaturalGasPipeline
 from ...domains.natural_gas_v1.scheduler import IngestionScheduler as NaturalGasScheduler
-from ...domains.soybean_v1.domain import SoybeanV1
-from ...domains.soybean_v1.ingestion.nasdaq_client import NASDAQClient as SoyNASDAQClient
-from ...domains.soybean_v1.ingestion.pipeline import SoybeanPipeline
-from ...domains.soybean_v1.ingestion.usda_nass_client import USDANASSClient as SoyNASSClient
-from ...domains.soybean_v1.scheduler import IngestionScheduler as SoybeanScheduler
+from ...domains.sovereign_debt_v1.domain import SovereignDebtV1
+from ...domains.sovereign_debt_v1.ingestion.fred_client import FREDClient as SDFredClient
+from ...domains.sovereign_debt_v1.ingestion.pipeline import SovereignDebtPipeline
+from ...domains.sovereign_debt_v1.scheduler import SovereignDebtScheduler
+from ...domains.credit_cycle_v1.domain import CreditCycleV1
+from ...domains.credit_cycle_v1.ingestion.fred_client import FREDClient as CCFredClient
+from ...domains.credit_cycle_v1.ingestion.pipeline import CreditCyclePipeline
+from ...domains.credit_cycle_v1.scheduler import CreditCycleScheduler
+from ...domains.energy_regime_v1.domain import EnergyRegimeV1
+from ...domains.energy_regime_v1.ingestion.fred_client import FREDClient as ERFredClient
+from ...domains.energy_regime_v1.ingestion.yfinance_client import EnergyYFinanceClient
+from ...domains.energy_regime_v1.ingestion.pipeline import EnergyRegimePipeline
+from ...domains.energy_regime_v1.scheduler import EnergyRegimeScheduler
+from ...domains.labor_market_v1.domain import LaborMarketV1
+from ...domains.labor_market_v1.ingestion.fred_client import FREDClient as LMFredClient
+from ...domains.labor_market_v1.ingestion.pipeline import LaborMarketPipeline
+from ...domains.labor_market_v1.scheduler import LaborMarketScheduler
 from ...domains.agriculture_weekly import (
     is_agriculture_domain,
     is_duplicate_recent_state,
@@ -66,11 +73,13 @@ REQUIRED_ENV_VARS = ("EIA_API_KEY",)
 
 # Short name → (domain_module_id, display_name)
 _DOMAIN_MAP: dict[str, tuple[str, str]] = {
-    "ng": ("natural-gas-v1", "Natural Gas"),
-    "zc": ("corn-v1", "Corn"),
-    "zs": ("soybean-v1", "Soybeans"),
-    "mr": ("macro-regime-v1", "Macro Regime"),
-    "ai": ("ai-regime-v1", "AI Regime"),
+    "ng": ("natural-gas-v1",   "Natural Gas"),
+    "mr": ("macro-regime-v1",  "Macro Regime"),
+    "ai": ("ai-regime-v1",     "AI Regime"),
+    "sd": ("sovereign-debt-v1", "Sovereign Debt"),
+    "cc": ("credit-cycle-v1",  "Credit Cycle"),
+    "er": ("energy-regime-v1", "Energy Regime"),
+    "lm": ("labor-market-v1",  "Labor Market"),
 }
 
 
@@ -589,7 +598,7 @@ def _ingest_lock(state: Any, domain_key: str) -> asyncio.Lock:
 def _require_domain_env(domain_key: str) -> None:
     if domain_key == "ng":
         _require_env(("EIA_API_KEY",))
-    if domain_key in ("mr", "ai"):
+    if domain_key in ("mr", "ai", "sd", "cc", "er", "lm"):
         _require_env(("FRED_API_KEY",))
 
 
@@ -602,18 +611,6 @@ async def _fetch_evidence_record(domain_key: str, target_date: date) -> Evidence
         async with noaa, eia:
             return await NaturalGasPipeline(noaa, eia).fetch_evidence(target_date)
 
-    if domain_key == "zc":
-        nass = CornNASSClient(api_key=os.environ.get("NASS_API_KEY", ""))
-        nasdaq = CornNASDAQClient()
-        async with nass, nasdaq:
-            return await CornPipeline(nass, nasdaq).fetch_evidence(target_date)
-
-    if domain_key == "zs":
-        nass = SoyNASSClient(api_key=os.environ.get("NASS_API_KEY", ""))
-        nasdaq = SoyNASDAQClient()
-        async with nass, nasdaq:
-            return await SoybeanPipeline(nass, nasdaq).fetch_evidence(target_date)
-
     if domain_key == "mr":
         fred = FREDClient(api_key=os.environ["FRED_API_KEY"])
         async with fred:
@@ -625,6 +622,27 @@ async def _fetch_evidence_record(domain_key: str, target_date: date) -> Evidence
         edgar = AIEdgarClient()
         async with fred, edgar, yf_client:
             return await AIRegimePipeline(yf_client, fred, edgar).fetch_evidence(target_date)
+
+    if domain_key == "sd":
+        fred = SDFredClient(api_key=os.environ["FRED_API_KEY"])
+        async with fred:
+            return await SovereignDebtPipeline(fred).fetch_evidence(target_date)
+
+    if domain_key == "cc":
+        fred = CCFredClient(api_key=os.environ["FRED_API_KEY"])
+        async with fred:
+            return await CreditCyclePipeline(fred).fetch_evidence(target_date)
+
+    if domain_key == "er":
+        fred = ERFredClient(api_key=os.environ["FRED_API_KEY"])
+        yf_client = EnergyYFinanceClient()
+        async with fred, yf_client:
+            return await EnergyRegimePipeline(fred, yf_client).fetch_evidence(target_date)
+
+    if domain_key == "lm":
+        fred = LMFredClient(api_key=os.environ["FRED_API_KEY"])
+        async with fred:
+            return await LaborMarketPipeline(fred).fetch_evidence(target_date)
 
     raise ValueError(f"Unknown domain '{domain_key}'")
 
@@ -731,26 +749,32 @@ async def lifespan(app: FastAPI):
 
     # Always build shared engines so API routes work regardless of scheduler state
     ng_engine = _build_engine(NaturalGasV1(), data_dir / "natural_gas.db")
-    zc_engine = _build_engine(CornV1(), data_dir / "corn.db")
-    zs_engine = _build_engine(SoybeanV1(), data_dir / "soybean.db")
     mr_engine = _build_engine(MacroRegimeV1(), data_dir / "macro_regime.db")
     ai_engine = _build_engine(AIRegimeV1(), data_dir / "ai_regime.db")
+    sd_engine = _build_engine(SovereignDebtV1(), data_dir / "sovereign_debt.db")
+    cc_engine = _build_engine(CreditCycleV1(), data_dir / "credit_cycle.db")
+    er_engine = _build_engine(EnergyRegimeV1(), data_dir / "energy_regime.db")
+    lm_engine = _build_engine(LaborMarketV1(), data_dir / "labor_market.db")
 
     app.state.engines: dict[str, ProbabilisticOntologyEngine] = {
         "ng": ng_engine,
-        "zc": zc_engine,
-        "zs": zs_engine,
         "mr": mr_engine,
         "ai": ai_engine,
+        "sd": sd_engine,
+        "cc": cc_engine,
+        "er": er_engine,
+        "lm": lm_engine,
     }
     app.state.scheduler_tasks: list[asyncio.Task] = []
     app.state.scheduler_enabled = scheduler_enabled
     app.state.ingest_locks: dict[str, asyncio.Lock] = {
         "ng": asyncio.Lock(),
-        "zc": asyncio.Lock(),
-        "zs": asyncio.Lock(),
         "mr": asyncio.Lock(),
         "ai": asyncio.Lock(),
+        "sd": asyncio.Lock(),
+        "cc": asyncio.Lock(),
+        "er": asyncio.Lock(),
+        "lm": asyncio.Lock(),
     }
 
     if scheduler_enabled:
@@ -766,28 +790,8 @@ async def lifespan(app: FastAPI):
                 ),
                 name="natural-gas-evidence-scheduler",
             ),
-            asyncio.create_task(
-                _run_corn_scheduler(
-                    engine=zc_engine,
-                    nass_api_key=os.environ.get("NASS_API_KEY", ""),
-                    run_hour_utc=_env_int("CORN_RUN_HOUR_UTC", 8),
-                    backfill_days=backfill_days,
-                    lock=app.state.ingest_locks["zc"],
-                ),
-                name="corn-evidence-scheduler",
-            ),
-            asyncio.create_task(
-                _run_soybean_scheduler(
-                    engine=zs_engine,
-                    nass_api_key=os.environ.get("NASS_API_KEY", ""),
-                    run_hour_utc=_env_int("SOYBEAN_RUN_HOUR_UTC", 9),
-                    backfill_days=backfill_days,
-                    lock=app.state.ingest_locks["zs"],
-                ),
-                name="soybean-evidence-scheduler",
-            ),
         ]
-        # Macro regime scheduler is optional (FRED_API_KEY may not be set)
+        # FRED-dependent schedulers are optional (FRED_API_KEY may not be set)
         fred_api_key = os.environ.get("FRED_API_KEY", "")
         if fred_api_key:
             backfill_weeks = _env_int("MACRO_REGIME_BACKFILL_WEEKS", max(backfill_days // 7, 8))
@@ -801,7 +805,6 @@ async def lifespan(app: FastAPI):
                 ),
                 name="macro-regime-evidence-scheduler",
             ))
-            # AI regime scheduler reuses FRED_API_KEY
             ai_backfill_weeks = _env_int("AI_REGIME_BACKFILL_WEEKS", max(backfill_days // 7, 8))
             tasks.append(asyncio.create_task(
                 _run_ai_regime_scheduler(
@@ -813,9 +816,53 @@ async def lifespan(app: FastAPI):
                 ),
                 name="ai-regime-evidence-scheduler",
             ))
+            sd_backfill_weeks = _env_int("SOVEREIGN_DEBT_BACKFILL_WEEKS", max(backfill_days // 7, 8))
+            tasks.append(asyncio.create_task(
+                _run_sovereign_debt_scheduler(
+                    engine=sd_engine,
+                    fred_api_key=fred_api_key,
+                    run_hour_utc=_env_int("SOVEREIGN_DEBT_RUN_HOUR_UTC", 9),
+                    backfill_weeks=sd_backfill_weeks,
+                    lock=app.state.ingest_locks["sd"],
+                ),
+                name="sovereign-debt-evidence-scheduler",
+            ))
+            cc_backfill_weeks = _env_int("CREDIT_CYCLE_BACKFILL_WEEKS", max(backfill_days // 7, 8))
+            tasks.append(asyncio.create_task(
+                _run_credit_cycle_scheduler(
+                    engine=cc_engine,
+                    fred_api_key=fred_api_key,
+                    run_hour_utc=_env_int("CREDIT_CYCLE_RUN_HOUR_UTC", 9),
+                    backfill_weeks=cc_backfill_weeks,
+                    lock=app.state.ingest_locks["cc"],
+                ),
+                name="credit-cycle-evidence-scheduler",
+            ))
+            er_backfill_weeks = _env_int("ENERGY_REGIME_BACKFILL_WEEKS", max(backfill_days // 7, 8))
+            tasks.append(asyncio.create_task(
+                _run_energy_regime_scheduler(
+                    engine=er_engine,
+                    fred_api_key=fred_api_key,
+                    run_hour_utc=_env_int("ENERGY_REGIME_RUN_HOUR_UTC", 9),
+                    backfill_weeks=er_backfill_weeks,
+                    lock=app.state.ingest_locks["er"],
+                ),
+                name="energy-regime-evidence-scheduler",
+            ))
+            lm_backfill_weeks = _env_int("LABOR_MARKET_BACKFILL_WEEKS", max(backfill_days // 7, 8))
+            tasks.append(asyncio.create_task(
+                _run_labor_market_scheduler(
+                    engine=lm_engine,
+                    fred_api_key=fred_api_key,
+                    run_hour_utc=_env_int("LABOR_MARKET_RUN_HOUR_UTC", 9),
+                    backfill_weeks=lm_backfill_weeks,
+                    lock=app.state.ingest_locks["lm"],
+                ),
+                name="labor-market-evidence-scheduler",
+            ))
         else:
             logger.info(
-                "FRED_API_KEY not set — macro regime and AI regime schedulers disabled; "
+                "FRED_API_KEY not set — FRED-based domain schedulers disabled; "
                 "engines initialised but no data will be fetched automatically."
             )
         for task in tasks:
@@ -1884,62 +1931,123 @@ async def _run_natural_gas_scheduler(
         await scheduler.run_forever()
 
 
-async def _run_corn_scheduler(
+async def _run_sovereign_debt_scheduler(
     *,
     engine: ProbabilisticOntologyEngine,
-    nass_api_key: str,
+    fred_api_key: str,
     run_hour_utc: int,
-    backfill_days: int,
+    backfill_weeks: int,
     lock: asyncio.Lock,
 ) -> None:
-    nass = CornNASSClient(api_key=nass_api_key)
-    nasdaq = CornNASDAQClient()
-    pipeline = CornPipeline(nass, nasdaq)
-    scheduler = CornScheduler(
-        engine=engine,
-        pipeline=pipeline,
-        run_hour_utc=run_hour_utc,
-        backfill_days=0,
+    fred = SDFredClient(api_key=fred_api_key)
+    pipeline = SovereignDebtPipeline(fred)
+    scheduler = SovereignDebtScheduler(engine=engine, pipeline=pipeline,
+                                       run_hour_utc=run_hour_utc, backfill_weeks=0)
+    await _backfill_fred_domain_if_empty(
+        engine=engine, pipeline=pipeline, domain_id="sovereign-debt-v1",
+        display_name="Sovereign Debt", backfill_weeks=backfill_weeks, lock=lock,
     )
-    await _backfill_if_empty(
-        domain_key="zc",
-        engine=engine,
-        domain_id="corn-v1",
-        display_name="Corn",
-        backfill_days=backfill_days,
-        lock=lock,
-    )
-    async with nass, nasdaq:
+    async with fred:
         await scheduler.run_forever()
 
 
-async def _run_soybean_scheduler(
+async def _run_credit_cycle_scheduler(
     *,
     engine: ProbabilisticOntologyEngine,
-    nass_api_key: str,
+    fred_api_key: str,
     run_hour_utc: int,
-    backfill_days: int,
+    backfill_weeks: int,
     lock: asyncio.Lock,
 ) -> None:
-    nass = SoyNASSClient(api_key=nass_api_key)
-    nasdaq = SoyNASDAQClient()
-    pipeline = SoybeanPipeline(nass, nasdaq)
-    scheduler = SoybeanScheduler(
-        engine=engine,
-        pipeline=pipeline,
-        run_hour_utc=run_hour_utc,
-        backfill_days=0,
+    fred = CCFredClient(api_key=fred_api_key)
+    pipeline = CreditCyclePipeline(fred)
+    scheduler = CreditCycleScheduler(engine=engine, pipeline=pipeline,
+                                     run_hour_utc=run_hour_utc, backfill_weeks=0)
+    await _backfill_fred_domain_if_empty(
+        engine=engine, pipeline=pipeline, domain_id="credit-cycle-v1",
+        display_name="Credit Cycle", backfill_weeks=backfill_weeks, lock=lock,
     )
-    await _backfill_if_empty(
-        domain_key="zs",
-        engine=engine,
-        domain_id="soybean-v1",
-        display_name="Soybeans",
-        backfill_days=backfill_days,
-        lock=lock,
-    )
-    async with nass, nasdaq:
+    async with fred:
         await scheduler.run_forever()
+
+
+async def _run_energy_regime_scheduler(
+    *,
+    engine: ProbabilisticOntologyEngine,
+    fred_api_key: str,
+    run_hour_utc: int,
+    backfill_weeks: int,
+    lock: asyncio.Lock,
+) -> None:
+    fred = ERFredClient(api_key=fred_api_key)
+    yf_client = EnergyYFinanceClient()
+    pipeline = EnergyRegimePipeline(fred, yf_client)
+    scheduler = EnergyRegimeScheduler(engine=engine, pipeline=pipeline,
+                                      run_hour_utc=run_hour_utc, backfill_weeks=0)
+    await _backfill_fred_domain_if_empty(
+        engine=engine, pipeline=pipeline, domain_id="energy-regime-v1",
+        display_name="Energy Regime", backfill_weeks=backfill_weeks, lock=lock,
+    )
+    async with fred, yf_client:
+        await scheduler.run_forever()
+
+
+async def _run_labor_market_scheduler(
+    *,
+    engine: ProbabilisticOntologyEngine,
+    fred_api_key: str,
+    run_hour_utc: int,
+    backfill_weeks: int,
+    lock: asyncio.Lock,
+) -> None:
+    fred = LMFredClient(api_key=fred_api_key)
+    pipeline = LaborMarketPipeline(fred)
+    scheduler = LaborMarketScheduler(engine=engine, pipeline=pipeline,
+                                     run_hour_utc=run_hour_utc, backfill_weeks=0)
+    await _backfill_fred_domain_if_empty(
+        engine=engine, pipeline=pipeline, domain_id="labor-market-v1",
+        display_name="Labor Market", backfill_weeks=backfill_weeks, lock=lock,
+    )
+    async with fred:
+        await scheduler.run_forever()
+
+
+async def _backfill_fred_domain_if_empty(
+    *,
+    engine: ProbabilisticOntologyEngine,
+    pipeline: Any,
+    domain_id: str,
+    display_name: str,
+    backfill_weeks: int,
+    lock: asyncio.Lock,
+) -> int:
+    """Generic FRED-domain backfill using weekly targets if engine has no evidence."""
+    if backfill_weeks <= 0:
+        return 0
+    from ...domains.macro_regime_v1.scheduler import _weekly_backfill_dates
+    today = datetime.now(timezone.utc).date()
+    successes = 0
+    async with lock:
+        existing = engine.evidence_store.count(domain_id)
+        if existing > 0:
+            logger.info("Skipping %s startup backfill; evidence_count=%d", display_name, existing)
+            return 0
+        logger.info("Running %d-week %s startup backfill; evidence_count=0", backfill_weeks, display_name)
+        targets = _weekly_backfill_dates(backfill_weeks, today)
+        for target in targets:
+            try:
+                record = await pipeline.fetch_evidence(target)
+                before = engine.evidence_store.count(domain_id)
+                engine.ingest(record)
+                after = engine.evidence_store.count(domain_id)
+                if after > before:
+                    engine.learn([record], domain_id)
+                    successes += 1
+            except Exception as exc:
+                logger.error("%s backfill failed for %s: %s", display_name, target, exc, exc_info=True)
+            await asyncio.sleep(2.0)
+    logger.info("%s startup backfill complete: %d weeks ingested", display_name, successes)
+    return successes
 
 
 # ── Utilities ─────────────────────────────────────────────────────────────────

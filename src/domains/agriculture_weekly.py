@@ -8,9 +8,18 @@ from ..engine.schemas import EvidenceRecord
 
 AGRICULTURE_DOMAIN_IDS = {"corn-v1", "soybean-v1"}
 
+# All domain IDs that operate on a weekly cadence (includes FRED-based domains).
+WEEKLY_DOMAIN_IDS = AGRICULTURE_DOMAIN_IDS | {
+    "sovereign-debt-v1",
+    "credit-cycle-v1",
+    "energy-regime-v1",
+    "labor-market-v1",
+}
+
 
 def is_agriculture_domain(domain_module_id: str) -> bool:
-    return domain_module_id in AGRICULTURE_DOMAIN_IDS
+    """Return True for any domain that uses weekly ingestion cadence."""
+    return domain_module_id in WEEKLY_DOMAIN_IDS
 
 
 def iso_week_start(day: date) -> date:

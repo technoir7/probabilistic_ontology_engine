@@ -9,12 +9,12 @@ Tests cover:
     SE-05  Fractional count accumulation for a root variable (SOFT_OBSERVED)
     SE-06  Fractional count accumulation for a child with hard-observed parents
     SE-07  Soft evidence shifts log-likelihood vs missing evidence
-    SE-08  NASS API failure → MISSING / confidence=0.0, not False-with-OBSERVED
+    SE-08  Credit cycle pipeline: no-data fallback yields p=0.5 for all variables
     SE-09  Natural gas soft assignments carry valid probability distributions
     SE-10  Soft assignment MAP value matches hard boolean
-    SE-11  Corn pipeline: on-pace planting gives P(PlantingDelayed=True) < 0.5
-    SE-12  Corn pipeline: strong drought gives P(DroughtIndex=True) > 0.5
-    SE-13  NASS failure missingness is distinct from False in log (structural check)
+    SE-11  Sovereign debt pipeline: high yield spike gives P(USYieldSpiking) > 0.5
+    SE-12  Labor market pipeline: rising unemployment gives P(UnemploymentRising) > 0.9
+    SE-13  Credit cycle snapshot: all 8 variables SOFT_OBSERVED with clamped probs
 """
 from __future__ import annotations
 
@@ -341,55 +341,26 @@ def test_soft_evidence_log_likelihood_differs_from_missing():
 
 
 # ---------------------------------------------------------------------------
-# SE-08  NASS API failure → MISSING / confidence=0.0, not False-with-OBSERVED
+# SE-08  Credit cycle pipeline: no-data fallback yields p=0.5 for all variables
 # ---------------------------------------------------------------------------
 
-def test_nass_api_failure_yields_missing_not_false():
+def test_credit_cycle_no_data_fallback_is_uniform():
     """
-    When NASS API returns empty rows (simulating 401/403/network failure),
-    the pipeline must set missingness=MISSING and confidence=0.0.
-    The value=False sentinel must not be confused with a real observation.
+    When compute_snapshot receives empty observations, every variable must fall
+    back to p=0.5 (maximum uncertainty), not a false deterministic observation.
     """
-    from src.domains.corn_v1.ingestion.pipeline import CornPipeline
-    from src.domains.corn_v1.ingestion.usda_nass_client import CornNASSSnapshot
-    from src.domains.corn_v1.ingestion.nasdaq_client import CornNASDAQSnapshot
-    from src.domains.corn_v1.domain import get_variables
+    from src.domains.credit_cycle_v1.ingestion.pipeline import compute_snapshot
+    from datetime import date as _date
 
-    # Simulate API failure: all numeric fields are None
-    nass_fail = CornNASSSnapshot(
-        target_date=date(2025, 1, 10),
-        planting_progress_pct=None,
-        planting_5yr_avg_pct=None,
-        condition_good_exc_pct=None,
-        yield_forecast_bu_ac=None,
-        yield_prior_year_bu_ac=None,
-        planting_delayed=False,    # derived boolean defaults to False
-        drought_index=False,
-        yield_forecast_down=False,
-    )
-    nasdaq_ok = CornNASDAQSnapshot(
-        target_date=date(2025, 1, 10),
-        settle_cents_per_bushel=500.0,
-        rolling_20d_avg_cents=490.0,
-        price_up=True,
-    )
-
-    record = CornPipeline.build_evidence_record(nass_fail, nasdaq_ok)
-    variables = get_variables()
-    amap = {a.variable_id: a for a in record.observed_assignments}
-
-    for var_name in ("PlantingDelayed", "DroughtIndex", "YieldForecastDown"):
-        a = amap[variables[var_name].variable_id]
-        assert a.missingness == MissingnessType.MISSING, (
-            f"API failure: {var_name} must be MISSING, got {a.missingness}. "
-            "API failure must not be treated as False."
-        )
-        assert a.confidence == 0.0, (
-            f"API failure: {var_name} must have confidence=0.0, got {a.confidence}"
-        )
-        # The value=False sentinel is present but authoritative signal is missingness
-        assert a.probabilities is None, (
-            f"MISSING assignments must not carry probabilities (got {a.probabilities})"
+    snapshot = compute_snapshot({}, _date(2024, 5, 3))
+    for attr in [
+        "p_hy_spread_elevated", "p_leveraged_loan_stress", "p_corporate_default_risk",
+        "p_credit_impulse_negative", "p_bank_lending_tightening",
+        "p_investment_grade_spread", "p_high_yield_issuance_falling", "p_refinancing_stress",
+    ]:
+        val = getattr(snapshot, attr)
+        assert val == 0.5, (
+            f"No-data fallback: {attr}={val:.3f} should be 0.5 (max uncertainty)."
         )
 
 
@@ -511,134 +482,123 @@ def test_soft_assignment_map_value_matches_boolean():
 
 
 # ---------------------------------------------------------------------------
-# SE-11  Corn: on-pace planting gives P(PlantingDelayed=True) < 0.5
+# SE-11  Sovereign debt: DGS10 well above 2-year mean → P(USYieldSpiking) > 0.5
 # ---------------------------------------------------------------------------
 
-def test_corn_on_pace_planting_low_delay_probability():
+def test_sovereign_debt_high_yield_produces_high_spiking_probability():
     """
-    progress=82, 5yr_avg=85 → gap=3pp below threshold 5pp → NOT delayed.
-    P(PlantingDelayed=True) should be < 0.5.
+    DGS10 at 5.5 with 2yr mean of 3.5 (z≈+2) → P(USYieldSpiking=True) > 0.5.
     """
-    from src.domains.corn_v1.ingestion.pipeline import CornPipeline
-    from src.domains.corn_v1.ingestion.usda_nass_client import CornNASSSnapshot
-    from src.domains.corn_v1.ingestion.nasdaq_client import CornNASDAQSnapshot
-    from src.domains.corn_v1.domain import get_variables
-
-    nass = CornNASSSnapshot(
-        target_date=date(2025, 5, 18),
-        planting_progress_pct=82.0,
-        planting_5yr_avg_pct=85.0,
-        condition_good_exc_pct=60.0,
-        yield_forecast_bu_ac=180.0,
-        yield_prior_year_bu_ac=183.1,
-        planting_delayed=False,
-        drought_index=False,
-        yield_forecast_down=True,
+    from src.domains.sovereign_debt_v1.ingestion.pipeline import (
+        _compute_us_yield_spiking,
+        _soft_bool,
     )
-    nasdaq = CornNASDAQSnapshot(
-        target_date=date(2025, 5, 18),
-        settle_cents_per_bushel=500.0,
-        rolling_20d_avg_cents=490.0,
-        price_up=True,
-    )
+    from src.domains.sovereign_debt_v1.ingestion.fred_client import FREDObservation
 
-    record = CornPipeline.build_evidence_record(nass, nasdaq)
-    variables = get_variables()
-    amap = {a.variable_id: a for a in record.observed_assignments}
-
-    a = amap[variables["PlantingDelayed"].variable_id]
-    assert a.missingness == MissingnessType.SOFT_OBSERVED
-    p_true = a.probabilities[True]
-    assert p_true < 0.5, (
-        f"On-pace planting: P(PlantingDelayed=True)={p_true:.3f} should be < 0.5"
-    )
+    # 400 observations: mean ~3.5, latest 5.5
+    obs = [
+        FREDObservation(
+            obs_date=date(2024, 5, 3) - __import__("datetime").timedelta(days=i),
+            value=(5.5 if i == 0 else 3.5),
+            series_id="DGS10",
+        )
+        for i in range(400)
+    ]
+    sig, _ = _compute_us_yield_spiking(obs)
+    assert sig is not None
+    p = _soft_bool(sig)
+    assert p > 0.5, f"High DGS10 should yield P(USYieldSpiking)>0.5, got {p:.3f}"
 
 
 # ---------------------------------------------------------------------------
-# SE-12  Corn: strong drought gives P(DroughtIndex=True) > 0.5
+# SE-12  Labor market: rising unemployment gives P(UnemploymentRising) > 0.9
 # ---------------------------------------------------------------------------
 
-def test_corn_strong_drought_high_drought_probability():
+def test_labor_market_rising_unemployment_high_probability():
     """
-    condition_good_exc_pct=40 (far below 55 threshold) → P(DroughtIndex=True) > 0.5.
+    UNRATE at 5.0 vs 12-month mean of 4.0 (z≈+1pp) → P(UnemploymentRising) > 0.9.
     """
-    from src.domains.corn_v1.ingestion.pipeline import CornPipeline
-    from src.domains.corn_v1.ingestion.usda_nass_client import CornNASSSnapshot
-    from src.domains.corn_v1.ingestion.nasdaq_client import CornNASDAQSnapshot
-    from src.domains.corn_v1.domain import get_variables
-
-    nass = CornNASSSnapshot(
-        target_date=date(2025, 7, 15),
-        planting_progress_pct=95.0,
-        planting_5yr_avg_pct=90.0,
-        condition_good_exc_pct=40.0,   # well below 55% threshold → drought
-        yield_forecast_bu_ac=175.0,
-        yield_prior_year_bu_ac=183.0,
-        planting_delayed=False,
-        drought_index=True,
-        yield_forecast_down=True,
+    from src.domains.labor_market_v1.ingestion.pipeline import (
+        _compute_unemployment_rising,
+        _soft_bool,
     )
-    nasdaq = CornNASDAQSnapshot(
-        target_date=date(2025, 7, 15),
-        settle_cents_per_bushel=600.0,
-        rolling_20d_avg_cents=550.0,
-        price_up=True,
-    )
+    from src.domains.labor_market_v1.ingestion.fred_client import FREDObservation
 
-    record = CornPipeline.build_evidence_record(nass, nasdaq)
-    variables = get_variables()
-    amap = {a.variable_id: a for a in record.observed_assignments}
-
-    a = amap[variables["DroughtIndex"].variable_id]
-    assert a.missingness == MissingnessType.SOFT_OBSERVED
-    p_true = a.probabilities[True]
-    assert p_true > 0.5, (
-        f"Strong drought: P(DroughtIndex=True)={p_true:.3f} should be > 0.5"
-    )
+    obs = [
+        FREDObservation(
+            obs_date=date(2024, 5, 3) - __import__("datetime").timedelta(days=i * 30),
+            value=(5.0 if i == 0 else 4.0),
+            series_id="UNRATE",
+        )
+        for i in range(15)
+    ]
+    sig, _ = _compute_unemployment_rising(obs)
+    assert sig is not None
+    p = _soft_bool(sig)
+    assert p > 0.9, f"1pp unemployment rise should yield P>0.9, got {p:.3f}"
 
 
 # ---------------------------------------------------------------------------
-# SE-13  MISSING assignments have no probabilities field
+# SE-13  Credit cycle: full snapshot produces 8 SOFT_OBSERVED clamped assignments
 # ---------------------------------------------------------------------------
 
-def test_missing_assignments_have_no_probabilities():
+def test_credit_cycle_full_snapshot_all_soft_observed():
     """
-    Off-season NASS data (API failure or seasonal absence) must produce
-    MISSING assignments with probabilities=None.  API failure must not
-    masquerade as a soft observation.
+    With full observations, CreditCyclePipeline.build_evidence_record must yield
+    8 SOFT_OBSERVED assignments all with probabilities clamped to [0.01, 0.99].
     """
-    from src.domains.soybean_v1.ingestion.pipeline import SoybeanPipeline
-    from src.domains.soybean_v1.ingestion.usda_nass_client import SoybeanNASSSnapshot
-    from src.domains.soybean_v1.ingestion.nasdaq_client import SoybeanNASDAQSnapshot
-    from src.domains.soybean_v1.domain import get_variables
-
-    nass_fail = SoybeanNASSSnapshot(
-        target_date=date(2025, 1, 10),
-        planting_progress_pct=None,
-        planting_5yr_avg_pct=None,
-        condition_good_exc_pct=None,
-        yield_forecast_bu_ac=None,
-        yield_prior_year_bu_ac=None,
-        planting_delayed=False,
-        drought_index=False,
-        yield_forecast_down=False,
+    import numpy as np
+    from src.domains.credit_cycle_v1.ingestion.pipeline import (
+        CreditCyclePipeline,
+        compute_snapshot,
     )
-    nasdaq = SoybeanNASDAQSnapshot(
-        target_date=date(2025, 1, 10),
-        settle_cents_per_bushel=1000.0,
-        rolling_20d_avg_cents=980.0,
-        price_up=True,
-    )
+    from src.domains.credit_cycle_v1.ingestion.fred_client import FREDObservation
 
-    record = SoybeanPipeline.build_evidence_record(nass_fail, nasdaq)
-    variables = get_variables()
-    amap = {a.variable_id: a for a in record.observed_assignments}
+    target = date(2024, 5, 3)
+    rng = np.random.default_rng(0)
 
-    for var_name in ("PlantingDelayed", "DroughtIndex", "YieldForecastDown"):
-        a = amap[variables[var_name].variable_id]
-        assert a.missingness == MissingnessType.MISSING
-        assert a.confidence == 0.0
-        assert a.probabilities is None, (
-            f"{var_name}: MISSING assignments must not carry probabilities, "
-            f"got {a.probabilities}"
+    hy_values = rng.normal(4.5, 0.3, 260).tolist()
+    hy_values[0] = 4.5
+    hy_obs = [
+        FREDObservation(obs_date=target - __import__("datetime").timedelta(days=i), value=hy_values[i], series_id="BAMLH0A0HYM2")
+        for i in range(260)
+    ]
+    totci_obs = [
+        FREDObservation(obs_date=target - __import__("datetime").timedelta(days=i * 30), value=(1_000.0 if i == 0 else 1_020.0), series_id="TOTCI")
+        for i in range(6)
+    ]
+    dgs5_obs = [
+        FREDObservation(obs_date=target - __import__("datetime").timedelta(days=i), value=4.2, series_id="DGS5")
+        for i in range(260)
+    ]
+    ig_values = rng.normal(1.2, 0.1, 260).tolist()
+    ig_values[0] = 1.2
+    ig_obs = [
+        FREDObservation(obs_date=target - __import__("datetime").timedelta(days=i), value=ig_values[i], series_id="BAMLC0A0CM")
+        for i in range(260)
+    ]
+    drtscilm_obs = [
+        FREDObservation(obs_date=target - __import__("datetime").timedelta(days=i * 90), value=5.0, series_id="DRTSCILM")
+        for i in range(20)
+    ]
+
+    observations = {
+        "BAMLH0A0HYM2": hy_obs,
+        "DRTSCILM": drtscilm_obs,
+        "TOTCI": totci_obs,
+        "BAMLC0A0CM": ig_obs,
+        "DGS5": dgs5_obs,
+    }
+    snapshot = compute_snapshot(observations, target)
+    record = CreditCyclePipeline.build_evidence_record(snapshot)
+
+    assert len(record.observed_assignments) == 8
+    for a in record.observed_assignments:
+        assert a.missingness == MissingnessType.SOFT_OBSERVED, (
+            f"{a.variable_id}: expected SOFT_OBSERVED, got {a.missingness}"
+        )
+        assert a.probabilities is not None
+        p_true = a.probabilities[True]
+        assert 0.01 <= p_true <= 0.99, (
+            f"{a.variable_id}: P(True)={p_true:.4f} is outside [0.01, 0.99]"
         )
