@@ -14,6 +14,9 @@ WEEKLY_DOMAIN_IDS = AGRICULTURE_DOMAIN_IDS | {
     "credit-cycle-v1",
     "energy-regime-v1",
     "labor-market-v1",
+    "crypto-regime-v1",
+    "geopolitics-v1",
+    "sf-urban-v1",
 }
 
 

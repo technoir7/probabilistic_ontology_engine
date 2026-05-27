@@ -15,6 +15,22 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+from ...domains.crypto_regime_v1.domain import CryptoRegimeV1
+from ...domains.crypto_regime_v1.ingestion.coingecko_client import CoinGeckoClient
+from ...domains.crypto_regime_v1.ingestion.yfinance_client import CryptoYFinanceClient
+from ...domains.crypto_regime_v1.ingestion.fred_client import FREDClient as CRFredClient
+from ...domains.crypto_regime_v1.ingestion.pipeline import CryptoRegimePipeline
+from ...domains.crypto_regime_v1.scheduler import CryptoRegimeScheduler
+from ...domains.geopolitics_v1.domain import GeopoliticsV1
+from ...domains.geopolitics_v1.ingestion.gdelt_client import GDELTClient
+from ...domains.geopolitics_v1.ingestion.fred_client import FREDClient as GPFredClient
+from ...domains.geopolitics_v1.ingestion.pipeline import GeopoliticsPipeline
+from ...domains.geopolitics_v1.scheduler import GeopoliticsScheduler
+from ...domains.sf_urban_v1.domain import SFUrbanV1
+from ...domains.sf_urban_v1.ingestion.sfgov_client import SFGovClient
+from ...domains.sf_urban_v1.ingestion.fred_client import FREDClient as SFFredClient
+from ...domains.sf_urban_v1.ingestion.pipeline import SFUrbanPipeline
+from ...domains.sf_urban_v1.scheduler import SFUrbanScheduler
 from ...domains.ai_regime_v1.domain import AIRegimeV1
 from ...domains.ai_regime_v1.ingestion.edgar_client import EDGARClient as AIEdgarClient
 from ...domains.ai_regime_v1.ingestion.fred_client import FREDClient as AIFredClient
@@ -80,6 +96,9 @@ _DOMAIN_MAP: dict[str, tuple[str, str]] = {
     "cc": ("credit-cycle-v1",  "Credit Cycle"),
     "er": ("energy-regime-v1", "Energy Regime"),
     "lm": ("labor-market-v1",  "Labor Market"),
+    "cr": ("crypto-regime-v1", "Crypto Regime"),
+    "gp": ("geopolitics-v1",   "Geopolitics"),
+    "sf": ("sf-urban-v1",      "SF Urban"),
 }
 
 
@@ -598,7 +617,7 @@ def _ingest_lock(state: Any, domain_key: str) -> asyncio.Lock:
 def _require_domain_env(domain_key: str) -> None:
     if domain_key == "ng":
         _require_env(("EIA_API_KEY",))
-    if domain_key in ("mr", "ai", "sd", "cc", "er", "lm"):
+    if domain_key in ("mr", "ai", "sd", "cc", "er", "lm", "cr", "gp", "sf"):
         _require_env(("FRED_API_KEY",))
 
 
@@ -643,6 +662,25 @@ async def _fetch_evidence_record(domain_key: str, target_date: date) -> Evidence
         fred = LMFredClient(api_key=os.environ["FRED_API_KEY"])
         async with fred:
             return await LaborMarketPipeline(fred).fetch_evidence(target_date)
+
+    if domain_key == "cr":
+        cg = CoinGeckoClient()
+        yf_client = CryptoYFinanceClient()
+        fred = CRFredClient(api_key=os.environ["FRED_API_KEY"])
+        async with cg, fred:
+            return await CryptoRegimePipeline(cg, yf_client, fred).fetch_evidence(target_date)
+
+    if domain_key == "gp":
+        gdelt = GDELTClient()
+        fred = GPFredClient(api_key=os.environ["FRED_API_KEY"])
+        async with gdelt, fred:
+            return await GeopoliticsPipeline(gdelt, fred).fetch_evidence(target_date)
+
+    if domain_key == "sf":
+        sfgov = SFGovClient()
+        fred = SFFredClient(api_key=os.environ["FRED_API_KEY"])
+        async with sfgov, fred:
+            return await SFUrbanPipeline(sfgov, fred).fetch_evidence(target_date)
 
     raise ValueError(f"Unknown domain '{domain_key}'")
 
@@ -755,6 +793,9 @@ async def lifespan(app: FastAPI):
     cc_engine = _build_engine(CreditCycleV1(), data_dir / "credit_cycle.db")
     er_engine = _build_engine(EnergyRegimeV1(), data_dir / "energy_regime.db")
     lm_engine = _build_engine(LaborMarketV1(), data_dir / "labor_market.db")
+    cr_engine = _build_engine(CryptoRegimeV1(), data_dir / "crypto_regime.db")
+    gp_engine = _build_engine(GeopoliticsV1(), data_dir / "geopolitics.db")
+    sf_engine = _build_engine(SFUrbanV1(), data_dir / "sf_urban.db")
 
     app.state.engines: dict[str, ProbabilisticOntologyEngine] = {
         "ng": ng_engine,
@@ -764,6 +805,9 @@ async def lifespan(app: FastAPI):
         "cc": cc_engine,
         "er": er_engine,
         "lm": lm_engine,
+        "cr": cr_engine,
+        "gp": gp_engine,
+        "sf": sf_engine,
     }
     app.state.scheduler_tasks: list[asyncio.Task] = []
     app.state.scheduler_enabled = scheduler_enabled
@@ -775,6 +819,9 @@ async def lifespan(app: FastAPI):
         "cc": asyncio.Lock(),
         "er": asyncio.Lock(),
         "lm": asyncio.Lock(),
+        "cr": asyncio.Lock(),
+        "gp": asyncio.Lock(),
+        "sf": asyncio.Lock(),
     }
 
     if scheduler_enabled:
@@ -859,6 +906,39 @@ async def lifespan(app: FastAPI):
                     lock=app.state.ingest_locks["lm"],
                 ),
                 name="labor-market-evidence-scheduler",
+            ))
+            cr_backfill_weeks = _env_int("CRYPTO_REGIME_BACKFILL_WEEKS", max(backfill_days // 7, 8))
+            tasks.append(asyncio.create_task(
+                _run_crypto_regime_scheduler(
+                    engine=cr_engine,
+                    fred_api_key=fred_api_key,
+                    run_hour_utc=_env_int("CRYPTO_REGIME_RUN_HOUR_UTC", 9),
+                    backfill_weeks=cr_backfill_weeks,
+                    lock=app.state.ingest_locks["cr"],
+                ),
+                name="crypto-regime-evidence-scheduler",
+            ))
+            gp_backfill_weeks = _env_int("GEOPOLITICS_BACKFILL_WEEKS", max(backfill_days // 7, 8))
+            tasks.append(asyncio.create_task(
+                _run_geopolitics_scheduler(
+                    engine=gp_engine,
+                    fred_api_key=fred_api_key,
+                    run_hour_utc=_env_int("GEOPOLITICS_RUN_HOUR_UTC", 9),
+                    backfill_weeks=gp_backfill_weeks,
+                    lock=app.state.ingest_locks["gp"],
+                ),
+                name="geopolitics-evidence-scheduler",
+            ))
+            sf_backfill_weeks = _env_int("SF_URBAN_BACKFILL_WEEKS", max(backfill_days // 7, 8))
+            tasks.append(asyncio.create_task(
+                _run_sf_urban_scheduler(
+                    engine=sf_engine,
+                    fred_api_key=fred_api_key,
+                    run_hour_utc=_env_int("SF_URBAN_RUN_HOUR_UTC", 9),
+                    backfill_weeks=sf_backfill_weeks,
+                    lock=app.state.ingest_locks["sf"],
+                ),
+                name="sf-urban-evidence-scheduler",
             ))
         else:
             logger.info(
@@ -2009,6 +2089,70 @@ async def _run_labor_market_scheduler(
         display_name="Labor Market", backfill_weeks=backfill_weeks, lock=lock,
     )
     async with fred:
+        await scheduler.run_forever()
+
+
+async def _run_crypto_regime_scheduler(
+    *,
+    engine: ProbabilisticOntologyEngine,
+    fred_api_key: str,
+    run_hour_utc: int,
+    backfill_weeks: int,
+    lock: asyncio.Lock,
+) -> None:
+    cg = CoinGeckoClient()
+    yf_client = CryptoYFinanceClient()
+    fred = CRFredClient(api_key=fred_api_key)
+    pipeline = CryptoRegimePipeline(cg, yf_client, fred)
+    scheduler = CryptoRegimeScheduler(engine=engine, pipeline=pipeline,
+                                      run_hour_utc=run_hour_utc, backfill_weeks=0)
+    await _backfill_fred_domain_if_empty(
+        engine=engine, pipeline=pipeline, domain_id="crypto-regime-v1",
+        display_name="Crypto Regime", backfill_weeks=backfill_weeks, lock=lock,
+    )
+    async with cg, fred:
+        await scheduler.run_forever()
+
+
+async def _run_geopolitics_scheduler(
+    *,
+    engine: ProbabilisticOntologyEngine,
+    fred_api_key: str,
+    run_hour_utc: int,
+    backfill_weeks: int,
+    lock: asyncio.Lock,
+) -> None:
+    gdelt = GDELTClient()
+    fred = GPFredClient(api_key=fred_api_key)
+    pipeline = GeopoliticsPipeline(gdelt, fred)
+    scheduler = GeopoliticsScheduler(engine=engine, pipeline=pipeline,
+                                     run_hour_utc=run_hour_utc, backfill_weeks=0)
+    await _backfill_fred_domain_if_empty(
+        engine=engine, pipeline=pipeline, domain_id="geopolitics-v1",
+        display_name="Geopolitics", backfill_weeks=backfill_weeks, lock=lock,
+    )
+    async with gdelt, fred:
+        await scheduler.run_forever()
+
+
+async def _run_sf_urban_scheduler(
+    *,
+    engine: ProbabilisticOntologyEngine,
+    fred_api_key: str,
+    run_hour_utc: int,
+    backfill_weeks: int,
+    lock: asyncio.Lock,
+) -> None:
+    sfgov = SFGovClient()
+    fred = SFFredClient(api_key=fred_api_key)
+    pipeline = SFUrbanPipeline(sfgov, fred)
+    scheduler = SFUrbanScheduler(engine=engine, pipeline=pipeline,
+                                 run_hour_utc=run_hour_utc, backfill_weeks=0)
+    await _backfill_fred_domain_if_empty(
+        engine=engine, pipeline=pipeline, domain_id="sf-urban-v1",
+        display_name="SF Urban", backfill_weeks=backfill_weeks, lock=lock,
+    )
+    async with sfgov, fred:
         await scheduler.run_forever()
 
 
