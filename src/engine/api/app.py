@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 import asyncio
+import importlib
 import logging
 import math
 import os
+import sys
 from contextlib import asynccontextmanager
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -13,7 +15,7 @@ from uuid import UUID
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 from ...domains.crypto_regime_v1.domain import CryptoRegimeV1
 from ...domains.crypto_regime_v1.ingestion.coingecko_client import CoinGeckoClient
@@ -82,6 +84,8 @@ from ..config import get_structure_mode_config
 from ..services.evidence_diagnostics import build_entropy_diagnostics
 from ..services.evidence_geometry import build_evidence_geometry_diagnostics
 from ..services.structure_diagnostics import build_structure_diagnostics
+from . import poea_dynamic
+from . import report as _report
 
 logger = logging.getLogger(__name__)
 
@@ -99,6 +103,7 @@ _DOMAIN_MAP: dict[str, tuple[str, str]] = {
     "cr": ("crypto-regime-v1", "Crypto Regime"),
     "gp": ("geopolitics-v1",   "Geopolitics"),
     "sf": ("sf-urban-v1",      "SF Urban"),
+    "art": ("art_prestige_regime_v1", "Art Prestige Regime"),
 }
 
 
@@ -179,6 +184,7 @@ class QueryBodyIn(BaseModel):
     candidate_id: Optional[str] = None
     conditions: Optional[dict[str, Any]] = None
     aggregation: Optional[Literal["weighted_avg", "map", "marginal"]] = None
+    ontology_mode: Optional[Literal["apriori", "dynamic"]] = None
 
 
 class LineageEventOut(BaseModel):
@@ -317,6 +323,32 @@ class IngestBackfillOut(BaseModel):
     domain: str
     days_requested: int
     days_successfully_ingested: int
+
+
+class ManualArtIngestOut(BaseModel):
+    domain: str
+    domain_key: str
+    domain_module_id: str
+    input_path: str
+    db_path: str
+    rebuild_mode: bool
+    files_scanned: int
+    objects_found: int
+    records_loaded_from_files: int
+    records_replaced: int
+    records_removed_stale: int
+    records_found: int
+    records_ingested: int
+    records_skipped_duplicates: int
+    records_failed: int
+    records_learned: int
+    causal_prior_weight: float = 0.0
+    causal_prior_candidates_scored: int = 0
+    causal_prior_total_applied: float = 0.0
+    causal_prior_dominant_changed: bool = False
+    evidence_count_before: int
+    evidence_count_after: int
+    verification_endpoint: str
 
 
 class VariableEntropyDebugOut(BaseModel):
@@ -532,6 +564,32 @@ def _build_engine(domain_module: Any, db_path: Path) -> ProbabilisticOntologyEng
     return engine
 
 
+_ART_PACKAGE = "art_prestige_regime_v1"
+
+
+def _import_art_module(submodule: str = "") -> Any:
+    module_name = f"{_ART_PACKAGE}.{submodule}" if submodule else _ART_PACKAGE
+    try:
+        return importlib.import_module(module_name)
+    except ModuleNotFoundError as exc:
+        if exc.name != _ART_PACKAGE:
+            raise
+        sibling_src = Path(__file__).resolve().parents[4] / "art-market-domain" / "src"
+        if sibling_src.exists():
+            sys.path.insert(0, str(sibling_src))
+            return importlib.import_module(module_name)
+        raise
+
+
+def _build_art_domain() -> Any:
+    module = _import_art_module()
+    return module.ArtPrestigeRegimeV1()
+
+
+def _default_art_manual_dir(manual_ingest_module: Any) -> Path:
+    return Path(manual_ingest_module.__file__).resolve().parents[2] / "data" / "manual_ingest"
+
+
 def _build_population_status(
     engine: ProbabilisticOntologyEngine,
     domain_id: str,
@@ -682,6 +740,19 @@ async def _fetch_evidence_record(domain_key: str, target_date: date) -> Evidence
         async with sfgov, fred:
             return await SFUrbanPipeline(sfgov, fred).fetch_evidence(target_date)
 
+    if domain_key == "art":
+        ingest_module = _import_art_module("ingest")
+        domain_module = _import_art_module("domain")
+        observations = await ingest_module.fetch_observations(target_date)
+        record = domain_module.build_evidence_record(observations)
+        record.timestamp = datetime(
+            target_date.year,
+            target_date.month,
+            target_date.day,
+            tzinfo=timezone.utc,
+        )
+        return record
+
     raise ValueError(f"Unknown domain '{domain_key}'")
 
 
@@ -796,6 +867,7 @@ async def lifespan(app: FastAPI):
     cr_engine = _build_engine(CryptoRegimeV1(), data_dir / "crypto_regime.db")
     gp_engine = _build_engine(GeopoliticsV1(), data_dir / "geopolitics.db")
     sf_engine = _build_engine(SFUrbanV1(), data_dir / "sf_urban.db")
+    art_engine = _build_engine(_build_art_domain(), data_dir / "art_prestige_regime.db")
 
     app.state.engines: dict[str, ProbabilisticOntologyEngine] = {
         "ng": ng_engine,
@@ -808,6 +880,7 @@ async def lifespan(app: FastAPI):
         "cr": cr_engine,
         "gp": gp_engine,
         "sf": sf_engine,
+        "art": art_engine,
     }
     app.state.scheduler_tasks: list[asyncio.Task] = []
     app.state.scheduler_enabled = scheduler_enabled
@@ -822,6 +895,7 @@ async def lifespan(app: FastAPI):
         "cr": asyncio.Lock(),
         "gp": asyncio.Lock(),
         "sf": asyncio.Lock(),
+        "art": asyncio.Lock(),
     }
 
     if scheduler_enabled:
@@ -1002,8 +1076,15 @@ async def runtime_status() -> dict[str, Any]:
 # ── v1 API routes ─────────────────────────────────────────────────────────────
 
 @app.get("/v1/population/status", response_model=PopStatusOut)
-async def population_status(domain: str = Query("ng")) -> PopStatusOut:
+async def population_status(
+    domain: str = Query("ng"),
+    ontology_mode: str = Query("apriori"),
+) -> PopStatusOut:
     engine, domain_id, display_name = _resolve_domain(domain, app.state)
+    if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(domain.lower()):
+        data = poea_dynamic.build_population_status(display_name)
+        if data is not None:
+            return PopStatusOut.model_validate(data)
     return _build_population_status(engine, domain_id, display_name)
 
 
@@ -1241,9 +1322,104 @@ async def ingest_backfill(
     )
 
 
+@app.post("/v1/ingest/art/manual", response_model=ManualArtIngestOut)
+async def ingest_art_manual(
+    path: Optional[str] = Query(None),
+    force: bool = Query(False),
+    append: bool = Query(False),
+) -> ManualArtIngestOut:
+    domain_key = "art"
+    engine, domain_id, display_name = _resolve_domain(domain_key, app.state)
+    lock = _ingest_lock(app.state, domain_key)
+    manual_ingest = _import_art_module("manual_ingest")
+    input_path = Path(path) if path else _default_art_manual_dir(manual_ingest)
+
+    async with lock:
+        try:
+            collection = manual_ingest.collect_manual_path(input_path)
+        except (OSError, ValidationError, ValueError) as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+        records = collection.records
+        before = engine.evidence_store.count(domain_id)
+        rebuild_mode = not append
+        causal_prior_result = {
+            "weight": 0.0,
+            "candidates_scored": 0,
+            "total_prior_applied": 0.0,
+            "dominant_changed": False,
+        }
+        if rebuild_mode:
+            records_replaced, records_removed_stale, records_learned = (
+                manual_ingest.rebuild_art_evidence_state(engine, records, domain_id)
+            )
+            causal_prior_result = getattr(engine, "_art_causal_prior_result", causal_prior_result)
+            skipped_duplicates = 0
+            after = engine.evidence_store.count(domain_id)
+            records_ingested = records_replaced
+        else:
+            records_to_ingest, skipped_duplicates = manual_ingest.filter_duplicate_records(
+                records,
+                manual_ingest.existing_fingerprints(engine),
+                force=force,
+            )
+            if records_to_ingest:
+                engine.ingest_batch(records_to_ingest)
+            after = engine.evidence_store.count(domain_id)
+            records_replaced = 0
+            records_removed_stale = 0
+            records_ingested = after - before
+            if records_to_ingest and not manual_ingest.learning_state_uninitialized(
+                engine,
+                domain_id,
+            ):
+                engine.learn(records_to_ingest, domain_id)
+                records_learned = len(records_to_ingest)
+            else:
+                records_learned = manual_ingest.ensure_learning_for_existing_evidence(
+                    engine,
+                    domain_id,
+                    force=force and not records_to_ingest,
+                )
+                causal_prior_result = getattr(engine, "_art_causal_prior_result", causal_prior_result)
+
+    return ManualArtIngestOut(
+        domain=display_name,
+        domain_key=domain_key,
+        domain_module_id=domain_id,
+        input_path=str(input_path),
+        db_path=engine.evidence_store.db_path,
+        rebuild_mode=rebuild_mode,
+        files_scanned=collection.files_scanned,
+        objects_found=collection.objects_found,
+        records_loaded_from_files=len(records),
+        records_replaced=records_replaced,
+        records_removed_stale=records_removed_stale,
+        records_found=collection.objects_found,
+        records_ingested=records_ingested,
+        records_skipped_duplicates=skipped_duplicates,
+        records_failed=len(collection.errors),
+        records_learned=records_learned,
+        causal_prior_weight=float(causal_prior_result.get("weight", 0.0)),
+        causal_prior_candidates_scored=int(causal_prior_result.get("candidates_scored", 0)),
+        causal_prior_total_applied=float(causal_prior_result.get("total_prior_applied", 0.0)),
+        causal_prior_dominant_changed=bool(causal_prior_result.get("dominant_changed", False)),
+        evidence_count_before=before,
+        evidence_count_after=after,
+        verification_endpoint="/v1/debug/learning?domain=art",
+    )
+
+
 @app.get("/v1/population/candidates", response_model=CandidatesOut)
-async def population_candidates(domain: str = Query("ng")) -> CandidatesOut:
+async def population_candidates(
+    domain: str = Query("ng"),
+    ontology_mode: str = Query("apriori"),
+) -> CandidatesOut:
     engine, domain_id, display_name = _resolve_domain(domain, app.state)
+    if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(domain.lower()):
+        data = poea_dynamic.build_candidates(display_name)
+        if data is not None:
+            return CandidatesOut.model_validate(data)
     pop = engine.get_population(domain_id)
     active = pop.active_candidates()
     dom = pop.dominant()
@@ -1288,6 +1464,15 @@ async def population_candidates(domain: str = Query("ng")) -> CandidatesOut:
 @app.post("/v1/inference/query", response_model=InferenceOut)
 async def inference_query(body: QueryBodyIn) -> InferenceOut:
     engine, domain_id, display_name = _resolve_domain(body.domain, app.state)
+
+    if (
+        body.ontology_mode == "dynamic"
+        and poea_dynamic.is_dynamic_available(body.domain.lower())
+    ):
+        data = poea_dynamic.build_inference(body.target_variable)
+        if data is not None:
+            return InferenceOut.model_validate(data)
+
     pop = engine.get_population(domain_id)
 
     cand = _resolve_query_candidate(pop, body.candidate_id)
@@ -1366,7 +1551,20 @@ async def inference_query(body: QueryBodyIn) -> InferenceOut:
 
 
 @app.get("/v1/population/lineage/{candidate_id}", response_model=LineageOut)
-async def population_lineage(candidate_id: str, domain: str = Query("ng")) -> LineageOut:
+async def population_lineage(
+    candidate_id: str,
+    domain: str = Query("ng"),
+    ontology_mode: str = Query("apriori"),
+) -> LineageOut:
+    if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(domain.lower()):
+        _, _, display_name = _resolve_domain(domain, app.state)
+        data = poea_dynamic.build_lineage(candidate_id, display_name)
+        if data is not None:
+            return LineageOut.model_validate(data)
+        raise HTTPException(
+            status_code=404,
+            detail=f"Dynamic candidate '{candidate_id}' not found in POE-A artifacts",
+        )
     engine, domain_id, display_name = _resolve_domain(domain, app.state)
     pop = engine.get_population(domain_id)
 
@@ -1458,7 +1656,15 @@ async def population_lineage(candidate_id: str, domain: str = Query("ng")) -> Li
 
 
 @app.get("/v1/population/shifts", response_model=ParadigmShiftsOut)
-async def population_shifts(domain: str = Query("ng")) -> ParadigmShiftsOut:
+async def population_shifts(
+    domain: str = Query("ng"),
+    ontology_mode: str = Query("apriori"),
+) -> ParadigmShiftsOut:
+    if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(domain.lower()):
+        engine, domain_id, display_name = _resolve_domain(domain, app.state)
+        return ParadigmShiftsOut.model_validate(
+            poea_dynamic.build_shifts(display_name, domain_id)
+        )
     """
     Return the full chronological history of paradigm shifts for a domain.
 
@@ -1499,14 +1705,25 @@ async def population_shifts(domain: str = Query("ng")) -> ParadigmShiftsOut:
 
 
 @app.get("/v1/export/narrative-snapshot", response_model=NarrativeSnapshotOut)
-async def narrative_snapshot(domain: str = Query("ng")) -> NarrativeSnapshotOut:
+async def narrative_snapshot(
+    domain: str = Query("ng"),
+    ontology_mode: str = Query("apriori"),
+) -> NarrativeSnapshotOut:
     """
     Structured epistemic-state snapshot designed to be passed to an LLM for
     prose interpretation.  Returns the full current state of the probabilistic
     engine for a domain: regime variables, dominant hypothesis, population
     competition, causal frontier, and machine-readable interpretation hints.
+
+    Pass ontology_mode=dynamic for a POE-A artifact snapshot (art domain only).
+    Dynamic snapshots use induced concepts and support scores rather than old
+    POE posterior probabilities.
     """
     engine, domain_id, display_name = _resolve_domain(domain, app.state)
+    if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(domain.lower()):
+        data = poea_dynamic.build_narrative_snapshot(display_name, domain_id)
+        if data is not None:
+            return NarrativeSnapshotOut.model_validate(data)
     pop = engine.get_population(domain_id)
     dom = pop.dominant()
     active = pop.active_candidates()
@@ -1755,12 +1972,153 @@ async def narrative_snapshot(domain: str = Query("ng")) -> NarrativeSnapshotOut:
     )
 
 
+# ── Report endpoints ──────────────────────────────────────────────────────────
+#
+# GET  /v1/report/{domain}          — read-only; returns latest cached report or
+#                                     {"found": false} if none exists. Never calls LLM.
+# POST /v1/report/{domain}/refresh  — builds snapshot, checks hash, calls Fireworks
+#                                     only when snapshot has changed.
+
+
+class DomainReportOut(BaseModel):
+    found: bool = True
+    domain: str
+    ontology_mode: str
+    generated_at: str
+    snapshot_hash: str
+    report: str
+    cached: bool = True
+    regenerated: bool = False
+    stale: bool = False
+
+
+class DomainReportNotFound(BaseModel):
+    found: bool = False
+    domain: str
+    ontology_mode: str
+
+
+@app.get("/v1/report/{domain}")
+async def domain_report_read(
+    domain: str,
+    ontology_mode: str = Query("apriori"),
+) -> Any:
+    """
+    Read-only: return the latest cached report for this domain/mode without
+    rebuilding the snapshot or calling the LLM.  Returns found=False when no
+    cached report exists so callers can distinguish "never generated" from an
+    error.
+    """
+    key = domain.lower()
+    if key not in _DOMAIN_MAP:
+        raise HTTPException(status_code=404, detail=f"Unknown domain '{domain}'")
+
+    data_dir = _data_dir()
+    stale_path = _report.stale_cache_path(data_dir, key, ontology_mode)
+    if not stale_path:
+        return DomainReportNotFound(domain=key, ontology_mode=ontology_mode)
+
+    cached = _report.load_cache(stale_path)
+    if not cached:
+        return DomainReportNotFound(domain=key, ontology_mode=ontology_mode)
+
+    return DomainReportOut(**cached, found=True, cached=True, regenerated=False)
+
+
+@app.post("/v1/report/{domain}/refresh")
+async def domain_report_refresh(
+    domain: str,
+    ontology_mode: str = Query("apriori"),
+) -> Any:
+    """
+    Build the current snapshot, compute its hash, and return a report.
+
+    - If the snapshot hash matches the latest cached report, return that
+      cached report immediately (cached=True, regenerated=False).
+    - If the hash has changed (new evidence, changed beliefs, new frontier),
+      call Fireworks AI, persist the new report, and return it
+      (cached=False, regenerated=True).
+    - On Fireworks failure: serve matching or stale cached report with
+      stale=True; return 502 only if no cached report exists at all.
+
+    Requires FIREWORKS_API_KEY to be set when generation is needed.
+    """
+    key = domain.lower()
+    if key not in _DOMAIN_MAP:
+        raise HTTPException(status_code=404, detail=f"Unknown domain '{domain}'")
+
+    # Build snapshot once — only here in the POST path, never in GET.
+    snapshot_out = await narrative_snapshot(domain=key, ontology_mode=ontology_mode)
+    snapshot_dict = snapshot_out.model_dump()
+    h = _report.snapshot_hash(snapshot_dict)
+
+    data_dir = _data_dir()
+    exact_path = _report.cache_path(data_dir, key, ontology_mode, h)
+
+    # Cache hit: snapshot unchanged, return immediately without calling LLM.
+    exact = _report.load_cache(exact_path)
+    if exact:
+        logger.debug("Report cache hit %s/%s hash=%s", key, ontology_mode, h[:12])
+        return DomainReportOut(**exact, found=True, cached=True, regenerated=False)
+
+    # Need to generate.  Fail fast with a clear message if key is absent.
+    api_key = os.environ.get(_report._FIREWORKS_API_KEY_ENV, "")
+    if not api_key:
+        stale_path = _report.stale_cache_path(data_dir, key, ontology_mode)
+        if stale_path:
+            stale = _report.load_cache(stale_path)
+            if stale:
+                logger.info("Serving stale report for %s (FIREWORKS_API_KEY not set)", key)
+                return DomainReportOut(**stale, found=True, cached=True, regenerated=False, stale=True)
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "FIREWORKS_API_KEY not configured. "
+                "Set it to enable report generation."
+            ),
+        )
+
+    try:
+        report_text = await _report.generate_report(
+            snapshot=snapshot_dict,
+            api_key=api_key,
+            timeout=90.0,
+        )
+    except Exception as exc:
+        logger.error("Fireworks generation failed for %s: %s", key, exc, exc_info=True)
+        stale_path = _report.stale_cache_path(data_dir, key, ontology_mode)
+        if stale_path:
+            stale = _report.load_cache(stale_path)
+            if stale:
+                logger.info("Serving stale report for %s after generation failure", key)
+                return DomainReportOut(**stale, found=True, cached=True, regenerated=False, stale=True)
+        raise HTTPException(
+            status_code=502,
+            detail=f"Report generation failed: {exc}",
+        ) from exc
+
+    data = {
+        "domain": key,
+        "ontology_mode": ontology_mode,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "snapshot_hash": h,
+        "report": report_text,
+    }
+    _report.save_cache(exact_path, data)
+    return DomainReportOut(**data, found=True, cached=False, regenerated=True)
+
+
 @app.get("/v1/evidence/recent", response_model=EvidenceOut)
 async def evidence_recent(
     domain: str = Query("ng"),
     limit: int = Query(20, ge=1, le=100),
+    ontology_mode: str = Query("apriori"),
 ) -> EvidenceOut:
     engine, domain_id, display_name = _resolve_domain(domain, app.state)
+    if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(domain.lower()):
+        return EvidenceOut.model_validate(
+            poea_dynamic.build_recent_evidence(display_name, limit)
+        )
     raw_records = engine.evidence_store.load_recent(domain_id, limit)
 
     records: list[EvidenceRecordOut] = []

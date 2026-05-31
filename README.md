@@ -4,7 +4,7 @@ Backend for the Epistemic State Monitor: a probabilistic ontology engine for mac
 
 ## Active Domains
 
-Ten domains are live and registered in the API:
+Eleven domains are live and registered in the API:
 
 | Key | Module ID | Cadence | Data Sources |
 |-----|-----------|---------|-------------|
@@ -18,8 +18,9 @@ Ten domains are live and registered in the API:
 | `cr` | `crypto-regime-v1` | Weekly | CoinGecko + yfinance + FRED |
 | `gp` | `geopolitics-v1` | Weekly | GDELT + FRED |
 | `sf` | `sf-urban-v1` | Weekly | SF Open Data + FRED |
+| `art` | `art_prestige_regime_v1` | Monthly | art-market-domain manual/live ingestion |
 
-Each domain tracks eight Boolean variables across five seed candidate DAGs.
+Most domains track eight Boolean variables across five seed candidate DAGs. The art domain tracks 25 Boolean variables across five seed candidate DAGs.
 
 ## Domain Variables
 
@@ -53,6 +54,9 @@ Each domain tracks eight Boolean variables across five seed candidate DAGs.
 **`sf-urban-v1`**: `TechHiringAccelerating`, `OfficeVacancyFalling`, `RetailClosureElevated`, `PermitActivityRising`, `CrimeIndexElevated`, `StartupFormationRising`, `FootTrafficRecovering`, `PopulationFlowPositive`
 — SF Open Data: permits (`i98e-djp9`), crime (`wg3w-h783`), businesses (`g8m3-pdis`); FRED: `SANF806INFO`, `SANF806LEIH`, `SANF806NA` (SF-Oakland-Fremont MSA, monthly SA)
 
+**`art_prestige_regime_v1`**: 25 art prestige regime variables supplied by the external `art-market-domain` package; backend registers `ArtPrestigeRegimeV1` under key `art`.
+— Manual JSON ingestion via `art_prestige_regime_v1.manual_ingest`; live ingestion is owned by the art domain package.
+
 ## Architecture
 
 The engine has three belief levels:
@@ -74,7 +78,7 @@ Variable identity is deterministic via `stable_variable_id(domain_module_id, var
 
 ## API
 
-All routes accept a `?domain=` query parameter using the two-letter key (e.g., `mr`, `sf`):
+All routes accept a `?domain=` query parameter using the domain key (e.g., `mr`, `sf`, `art`):
 
 ```
 GET  /v1/population/status
@@ -86,6 +90,8 @@ GET  /v1/evidence/recent
 POST /v1/ingest/trigger
 POST /v1/ingest/backfill?days=N
 GET  /v1/export/narrative-snapshot
+GET  /v1/report/{domain}                     # read cached report (no LLM call)
+POST /v1/report/{domain}/refresh             # regenerate if snapshot changed (Fireworks)
 GET  /v1/debug/entropy
 GET  /v1/debug/evidence-geometry
 GET  /v1/debug/learning
@@ -116,8 +122,9 @@ Environment (`.env`):
 ```bash
 FRED_API_KEY=...                    # required for MR, AI, SD, CC, ER, LM, CR, GP, SF
 EIA_API_KEY=...                     # required for NG
+FIREWORKS_API_KEY=...               # required for POST /v1/report/{domain}/refresh
 EVIDENCE_SCHEDULER_ENABLED=true
-POE_DATA_DIR=.
+POE_DATA_DIR=/data                  # Railway: persistent volume mount; default "." loses reports on redeploy
 ```
 
 No key required for SF Open Data, CoinGecko public endpoints, or GDELT. SEC EDGAR requires only a valid `User-Agent` header.

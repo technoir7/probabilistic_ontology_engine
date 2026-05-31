@@ -106,8 +106,7 @@ Fix direction:
 
 ---
 
-## 8. Consider inline LLM interpretation in dashboard
+## 8. ~~Consider inline LLM interpretation in dashboard~~ — implemented
 
-The current workflow downloads prompt + JSON for offline LLM interpretation. Inline interpretation would shorten the loop but adds API cost and UX surface area.
-
-Keep as a deferred dashboard decision; it is not a backend prerequisite.
+`GET /v1/report/{domain}` returns the latest cached report (no LLM call).
+`POST /v1/report/{domain}/refresh` builds the snapshot, hashes the epistemic state, and calls Fireworks AI only when the snapshot has changed. Reports persist under `POE_DATA_DIR/reports/`. Cache key = `domain__mode__pv{PROMPT_VERSION}__{snapshot_hash[:16]}.json`; bump `PROMPT_VERSION` in `src/engine/api/report.py` when the prompt template changes.
