@@ -6,7 +6,7 @@ used in probabilistic_ontology_engine_abductive/src/poea/llm.py.
 
 Env vars:
   FIREWORKS_API_KEY   (required for generation)
-  FIREWORKS_REPORT_MODEL  (optional; defaults to accounts/fireworks/models/llama-v3p3-70b-instruct)
+  FIREWORKS_REPORT_MODEL  (optional; defaults to accounts/fireworks/models/deepseek-v4-pro)
 """
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ _PROMPT_PATH = Path(__file__).resolve().parents[3] / "prompts" / "snapshot_repor
 
 # Fireworks constants matching POE-A defaults.
 _FIREWORKS_BASE_URL = "https://api.fireworks.ai/inference/v1"
-_DEFAULT_MODEL = "accounts/fireworks/models/llama-v3p3-70b-instruct"
+_DEFAULT_MODEL = "accounts/fireworks/models/deepseek-v4-pro"
 _FIREWORKS_API_KEY_ENV = "FIREWORKS_API_KEY"
 _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 
