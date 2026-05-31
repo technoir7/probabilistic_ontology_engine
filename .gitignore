@@ -48,6 +48,8 @@ junit.xml
 *.db
 *.sqlite
 *.sqlite3
+*.db-wal
+*.db-shm
 
 # PostgreSQL local dumps
 *.sql.gz
