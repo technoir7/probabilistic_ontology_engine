@@ -21,7 +21,8 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 # Resolve prompt path relative to this file — works from any cwd.
-_PROMPT_PATH = Path(__file__).resolve().parents[4] / "prompts" / "snapshot_report.md"
+# parents[3] of src/engine/api/report.py is the project root (where prompts/ lives).
+_PROMPT_PATH = Path(__file__).resolve().parents[3] / "prompts" / "snapshot_report.md"
 
 # Fireworks constants matching POE-A defaults.
 _FIREWORKS_BASE_URL = "https://api.fireworks.ai/inference/v1"
