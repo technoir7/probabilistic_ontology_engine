@@ -25,7 +25,7 @@ TEST-RC-20 : bumping PROMPT_VERSION produces a different cache path for the same
 TEST-RC-21 : stale_cache_path ignores files from a different prompt version
 TEST-RC-22 : contains_meta_reasoning detects scaffolding phrases
 TEST-RC-23 : contains_meta_reasoning passes clean analyst-brief text
-TEST-RC-24 : POST refresh propagates meta-reasoning ValueError as 502
+TEST-RC-24 : POST refresh still returns 200 when retry also matches meta-reasoning heuristic
 """
 from __future__ import annotations
 
@@ -390,18 +390,22 @@ def test_stale_cache_path_ignores_old_prompt_version(tmp_path, monkeypatch):
 def test_contains_meta_reasoning_detects_scaffolding():
     """Common LLM preamble patterns must be detected."""
     bad_outputs = [
-        "We are asked to write a plain-English interpretation of this snapshot.",
+        "We are asked to write a plain-English interpretation of the data.",
         "Let's analyze the following JSON snapshot to produce a report.",
         "Let's extract and interpret the key signals from the data.",
         "Let me walk through this step by step.",
         "Interpret the JSON data and write a brief.",
         "Based on the JSON, the current regime shows...",
+        "Based on the snapshot JSON, here is my analysis:",
         "Based on the snapshot, here is my analysis:",
+        "Based on the provided data, the conclusion is:",
+        "The provided JSON shows elevated stress.",
         "Looking at the provided data, we can see...",
         "As requested, here is the report:",
         "In this report, I will cover the following topics.",
         "I will now write the analyst brief.",
         "You've provided a probabilistic snapshot.",
+        "The snapshot JSON indicates the following conditions.",
     ]
     for text in bad_outputs:
         assert contains_meta_reasoning(text), f"Expected meta-reasoning detected in: {text!r}"
@@ -415,26 +419,48 @@ def test_contains_meta_reasoning_passes_clean_report():
         "## BOTTOM LINE\n\nNatural gas prices are elevated with strong heating demand.",
         "The dominant hypothesis is a credit-led contraction scenario.",
         "InflationShock (inflation running above historical average) is firmly on.",
+        # "the snapshot" alone is NOT a banned phrase — only "the snapshot json"
+        # or "based on the snapshot" are flagged.  Art-world usage is fine:
+        "This snapshot of the art market shows fragmentation across regional scenes.",
+        "A snapshot of the current regime reveals three competing hypotheses.",
+        "The art world snapshot shows institutional conservatism receding.",
     ]
     for text in clean_outputs:
         assert not contains_meta_reasoning(text), f"False positive for clean text: {text!r}"
 
 
-# ─── TEST-RC-24: meta-reasoning error propagates as 502 ──────────────────────
+# ─── TEST-RC-24: retry-after-meta-reasoning still returns 200 ────────────────
 
-def test_refresh_meta_reasoning_raises_502(tmp_path, monkeypatch):
-    """If generate_report raises ValueError (meta-reasoning after retry), endpoint returns 502."""
+def test_refresh_still_returns_200_when_retry_matches_heuristic(tmp_path, monkeypatch):
+    """
+    Even when both the first and retry attempts match the meta-reasoning heuristic,
+    generate_report must return the retry text (with a logged warning) rather than
+    raising — so the endpoint returns 200, not 502.
+    """
     monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
     mock_snap = _mock_snap_model()
 
-    async def meta_reasoning_failure(*a, **kw):
-        raise ValueError("Generated report contains disallowed meta-reasoning after retry")
+    call_count = {"n": 0}
 
-    with patch("src.engine.api.app.narrative_snapshot", new=AsyncMock(return_value=mock_snap)), \
-         patch("src.engine.api.report.generate_report", new=meta_reasoning_failure):
+    # Both first and strict attempts return a phrase that matches the heuristic.
+    def always_meta(snapshot, api_key, strict=False):
+        call_count["n"] += 1
+        return "Let me walk through this: the market is tightening."
+
+    async def _generate(snapshot, api_key, timeout=90.0):
+        import src.engine.api.report as _r
+        text = _r._generate_report_sync(snapshot, api_key)
+        if _r.contains_meta_reasoning(text):
+            text = _r._generate_report_sync(snapshot, api_key, strict=True)
+            # Even if still matching, return it — do not raise.
+        return text
+
+    with patch("src.engine.api.report._generate_report_sync", new=always_meta), \
+         patch("src.engine.api.app.narrative_snapshot", new=AsyncMock(return_value=mock_snap)):
         client = TestClient(api_app.app)
         res = client.post("/v1/report/ng/refresh?ontology_mode=apriori")
 
-    assert res.status_code == 502
-    assert "meta-reasoning" in res.json()["detail"].lower()
+    # Must succeed despite heuristic hits — better than 502.
+    assert res.status_code == 200
+    assert call_count["n"] == 2  # first attempt + one retry

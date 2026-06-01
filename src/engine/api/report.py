@@ -131,13 +131,15 @@ _META_PATTERNS = (
     "let's extract",
     "let me ",
     "interpret the json",
-    "the snapshot",
-    "i will now",
-    "in this report,",
-    "you've provided",
+    "the snapshot json",    # specific: referencing the data artifact, not "snapshot of the market"
     "based on the json",
     "based on the snapshot",
+    "based on the provided",
+    "the provided json",
     "looking at the provided",
+    "you've provided",
+    "i will now",
+    "in this report,",
     "as requested,",
 )
 
@@ -221,8 +223,12 @@ async def generate_report(
             timeout=timeout,
         )
         if contains_meta_reasoning(text):
-            raise ValueError(
-                "Generated report contains disallowed meta-reasoning after retry. "
-                "Check prompt configuration."
+            # Retry also matched — log the warning but return the text rather than
+            # returning a 502.  A slightly impure report is better than a broken
+            # user experience; the strict prompt usually produces cleaner output
+            # even when the heuristic still fires on borderline phrases.
+            logger.warning(
+                "Retry output still matches meta-reasoning heuristic; "
+                "serving it anyway — review patterns if this recurs"
             )
     return text
