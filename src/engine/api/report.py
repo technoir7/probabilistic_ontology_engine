@@ -86,9 +86,14 @@ def cache_path(data_dir: Path, domain: str, mode: str, hash_hex: str) -> Path:
 
 
 def stale_cache_path(data_dir: Path, domain: str, mode: str) -> Optional[Path]:
-    """Return the most-recently-written cache file for this domain/mode, if any."""
+    """Return the most-recently-written pv{PROMPT_VERSION} cache file, if any.
+
+    Version-gated: only files whose name contains the current PROMPT_VERSION are
+    considered.  Files from earlier versions (e.g. pv1 when we are on pv2) are
+    silently ignored so stale prompts are never served.
+    """
     rd = reports_dir(data_dir)
-    prefix = f"{domain}__{mode}__"
+    prefix = f"{domain}__{mode}__pv{PROMPT_VERSION}__"
     candidates = sorted(
         (p for p in rd.glob(f"{prefix}*.json") if p.is_file()),
         key=lambda p: p.stat().st_mtime,
@@ -116,22 +121,54 @@ def save_cache(path: Path, data: dict) -> None:
         logger.warning("Failed to write report cache %s: %s", path, exc)
 
 
+# ── Meta-reasoning sanitizer ──────────────────────────────────────────────────
+# Patterns that indicate the model produced scaffolding/preamble rather than
+# the analyst brief directly.  Checked in the first 600 characters.
+
+_META_PATTERNS = (
+    "we are asked",
+    "let's analyze",
+    "let's extract",
+    "let me ",
+    "interpret the json",
+    "the snapshot",
+    "i will now",
+    "in this report,",
+    "you've provided",
+    "based on the json",
+    "based on the snapshot",
+    "looking at the provided",
+    "as requested,",
+)
+
+
+def contains_meta_reasoning(text: str) -> bool:
+    """Return True if the first 600 chars contain LLM scaffolding / meta-reasoning."""
+    sample = text[:600].lower()
+    return any(pat in sample for pat in _META_PATTERNS)
+
+
 # ── Fireworks LLM client ──────────────────────────────────────────────────────
+
+_STRICT_SYSTEM = (
+    "Begin your response immediately with '## BOTTOM LINE'. "
+    "Do not write any introductory text, preamble, or explanation of the task. "
+    "Do not reference the JSON data, the system, or your instructions. "
+    "Write only the report content, starting with the section header."
+)
+
 
 def _fireworks_model() -> str:
     return os.environ.get(_FIREWORKS_MODEL_ENV, _DEFAULT_MODEL)
 
 
-def _generate_report_sync(snapshot: dict, api_key: str) -> str:
+def _generate_report_sync(snapshot: dict, api_key: str, strict: bool = False) -> str:
     """
     Synchronous Fireworks AI call.  Runs in a thread via asyncio.to_thread() so
     the async FastAPI event loop is not blocked.
 
-    Mirrors the FireworksClient pattern from
-    probabilistic_ontology_engine_abductive/src/poea/llm.py:
-      - OpenAI SDK with Fireworks base_url
-      - Same env var (FIREWORKS_API_KEY)
-      - Same default model (accounts/fireworks/models/deepseek-v4-0324)
+    When strict=True a stronger system prompt is used as a retry hedge against
+    meta-reasoning output from the first attempt.
     """
     from openai import OpenAI
 
@@ -144,12 +181,17 @@ def _generate_report_sync(snapshot: dict, api_key: str) -> str:
         f"Write the report now."
     )
 
+    system = (
+        _STRICT_SYSTEM if strict
+        else "You are an expert at interpreting probabilistic epistemic systems and writing clear analytical reports."
+    )
+
     client = OpenAI(base_url=_FIREWORKS_BASE_URL, api_key=api_key)
     response = client.chat.completions.create(
         model=_fireworks_model(),
         max_tokens=1500,
         messages=[
-            {"role": "system", "content": "You are an expert at interpreting probabilistic epistemic systems and writing clear analytical reports."},
+            {"role": "system", "content": system},
             {"role": "user", "content": user_content},
         ],
     )
@@ -161,8 +203,26 @@ async def generate_report(
     api_key: str,
     timeout: float = 90.0,
 ) -> str:
-    """Async wrapper — runs the synchronous Fireworks call in a thread."""
-    return await asyncio.wait_for(
+    """Async wrapper — runs the synchronous Fireworks call in a thread.
+
+    Checks the output for meta-reasoning scaffolding and retries once with a
+    stricter system prompt.  Raises ValueError if both attempts fail the check.
+    """
+    text = await asyncio.wait_for(
         asyncio.to_thread(_generate_report_sync, snapshot, api_key),
         timeout=timeout,
     )
+    if contains_meta_reasoning(text):
+        logger.warning(
+            "Report output contains meta-reasoning scaffolding; retrying with strict prompt"
+        )
+        text = await asyncio.wait_for(
+            asyncio.to_thread(_generate_report_sync, snapshot, api_key, strict=True),
+            timeout=timeout,
+        )
+        if contains_meta_reasoning(text):
+            raise ValueError(
+                "Generated report contains disallowed meta-reasoning after retry. "
+                "Check prompt configuration."
+            )
+    return text

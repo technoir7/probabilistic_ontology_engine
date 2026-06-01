@@ -22,6 +22,10 @@ TEST-RC-17 : POST refresh Fireworks failure with no cache returns 502
 TEST-RC-18 : GET /v1/report/{domain} does not build snapshot (not expensive)
 TEST-RC-19 : snapshot_hash excludes interpretation_hints (time-derived narrative)
 TEST-RC-20 : bumping PROMPT_VERSION produces a different cache path for the same hash
+TEST-RC-21 : stale_cache_path ignores files from a different prompt version
+TEST-RC-22 : contains_meta_reasoning detects scaffolding phrases
+TEST-RC-23 : contains_meta_reasoning passes clean analyst-brief text
+TEST-RC-24 : POST refresh propagates meta-reasoning ValueError as 502
 """
 from __future__ import annotations
 
@@ -36,6 +40,7 @@ from fastapi.testclient import TestClient
 from src.engine.api import app as api_app
 from src.engine.api.report import (
     cache_path,
+    contains_meta_reasoning,
     load_cache,
     reports_dir,
     save_cache,
@@ -353,3 +358,83 @@ def test_prompt_version_changes_cache_path(tmp_path, monkeypatch):
     monkeypatch.setattr(_report_mod, "PROMPT_VERSION", "2")
     path_v2 = cache_path(tmp_path, "ng", "apriori", h)
     assert path_v1 != path_v2
+
+
+# ─── TEST-RC-21: stale_cache_path is version-gated ───────────────────────────
+
+def test_stale_cache_path_ignores_old_prompt_version(tmp_path, monkeypatch):
+    """Files from a previous PROMPT_VERSION must never be returned by stale_cache_path."""
+    import src.engine.api.report as _report_mod
+
+    monkeypatch.setattr(_report_mod, "PROMPT_VERSION", "99")
+
+    # Plant a file that belongs to pv1 (wrong version)
+    pv1_path = _report_mod.reports_dir(tmp_path) / "ng__apriori__pv1__abc1234567890ab.json"
+    _report_mod.save_cache(pv1_path, {"domain": "ng", "report": "old bad pv1 report"})
+
+    # stale_cache_path with PROMPT_VERSION="99" must not find the pv1 file
+    result = _report_mod.stale_cache_path(tmp_path, "ng", "apriori")
+    assert result is None
+
+    # Plant a pv99 file (correct version)
+    pv99_path = cache_path(tmp_path, "ng", "apriori", "def" * 6)
+    _report_mod.save_cache(pv99_path, {"domain": "ng", "report": "new pv99 report"})
+
+    # Now it should find the pv99 file
+    result = _report_mod.stale_cache_path(tmp_path, "ng", "apriori")
+    assert result == pv99_path
+
+
+# ─── TEST-RC-22/23: meta-reasoning sanitizer ─────────────────────────────────
+
+def test_contains_meta_reasoning_detects_scaffolding():
+    """Common LLM preamble patterns must be detected."""
+    bad_outputs = [
+        "We are asked to write a plain-English interpretation of this snapshot.",
+        "Let's analyze the following JSON snapshot to produce a report.",
+        "Let's extract and interpret the key signals from the data.",
+        "Let me walk through this step by step.",
+        "Interpret the JSON data and write a brief.",
+        "Based on the JSON, the current regime shows...",
+        "Based on the snapshot, here is my analysis:",
+        "Looking at the provided data, we can see...",
+        "As requested, here is the report:",
+        "In this report, I will cover the following topics.",
+        "I will now write the analyst brief.",
+        "You've provided a probabilistic snapshot.",
+    ]
+    for text in bad_outputs:
+        assert contains_meta_reasoning(text), f"Expected meta-reasoning detected in: {text!r}"
+
+
+def test_contains_meta_reasoning_passes_clean_report():
+    """Well-formed analyst briefs must not trigger the sanitizer."""
+    clean_outputs = [
+        "## BOTTOM LINE\n\nThe macro regime is tightening.",
+        "## BOTTOM LINE\n\nCurrent evidence points to a recessionary scenario.",
+        "## BOTTOM LINE\n\nNatural gas prices are elevated with strong heating demand.",
+        "The dominant hypothesis is a credit-led contraction scenario.",
+        "InflationShock (inflation running above historical average) is firmly on.",
+    ]
+    for text in clean_outputs:
+        assert not contains_meta_reasoning(text), f"False positive for clean text: {text!r}"
+
+
+# ─── TEST-RC-24: meta-reasoning error propagates as 502 ──────────────────────
+
+def test_refresh_meta_reasoning_raises_502(tmp_path, monkeypatch):
+    """If generate_report raises ValueError (meta-reasoning after retry), endpoint returns 502."""
+    monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
+    monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
+    mock_snap = _mock_snap_model()
+
+    async def meta_reasoning_failure(*a, **kw):
+        raise ValueError("Generated report contains disallowed meta-reasoning after retry")
+
+    with patch("src.engine.api.app.narrative_snapshot", new=AsyncMock(return_value=mock_snap)), \
+         patch("src.engine.api.report.generate_report", new=meta_reasoning_failure):
+        client = TestClient(api_app.app)
+        res = client.post("/v1/report/ng/refresh?ontology_mode=apriori")
+
+    assert res.status_code == 502
+    assert "meta-reasoning" in res.json()["detail"].lower()
