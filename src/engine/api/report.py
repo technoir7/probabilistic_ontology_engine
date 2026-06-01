@@ -36,7 +36,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 # cache filename so that any existing cached report is invalidated on the next
 # POST /v1/report/{domain}/refresh even if the snapshot is otherwise unchanged.
 
-PROMPT_VERSION = "1"
+PROMPT_VERSION = "2"
 
 
 # ── Hashing ──────────────────────────────────────────────────────────────────
