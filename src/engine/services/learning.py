@@ -15,7 +15,6 @@ from typing import Any
 from uuid import UUID
 
 from ..schemas import EvidenceRecord, MissingnessType, OntologyCandidate
-from ..variable_identity import normalize_evidence_record_variable_ids
 
 _SOFT = MissingnessType.SOFT_OBSERVED
 _HARD = MissingnessType.OBSERVED
@@ -64,7 +63,6 @@ class LearningService:
         Fully-observed records → exact update.
         Partially-observed records → forward mean-field imputation (single pass).
         """
-        batch = _normalize_batch_variable_ids(batch, candidate)
         vid_to_name = {str(v.variable_id): v.name for v in candidate.variables}
         topo_order = candidate.topological_order()
         all_names = {v.name for v in candidate.variables}
@@ -228,7 +226,6 @@ class LearningService:
 
         Accumulates the final expected sufficient statistics into the CPT counts.
         """
-        batch = _normalize_batch_variable_ids(batch, candidate)
         vid_to_name = {str(v.variable_id): v.name for v in candidate.variables}
         all_names = {v.name for v in candidate.variables}
 
@@ -405,7 +402,6 @@ class LearningService:
 
         Uses Laplace-smoothed CPT probabilities.
         """
-        batch = _normalize_batch_variable_ids(batch, candidate)
         vid_to_name = {str(v.variable_id): v.name for v in candidate.variables}
         total_ll = 0.0
 
@@ -458,14 +454,3 @@ class LearningService:
                         total_ll += p_obs * cpt_data.log_prob(val, parent_assignment)
 
         return total_ll
-
-
-def _normalize_batch_variable_ids(
-    batch: list[EvidenceRecord],
-    candidate: OntologyCandidate,
-) -> list[EvidenceRecord]:
-    normalized = []
-    for record in batch:
-        fixed, _ = normalize_evidence_record_variable_ids(record, candidate.variables)
-        normalized.append(fixed)
-    return normalized
