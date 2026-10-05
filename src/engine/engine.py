@@ -56,7 +56,9 @@ class ProbabilisticOntologyEngine:
 
         # Services
         self.learning_service = LearningService(self.parameter_store)
-        self.edge_existence_service = EdgeExistenceService(self.parameter_store)
+        # One per domain, built in register_domain with that domain's
+        # existence_thresholds(); a single default-threshold service ignored them.
+        self._edge_existence: dict[str, EdgeExistenceService] = {}
         self.inference_service = InferenceService(self.parameter_store)
         self.population_manager = PopulationManager(
             parameter_store=self.parameter_store,
@@ -87,6 +89,7 @@ class ProbabilisticOntologyEngine:
         self._modules[module_id] = domain_module
 
         thresholds = domain_module.existence_thresholds()
+        self._edge_existence[module_id] = EdgeExistenceService(self.parameter_store, thresholds)
 
         # Build initial candidates
         initial_candidates = domain_module.initial_candidates()
@@ -241,6 +244,7 @@ class ProbabilisticOntologyEngine:
         assert domain, "No active domain"
 
         pop = self.population_manager.get_population(domain)
+        edge_existence = self._edge_existence[domain]
         idx = self._batch_index.get(domain, 0)
         n_records = len(batch)
 
@@ -261,8 +265,8 @@ class ProbabilisticOntologyEngine:
             self.learning_service.accumulate(batch, candidate)
 
             # Level 2 — edge existence update
-            self.edge_existence_service.update(candidate)
-            self.edge_existence_service.prune_below_threshold(candidate, self.parameter_store)
+            edge_existence.update(candidate)
+            edge_existence.prune_below_threshold(candidate, self.parameter_store)
 
             # Score candidate
             log_lik = self.learning_service.compute_log_likelihood(batch, candidate)

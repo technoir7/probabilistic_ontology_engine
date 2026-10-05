@@ -6760,7 +6760,7 @@
      "target": "PrestigeFragmentation"
     },
     {
-     "explore_weight": 0.480515006,
+     "explore_weight": 2.0,
      "note": "existence_probability=0.252 in explore band [0.25, 0.75]",
      "probability": 0.25173412,
      "relation": "prestige fragmentation \u2192 regional scenes gain visibility",
@@ -6987,7 +6987,7 @@
    ],
    "frontier_edges": [
     {
-     "explore_weight": 0.588757672,
+     "explore_weight": 2.0,
      "note": "existence_probability=0.254 in explore band [0.25, 0.75]",
      "probability": 0.254367505,
      "relation": "AI image presence \u2192 institutional normalisation",
@@ -6995,7 +6995,7 @@
      "target": "AIArtInstitutionalAcceptance"
     },
     {
-     "explore_weight": 1.537007691,
+     "explore_weight": 2.0,
      "note": "existence_probability=0.291 in explore band [0.25, 0.75]",
      "probability": 0.29093211,
      "relation": "AI institutional acceptance \u2192 museum acquisitions",
@@ -7003,7 +7003,7 @@
      "target": "MuseumAcquisitionMomentum"
     },
     {
-     "explore_weight": 1.133035551,
+     "explore_weight": 2.0,
      "note": "existence_probability=0.270 in explore band [0.25, 0.75]",
      "probability": 0.270192128,
      "relation": "AI acceptance \u2192 conceptual framework dominance",
@@ -7011,7 +7011,7 @@
      "target": "ConceptualDominance"
     },
     {
-     "explore_weight": 0.970941974,
+     "explore_weight": 1.407100423,
      "note": "existence_probability=0.279 in explore band [0.25, 0.75]",
      "probability": 0.278911672,
      "relation": "EmbodimentDiscourseRising\u2192RegionalSceneMomentum",

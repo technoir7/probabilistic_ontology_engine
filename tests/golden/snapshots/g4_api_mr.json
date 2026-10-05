@@ -3103,7 +3103,7 @@
    ],
    "frontier_edges": [
     {
-     "explore_weight": 1.117745955,
+     "explore_weight": 1.340095641,
      "note": "existence_probability=0.293 in explore band [0.25, 0.75]",
      "probability": 0.292972005,
      "relation": "AIRiskOn\u2192InflationShock",

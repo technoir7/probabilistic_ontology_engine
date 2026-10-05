@@ -2989,7 +2989,7 @@
    ],
    "frontier_edges": [
     {
-     "explore_weight": 1.53636413,
+     "explore_weight": 2.0,
      "note": "existence_probability=0.291 in explore band [0.25, 0.75]",
      "probability": 0.290929122,
      "relation": "capital concentration \u2192 capex acceleration",
@@ -3105,7 +3105,7 @@
      "target": "LaborProductivityImproving"
     },
     {
-     "explore_weight": 1.532888111,
+     "explore_weight": 2.0,
      "note": "existence_probability=0.290 in explore band [0.25, 0.75]",
      "probability": 0.290037897,
      "relation": "productivity \u2192 GDP lift",
