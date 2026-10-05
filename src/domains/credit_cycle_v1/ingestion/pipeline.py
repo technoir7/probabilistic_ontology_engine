@@ -193,13 +193,14 @@ def _compute_refinancing_stress(
     if len(dgs5_obs) < _MIN_OBS["DGS5"] or len(hy_obs) < _MIN_OBS["BAMLH0A0HYM2"]:
         return None, 0.5
 
-    # Build composite series (shorter of the two)
-    n = min(len(dgs5_obs), len(hy_obs), 260)
+    # Pair by date: the two series have different holiday calendars, so pairing
+    # by position drifts by a day after every date only one of them has.
+    hy_by_date = {o.obs_date: o.value for o in hy_obs}
     composite_values = [
-        (dgs5_obs[i].value + hy_obs[i].value) / 2.0
-        for i in range(n)
-        if i < len(dgs5_obs) and i < len(hy_obs)
-    ]
+        (o.value + hy_by_date[o.obs_date]) / 2.0
+        for o in dgs5_obs
+        if o.obs_date in hy_by_date
+    ][:260]
     if not composite_values:
         return None, 0.5
     current = composite_values[0]
