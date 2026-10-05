@@ -23,7 +23,8 @@ from ..schemas import (
     OntologyPopulation,
     PopulationAggregation,
 )
-from ..stores.parameter_store import CPTData, ParameterStore
+from ..model.cpt import CPTData
+from ..stores.parameter_store import ParameterStore
 
 
 class InferenceService:

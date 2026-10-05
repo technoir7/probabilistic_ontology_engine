@@ -18,7 +18,8 @@ from ..variable_identity import normalize_evidence_record_variable_ids
 
 _SOFT = MissingnessType.SOFT_OBSERVED
 _HARD = MissingnessType.OBSERVED
-from ..stores.parameter_store import CPTData, ParameterStore
+from ..model.cpt import CPTData
+from ..stores.parameter_store import ParameterStore
 
 
 class LearningService:
