@@ -1,6 +1,6 @@
 # Refactor Spec — Probabilistic Ontology Engine
 
-Status: in progress — Phase 0 done (branch `refactor/phase-0-safety-net`) · Date: 2026-10-04 · Scope: `src/`, `tests/`, `scripts/`, repo hygiene
+Status: in progress — Phases 0–1 done (branch `refactor/phase-0-safety-net`) · Date: 2026-10-04 · Scope: `src/`, `tests/`, `scripts/`, repo hygiene
 
 This is the plan we follow to refactor the backend. It says what is wrong (with
 evidence), what the code should look like afterwards, and the order to get there
@@ -218,7 +218,7 @@ last silently gives the domain daily manual triggers). Weekly cadence → 9
 | E1 | 73 broad `except Exception` handlers in `src/` (17 followed by `pass`): app.py 10, sfgov 6, coingecko 6, gdelt 4, every scheduler 2, every FRED client 1, inference 3, learning 2. | `grep -rnE "except( Exception)?( as \w+)?:" src` |
 | E2 | Inference returns errors as data: `_query_candidate` catches everything and returns `{"posteriors": {}, "error": str(e)}` (`inference.py:113-118`); per-variable failures fall back to uniform (`:102-104`); `check_model()` failures are ignored (`:164-167`); `_encode_value` maps unknown values to state 0 (`:246-251`). The narrative snapshot then turns any failure into `prob = 0.5` (`app.py:1769-1770`). A broken model looks like "maximally uncertain". | — |
 | E3 | `accumulate_em` silently drops to a uniform E-step if the pgmpy build fails (`learning.py:361-362`). | — |
-| E4 | `_resolve_query_candidate` returns the dominant candidate when given a malformed ID instead of 400 (`app.py:654-658`); reads a `label` attribute that does not exist (`:650`). | — |
+| E4 | `_resolve_query_candidate` returns the dominant candidate when given a malformed ID instead of 400 (`app.py:654-658`); reads a `label` attribute that does not exist (`:650`). **The live frontend depends on this:** `epistemic-monitor` sends `candidate_id: 'cand-004'` (a mock-data label) from `BeliefGraph`, `EdgeExistencePanel`, `ExplorationFrontier`. Making it a 400 needs a matching frontend change first. | `epistemic-monitor/components/BeliefGraph.tsx:101-107` |
 | E5 | Report cache read/write failures are logged and ignored (`report.py:107-121`); a failed write means every refresh pays for a new LLM call. | — |
 
 ### 3.7 Tests
@@ -257,7 +257,7 @@ is moved (so the fix is easy to review) — except where noted.
 | B2 | **Domain edge-pruning thresholds are ignored** (C6). Every domain prunes at the default 0.05 regardless of its `existence_thresholds()`. | Domain tuning has no effect; API "explore band" display and pruning disagree. | `engine.py:59` |
 | B3 | **`POST /v1/inference/query` ignores `candidate_id`, `conditions`, `aggregation`.** The graph is built from the requested candidate but `target_probability` comes from the *dominant* candidate (`InferenceService.query` with `ACTIVE_ONLY` always uses `population.dominant()`). `conditions` and `aggregation` are accepted and never read. | Wrong probability shown when a non-dominant candidate is selected. | `app.py:1478-1499`; `inference.py:43-49` |
 | B4 | **TOP_K aggregation underflows.** Weights are `exp(raw log_score)`; at realistic scores (−1000s) every weight is 0.0 and merged posteriors are all zero. Not reachable from the API today. | Latent. | `inference.py:62-65` |
-| B5 | `mean-field` accumulation assumes binary parents in one place: `{v: 1.0 / 2 for v in pv.support}` (`learning.py:224`) vs `1.0 / len(pv.support)` everywhere else. | Wrong for any non-BOOLEAN variable. | — |
+| B5 | ~~Bug~~ **Dead code (corrected in Phase 1):** `{v: 1.0 / 2 for v in pv.support}` (`learning.py:224`) is the fallback of `soft_obs.get(pn, …)`, but the forward pass has already filled `soft_obs` for every variable, so it never runs. Replace with `soft_obs[pn]` in Phase 2.1. | None today. | — |
 | B6 | Shift-event write failure is logged and the learn cycle continues (`population_manager.py:467-473`), so the shift log can silently miss events. Becomes moot once learn runs in one transaction (Phase 3). | — | — |
 | B7 | **Evidence dedup never fires.** Every pipeline sets `evidence_id=uuid4()`; the store dedups with `INSERT OR IGNORE` on `evidence_id`. So re-running a trigger or backfill for a date that is already stored appends a duplicate and learns it twice. The `after > before` guards in `app.py:784-789, 2230-2235` are always true. | Double-counted evidence after any manual re-run or overlapping backfill. | `evidence_store.py:44-60`; `*/ingestion/pipeline.py` |
 | B8 | **Weekly timestamps depend on the entry point** (DL2): Sunday via the API, Friday via the scheduler, any weekday for mr/ai via the API; daily backfill of weekly domains, and of the monthly art domain (G7 snapshot `g7_calendars_api.json`). | Duplicate and oversampled weeks. | `agriculture_weekly.py:36`; `app.py:766-772, 1294-1297` |
@@ -265,8 +265,10 @@ is moved (so the fix is easy to review) — except where noted.
 | B10 | **Look-ahead in backfills.** FRED is fetched without vintages and monthly series are dated by period start, so a backfill for 2026-09-04 sees September CPI (published in October). EDGAR filters by period end, not filing date. Worst case: `scripts/backfill_sf_urban.py:248` caches every FRED series with `end_date=today` and serves it to every historical week. | Backfilled history uses data that did not exist yet. Out of refactor scope except the script (D11). | — |
 | B11 | **`backfill_sf_urban.py` is not idempotent.** Its "already exists" check compares `'<date> 00:00:00'` against stored `isoformat()` (`…T00:00:00+00:00`), so it never matches. | Duplicates on every run. Don't run it until fixed or retired. | `scripts/backfill_sf_urban.py:260-265` |
 | B12 | `fetch_businesses` ignores `end_date` (DL4). | Future data in historical SF records. | `sfgov_client.py:213-219` |
-| B13 | **Suspected: SF data truncated.** SFGov queries are capped at `$limit` 1000/2000 rows ordered `DESC` over a 365-day window. SF incidents run in the hundreds per day, so 2,000 rows ≈ 1 week; `_monthly_zscore` needs 3 months → `CrimeIndexElevated` is likely stuck at 0.5. | Needs one live check before fixing. | `sfgov_client.py:111, 153, 198` |
+| B13 | **Confirmed live (2026-10-05): SF data truncated.** August 2026 had 8,330 incidents, 1,631 permits and 1,070 business starts. The queries cap at 2,000 / 1,000 / 2,000 rows `ORDER BY … DESC` with **no upper date bound**, so incidents cover ~1 week and permits < 1 month, and `_monthly_zscore` (needs 3 months) returns `None` → 0.5. Historical backfills are worse: the newest rows come back and are then dropped as after `end_date`. Fix in Phase 4 (sf_urban first): server-side monthly aggregation (`$select=date_trunc_ym(...), count(*)`, `$group`, bounded `$where`) instead of raw rows. | Crime, permits, startups signals effectively constant. | `sfgov_client.py` |
 | B14 | `credit_cycle_v1/scheduler.py:77` `asyncio.run(_main() if False else None)` raises. | Standalone entry point broken. Deleted in Phase 5 anyway. | — |
+| B16 | **Fixed (Phase 1).** SF Open Data moved: `data.sfgov.org` answers every request with 301 → `data.sf.gov`; httpx doesn't follow redirects and the client returns `[]` on error, so all SFGov signals were 0.5. The `-m live` tests caught it; they never run in CI. | All 4 SFGov-based SF signals constant. | `sfgov_client.py` |
+| B17 | **Fixed (Phase 1).** GDELT allows 1 request / 5 s and answers faster callers with HTTP 200 + a plain-text notice (not JSON → `[]`). `fetch_all` fired 4 queries concurrently. | Geopolitics GDELT signals mostly 0.5. Live re-check pending (the review's probe tripped GDELT's penalty window). | `gdelt_client.py` |
 | B15 | `_compute_refinancing_stress` pairs DGS5 and HY observations by list index, not by date. | Misaligned series whenever release calendars differ. | `credit_cycle_v1/ingestion/pipeline.py:186-192` |
 
 ---
@@ -508,6 +510,10 @@ The refactor is wasted if nothing stops the next feature from re-tangling it.
    records < 2 s. These fail CI rather than relying on someone noticing.
 6. **CI**: `uv sync --frozen && uv run ruff check && uv run lint-imports && uv run pytest`
    on every PR. There is no CI today.
+7. **Scheduled live checks.** B16 and B17 were silent upstream breakages that
+   only `-m live` tests catch, and nothing runs them. Add a weekly CI job
+   running `pytest -m live` with the API keys as secrets, and extend live
+   tests to every domain (NEXT.md #2).
 
 ---
 
@@ -591,7 +597,11 @@ don't block Phase 1–5 PRs with unrelated noise.
 
 ### Phase 1 — Bug fixes that must land before code moves
 
-One commit each, failing test first: B2 (thresholds), B3 (inference query uses
+**Done.** Landed: B2, B3, B7, B12, B15, DL3, plus B16 and B17 found during the
+phase. Not landed: B5 (dead code, moved to 2.1), the 422 for
+`conditions`/`aggregation` (would break the frontend, see D6), B13 (Phase 4).
+
+Original plan: one commit each, failing test first: B2 (thresholds), B3 (inference query uses
 the requested candidate; reject unknown `conditions`/`aggregation` with 422
 until implemented — see D6), B5, B7 (the ingest path skips a record whose
 `(domain, timestamp)` is already stored; Phase 4.5 makes it structural), B12,
@@ -734,7 +744,7 @@ Status key: **Decided** (answered 2026-10-04, with the downsides we accepted) ·
 | D3 | `ExploreExploitService` is built and tested but never used. SPEC §10.1 puts it in the learn loop. Wire it in or delete it? | **Open.** Recommend: Delete now (git keeps it); re-add when there is a design for how proposals enter the population. |
 | D4 | `LearningService.accumulate_em` is only used by one level-1 test and ignores soft evidence. Keep or delete? | **Open.** Recommend: Delete with its test; mean-field is what production runs. |
 | D5 | Drop the never-used SPEC §8 stub methods from the `DomainModule` contract? | **Open.** Recommend: Yes, and update SPEC §8 to match. |
-| D6 | `POST /v1/inference/query` accepts `conditions` and `aggregation` but ignores them. Implement, or reject with 422? | **Open.** Recommend: Reject now (Phase 1), implement only if the frontend needs it. Check `epistemic-monitor` usage first. |
+| D6 | `POST /v1/inference/query` accepts `conditions` and `aggregation` but ignores them. **Checked:** the frontend sends `aggregation: 'weighted_avg'` from 3 components (never `conditions`), so rejecting would break the dashboard. Options: (a) keep ignoring; (b) implement `weighted_avg` — dashboard probabilities change to population-weighted; (c) reject after the frontend stops sending it. | **Open.** Recommend (b): the UI already asks for it, and the engine already implements it (`WEIGHTED_AVERAGE`). Behavior commit with a G4 diff. |
 | D7 | Is a shared-secret header acceptable for POST routes, and what origins should CORS allow? | **Open.** Recommend: Yes; the Vercel URL + localhost. |
 | D8 | Learn order (C9): score each batch before updating counts (prequential), or keep today's order? | **Open.** Recommend: Prequential — it is the standard fair comparison and removes the bias toward denser graphs. Behavior change; would get its own commit after Phase 3 and will move dominant-candidate history. |
 | D9 | Rename the import package from `src` to a real name (e.g. `poe`)? `CLAUDE.md` prescribes the `src/engine` layout. | **Open.** Recommend: Not in this refactor. Revisit after Phase 6. |
