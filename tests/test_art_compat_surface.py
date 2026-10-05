@@ -26,6 +26,11 @@ ENGINE_SURFACE = [
     "population_manager._populations", "population_manager._last_mutation_stats",
     "population_manager._admissible_edges",
     "parameter_store.remove_candidate", "learning_service.initialize_candidate",
+    # reset_art_learning_state finds these with getattr(..., None) and runs raw
+    # DELETEs on ontology_candidates / ontology_populations / candidate_scores /
+    # paradigm_shifts / parameters. If one is missing it silently skips the
+    # delete and a re-registered domain would reload stale state.
+    "population_store._conn", "parameter_store._conn",
 ]
 
 
@@ -35,8 +40,9 @@ def test_modules_art_imports_still_exist(module):
 
 
 @pytest.mark.parametrize("path", ENGINE_SURFACE)
-def test_engine_attributes_art_uses_still_exist(path):
-    engine = ProbabilisticOntologyEngine(db_path=":memory:")
+def test_engine_attributes_art_uses_still_exist(path, tmp_path):
+    # A file DB: the in-memory ParameterStore has no connection today.
+    engine = ProbabilisticOntologyEngine(db_path=str(tmp_path / "art.db"))
     engine.register_domain(TestDomainV1())
     obj = engine
     for part in path.split("."):
