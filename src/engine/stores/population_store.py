@@ -1,6 +1,8 @@
 """
-PopulationStore — SQLite-backed store for OntologyPopulation and OntologyCandidate metadata.
-Scores and status are persisted here; CPT data lives in ParameterStore (in-memory).
+PopulationStore — persisted OntologyPopulation, its candidates and their edges.
+
+CPTs live in ParameterStore. save_population_state / load_population round-trip
+a whole population so a restart resumes it (REFACTOR_SPEC 3.3).
 """
 from __future__ import annotations
 
@@ -9,7 +11,14 @@ from datetime import datetime
 from pathlib import Path
 from uuid import UUID
 
-from ..schemas import CandidateStatus, OntologyCandidate, OntologyPopulation
+from ..schemas import (
+    CandidateStatus,
+    DependencyEdge,
+    DependencyKind,
+    OntologyCandidate,
+    OntologyPopulation,
+    Variable,
+)
 from .database import Database
 
 
@@ -51,13 +60,126 @@ class PopulationStore:
         )
         self._db.commit()
 
-    def load_population_id(self, domain_module_id: str) -> UUID | None:
-        cur = self._conn.execute(
-            "SELECT population_id FROM ontology_populations WHERE domain_module_id=?",
-            (domain_module_id,),
+    def save_population_state(
+        self,
+        pop: OntologyPopulation,
+        state: dict,
+        candidates: list[OntologyCandidate],
+    ) -> None:
+        """
+        Persist the population row with *state* (JSON) plus *candidates*' rows
+        and edges. Callers pass only candidates that may have changed; the
+        state's ordered candidate id list is what load_population reads back.
+        """
+        self.save_population(pop)
+        self._conn.execute(
+            "UPDATE ontology_populations SET state=? WHERE domain_module_id=?",
+            (json.dumps(state), pop.domain_module_id),
         )
-        row = cur.fetchone()
-        return UUID(row["population_id"]) if row else None
+        for cand in candidates:
+            self.save_candidate(cand)
+            self._save_edges(cand)
+        self._db.commit()
+
+    def load_population(
+        self, domain_module_id: str, variables: list[Variable]
+    ) -> tuple[OntologyPopulation, dict] | None:
+        """
+        The persisted population and its state, or None if there is none or
+        it was written before population persistence (state IS NULL).
+        Two queries per population plus one for all edges.
+        """
+        row = self._conn.execute(
+            "SELECT * FROM ontology_populations WHERE domain_module_id=?",
+            (domain_module_id,),
+        ).fetchone()
+        if row is None or row["state"] is None:
+            return None
+        state = json.loads(row["state"])
+        ids = state["candidate_ids"]
+        placeholders = ",".join("?" for _ in ids)
+        cand_rows = {
+            r["candidate_id"]: r
+            for r in self._conn.execute(
+                f"SELECT * FROM ontology_candidates WHERE candidate_id IN ({placeholders})", ids
+            )
+        }
+        edges: dict[str, list[DependencyEdge]] = {cid: [] for cid in ids}
+        for e in self._conn.execute(
+            f"SELECT * FROM candidate_edges WHERE candidate_id IN ({placeholders})"
+            " ORDER BY candidate_id, ordinal",
+            ids,
+        ):
+            edges[e["candidate_id"]].append(DependencyEdge(
+                edge_id=UUID(e["edge_id"]),
+                parent_variable_id=UUID(e["parent_variable_id"]),
+                child_variable_id=UUID(e["child_variable_id"]),
+                dependency_kind=DependencyKind(e["dependency_kind"]),
+                existence_prior=e["existence_prior"],
+                existence_probability=e["existence_probability"],
+                existence_update_count=e["existence_update_count"],
+                explore_weight=e["explore_weight"],
+                explanatory_label=e["explanatory_label"],
+                learnable=bool(e["learnable"]),
+                enabled=bool(e["enabled"]),
+            ))
+        missing = [cid for cid in ids if cid not in cand_rows]
+        if missing:
+            raise RuntimeError(
+                f"population for {domain_module_id} lists candidates with no row: {missing[:3]}"
+            )
+        candidates = []
+        for cid in ids:
+            c = cand_rows[cid]
+            candidates.append(OntologyCandidate(
+                candidate_id=UUID(cid),
+                domain_module_id=c["domain_module_id"],
+                generation=c["generation"],
+                parent_candidate_id=UUID(c["parent_candidate_id"]) if c["parent_candidate_id"] else None,
+                variables=variables,
+                edges=edges[cid],
+                log_score=c["log_score"],
+                evidence_count=c["evidence_count"],
+                status=CandidateStatus(c["status"]),
+                introduced_at=datetime.fromisoformat(c["introduced_at"]),
+                pruned_at=datetime.fromisoformat(c["pruned_at"]) if c["pruned_at"] else None,
+                pruning_reason=c["pruning_reason"],
+                description=c["description"],
+            ))
+        active_id = row["active_candidate_id"]
+        pop = OntologyPopulation(
+            population_id=UUID(row["population_id"]),
+            domain_module_id=domain_module_id,
+            max_population_size=row["max_population_size"],
+            candidates=candidates,
+            active_candidate_id=UUID(active_id) if active_id else None,
+            generation=row["generation"],
+            paradigm_shift_count=row["paradigm_shift_count"],
+        )
+        return pop, state
+
+    def _save_edges(self, cand: OntologyCandidate) -> None:
+        cid = str(cand.candidate_id)
+        self._conn.execute("DELETE FROM candidate_edges WHERE candidate_id=?", (cid,))
+        self._conn.executemany(
+            """
+            INSERT INTO candidate_edges
+              (edge_id, candidate_id, ordinal, parent_variable_id, child_variable_id,
+               dependency_kind, existence_prior, existence_probability,
+               existence_update_count, explore_weight, explanatory_label,
+               learnable, enabled)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            [
+                (
+                    str(e.edge_id), cid, i, str(e.parent_variable_id), str(e.child_variable_id),
+                    e.dependency_kind.value, e.existence_prior, e.existence_probability,
+                    e.existence_update_count, e.explore_weight, e.explanatory_label,
+                    int(e.learnable), int(e.enabled),
+                )
+                for i, e in enumerate(cand.edges)
+            ],
+        )
 
     # ------------------------------------------------------------------
     # Candidate CRUD

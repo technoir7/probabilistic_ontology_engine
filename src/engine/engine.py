@@ -116,6 +116,19 @@ class ProbabilisticOntologyEngine:
                     module_id,
                 )
 
+        # Determine admissible edges from domain schema
+        admissible = _derive_admissible_edges(initial_candidates)
+        self._batch_index[module_id] = 0
+
+        if initial_candidates and self._resume_population(
+            module_id, initial_candidates[0].variables, admissible
+        ):
+            return
+
+        # No resumable population: start from the domain's seeds. On a database
+        # written before population persistence (migration 0002) this also
+        # restores seed CPTs from the old signature-keyed table and recomputes
+        # scores from stored evidence, once; the result is then persisted.
         # Initialize CPTs for each candidate (empty counts; support from domain)
         for cand in initial_candidates:
             self.learning_service.initialize_candidate(cand, alpha=1.0)
@@ -130,9 +143,6 @@ class ProbabilisticOntologyEngine:
         }
         self.parameter_store.load_from_db(module_id, sig_to_cid)
 
-        # Determine admissible edges from domain schema
-        admissible = _derive_admissible_edges(initial_candidates)
-
         # Initialize population
         self.population_manager.initialize(
             domain_module_id=module_id,
@@ -142,14 +152,41 @@ class ProbabilisticOntologyEngine:
             thresholds=thresholds,
         )
 
-        self._batch_index[module_id] = 0
-
-        # Restore candidate scores from persisted evidence so that a server
-        # restart doesn't wipe out evidence_count / log_score.  CPT parameters
-        # are already restored above (load_from_db); we use them here to
-        # compute log_likelihoods over historical records without re-accumulating
-        # counts (which would double-count the sufficient statistics).
+        # Scores from stored evidence without re-accumulating counts (which
+        # would double-count the sufficient statistics restored above).
         self._restore_candidate_scores(module_id)
+        with self.db.transaction():
+            self._persist_population(module_id, self.population_manager.get_population(module_id).candidates)
+
+    def _resume_population(
+        self, module_id: str, variables: list, admissible: set[tuple[str, str]]
+    ) -> bool:
+        """Load the persisted population, CPTs and rng state; False if there is none."""
+        loaded = self.population_store.load_population(module_id, variables)
+        if loaded is None:
+            return False
+        pop, state = loaded
+        for cand in pop.candidates:
+            self.learning_service.initialize_candidate(cand, alpha=1.0)
+        self.parameter_store.load_candidates([c.candidate_id for c in pop.candidates])
+        self.population_manager.adopt(module_id, pop, admissible, state)
+        self._batch_index[module_id] = state["batch_index"]
+        logger.info(
+            "Resumed population for '%s': generation=%d candidates=%d",
+            module_id, pop.generation, len(pop.candidates),
+        )
+        return True
+
+    def _persist_population(self, domain: str, changed: list[OntologyCandidate]) -> None:
+        """Write the population, its state, and *changed* candidates' rows, edges and CPTs."""
+        pop = self.population_manager.get_population(domain)
+        state = {
+            "candidate_ids": [str(c.candidate_id) for c in pop.candidates],
+            "batch_index": self._batch_index.get(domain, 0),
+            **self.population_manager.export_state(domain),
+        }
+        self.population_store.save_population_state(pop, state, changed)
+        self.parameter_store.save_candidates([c.candidate_id for c in changed], domain)
 
     def _restore_candidate_scores(self, domain_module_id: str) -> None:
         """
@@ -262,6 +299,8 @@ class ProbabilisticOntologyEngine:
         assert domain, "No active domain"
 
         pop = self.population_manager.get_population(domain)
+        # Candidates pruned this cycle still changed this cycle, so save them too.
+        active_at_start = list(pop.active_candidates())
         edge_existence = self._edge_existence[domain]
         idx = self._batch_index.get(domain, 0)
         n_records = len(batch)
@@ -336,14 +375,9 @@ class ProbabilisticOntologyEngine:
         # End of cycle
         summary = self.population_manager.end_cycle(domain)
 
-        # Persist learned parameters so they survive a restart.
-        pop_snapshot = self.population_manager.get_population(domain)
-        for candidate in pop_snapshot.candidates:
-            self.parameter_store.save_candidate(
-                candidate.candidate_id,
-                domain,
-                _candidate_edge_sig(candidate),
-            )
+        # Persist everything this cycle changed so a restart resumes it.
+        changed = {c.candidate_id: c for c in active_at_start + pop.active_candidates()}
+        self._persist_population(domain, list(changed.values()))
 
         return self._make_snapshot(domain, batch, summary)
 

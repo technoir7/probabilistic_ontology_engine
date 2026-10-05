@@ -112,54 +112,60 @@ class ParameterStore:
     # SQLite persistence
     # ------------------------------------------------------------------
 
-    def save_candidate(
-        self,
-        candidate_id: UUID,
-        domain_module_id: str,
-        edge_signature: str,
-    ) -> None:
-        """
-        Persist all CPTs for *candidate_id* to the ``parameters`` table.
-
-        *domain_module_id* and *edge_signature* together form the stable
-        primary key used for cross-session matching (since candidate_id is a
-        session-local UUID).
-
-        """
-        cid = str(candidate_id)
-        cpts = self._store.get(cid, {})
-        if not cpts:
-            return
+    def save_candidates(self, candidate_ids: list[UUID], domain_module_id: str) -> None:
+        """Persist all CPTs of these candidates to ``candidate_parameters`` (one executemany)."""
         now = datetime.now(timezone.utc).isoformat()
         rows = [
             (
-                cid,
-                domain_module_id,
-                edge_signature,
-                vname,
-                cpt.alpha,
-                cpt.serialized_counts(),
-                json.dumps(cpt.parents),
-                now,
+                str(cid), vname, domain_module_id, cpt.alpha,
+                cpt.serialized_counts(), json.dumps(cpt.parents), now,
             )
-            for vname, cpt in cpts.items()
+            for cid in candidate_ids
+            for vname, cpt in self._store.get(str(cid), {}).items()
         ]
         self._conn.executemany(
             """
-            INSERT INTO parameters
-              (candidate_id, domain_module_id, edge_signature,
-               variable_name, alpha, counts_json, parent_ids_json, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            ON CONFLICT (domain_module_id, edge_signature, variable_name) DO UPDATE SET
-              candidate_id = excluded.candidate_id,
+            INSERT INTO candidate_parameters
+              (candidate_id, variable_name, domain_module_id, alpha,
+               counts_json, parent_names_json, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT (candidate_id, variable_name) DO UPDATE SET
               alpha = excluded.alpha,
               counts_json = excluded.counts_json,
-              parent_ids_json = excluded.parent_ids_json,
+              parent_names_json = excluded.parent_names_json,
               updated_at = excluded.updated_at
             """,
             rows,
         )
         self._db.commit()
+
+    def load_candidates(self, candidate_ids: list[UUID]) -> None:
+        """
+        Restore saved CPTs for these candidates over the initialized ones
+        (call initialize_candidate first: support comes from the domain).
+        One query.
+        """
+        ids = [str(cid) for cid in candidate_ids]
+        if not ids:
+            return
+        placeholders = ",".join("?" for _ in ids)
+        for row in self._conn.execute(
+            f"""
+            SELECT candidate_id, variable_name, alpha, counts_json, parent_names_json
+              FROM candidate_parameters WHERE candidate_id IN ({placeholders})
+            """,
+            ids,
+        ):
+            cid, vname = row["candidate_id"], row["variable_name"]
+            if cid not in self._store or vname not in self._store[cid]:
+                continue  # variable no longer in the domain
+            self._store[cid][vname] = CPTData(
+                variable_name=vname,
+                parents=json.loads(row["parent_names_json"]),
+                support=self._store[cid][vname].support,  # authoritative from domain definition
+                counts=deserialize_counts(row["counts_json"]),
+                alpha=row["alpha"],
+            )
 
     def load_from_db(
         self,
@@ -167,7 +173,11 @@ class ParameterStore:
         sig_to_candidate_id: dict[str, UUID],
     ) -> None:
         """
-        Restore persisted CPTs for the given domain into the in-memory store.
+        Migration only: restore CPTs from the pre-0002 ``parameters`` table.
+
+        Used once, when a database has no resumable population yet. Those rows
+        are keyed by edge signature, which changes whenever an edge is pruned,
+        so only seed candidates whose structure never changed are matched.
 
         *sig_to_candidate_id* maps each candidate's edge_signature string to
         its current-session UUID.  Rows in the DB are matched by

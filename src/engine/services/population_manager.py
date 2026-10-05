@@ -89,6 +89,28 @@ class PopulationManager:
             self.pop_store.save_candidate(c)
         return pop
 
+    def adopt(
+        self,
+        domain_module_id: str,
+        population: OntologyPopulation,
+        admissible_edges: set[tuple[str, str]],
+        state: dict,
+    ) -> None:
+        """Install a population restored from storage, with the rng where it left off."""
+        self._populations[domain_module_id] = population
+        self._admissible_edges[domain_module_id] = admissible_edges
+        self._last_mutation_stats[domain_module_id] = dict(state.get("mutation_stats", {}))
+        version, internal, gauss_next = state["rng_state"]
+        self.rng.setstate((version, tuple(internal), gauss_next))
+
+    def export_state(self, domain_module_id: str) -> dict:
+        """What adopt() needs besides the population itself (JSON-serializable)."""
+        version, internal, gauss_next = self.rng.getstate()
+        return {
+            "rng_state": [version, list(internal), gauss_next],
+            "mutation_stats": self.last_mutation_stats(domain_module_id),
+        }
+
     # ------------------------------------------------------------------
     # Accessors
     # ------------------------------------------------------------------

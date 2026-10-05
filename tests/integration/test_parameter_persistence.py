@@ -168,8 +168,9 @@ def test_parameters_persist_across_restart(tmp_path):
 
 def test_parameters_table_schema(tmp_path):
     """
-    Verify the 'parameters' table exists with the required columns after
-    a learn() call.
+    After learn(), CPTs are in candidate_parameters, keyed by candidate id
+    (migration 0002). The pre-0002 signature-keyed ``parameters`` table is
+    only read, once, to migrate old databases.
     """
     db_file = str(tmp_path / "schema_check.db")
     gen = SyntheticDataGenerator(graph="T*", random_seed=7)
@@ -179,28 +180,19 @@ def test_parameters_table_schema(tmp_path):
     for rec in batch:
         eng.ingest(rec)
     eng.learn(batch)
-    del eng  # close engine / commit
+    del eng
 
     conn = sqlite3.connect(db_file)
-    cur = conn.execute("SELECT * FROM parameters LIMIT 1")
-    cols = [d[0] for d in cur.description]
-
-    # Spec-required columns
+    cur = conn.execute("SELECT * FROM candidate_parameters LIMIT 1")
+    cols = {d[0] for d in cur.description}
     required_cols = {
-        "candidate_id", "variable_name", "alpha",
-        "counts_json", "parent_ids_json", "updated_at",
+        "candidate_id", "variable_name", "domain_module_id", "alpha",
+        "counts_json", "parent_names_json", "updated_at",
     }
-    assert required_cols.issubset(set(cols)), (
-        f"Missing spec-required columns: {required_cols - set(cols)}"
-    )
-
-    # Additional stable-key columns
-    assert "domain_module_id" in cols, "domain_module_id column missing"
-    assert "edge_signature" in cols, "edge_signature column missing"
-
-    count = conn.execute("SELECT COUNT(*) FROM parameters").fetchone()[0]
+    assert required_cols <= cols, f"Missing columns: {required_cols - cols}"
+    count = conn.execute("SELECT COUNT(*) FROM candidate_parameters").fetchone()[0]
     conn.close()
-    assert count > 0, "parameters table is empty after learn()"
+    assert count > 0, "candidate_parameters is empty after learn()"
 
 
 def test_parameters_table_migrates_legacy_schema(tmp_path):
