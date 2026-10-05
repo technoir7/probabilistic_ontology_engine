@@ -284,10 +284,9 @@ class LearningService:
         # Step 2: EM iterations over partially-observed records.
         # Pattern: build model with CURRENT counts → E-step → new delta →
         #          remove OLD delta → add NEW delta.
-        from .inference import _build_tabular_cpd, _encode_value
-        from pgmpy.models import DiscreteBayesianNetwork as BayesianNetwork
         from pgmpy.inference import VariableElimination
-        from pgmpy.factors.discrete import TabularCPD
+
+        from .bn_model import build_network, encode_value
 
         prev_delta: dict[str, dict] = {}  # delta from previous iteration
 
@@ -296,31 +295,7 @@ class LearningService:
             use_pgmpy = False
             ve = None
             try:
-                pgmpy_edges = []
-                for e in candidate.get_active_edges():
-                    pv = candidate.get_variable_by_id(e.parent_variable_id)
-                    cv = candidate.get_variable_by_id(e.child_variable_id)
-                    if pv and cv:
-                        pgmpy_edges.append((pv.name, cv.name))
-                pgmpy_model = BayesianNetwork(pgmpy_edges)
-                for v in candidate.variables:
-                    if v.name not in pgmpy_model.nodes():
-                        pgmpy_model.add_node(v.name)
-                for var in candidate.topological_order():
-                    pv_list = candidate.get_parents(var.variable_id)
-                    if self.ps.has(candidate.candidate_id, var.name):
-                        cpd_data = self.ps.get(candidate.candidate_id, var.name)
-                        cpd = _build_tabular_cpd(var, pv_list, cpd_data)
-                    else:
-                        n = len(var.support)
-                        n_cols = max(1, 2 ** len(pv_list))
-                        cpd = TabularCPD(
-                            var.name, n,
-                            [[1.0 / n] * n_cols for _ in range(n)],
-                            evidence=[pv.name for pv in pv_list] if pv_list else None,
-                            evidence_card=[len(pv.support) for pv in pv_list] if pv_list else None,
-                        )
-                    pgmpy_model.add_cpds(cpd)
+                pgmpy_model = build_network(candidate, self.ps)
                 pgmpy_model.check_model()
                 ve = VariableElimination(pgmpy_model)
                 use_pgmpy = True
@@ -338,7 +313,7 @@ class LearningService:
                     for vname, val in obs.items():
                         var = candidate.get_variable_by_name(vname)
                         if var:
-                            evidence_int[vname] = _encode_value(val, var.support)
+                            evidence_int[vname] = encode_value(val, var.support)
 
                     soft: dict[str, dict[Any, float]] = {
                         vname: {val: 1.0} for vname, val in obs.items()

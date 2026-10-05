@@ -11,8 +11,6 @@ from __future__ import annotations
 
 from typing import Any
 
-import numpy as np
-from pgmpy.factors.discrete import TabularCPD
 from pgmpy.inference import VariableElimination
 from pgmpy.models import DiscreteBayesianNetwork as BayesianNetwork
 
@@ -22,9 +20,9 @@ from ..schemas import (
     OntologyPopulation,
     PopulationAggregation,
 )
-from ..model.cpt import CPTData
 from ..model.scoring import candidate_score, score_weights
 from ..stores.parameter_store import ParameterStore
+from .bn_model import build_network, encode_value
 
 
 class InferenceService:
@@ -89,7 +87,7 @@ class InferenceService:
                             var = v
                             break
                 if var is not None:
-                    evidence[var.name] = _encode_value(obs.observed_value, var.support)
+                    evidence[var.name] = encode_value(obs.observed_value, var.support)
 
             posteriors = {}
             for vname in query.target_variables:
@@ -122,53 +120,11 @@ class InferenceService:
 
     # ------------------------------------------------------------------
     def _build_pgmpy_model(self, candidate: OntologyCandidate) -> BayesianNetwork:
-        """Build a pgmpy BayesianNetwork from candidate + CPTs."""
-        edges_pgmpy = []
-        for e in candidate.get_active_edges():
-            pv = candidate.get_variable_by_id(e.parent_variable_id)
-            cv = candidate.get_variable_by_id(e.child_variable_id)
-            if pv and cv:
-                edges_pgmpy.append((pv.name, cv.name))
-
-        model = BayesianNetwork(edges_pgmpy)
-        # Ensure all variables are nodes even if isolated
-        for v in candidate.variables:
-            if v.name not in model.nodes():
-                model.add_node(v.name)
-
-        # Build CPDs
-        for var in candidate.topological_order():
-            parent_vars = candidate.get_parents(var.variable_id)
-            if not self.ps.has(candidate.candidate_id, var.name):
-                # Uniform CPD as fallback
-                n = len(var.support)
-                if parent_vars:
-                    total_cols = 1
-                    for pv in parent_vars:
-                        total_cols *= len(pv.support)
-                    values = np.full((n, total_cols), 1.0 / n)
-                else:
-                    values = np.full((n, 1), 1.0 / n)
-                cpd = TabularCPD(
-                    variable=var.name,
-                    variable_card=n,
-                    values=values,
-                    evidence=[pv.name for pv in parent_vars] if parent_vars else None,
-                    evidence_card=[len(pv.support) for pv in parent_vars] if parent_vars else None,
-                )
-                model.add_cpds(cpd)
-                continue
-
-            cpt_data = self.ps.get(candidate.candidate_id, var.name)
-            cpd = _build_tabular_cpd(var, parent_vars, cpt_data)
-            model.add_cpds(cpd)
-
-        # Validate
+        model = build_network(candidate, self.ps)
         try:
             model.check_model()
         except Exception:
             pass  # Allow slight numerical imprecision
-
         return model
 
     # ------------------------------------------------------------------
@@ -235,68 +191,3 @@ class InferenceService:
                 for val, p in dist.items():
                     merged_posteriors[vname][val] = merged_posteriors[vname].get(val, 0.0) + w * p
         return {"posteriors": merged_posteriors}
-
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
-def _encode_value(value: Any, support: list) -> int:
-    """Map a Python value to its index in the support list (pgmpy uses 0-based int states)."""
-    for i, s in enumerate(support):
-        if s == value or str(s) == str(value):
-            return i
-    return 0
-
-
-def _build_tabular_cpd(var, parent_vars, cpt_data: CPTData) -> TabularCPD:
-    """
-    Build a pgmpy TabularCPD from our CPTData.
-
-    pgmpy column ordering:
-        Evidence states iterate from the LAST evidence variable fastest.
-        e.g., evidence=['A','B'], evidence_card=[2,2]:
-        columns: (A=0,B=0),(A=0,B=1),(A=1,B=0),(A=1,B=1)
-    """
-    n_var = len(var.support)
-    evidence_names = [pv.name for pv in parent_vars]
-    evidence_cards = [len(pv.support) for pv in parent_vars]
-    evidence_supports = {pv.name: pv.support for pv in parent_vars}
-
-    if not parent_vars:
-        # Root node
-        probs = []
-        for val in var.support:
-            probs.append([cpt_data.get_probability(val, {})])
-        return TabularCPD(
-            variable=var.name,
-            variable_card=n_var,
-            values=probs,
-        )
-
-    # Generate all parent configs in pgmpy column order
-    from itertools import product as iproduct
-    parent_value_combos = list(iproduct(*[pv.support for pv in parent_vars]))
-
-    values = []
-    for val in var.support:
-        row = []
-        for combo in parent_value_combos:
-            parent_assignment = dict(zip(evidence_names, combo))
-            p = cpt_data.get_probability(val, parent_assignment)
-            row.append(p)
-        values.append(row)
-
-    # Normalize columns to sum to 1
-    arr = np.array(values, dtype=float)
-    col_sums = arr.sum(axis=0)
-    col_sums = np.where(col_sums == 0, 1.0, col_sums)
-    arr = arr / col_sums
-
-    return TabularCPD(
-        variable=var.name,
-        variable_card=n_var,
-        values=arr.tolist(),
-        evidence=evidence_names,
-        evidence_card=evidence_cards,
-    )
