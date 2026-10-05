@@ -4,7 +4,6 @@ All schema objects are defined here per the SPEC.
 """
 from __future__ import annotations
 
-import math
 from datetime import datetime
 from enum import Enum
 from typing import Any, Optional
@@ -12,6 +11,8 @@ from uuid import UUID, uuid4
 
 import networkx as nx
 from pydantic import BaseModel, Field, model_validator
+
+from .model import scoring
 
 
 # ---------------------------------------------------------------------------
@@ -260,33 +261,8 @@ class OntologyPopulation(BaseModel):
     def active_candidates(self) -> list[OntologyCandidate]:
         return [c for c in self.candidates if c.status == CandidateStatus.ACTIVE]
 
-    def _avg_score(self, c: OntologyCandidate, multiplier: float = 1.0) -> float:
-        """
-        BIC-corrected average log-likelihood; counts ALL edges (incl. disabled).
-
-        Parameters
-        ----------
-        multiplier : float, default 1.0
-            Scale factor applied to the BIC penalty term.  The production
-            system always uses the default (1.0).  The diagnostic endpoint
-            passes 0.25 for the ``bic_score_explore`` side-by-side column.
-        """
-        n = c.evidence_count
-        if n == 0:
-            return float("-inf")
-        avg_ll = c.log_score / n
-        k = 0
-        for v in c.variables:
-            n_parents = sum(1 for e in c.edges if e.child_variable_id == v.variable_id)
-            k += 2 ** n_parents
-        bic_penalty = 0.5 * k * math.log(max(n, 2)) / n * multiplier
-        return avg_ll - bic_penalty
-
     def dominant(self) -> Optional[OntologyCandidate]:
-        active = self.active_candidates()
-        if not active:
-            return None
-        return max(active, key=self._avg_score)
+        return scoring.dominant(self.active_candidates())
 
     def update_dominant(self) -> bool:
         """Update active_candidate_id; return True if it changed (paradigm shift)."""
@@ -301,22 +277,12 @@ class OntologyPopulation(BaseModel):
         return False
 
     def score_weights(self) -> list[float]:
-        active = self.active_candidates()
-        if not active:
-            return []
-        # Use average scores for weighting
-        avg_scores = [self._avg_score(c) for c in active]
-        max_score = max(avg_scores)
-        weights = [math.exp(min(s - max_score, 0)) for s in avg_scores]
-        total = sum(weights) or 1.0
-        return [w / total for w in weights]
+        return scoring.score_weights(self.active_candidates())
 
     def summary(self) -> dict:
         active = self.active_candidates()
         dom = self.dominant()
-        # Structure entropy: H over score weights
-        weights = self.score_weights()
-        entropy = -sum(w * math.log(w + 1e-12) for w in weights if w > 0)
+        entropy = scoring.structure_entropy(active)
         return {
             "domain_module": self.domain_module_id,
             "generation": self.generation,

@@ -13,7 +13,6 @@ Responsibilities:
 from __future__ import annotations
 
 import copy
-import math
 import random
 from datetime import datetime
 from typing import Any
@@ -21,6 +20,8 @@ from uuid import UUID, uuid4
 
 import networkx as nx
 
+from ..model.scoring import candidate_score
+from ..model.scoring import dominant as best_candidate
 from ..schemas import (
     CandidateStatus,
     DependencyEdge,
@@ -97,11 +98,7 @@ class PopulationManager:
 
     def dominant(self, domain_module_id: str) -> OntologyCandidate | None:
         """Return highest average-score active candidate (fair to late-arrivals)."""
-        pop = self._populations[domain_module_id]
-        active = pop.active_candidates()
-        if not active:
-            return None
-        return max(active, key=lambda c: self._avg_score(c))
+        return best_candidate(self._populations[domain_module_id].active_candidates())
 
     def dominant_matches_structure(
         self, domain_module_id: str, target_signature: frozenset[tuple[str, str]]
@@ -135,44 +132,6 @@ class PopulationManager:
                 self.pop_store.append_score_record(c.candidate_id, log_likelihood, batch_index)
                 break
 
-    def _avg_score(self, candidate: OntologyCandidate, multiplier: float = 1.0) -> float:
-        """
-        BIC-corrected average log-likelihood (for fair cross-candidate comparison).
-
-        BIC = log_lik - 0.5 * k * log(N) * multiplier
-        where k = total free parameters in the model.
-
-        For BOOLEAN variables with boolean parents:
-          free_params_per_var = 2^(num_parents)
-
-        We count ALL edges (including disabled/pruned ones) when computing k.
-        This penalizes candidates that explored extra edges even if later pruned,
-        preventing warm-started variants from gaming the score by adding then
-        pruning spurious edges.
-
-        Parameters
-        ----------
-        multiplier : float, default 1.0
-            Scale factor applied to the BIC penalty.  The live system always
-            uses 1.0 (strict).  The diagnostic endpoint passes 0.25 for the
-            ``bic_score_explore`` side-by-side column without affecting
-            production scoring.
-        """
-        n = candidate.evidence_count
-        if n == 0:
-            return float("-inf")
-        avg_ll = candidate.log_score / n
-        # Count total free parameters — include disabled edges in parent count
-        k = 0
-        for v in candidate.variables:
-            n_parents = sum(
-                1 for e in candidate.edges
-                if e.child_variable_id == v.variable_id
-            )
-            k += 2 ** n_parents
-        bic_penalty = 0.5 * k * math.log(max(n, 2)) / n * multiplier
-        return avg_ll - bic_penalty
-
     # ------------------------------------------------------------------
     # Pruning
     # ------------------------------------------------------------------
@@ -192,7 +151,7 @@ class PopulationManager:
             return []
 
         # Rank by average score (fair across candidates with different evidence counts)
-        ranked = sorted(active, key=lambda c: self._avg_score(c))
+        ranked = sorted(active, key=candidate_score)
         n_prune = max(1, len(active) // 4)
 
         pruned = []

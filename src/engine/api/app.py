@@ -81,6 +81,7 @@ from ..schemas import (
     QueryType,
 )
 from ..config import get_structure_mode_config
+from ..model.scoring import candidate_score
 from ..services.evidence_diagnostics import build_entropy_diagnostics
 from ..services.evidence_geometry import build_evidence_geometry_diagnostics
 from ..services.structure_diagnostics import build_structure_diagnostics
@@ -1431,7 +1432,7 @@ async def population_candidates(
     dom = pop.dominant()
     dom_id = dom.candidate_id if dom else None
 
-    avg_fn = pop._avg_score
+    avg_fn = candidate_score
     score_map = _normalize_scores(active, avg_fn)
 
     # Sort best-first
@@ -1805,7 +1806,7 @@ async def narrative_snapshot(
         )
 
     # ── competing_candidates ──────────────────────────────────────────────────
-    avg_fn = pop._avg_score
+    avg_fn = candidate_score
     score_map = _normalize_scores(active, avg_fn)
     dom_id = dom.candidate_id if dom else None
     sorted_cands = sorted(active, key=avg_fn, reverse=True)

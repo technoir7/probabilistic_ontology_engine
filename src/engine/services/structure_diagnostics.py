@@ -28,6 +28,7 @@ import math
 from dataclasses import dataclass, field
 from typing import Any
 
+from ..model.scoring import bic_penalty, candidate_score
 from ..schemas import OntologyCandidate, OntologyPopulation
 
 
@@ -163,28 +164,13 @@ def _candidate_diagnostic(
     else:
         avg_ll = c.log_score / n
 
-    # k = total free parameters (ALL edges, including disabled)
-    k = 0
-    for v in c.variables:
-        n_parents = sum(1 for e in c.edges if e.child_variable_id == v.variable_id)
-        k += 2 ** n_parents
-
-    # BIC penalty before multiplier
     if n > 0:
-        bic_penalty_raw = 0.5 * k * math.log(max(n, 2)) / n
+        bic_penalty_raw = bic_penalty(c)
+        bic_score_strict = candidate_score(c, bic_multiplier=1.0)
+        bic_score_explore = candidate_score(c, bic_multiplier=0.25)
     else:
         bic_penalty_raw = _NO_DATA_PEN
-
-    bic_score_strict = (
-        avg_ll - bic_penalty_raw * 1.00
-        if avg_ll > _NO_DATA_LL and bic_penalty_raw < _NO_DATA_PEN
-        else _NO_DATA_LL
-    )
-    bic_score_explore = (
-        avg_ll - bic_penalty_raw * 0.25
-        if avg_ll > _NO_DATA_LL and bic_penalty_raw < _NO_DATA_PEN
-        else _NO_DATA_LL
-    )
+        bic_score_strict = bic_score_explore = _NO_DATA_LL
 
     # Edge structure (names, sorted, active edges only)
     active_edge_pairs: list[tuple[str, str]] = []
