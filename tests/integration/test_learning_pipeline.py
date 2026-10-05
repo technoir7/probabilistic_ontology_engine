@@ -26,6 +26,7 @@ import pytest
 from src.domains.natural_gas_v1.domain import NaturalGasV1, get_variables
 from src.domains.natural_gas_v1.scheduler import IngestionScheduler
 from src.engine.api import app as api_app
+from tests.fakes import patch_evidence_fetch, running_engine
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import (
     EvidenceRecord,
@@ -176,7 +177,7 @@ def test_lp04_debug_learning_endpoint_shows_learn_calls(monkeypatch, tmp_path):
     async def fake_fetch(domain_key: str, target_date: date) -> EvidenceRecord:
         return _ng_record(target_date)
 
-    monkeypatch.setattr(api_app, "_fetch_evidence_record", fake_fetch)
+    patch_evidence_fetch(monkeypatch, fake_fetch)
 
     with TestClient(api_app.app) as client:
         client.post("/v1/ingest/trigger?domain=ng")
@@ -200,13 +201,13 @@ def test_lp05_debug_learning_dominant_count_matches_engine(monkeypatch, tmp_path
     async def fake_fetch(domain_key: str, target_date: date) -> EvidenceRecord:
         return _ng_record(target_date)
 
-    monkeypatch.setattr(api_app, "_fetch_evidence_record", fake_fetch)
+    patch_evidence_fetch(monkeypatch, fake_fetch)
 
     with TestClient(api_app.app) as client:
         client.post("/v1/ingest/trigger?domain=ng")
         body = client.get("/v1/debug/learning?domain=ng").json()
 
-    engine = api_app.app.state.engines["ng"]
+    engine = running_engine("ng")
     dom = engine.get_population("natural-gas-v1").dominant()
     assert dom is not None
     assert body["dominant_evidence_count"] == dom.evidence_count

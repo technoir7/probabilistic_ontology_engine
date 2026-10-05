@@ -5,6 +5,7 @@ import json
 from fastapi.testclient import TestClient
 
 from src.engine.api import app as api_app
+from tests.fakes import running_engine
 
 
 def _write_manual_file(path):
@@ -98,7 +99,7 @@ def test_duplicate_only_manual_art_endpoint_learns_existing_uninitialized_rows(
 
     with TestClient(api_app.app) as client:
         manual_ingest = api_app._import_art_module("manual_ingest")
-        engine = api_app.app.state.engines["art"]
+        engine = running_engine("art")
         records = manual_ingest.ingest_manual_path(manual_path)
         engine.ingest_batch(records)
         pop = engine.get_population("art_prestige_regime_v1")
@@ -148,7 +149,7 @@ def test_duplicate_only_manual_art_endpoint_does_not_relearn_restored_population
         first = client.post("/v1/ingest/art/manual", params={"path": str(manual_path)})
         assert first.status_code == 200, first.text
 
-        engine = api_app.app.state.engines["art"]
+        engine = running_engine("art")
         engine._learn_call_count.clear()
         engine._learn_last_ts.clear()
         engine._learn_records_total.clear()

@@ -1,10 +1,10 @@
 """
-Test doubles for evidence fetching.
+Test doubles and the seams tests use to reach into the running app.
 
-``patch_evidence_fetch`` is the one place tests replace the app's evidence
-fetch. Today the seam is ``app._fetch_evidence_record``; when the refactor
-moves fetching behind the domain registry (REFACTOR_SPEC Phase 5), only this
-function changes, not every test that needs fake evidence.
+Tests replace the evidence fetch, freeze the clock, and look up a domain's
+engine only through these helpers. Today they patch ``app._fetch_evidence_record``
+/ ``app._utcnow`` and read ``app.state.engines``; when the refactor moves those
+(REFACTOR_SPEC Phase 5), only this module changes, not every test.
 """
 from __future__ import annotations
 
@@ -68,9 +68,13 @@ def domain_keys() -> list[str]:
     return list(api_app._DOMAIN_MAP)
 
 
+def running_engine(domain_key: str):
+    """The engine the running app (inside a TestClient block) uses for *domain_key*."""
+    return api_app.app.state.engines[domain_key]
+
+
 def domain_variables(domain_key: str) -> list[Variable]:
-    engine = api_app.app.state.engines[domain_key]
-    return engine.get_population().candidates[0].variables
+    return running_engine(domain_key).get_population().candidates[0].variables
 
 
 def freeze_clock(monkeypatch, now: datetime) -> None:

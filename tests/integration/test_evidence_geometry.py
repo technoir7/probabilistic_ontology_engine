@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 
 from src.domains.natural_gas_v1.domain import get_variables
 from src.engine.api import app as api_app
+from tests.fakes import running_engine
 from src.engine.schemas import (
     DomainType,
     EvidenceRecord,
@@ -188,7 +189,7 @@ def test_evidence_geometry_route_shape(monkeypatch, tmp_path):
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
 
     with TestClient(api_app.app) as client:
-        engine = api_app.app.state.engines["ng"]
+        engine = running_engine("ng")
         variables = get_variables()
         engine.ingest(EvidenceRecord(
             timestamp=datetime(2026, 1, 5, tzinfo=timezone.utc),

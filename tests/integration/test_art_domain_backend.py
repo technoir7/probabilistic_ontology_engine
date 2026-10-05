@@ -6,6 +6,7 @@ from datetime import date
 from fastapi.testclient import TestClient
 
 from src.engine.api import app as api_app
+from tests.fakes import patch_evidence_fetch, running_engine
 
 
 def test_art_domain_registered_and_manual_evidence_reaches_store(monkeypatch, tmp_path):
@@ -40,7 +41,7 @@ def test_art_domain_registered_and_manual_evidence_reaches_store(monkeypatch, tm
         assert domain_key == "art"
         return manual_records[0]
 
-    monkeypatch.setattr(api_app, "_fetch_evidence_record", fake_fetch_evidence_record)
+    patch_evidence_fetch(monkeypatch, fake_fetch_evidence_record)
 
     with TestClient(api_app.app) as client:
         status = client.get("/v1/population/status?domain=art")
@@ -60,7 +61,7 @@ def test_art_domain_registered_and_manual_evidence_reaches_store(monkeypatch, tm
         assert trigger.status_code == 200, trigger.text
         assert trigger.json()["evidence_records_ingested"] == 1
 
-        engine = api_app.app.state.engines["art"]
+        engine = running_engine("art")
         assert engine.evidence_store.count(domain_module.DOMAIN_MODULE_ID) == 1
 
         recent = client.get("/v1/evidence/recent?domain=art")
