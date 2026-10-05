@@ -45,7 +45,7 @@
     },
     "evidence_count": 300,
     "generation": 0,
-    "log_score": -2703.274004184,
+    "log_score": -956.0358263,
     "pruning_reason": null,
     "status": "ACTIVE"
    },
@@ -92,7 +92,7 @@
     },
     "evidence_count": 300,
     "generation": 0,
-    "log_score": -2703.274004184,
+    "log_score": -973.619478529,
     "pruning_reason": null,
     "status": "ACTIVE"
    },
@@ -111,7 +111,7 @@
     },
     "evidence_count": 300,
     "generation": 0,
-    "log_score": -6635.847683774,
+    "log_score": -1011.762191333,
     "pruning_reason": null,
     "status": "ACTIVE"
    }
@@ -126,7 +126,7 @@
   "generation": 0,
   "mutation_stats": {},
   "paradigm_shift_count": 0,
-  "structure_entropy": 0.693162263
+  "structure_entropy": 1.097234663
  },
  "before": {
   "active_candidates": 10,

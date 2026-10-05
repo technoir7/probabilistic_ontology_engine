@@ -23,9 +23,7 @@ class EvidenceStore:
 
     # ------------------------------------------------------------------
     def append(self, record: EvidenceRecord, domain_module_id: str) -> None:
-        assignments_json = json.dumps(
-            [a.model_dump(mode="json") for a in record.observed_assignments]
-        )
+        assignments_json = _assignments_json(record)
         self._conn.execute(
             """
             INSERT INTO evidence_records
@@ -56,7 +54,7 @@ class EvidenceStore:
                 r.source_type.value,
                 r.source_ref,
                 r.confidence,
-                json.dumps([a.model_dump(mode="json") for a in r.observed_assignments]),
+                _assignments_json(r),
             ))
         self._conn.executemany(
             """
@@ -187,6 +185,35 @@ class EvidenceStore:
         self._db.commit()
 
 
+def _assignments_json(record: EvidenceRecord) -> str:
+    """
+    JSON for a record's assignments, keeping soft-evidence keys' types.
+
+    JSON object keys are always strings, so {True: 0.64} would come back as
+    {"true": 0.64} and miss every CPT row keyed by True. Probabilities are
+    stored as [[value, p], ...] pairs instead.
+    """
+    out = []
+    for a in record.observed_assignments:
+        data = a.model_dump(mode="json")
+        if a.probabilities is not None:
+            data["probabilities"] = [[value, p] for value, p in a.probabilities.items()]
+        out.append(data)
+    return json.dumps(out)
+
+
+# Rows written before _assignments_json stored probabilities as a JSON object.
+_LEGACY_BOOL_KEYS = {"true": True, "false": False}
+
+
+def _probabilities_from_json(raw):
+    if raw is None:
+        return None
+    if isinstance(raw, list):
+        return {value: p for value, p in raw}
+    return {_LEGACY_BOOL_KEYS.get(k, k): p for k, p in raw.items()}
+
+
 def _row_to_record(row: tuple) -> EvidenceRecord:
     from ..schemas import ObservedAssignment, MissingnessType, SourceType
     assignments_data = json.loads(row[5])
@@ -197,7 +224,7 @@ def _row_to_record(row: tuple) -> EvidenceRecord:
             observed_value=a["observed_value"],
             missingness=MissingnessType(a.get("missingness", "OBSERVED")),
             confidence=a.get("confidence", 1.0),
-            probabilities=a.get("probabilities"),
+            probabilities=_probabilities_from_json(a.get("probabilities")),
         ))
     return EvidenceRecord(
         evidence_id=UUID(row[0]),
