@@ -5,11 +5,10 @@ Converts an OntologyCandidate (with CPT data from ParameterStore) into a
 pgmpy BayesianNetwork and answers MARGINAL queries.
 
 Population-level queries aggregate over multiple candidates, weighted by
-exp(log_score).
+model.scoring.score_weights.
 """
 from __future__ import annotations
 
-import math
 from typing import Any
 
 import numpy as np
@@ -24,6 +23,7 @@ from ..schemas import (
     PopulationAggregation,
 )
 from ..model.cpt import CPTData
+from ..model.scoring import candidate_score, score_weights
 from ..stores.parameter_store import ParameterStore
 
 
@@ -60,10 +60,12 @@ class InferenceService:
             return merged
 
         else:  # TOP_K
+            # Rank and weight by the population score. exp(raw log_score)
+            # underflowed to 0.0 for every candidate at real scores.
             top_k = sorted(
-                population.active_candidates(), key=lambda c: c.log_score, reverse=True
+                population.active_candidates(), key=candidate_score, reverse=True
             )[:3]
-            weights = self._normalize_weights([math.exp(c.log_score) for c in top_k])
+            weights = score_weights(top_k)
             all_results = [self.query_candidate(c, inference_query) for c in top_k]
             merged = self._weighted_merge(all_results, weights, inference_query.target_variables)
             merged["population_summary"] = population.summary()
@@ -233,11 +235,6 @@ class InferenceService:
                 for val, p in dist.items():
                     merged_posteriors[vname][val] = merged_posteriors[vname].get(val, 0.0) + w * p
         return {"posteriors": merged_posteriors}
-
-    @staticmethod
-    def _normalize_weights(weights: list[float]) -> list[float]:
-        total = sum(weights) or 1.0
-        return [w / total for w in weights]
 
 
 # ---------------------------------------------------------------------------
