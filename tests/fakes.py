@@ -24,7 +24,7 @@ from src.engine.schemas import (
 FetchFn = Callable[[str, date], Awaitable[EvidenceRecord]]
 
 
-def soft_record(variables: Iterable[Variable], target_date: date, *, seed: int) -> EvidenceRecord:
+def soft_record(variables: Iterable[Variable], target_date: date, *, seed: int | str) -> EvidenceRecord:
     """A SOFT_OBSERVED record over *variables*, deterministic for (seed, target_date)."""
     rng = random.Random(f"{seed}:{target_date.isoformat()}")
     assignments = []
@@ -46,3 +46,32 @@ def soft_record(variables: Iterable[Variable], target_date: date, *, seed: int) 
 
 def patch_evidence_fetch(monkeypatch, fetch: FetchFn) -> None:
     monkeypatch.setattr(api_app, "_fetch_evidence_record", fetch)
+
+
+def patch_soft_evidence_for_all_domains(monkeypatch) -> list[tuple[str, date]]:
+    """
+    Every domain's fetch returns a deterministic soft record over that
+    domain's own variables. Returns the list of (domain_key, target_date)
+    calls, so tests can check which dates an entry point asked for.
+    """
+    calls: list[tuple[str, date]] = []
+
+    async def fetch(domain_key: str, target_date: date) -> EvidenceRecord:
+        calls.append((domain_key, target_date))
+        return soft_record(domain_variables(domain_key), target_date, seed=domain_key)
+
+    patch_evidence_fetch(monkeypatch, fetch)
+    return calls
+
+
+def domain_keys() -> list[str]:
+    return list(api_app._DOMAIN_MAP)
+
+
+def domain_variables(domain_key: str) -> list[Variable]:
+    engine = api_app.app.state.engines[domain_key]
+    return engine.get_population().candidates[0].variables
+
+
+def freeze_clock(monkeypatch, now: datetime) -> None:
+    monkeypatch.setattr(api_app, "_utcnow", lambda: now)

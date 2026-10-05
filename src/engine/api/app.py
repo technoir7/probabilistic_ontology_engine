@@ -482,7 +482,7 @@ def _time_ago(iso_ts: str | None) -> str:
         ts = datetime.fromisoformat(iso_ts)
         if ts.tzinfo is None:
             ts = ts.replace(tzinfo=timezone.utc)
-        diff = (datetime.now(timezone.utc) - ts).total_seconds()
+        diff = (_utcnow() - ts).total_seconds()
         if diff < 60:
             return "just now"
         if diff < 3600:
@@ -765,9 +765,9 @@ async def _ingest_domain_evidence(
 ) -> int:
     if target_date is None:
         if is_agriculture_domain(domain_id):
-            target_date = latest_complete_week_ending(datetime.now(timezone.utc).date())
+            target_date = latest_complete_week_ending(_utcnow().date())
         else:
-            target_date = (datetime.now(timezone.utc) - timedelta(days=1)).date()
+            target_date = (_utcnow() - timedelta(days=1)).date()
     elif is_agriculture_domain(domain_id):
         target_date = latest_week_ending_on_or_before(target_date)
 
@@ -802,7 +802,7 @@ async def _backfill_if_empty(
     if backfill_days <= 0:
         return 0
 
-    today = datetime.now(timezone.utc).date()
+    today = _utcnow().date()
     successes = 0
     async with lock:
         existing = engine.evidence_store.count(domain_id)
@@ -1289,7 +1289,7 @@ async def ingest_backfill(
     engine, domain_id, display_name = _resolve_domain(domain_key, app.state)
     lock = _ingest_lock(app.state, domain_key)
 
-    today = datetime.now(timezone.utc).date()
+    today = _utcnow().date()
     successes = 0
     if is_agriculture_domain(domain_id):
         targets = weekly_backfill_dates(days, today)
@@ -1734,7 +1734,7 @@ async def narrative_snapshot(
     metadata = NarrativeMetadataOut(
         domain=display_name,
         domain_module_id=domain_id,
-        timestamp=datetime.now(timezone.utc).isoformat(),
+        timestamp=_utcnow().isoformat(),
         evidence_count=evidence_count,
         current_generation=pop.generation,
     )
@@ -1926,7 +1926,7 @@ async def narrative_snapshot(
             last_ts = datetime.fromisoformat(last_ts_str)
             if last_ts.tzinfo is None:
                 last_ts = last_ts.replace(tzinfo=timezone.utc)
-            days_ago = (datetime.now(timezone.utc) - last_ts).days
+            days_ago = (_utcnow() - last_ts).days
             if days_ago == 0:
                 hints.append("last paradigm shift occurred today")
             elif days_ago == 1:
@@ -2100,7 +2100,7 @@ async def domain_report_refresh(
     data = {
         "domain": key,
         "ontology_mode": ontology_mode,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": _utcnow().isoformat(),
         "snapshot_hash": h,
         "report": report_text,
     }
@@ -2206,7 +2206,7 @@ async def _backfill_macro_if_empty(
     from datetime import timedelta
     from ...domains.macro_regime_v1.scheduler import _weekly_backfill_dates
 
-    today = datetime.now(timezone.utc).date()
+    today = _utcnow().date()
     successes = 0
     async with lock:
         existing = engine.evidence_store.count(domain_id)
@@ -2302,7 +2302,7 @@ async def _backfill_ai_if_empty(
 
     from ...domains.ai_regime_v1.ingestion.pipeline import _weekly_backfill_dates as _ai_backfill_dates
 
-    today = datetime.now(timezone.utc).date()
+    today = _utcnow().date()
     successes = 0
     async with lock:
         existing = engine.evidence_store.count(domain_id)
@@ -2527,7 +2527,7 @@ async def _backfill_fred_domain_if_empty(
     if backfill_weeks <= 0:
         return 0
     from ...domains.macro_regime_v1.scheduler import _weekly_backfill_dates
-    today = datetime.now(timezone.utc).date()
+    today = _utcnow().date()
     successes = 0
     async with lock:
         existing = engine.evidence_store.count(domain_id)
@@ -2553,6 +2553,12 @@ async def _backfill_fred_domain_if_empty(
 
 
 # ── Utilities ─────────────────────────────────────────────────────────────────
+
+def _utcnow() -> datetime:
+    # Single wall-clock read for this module so tests can pin "today"
+    # (tests/fakes.py:freeze_clock). Becomes an injected clock in Phase 5.
+    return datetime.now(timezone.utc)
+
 
 def _load_env() -> None:
     # Tests set POE_LOAD_DOTENV=0 so a developer's .env (real API keys) cannot

@@ -31,7 +31,9 @@ _FLOAT_DIGITS = 9
 
 _UUID_RE = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
 _ISO_TS_RE = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(\+00:00|Z)?")
-_AGO_RE = re.compile(r"\b(just now|\d+[mhd] ago|today|\d+ days? ago)\b")
+# Relative times. "-3 days ago" happens when a frozen test clock is earlier
+# than a timestamp a store wrote with the real clock.
+_AGO_RE = re.compile(r"(just now|-?\d+[mhd] ago|\btoday\b|-?\d+ days? ago)")
 
 
 def normalize(data: Any) -> Any:

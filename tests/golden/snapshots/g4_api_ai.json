@@ -1,0 +1,3427 @@
+{
+ "backfill": {
+  "body": {
+   "days_requested": 21,
+   "days_successfully_ingested": 21,
+   "domain": "AI Regime"
+  },
+  "status": 200
+ },
+ "candidates": {
+  "body": {
+   "candidates": [
+    {
+     "edge_count": 2,
+     "evidence_count": 21,
+     "generation_introduced": 0,
+     "id": "<id0>",
+     "log_score": -113.130070184,
+     "name": "H3: winner_take_all \u2014 concentration drives capex and valuation",
+     "score_normalized": 0.95,
+     "status": "dominant"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 21,
+     "generation_introduced": 0,
+     "id": "<id1>",
+     "log_score": -112.795735464,
+     "name": "H1: infrastructure_buildout \u2014 rational capex \u2192 productivity chain",
+     "score_normalized": 0.691606901,
+     "status": "rising"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 21,
+     "generation_introduced": 0,
+     "id": "<id2>",
+     "log_score": -112.817040569,
+     "name": "H2: bubble_detachment \u2014 narrative detached from fundamentals",
+     "score_normalized": 0.686972699,
+     "status": "rising"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 21,
+     "generation_introduced": 1,
+     "id": "<id3>",
+     "log_score": -112.91062053,
+     "name": "variant_add_MarketConcentrationExtreme->SemiconductorMomentum",
+     "score_normalized": 0.666617554,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 21,
+     "generation_introduced": 0,
+     "id": "<id4>",
+     "log_score": -112.930492085,
+     "name": "H4: productivity_regime \u2014 AI gains showing up in real economy",
+     "score_normalized": 0.662295171,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 21,
+     "generation_introduced": 1,
+     "id": "<id5>",
+     "log_score": -112.598822038,
+     "name": "variant_add_AIRiskPremiumCompressed->TechValuationDetached",
+     "score_normalized": 0.403322464,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 21,
+     "generation_introduced": 1,
+     "id": "<id6>",
+     "log_score": -112.666960016,
+     "name": "variant_add_SemiconductorMomentum->HyperscalerCapexAccelerating",
+     "score_normalized": 0.388501359,
+     "status": "falling"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 21,
+     "generation_introduced": 1,
+     "id": "<id7>",
+     "log_score": -112.700911931,
+     "name": "variant_add_MarketConcentrationExtreme->SemiconductorMomentum",
+     "score_normalized": 0.381116272,
+     "status": "falling"
+    },
+    {
+     "edge_count": 5,
+     "evidence_count": 21,
+     "generation_introduced": 2,
+     "id": "<id8>",
+     "log_score": -112.666960016,
+     "name": "variant_add_AIRiskPremiumCompressed->BroadEconomicLift",
+     "score_normalized": 0.057385087,
+     "status": "falling"
+    },
+    {
+     "edge_count": 5,
+     "evidence_count": 21,
+     "generation_introduced": 2,
+     "id": "<id9>",
+     "log_score": -112.700911931,
+     "name": "variant_add_TechValuationDetached->AIRiskPremiumCompressed",
+     "score_normalized": 0.05,
+     "status": "falling"
+    }
+   ],
+   "domain": "AI Regime",
+   "generation": 44
+  },
+  "status": 200
+ },
+ "debug_entropy": {
+  "body": {
+   "domain": "AI Regime",
+   "domain_key": "ai",
+   "domain_module_id": "ai-regime-v1",
+   "pairwise_mutual_information": [
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "SemiconductorMomentum",
+     "variable_y": "MarketConcentrationExtreme"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "SemiconductorMomentum",
+     "variable_y": "HyperscalerCapexAccelerating"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "SemiconductorMomentum",
+     "variable_y": "TechValuationDetached"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "SemiconductorMomentum",
+     "variable_y": "IPInvestmentRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "SemiconductorMomentum",
+     "variable_y": "LaborProductivityImproving"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "SemiconductorMomentum",
+     "variable_y": "BroadEconomicLift"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "SemiconductorMomentum",
+     "variable_y": "AIRiskPremiumCompressed"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketConcentrationExtreme",
+     "variable_y": "HyperscalerCapexAccelerating"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketConcentrationExtreme",
+     "variable_y": "TechValuationDetached"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketConcentrationExtreme",
+     "variable_y": "IPInvestmentRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketConcentrationExtreme",
+     "variable_y": "LaborProductivityImproving"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketConcentrationExtreme",
+     "variable_y": "BroadEconomicLift"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketConcentrationExtreme",
+     "variable_y": "AIRiskPremiumCompressed"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "HyperscalerCapexAccelerating",
+     "variable_y": "TechValuationDetached"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "HyperscalerCapexAccelerating",
+     "variable_y": "IPInvestmentRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "HyperscalerCapexAccelerating",
+     "variable_y": "LaborProductivityImproving"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "HyperscalerCapexAccelerating",
+     "variable_y": "BroadEconomicLift"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "HyperscalerCapexAccelerating",
+     "variable_y": "AIRiskPremiumCompressed"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "TechValuationDetached",
+     "variable_y": "IPInvestmentRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "TechValuationDetached",
+     "variable_y": "LaborProductivityImproving"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "TechValuationDetached",
+     "variable_y": "BroadEconomicLift"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "TechValuationDetached",
+     "variable_y": "AIRiskPremiumCompressed"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "IPInvestmentRising",
+     "variable_y": "LaborProductivityImproving"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "IPInvestmentRising",
+     "variable_y": "BroadEconomicLift"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "IPInvestmentRising",
+     "variable_y": "AIRiskPremiumCompressed"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "LaborProductivityImproving",
+     "variable_y": "BroadEconomicLift"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "LaborProductivityImproving",
+     "variable_y": "AIRiskPremiumCompressed"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BroadEconomicLift",
+     "variable_y": "AIRiskPremiumCompressed"
+    }
+   ],
+   "total_evidence_rows": 21,
+   "unique_observed_patterns": [
+    {
+     "count": 21,
+     "pattern": {
+      "AIRiskPremiumCompressed": null,
+      "BroadEconomicLift": null,
+      "HyperscalerCapexAccelerating": null,
+      "IPInvestmentRising": null,
+      "LaborProductivityImproving": null,
+      "MarketConcentrationExtreme": null,
+      "SemiconductorMomentum": null,
+      "TechValuationDetached": null
+     }
+    }
+   ],
+   "variables": {
+    "AIRiskPremiumCompressed": {
+     "entropy": 0.0,
+     "missing_count": 21,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "BroadEconomicLift": {
+     "entropy": 0.0,
+     "missing_count": 21,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "HyperscalerCapexAccelerating": {
+     "entropy": 0.0,
+     "missing_count": 21,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "IPInvestmentRising": {
+     "entropy": 0.0,
+     "missing_count": 21,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "LaborProductivityImproving": {
+     "entropy": 0.0,
+     "missing_count": 21,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "MarketConcentrationExtreme": {
+     "entropy": 0.0,
+     "missing_count": 21,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "SemiconductorMomentum": {
+     "entropy": 0.0,
+     "missing_count": 21,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "TechValuationDetached": {
+     "entropy": 0.0,
+     "missing_count": 21,
+     "observed_count": 0,
+     "value_counts": {}
+    }
+   }
+  },
+  "status": 200
+ },
+ "debug_evidence-geometry": {
+  "body": {
+   "average_pairwise_mi": 0.029786281,
+   "cadence_detected": "daily",
+   "compression_ratio_daily_to_weekly": 1.0,
+   "daily_state_count": 21,
+   "daily_transition_count": 20,
+   "daily_unique_state_count": 20,
+   "domain": "AI Regime",
+   "domain_key": "ai",
+   "domain_module_id": "ai-regime-v1",
+   "effective_state_density": 0.952380952,
+   "effective_transitions_per_month": 30.4375,
+   "highest_entropy_variable": {
+    "shannon_entropy": 0.998363673,
+    "variable": "HyperscalerCapexAccelerating"
+   },
+   "highest_mi_variable_pair": {
+    "joint_observed_count": 21,
+    "mutual_information": 0.112663316,
+    "variable_x": "SemiconductorMomentum",
+    "variable_y": "MarketConcentrationExtreme"
+   },
+   "lowest_entropy_variable": {
+    "shannon_entropy": 0.918295834,
+    "variable": "BroadEconomicLift"
+   },
+   "pairwise_joint_observed_counts": {
+    "AIRiskPremiumCompressed": {
+     "AIRiskPremiumCompressed": 21,
+     "BroadEconomicLift": 21,
+     "HyperscalerCapexAccelerating": 21,
+     "IPInvestmentRising": 21,
+     "LaborProductivityImproving": 21,
+     "MarketConcentrationExtreme": 21,
+     "SemiconductorMomentum": 21,
+     "TechValuationDetached": 21
+    },
+    "BroadEconomicLift": {
+     "AIRiskPremiumCompressed": 21,
+     "BroadEconomicLift": 21,
+     "HyperscalerCapexAccelerating": 21,
+     "IPInvestmentRising": 21,
+     "LaborProductivityImproving": 21,
+     "MarketConcentrationExtreme": 21,
+     "SemiconductorMomentum": 21,
+     "TechValuationDetached": 21
+    },
+    "HyperscalerCapexAccelerating": {
+     "AIRiskPremiumCompressed": 21,
+     "BroadEconomicLift": 21,
+     "HyperscalerCapexAccelerating": 21,
+     "IPInvestmentRising": 21,
+     "LaborProductivityImproving": 21,
+     "MarketConcentrationExtreme": 21,
+     "SemiconductorMomentum": 21,
+     "TechValuationDetached": 21
+    },
+    "IPInvestmentRising": {
+     "AIRiskPremiumCompressed": 21,
+     "BroadEconomicLift": 21,
+     "HyperscalerCapexAccelerating": 21,
+     "IPInvestmentRising": 21,
+     "LaborProductivityImproving": 21,
+     "MarketConcentrationExtreme": 21,
+     "SemiconductorMomentum": 21,
+     "TechValuationDetached": 21
+    },
+    "LaborProductivityImproving": {
+     "AIRiskPremiumCompressed": 21,
+     "BroadEconomicLift": 21,
+     "HyperscalerCapexAccelerating": 21,
+     "IPInvestmentRising": 21,
+     "LaborProductivityImproving": 21,
+     "MarketConcentrationExtreme": 21,
+     "SemiconductorMomentum": 21,
+     "TechValuationDetached": 21
+    },
+    "MarketConcentrationExtreme": {
+     "AIRiskPremiumCompressed": 21,
+     "BroadEconomicLift": 21,
+     "HyperscalerCapexAccelerating": 21,
+     "IPInvestmentRising": 21,
+     "LaborProductivityImproving": 21,
+     "MarketConcentrationExtreme": 21,
+     "SemiconductorMomentum": 21,
+     "TechValuationDetached": 21
+    },
+    "SemiconductorMomentum": {
+     "AIRiskPremiumCompressed": 21,
+     "BroadEconomicLift": 21,
+     "HyperscalerCapexAccelerating": 21,
+     "IPInvestmentRising": 21,
+     "LaborProductivityImproving": 21,
+     "MarketConcentrationExtreme": 21,
+     "SemiconductorMomentum": 21,
+     "TechValuationDetached": 21
+    },
+    "TechValuationDetached": {
+     "AIRiskPremiumCompressed": 21,
+     "BroadEconomicLift": 21,
+     "HyperscalerCapexAccelerating": 21,
+     "IPInvestmentRising": 21,
+     "LaborProductivityImproving": 21,
+     "MarketConcentrationExtreme": 21,
+     "SemiconductorMomentum": 21,
+     "TechValuationDetached": 21
+    }
+   },
+   "pairwise_mutual_information_matrix": {
+    "AIRiskPremiumCompressed": {
+     "AIRiskPremiumCompressed": 0.998363673,
+     "BroadEconomicLift": 0.003287627,
+     "HyperscalerCapexAccelerating": 0.015323755,
+     "IPInvestmentRising": 0.001490705,
+     "LaborProductivityImproving": 0.015323755,
+     "MarketConcentrationExtreme": 0.001008583,
+     "SemiconductorMomentum": 0.039718535,
+     "TechValuationDetached": 0.015323755
+    },
+    "BroadEconomicLift": {
+     "AIRiskPremiumCompressed": 0.003287627,
+     "BroadEconomicLift": 0.918295834,
+     "HyperscalerCapexAccelerating": 0.013135537,
+     "IPInvestmentRising": 0.003287627,
+     "LaborProductivityImproving": 0.013135537,
+     "MarketConcentrationExtreme": 0.014186269,
+     "SemiconductorMomentum": 0.003445199,
+     "TechValuationDetached": 0.013135537
+    },
+    "HyperscalerCapexAccelerating": {
+     "AIRiskPremiumCompressed": 0.015323755,
+     "BroadEconomicLift": 0.013135537,
+     "HyperscalerCapexAccelerating": 0.998363673,
+     "IPInvestmentRising": 0.083355466,
+     "LaborProductivityImproving": 0.083355466,
+     "MarketConcentrationExtreme": 0.018367058,
+     "SemiconductorMomentum": 0.001008583,
+     "TechValuationDetached": 0.001490705
+    },
+    "IPInvestmentRising": {
+     "AIRiskPremiumCompressed": 0.001490705,
+     "BroadEconomicLift": 0.003287627,
+     "HyperscalerCapexAccelerating": 0.083355466,
+     "IPInvestmentRising": 0.998363673,
+     "LaborProductivityImproving": 0.040660373,
+     "MarketConcentrationExtreme": 0.001008583,
+     "SemiconductorMomentum": 0.039718535,
+     "TechValuationDetached": 0.015323755
+    },
+    "LaborProductivityImproving": {
+     "AIRiskPremiumCompressed": 0.015323755,
+     "BroadEconomicLift": 0.013135537,
+     "HyperscalerCapexAccelerating": 0.083355466,
+     "IPInvestmentRising": 0.040660373,
+     "LaborProductivityImproving": 0.998363673,
+     "MarketConcentrationExtreme": 0.094254108,
+     "SemiconductorMomentum": 0.094254108,
+     "TechValuationDetached": 0.001490705
+    },
+    "MarketConcentrationExtreme": {
+     "AIRiskPremiumCompressed": 0.001008583,
+     "BroadEconomicLift": 0.014186269,
+     "HyperscalerCapexAccelerating": 0.018367058,
+     "IPInvestmentRising": 0.001008583,
+     "LaborProductivityImproving": 0.094254108,
+     "MarketConcentrationExtreme": 0.958711883,
+     "SemiconductorMomentum": 0.112663316,
+     "TechValuationDetached": 0.094254108
+    },
+    "SemiconductorMomentum": {
+     "AIRiskPremiumCompressed": 0.039718535,
+     "BroadEconomicLift": 0.003445199,
+     "HyperscalerCapexAccelerating": 0.001008583,
+     "IPInvestmentRising": 0.039718535,
+     "LaborProductivityImproving": 0.094254108,
+     "MarketConcentrationExtreme": 0.112663316,
+     "SemiconductorMomentum": 0.958711883,
+     "TechValuationDetached": 0.001008583
+    },
+    "TechValuationDetached": {
+     "AIRiskPremiumCompressed": 0.015323755,
+     "BroadEconomicLift": 0.013135537,
+     "HyperscalerCapexAccelerating": 0.001490705,
+     "IPInvestmentRising": 0.015323755,
+     "LaborProductivityImproving": 0.001490705,
+     "MarketConcentrationExtreme": 0.094254108,
+     "SemiconductorMomentum": 0.001008583,
+     "TechValuationDetached": 0.998363673
+    }
+   },
+   "position_fallback_assignment_count": 0,
+   "top_10_most_common_assignment_patterns": [
+    {
+     "count": 2,
+     "pattern": {
+      "AIRiskPremiumCompressed": true,
+      "BroadEconomicLift": false,
+      "HyperscalerCapexAccelerating": false,
+      "IPInvestmentRising": false,
+      "LaborProductivityImproving": false,
+      "MarketConcentrationExtreme": false,
+      "SemiconductorMomentum": true,
+      "TechValuationDetached": false
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AIRiskPremiumCompressed": false,
+      "BroadEconomicLift": true,
+      "HyperscalerCapexAccelerating": false,
+      "IPInvestmentRising": false,
+      "LaborProductivityImproving": false,
+      "MarketConcentrationExtreme": false,
+      "SemiconductorMomentum": false,
+      "TechValuationDetached": false
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AIRiskPremiumCompressed": true,
+      "BroadEconomicLift": true,
+      "HyperscalerCapexAccelerating": true,
+      "IPInvestmentRising": false,
+      "LaborProductivityImproving": true,
+      "MarketConcentrationExtreme": false,
+      "SemiconductorMomentum": false,
+      "TechValuationDetached": false
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AIRiskPremiumCompressed": false,
+      "BroadEconomicLift": false,
+      "HyperscalerCapexAccelerating": true,
+      "IPInvestmentRising": true,
+      "LaborProductivityImproving": true,
+      "MarketConcentrationExtreme": false,
+      "SemiconductorMomentum": false,
+      "TechValuationDetached": true
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AIRiskPremiumCompressed": false,
+      "BroadEconomicLift": false,
+      "HyperscalerCapexAccelerating": false,
+      "IPInvestmentRising": true,
+      "LaborProductivityImproving": true,
+      "MarketConcentrationExtreme": true,
+      "SemiconductorMomentum": false,
+      "TechValuationDetached": false
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AIRiskPremiumCompressed": false,
+      "BroadEconomicLift": false,
+      "HyperscalerCapexAccelerating": false,
+      "IPInvestmentRising": false,
+      "LaborProductivityImproving": true,
+      "MarketConcentrationExtreme": true,
+      "SemiconductorMomentum": false,
+      "TechValuationDetached": true
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AIRiskPremiumCompressed": true,
+      "BroadEconomicLift": false,
+      "HyperscalerCapexAccelerating": false,
+      "IPInvestmentRising": false,
+      "LaborProductivityImproving": true,
+      "MarketConcentrationExtreme": true,
+      "SemiconductorMomentum": false,
+      "TechValuationDetached": true
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AIRiskPremiumCompressed": true,
+      "BroadEconomicLift": true,
+      "HyperscalerCapexAccelerating": true,
+      "IPInvestmentRising": true,
+      "LaborProductivityImproving": true,
+      "MarketConcentrationExtreme": true,
+      "SemiconductorMomentum": false,
+      "TechValuationDetached": false
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AIRiskPremiumCompressed": false,
+      "BroadEconomicLift": false,
+      "HyperscalerCapexAccelerating": true,
+      "IPInvestmentRising": false,
+      "LaborProductivityImproving": false,
+      "MarketConcentrationExtreme": true,
+      "SemiconductorMomentum": false,
+      "TechValuationDetached": true
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AIRiskPremiumCompressed": false,
+      "BroadEconomicLift": false,
+      "HyperscalerCapexAccelerating": false,
+      "IPInvestmentRising": true,
+      "LaborProductivityImproving": false,
+      "MarketConcentrationExtreme": false,
+      "SemiconductorMomentum": true,
+      "TechValuationDetached": false
+     }
+    }
+   ],
+   "total_assignment_count": 168,
+   "total_evidence_records": 21,
+   "unique_observed_assignment_patterns": 20,
+   "unique_state_retention_ratio": 1.0,
+   "used_assignment_position_fallback": false,
+   "variable_id_match_count": 168,
+   "variable_id_match_ratio": 1.0,
+   "variable_id_mismatch_count": 0,
+   "variables": {
+    "AIRiskPremiumCompressed": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 21,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.998363673,
+     "transition_count": 11,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 10,
+      "True": 11
+     }
+    },
+    "BroadEconomicLift": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 21,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.918295834,
+     "transition_count": 11,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 14,
+      "True": 7
+     }
+    },
+    "HyperscalerCapexAccelerating": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 21,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.998363673,
+     "transition_count": 11,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 11,
+      "True": 10
+     }
+    },
+    "IPInvestmentRising": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 21,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.998363673,
+     "transition_count": 8,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 10,
+      "True": 11
+     }
+    },
+    "LaborProductivityImproving": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 21,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.998363673,
+     "transition_count": 8,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 10,
+      "True": 11
+     }
+    },
+    "MarketConcentrationExtreme": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 21,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.958711883,
+     "transition_count": 8,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 13,
+      "True": 8
+     }
+    },
+    "SemiconductorMomentum": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 21,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.958711883,
+     "transition_count": 6,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 8,
+      "True": 13
+     }
+    },
+    "TechValuationDetached": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 21,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.998363673,
+     "transition_count": 12,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 10,
+      "True": 11
+     }
+    }
+   },
+   "weekly_aggregation": [
+    {
+     "compressed_state_count": 5,
+     "daily_state_count": 5,
+     "iso_week": 7,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": true,
+        "BroadEconomicLift": false,
+        "HyperscalerCapexAccelerating": false,
+        "IPInvestmentRising": false,
+        "LaborProductivityImproving": true,
+        "MarketConcentrationExtreme": true,
+        "SemiconductorMomentum": false,
+        "TechValuationDetached": true
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": true,
+        "BroadEconomicLift": true,
+        "HyperscalerCapexAccelerating": true,
+        "IPInvestmentRising": true,
+        "LaborProductivityImproving": true,
+        "MarketConcentrationExtreme": true,
+        "SemiconductorMomentum": false,
+        "TechValuationDetached": false
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": true,
+        "BroadEconomicLift": false,
+        "HyperscalerCapexAccelerating": false,
+        "IPInvestmentRising": false,
+        "LaborProductivityImproving": false,
+        "MarketConcentrationExtreme": false,
+        "SemiconductorMomentum": true,
+        "TechValuationDetached": false
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": false,
+        "BroadEconomicLift": true,
+        "HyperscalerCapexAccelerating": false,
+        "IPInvestmentRising": false,
+        "LaborProductivityImproving": false,
+        "MarketConcentrationExtreme": false,
+        "SemiconductorMomentum": true,
+        "TechValuationDetached": true
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": true,
+        "BroadEconomicLift": false,
+        "HyperscalerCapexAccelerating": false,
+        "IPInvestmentRising": true,
+        "LaborProductivityImproving": false,
+        "MarketConcentrationExtreme": false,
+        "SemiconductorMomentum": true,
+        "TechValuationDetached": true
+       }
+      }
+     ],
+     "unique_state_count": 5,
+     "week_start_date": "2026-02-09"
+    },
+    {
+     "compressed_state_count": 7,
+     "daily_state_count": 7,
+     "iso_week": 8,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": false,
+        "BroadEconomicLift": true,
+        "HyperscalerCapexAccelerating": false,
+        "IPInvestmentRising": false,
+        "LaborProductivityImproving": false,
+        "MarketConcentrationExtreme": false,
+        "SemiconductorMomentum": false,
+        "TechValuationDetached": false
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": true,
+        "BroadEconomicLift": true,
+        "HyperscalerCapexAccelerating": true,
+        "IPInvestmentRising": false,
+        "LaborProductivityImproving": true,
+        "MarketConcentrationExtreme": false,
+        "SemiconductorMomentum": false,
+        "TechValuationDetached": false
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": false,
+        "BroadEconomicLift": false,
+        "HyperscalerCapexAccelerating": false,
+        "IPInvestmentRising": false,
+        "LaborProductivityImproving": true,
+        "MarketConcentrationExtreme": true,
+        "SemiconductorMomentum": false,
+        "TechValuationDetached": true
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": true,
+        "BroadEconomicLift": true,
+        "HyperscalerCapexAccelerating": true,
+        "IPInvestmentRising": true,
+        "LaborProductivityImproving": false,
+        "MarketConcentrationExtreme": false,
+        "SemiconductorMomentum": true,
+        "TechValuationDetached": false
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": true,
+        "BroadEconomicLift": false,
+        "HyperscalerCapexAccelerating": true,
+        "IPInvestmentRising": false,
+        "LaborProductivityImproving": false,
+        "MarketConcentrationExtreme": false,
+        "SemiconductorMomentum": true,
+        "TechValuationDetached": true
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": false,
+        "BroadEconomicLift": false,
+        "HyperscalerCapexAccelerating": false,
+        "IPInvestmentRising": false,
+        "LaborProductivityImproving": true,
+        "MarketConcentrationExtreme": true,
+        "SemiconductorMomentum": true,
+        "TechValuationDetached": true
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": true,
+        "BroadEconomicLift": false,
+        "HyperscalerCapexAccelerating": true,
+        "IPInvestmentRising": true,
+        "LaborProductivityImproving": true,
+        "MarketConcentrationExtreme": true,
+        "SemiconductorMomentum": true,
+        "TechValuationDetached": true
+       }
+      }
+     ],
+     "unique_state_count": 7,
+     "week_start_date": "2026-02-16"
+    },
+    {
+     "compressed_state_count": 7,
+     "daily_state_count": 7,
+     "iso_week": 9,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": false,
+        "BroadEconomicLift": false,
+        "HyperscalerCapexAccelerating": true,
+        "IPInvestmentRising": true,
+        "LaborProductivityImproving": true,
+        "MarketConcentrationExtreme": false,
+        "SemiconductorMomentum": false,
+        "TechValuationDetached": true
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": false,
+        "BroadEconomicLift": false,
+        "HyperscalerCapexAccelerating": true,
+        "IPInvestmentRising": false,
+        "LaborProductivityImproving": false,
+        "MarketConcentrationExtreme": true,
+        "SemiconductorMomentum": false,
+        "TechValuationDetached": true
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": true,
+        "BroadEconomicLift": false,
+        "HyperscalerCapexAccelerating": false,
+        "IPInvestmentRising": false,
+        "LaborProductivityImproving": false,
+        "MarketConcentrationExtreme": false,
+        "SemiconductorMomentum": true,
+        "TechValuationDetached": false
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": false,
+        "BroadEconomicLift": false,
+        "HyperscalerCapexAccelerating": false,
+        "IPInvestmentRising": true,
+        "LaborProductivityImproving": false,
+        "MarketConcentrationExtreme": false,
+        "SemiconductorMomentum": true,
+        "TechValuationDetached": false
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": true,
+        "BroadEconomicLift": false,
+        "HyperscalerCapexAccelerating": true,
+        "IPInvestmentRising": true,
+        "LaborProductivityImproving": true,
+        "MarketConcentrationExtreme": false,
+        "SemiconductorMomentum": true,
+        "TechValuationDetached": false
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": false,
+        "BroadEconomicLift": true,
+        "HyperscalerCapexAccelerating": true,
+        "IPInvestmentRising": true,
+        "LaborProductivityImproving": true,
+        "MarketConcentrationExtreme": false,
+        "SemiconductorMomentum": true,
+        "TechValuationDetached": true
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": true,
+        "BroadEconomicLift": true,
+        "HyperscalerCapexAccelerating": false,
+        "IPInvestmentRising": true,
+        "LaborProductivityImproving": false,
+        "MarketConcentrationExtreme": true,
+        "SemiconductorMomentum": true,
+        "TechValuationDetached": true
+       }
+      }
+     ],
+     "unique_state_count": 7,
+     "week_start_date": "2026-02-23"
+    },
+    {
+     "compressed_state_count": 2,
+     "daily_state_count": 2,
+     "iso_week": 10,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": false,
+        "BroadEconomicLift": false,
+        "HyperscalerCapexAccelerating": false,
+        "IPInvestmentRising": true,
+        "LaborProductivityImproving": true,
+        "MarketConcentrationExtreme": true,
+        "SemiconductorMomentum": false,
+        "TechValuationDetached": false
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskPremiumCompressed": false,
+        "BroadEconomicLift": false,
+        "HyperscalerCapexAccelerating": true,
+        "IPInvestmentRising": true,
+        "LaborProductivityImproving": true,
+        "MarketConcentrationExtreme": false,
+        "SemiconductorMomentum": true,
+        "TechValuationDetached": false
+       }
+      }
+     ],
+     "unique_state_count": 2,
+     "week_start_date": "2026-03-02"
+    }
+   ],
+   "weekly_bucket_count": 4,
+   "weekly_compressed_state_count": 21,
+   "weekly_compression_ratio": 1.0,
+   "weekly_retention_ratio": 1.0,
+   "weekly_transition_count": 20,
+   "weekly_unique_state_count": 20
+  },
+  "status": 200
+ },
+ "debug_learning": {
+  "body": {
+   "active_candidates": 10,
+   "current_generation": 44,
+   "domain": "AI Regime",
+   "domain_module_id": "ai-regime-v1",
+   "dominant_evidence_count": 21,
+   "dominant_log_score": -113.130070184,
+   "last_learn_timestamp": "<ts>",
+   "last_mutation_introduced": 2,
+   "last_mutation_total_attempts": 2,
+   "learn_calls_this_session": 21,
+   "pipeline_status": {
+    "backfill_calls_learn": true,
+    "scheduler_calls_learn": true,
+    "trigger_calls_learn": true
+   },
+   "records_scored_this_session": 21,
+   "total_evidence_records": 21
+  },
+  "status": 200
+ },
+ "debug_structure": {
+  "body": {
+   "candidates": [
+    {
+     "active_edge_count": 2,
+     "avg_ll": -5.387146199,
+     "bic_penalty_raw": 0.724886295,
+     "bic_score_explore": -5.568367773,
+     "bic_score_strict": -6.112032494,
+     "candidate_id": "<id0>",
+     "description": "H3: winner_take_all \u2014 concentration drives capex and valuation",
+     "edge_structure": [
+      [
+       "HyperscalerCapexAccelerating",
+       "TechValuationDetached"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "HyperscalerCapexAccelerating"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 0,
+     "is_dominant": true,
+     "log_score": -113.130070184,
+     "status": "ACTIVE",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.371225498,
+     "bic_penalty_raw": 0.797374924,
+     "bic_score_explore": -5.570569229,
+     "bic_score_strict": -6.168600422,
+     "candidate_id": "<id1>",
+     "description": "H1: infrastructure_buildout \u2014 rational capex \u2192 productivity chain",
+     "edge_structure": [
+      [
+       "HyperscalerCapexAccelerating",
+       "IPInvestmentRising"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -112.795735464,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.372240027,
+     "bic_penalty_raw": 0.797374924,
+     "bic_score_explore": -5.571583758,
+     "bic_score_strict": -6.169614951,
+     "candidate_id": "<id2>",
+     "description": "H2: bubble_detachment \u2014 narrative detached from fundamentals",
+     "edge_structure": [
+      [
+       "MarketConcentrationExtreme",
+       "AIRiskPremiumCompressed"
+      ],
+      [
+       "SemiconductorMomentum",
+       "TechValuationDetached"
+      ],
+      [
+       "TechValuationDetached",
+       "MarketConcentrationExtreme"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -112.817040569,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.376696216,
+     "bic_penalty_raw": 0.797374924,
+     "bic_score_explore": -5.576039947,
+     "bic_score_strict": -6.17407114,
+     "candidate_id": "<id3>",
+     "description": "variant_add_MarketConcentrationExtreme->SemiconductorMomentum",
+     "edge_structure": [
+      [
+       "HyperscalerCapexAccelerating",
+       "TechValuationDetached"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "SemiconductorMomentum"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -112.91062053,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.37764248,
+     "bic_penalty_raw": 0.797374924,
+     "bic_score_explore": -5.576986211,
+     "bic_score_strict": -6.175017404,
+     "candidate_id": "<id4>",
+     "description": "H4: productivity_regime \u2014 AI gains showing up in real economy",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "LaborProductivityImproving",
+       "BroadEconomicLift"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -112.930492085,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.361848668,
+     "bic_penalty_raw": 0.869863554,
+     "bic_score_explore": -5.579314557,
+     "bic_score_strict": -6.231712222,
+     "candidate_id": "<id5>",
+     "description": "variant_add_AIRiskPremiumCompressed->TechValuationDetached",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "TechValuationDetached"
+      ],
+      [
+       "HyperscalerCapexAccelerating",
+       "IPInvestmentRising"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -112.598822038,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.365093334,
+     "bic_penalty_raw": 0.869863554,
+     "bic_score_explore": -5.582559223,
+     "bic_score_strict": -6.234956888,
+     "candidate_id": "<id6>",
+     "description": "variant_add_SemiconductorMomentum->HyperscalerCapexAccelerating",
+     "edge_structure": [
+      [
+       "MarketConcentrationExtreme",
+       "AIRiskPremiumCompressed"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "SemiconductorMomentum",
+       "TechValuationDetached"
+      ],
+      [
+       "TechValuationDetached",
+       "MarketConcentrationExtreme"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -112.666960016,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.366710092,
+     "bic_penalty_raw": 0.869863554,
+     "bic_score_explore": -5.58417598,
+     "bic_score_strict": -6.236573646,
+     "candidate_id": "<id7>",
+     "description": "variant_add_MarketConcentrationExtreme->SemiconductorMomentum",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "LaborProductivityImproving",
+       "BroadEconomicLift"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "SemiconductorMomentum"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -112.700911931,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.365093334,
+     "bic_penalty_raw": 0.942352183,
+     "bic_score_explore": -5.60068138,
+     "bic_score_strict": -6.307445517,
+     "candidate_id": "<id8>",
+     "description": "variant_add_AIRiskPremiumCompressed->BroadEconomicLift",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "BroadEconomicLift"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "AIRiskPremiumCompressed"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "SemiconductorMomentum",
+       "TechValuationDetached"
+      ],
+      [
+       "TechValuationDetached",
+       "MarketConcentrationExtreme"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -112.666960016,
+     "status": "ACTIVE",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.366710092,
+     "bic_penalty_raw": 0.942352183,
+     "bic_score_explore": -5.602298138,
+     "bic_score_strict": -6.309062275,
+     "candidate_id": "<id9>",
+     "description": "variant_add_TechValuationDetached->AIRiskPremiumCompressed",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "LaborProductivityImproving",
+       "BroadEconomicLift"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "SemiconductorMomentum"
+      ],
+      [
+       "TechValuationDetached",
+       "AIRiskPremiumCompressed"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -112.700911931,
+     "status": "ACTIVE",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.366757825,
+     "bic_penalty_raw": 0.898719682,
+     "bic_score_explore": -5.591437745,
+     "bic_score_strict": -6.265477507,
+     "candidate_id": "<id32>",
+     "description": "variant_add_IPInvestmentRising->BroadEconomicLift",
+     "edge_structure": [
+      [
+       "HyperscalerCapexAccelerating",
+       "TechValuationDetached"
+      ],
+      [
+       "IPInvestmentRising",
+       "BroadEconomicLift"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "SemiconductorMomentum"
+      ]
+     ],
+     "evidence_count": 20,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -107.335156498,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.364913478,
+     "bic_penalty_raw": 0.942352183,
+     "bic_score_explore": -5.600501524,
+     "bic_score_strict": -6.307265661,
+     "candidate_id": "<id33>",
+     "description": "variant_add_MarketConcentrationExtreme->IPInvestmentRising",
+     "edge_structure": [
+      [
+       "MarketConcentrationExtreme",
+       "AIRiskPremiumCompressed"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "IPInvestmentRising"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "SemiconductorMomentum",
+       "TechValuationDetached"
+      ],
+      [
+       "TechValuationDetached",
+       "MarketConcentrationExtreme"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -112.663183044,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.371258558,
+     "bic_penalty_raw": 0.942352183,
+     "bic_score_explore": -5.606846604,
+     "bic_score_strict": -6.313610741,
+     "candidate_id": "<id34>",
+     "description": "variant_add_MarketConcentrationExtreme->LaborProductivityImproving",
+     "edge_structure": [
+      [
+       "HyperscalerCapexAccelerating",
+       "IPInvestmentRising"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "LaborProductivityImproving"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -112.796429715,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.355697722,
+     "bic_penalty_raw": 0.973612989,
+     "bic_score_explore": -5.59910097,
+     "bic_score_strict": -6.329310711,
+     "candidate_id": "<id35>",
+     "description": "variant_add_HyperscalerCapexAccelerating->AIRiskPremiumCompressed",
+     "edge_structure": [
+      [
+       "HyperscalerCapexAccelerating",
+       "AIRiskPremiumCompressed"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "AIRiskPremiumCompressed"
+      ],
+      [
+       "SemiconductorMomentum",
+       "TechValuationDetached"
+      ],
+      [
+       "TechValuationDetached",
+       "MarketConcentrationExtreme"
+      ]
+     ],
+     "evidence_count": 20,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -107.113954449,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.359737654,
+     "bic_penalty_raw": 1.007308072,
+     "bic_score_explore": -5.611564672,
+     "bic_score_strict": -6.367045726,
+     "candidate_id": "<id36>",
+     "description": "variant_add_LaborProductivityImproving->TechValuationDetached",
+     "edge_structure": [
+      [
+       "LaborProductivityImproving",
+       "TechValuationDetached"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "AIRiskPremiumCompressed"
+      ],
+      [
+       "SemiconductorMomentum",
+       "TechValuationDetached"
+      ],
+      [
+       "TechValuationDetached",
+       "MarketConcentrationExtreme"
+      ]
+     ],
+     "evidence_count": 19,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -101.835015435,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.364107736,
+     "bic_penalty_raw": 1.007308072,
+     "bic_score_explore": -5.615934754,
+     "bic_score_strict": -6.371415808,
+     "candidate_id": "<id37>",
+     "description": "variant_add_SemiconductorMomentum->TechValuationDetached",
+     "edge_structure": [
+      [
+       "HyperscalerCapexAccelerating",
+       "TechValuationDetached"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "SemiconductorMomentum"
+      ],
+      [
+       "SemiconductorMomentum",
+       "TechValuationDetached"
+      ]
+     ],
+     "evidence_count": 19,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -101.918046987,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.347468022,
+     "bic_penalty_raw": 1.043745357,
+     "bic_score_explore": -5.608404362,
+     "bic_score_strict": -6.391213379,
+     "candidate_id": "<id38>",
+     "description": "variant_add_BroadEconomicLift->HyperscalerCapexAccelerating",
+     "edge_structure": [
+      [
+       "BroadEconomicLift",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "HyperscalerCapexAccelerating",
+       "IPInvestmentRising"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ]
+     ],
+     "evidence_count": 18,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -96.254424403,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.356494921,
+     "bic_penalty_raw": 1.039720771,
+     "bic_score_explore": -5.616425114,
+     "bic_score_strict": -6.396215692,
+     "candidate_id": "<id39>",
+     "description": "variant_add_AIRiskPremiumCompressed->HyperscalerCapexAccelerating",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "AIRiskPremiumCompressed",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "LaborProductivityImproving",
+       "BroadEconomicLift"
+      ]
+     ],
+     "evidence_count": 16,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -85.703918735,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.342614949,
+     "bic_penalty_raw": 1.083287455,
+     "bic_score_explore": -5.613436812,
+     "bic_score_strict": -6.425902404,
+     "candidate_id": "<id40>",
+     "description": "variant_add_BroadEconomicLift->HyperscalerCapexAccelerating",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "BroadEconomicLift",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "LaborProductivityImproving",
+       "BroadEconomicLift"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "SemiconductorMomentum"
+      ]
+     ],
+     "evidence_count": 17,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -90.824454126,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.34514049,
+     "bic_penalty_raw": 1.083287455,
+     "bic_score_explore": -5.615962354,
+     "bic_score_strict": -6.428427945,
+     "candidate_id": "<id41>",
+     "description": "variant_add_AIRiskPremiumCompressed->LaborProductivityImproving",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "LaborProductivityImproving"
+      ],
+      [
+       "HyperscalerCapexAccelerating",
+       "IPInvestmentRising"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ]
+     ],
+     "evidence_count": 17,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -90.867388329,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.353429968,
+     "bic_penalty_raw": 1.08322008,
+     "bic_score_explore": -5.624234988,
+     "bic_score_strict": -6.436650048,
+     "candidate_id": "<id42>",
+     "description": "variant_add_TechValuationDetached->AIRiskPremiumCompressed",
+     "edge_structure": [
+      [
+       "HyperscalerCapexAccelerating",
+       "IPInvestmentRising"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "TechValuationDetached",
+       "AIRiskPremiumCompressed"
+      ]
+     ],
+     "evidence_count": 15,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -80.301449513,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.34572211,
+     "bic_penalty_raw": 1.124033461,
+     "bic_score_explore": -5.626730476,
+     "bic_score_strict": -6.469755572,
+     "candidate_id": "<id43>",
+     "description": "variant_add_MarketConcentrationExtreme->LaborProductivityImproving",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "LaborProductivityImproving",
+       "BroadEconomicLift"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "LaborProductivityImproving"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "SemiconductorMomentum"
+      ]
+     ],
+     "evidence_count": 18,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -96.222997987,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.353949923,
+     "bic_penalty_raw": 1.13102457,
+     "bic_score_explore": -5.636706066,
+     "bic_score_strict": -6.484974493,
+     "candidate_id": "<id44>",
+     "description": "variant_add_AIRiskPremiumCompressed->SemiconductorMomentum",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "SemiconductorMomentum"
+      ],
+      [
+       "HyperscalerCapexAccelerating",
+       "IPInvestmentRising"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ]
+     ],
+     "evidence_count": 14,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -74.955298924,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.354693842,
+     "bic_penalty_raw": 1.213007566,
+     "bic_score_explore": -5.657945734,
+     "bic_score_strict": -6.567701408,
+     "candidate_id": "<id45>",
+     "description": "variant_add_SemiconductorMomentum->HyperscalerCapexAccelerating",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "AIRiskPremiumCompressed",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "LaborProductivityImproving",
+       "BroadEconomicLift"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ]
+     ],
+     "evidence_count": 16,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -85.675101473,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.359086312,
+     "bic_penalty_raw": 1.225276617,
+     "bic_score_explore": -5.665405466,
+     "bic_score_strict": -6.584362929,
+     "candidate_id": "<id46>",
+     "description": "variant_add_SemiconductorMomentum->LaborProductivityImproving",
+     "edge_structure": [
+      [
+       "HyperscalerCapexAccelerating",
+       "IPInvestmentRising"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "SemiconductorMomentum",
+       "LaborProductivityImproving"
+      ]
+     ],
+     "evidence_count": 14,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -75.027208369,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.347763777,
+     "bic_penalty_raw": 1.263756761,
+     "bic_score_explore": -5.663702967,
+     "bic_score_strict": -6.611520537,
+     "candidate_id": "<id47>",
+     "description": "variant_add_LaborProductivityImproving->MarketConcentrationExtreme",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "LaborProductivityImproving",
+       "BroadEconomicLift"
+      ],
+      [
+       "LaborProductivityImproving",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "SemiconductorMomentum"
+      ]
+     ],
+     "evidence_count": 15,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -80.21645665,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.336077137,
+     "bic_penalty_raw": 1.282474679,
+     "bic_score_explore": -5.656695807,
+     "bic_score_strict": -6.618551816,
+     "candidate_id": "<id48>",
+     "description": "variant_add_SemiconductorMomentum->BroadEconomicLift",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "TechValuationDetached"
+      ],
+      [
+       "HyperscalerCapexAccelerating",
+       "IPInvestmentRising"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "SemiconductorMomentum",
+       "BroadEconomicLift"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ]
+     ],
+     "evidence_count": 13,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -69.369002784,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.313696415,
+     "bic_penalty_raw": 1.307942876,
+     "bic_score_explore": -5.640682134,
+     "bic_score_strict": -6.621639291,
+     "candidate_id": "<id49>",
+     "description": "variant_add_MarketConcentrationExtreme->HyperscalerCapexAccelerating",
+     "edge_structure": [
+      [
+       "MarketConcentrationExtreme",
+       "AIRiskPremiumCompressed"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "SemiconductorMomentum",
+       "TechValuationDetached"
+      ],
+      [
+       "TechValuationDetached",
+       "MarketConcentrationExtreme"
+      ]
+     ],
+     "evidence_count": 11,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -58.450660568,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.339210328,
+     "bic_penalty_raw": 1.282474679,
+     "bic_score_explore": -5.659828997,
+     "bic_score_strict": -6.621685006,
+     "candidate_id": "<id50>",
+     "description": "variant_add_TechValuationDetached->MarketConcentrationExtreme",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "SemiconductorMomentum"
+      ],
+      [
+       "HyperscalerCapexAccelerating",
+       "IPInvestmentRising"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "TechValuationDetached",
+       "MarketConcentrationExtreme"
+      ]
+     ],
+     "evidence_count": 13,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -69.409734259,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.350107688,
+     "bic_penalty_raw": 1.345991102,
+     "bic_score_explore": -5.686605463,
+     "bic_score_strict": -6.69609879,
+     "candidate_id": "<id51>",
+     "description": "variant_add_TechValuationDetached->BroadEconomicLift",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "LaborProductivityImproving",
+       "BroadEconomicLift"
+      ],
+      [
+       "TechValuationDetached",
+       "BroadEconomicLift"
+      ]
+     ],
+     "evidence_count": 12,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -64.201292252,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.302072103,
+     "bic_penalty_raw": 1.416938116,
+     "bic_score_explore": -5.656306632,
+     "bic_score_strict": -6.719010219,
+     "candidate_id": "<id52>",
+     "description": "variant_add_AIRiskPremiumCompressed->IPInvestmentRising",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "IPInvestmentRising"
+      ],
+      [
+       "AIRiskPremiumCompressed",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "LaborProductivityImproving",
+       "BroadEconomicLift"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "SemiconductorMomentum"
+      ]
+     ],
+     "evidence_count": 11,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -58.322793136,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.279473746,
+     "bic_penalty_raw": 1.464816385,
+     "bic_score_explore": -5.645677842,
+     "bic_score_strict": -6.744290131,
+     "candidate_id": "<id53>",
+     "description": "variant_add_SemiconductorMomentum->HyperscalerCapexAccelerating",
+     "edge_structure": [
+      [
+       "MarketConcentrationExtreme",
+       "AIRiskPremiumCompressed"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "SemiconductorMomentum",
+       "TechValuationDetached"
+      ],
+      [
+       "TechValuationDetached",
+       "MarketConcentrationExtreme"
+      ]
+     ],
+     "evidence_count": 9,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -47.515263713,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.269898133,
+     "bic_penalty_raw": 1.49668031,
+     "bic_score_explore": -5.64406821,
+     "bic_score_strict": -6.766578443,
+     "candidate_id": "<id54>",
+     "description": "variant_add_MarketConcentrationExtreme->IPInvestmentRising",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "AIRiskPremiumCompressed",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "LaborProductivityImproving",
+       "BroadEconomicLift"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "IPInvestmentRising"
+      ]
+     ],
+     "evidence_count": 10,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -52.698981326,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.334856325,
+     "bic_penalty_raw": 1.449528879,
+     "bic_score_explore": -5.697238545,
+     "bic_score_strict": -6.784385204,
+     "candidate_id": "<id55>",
+     "description": "variant_add_BroadEconomicLift->HyperscalerCapexAccelerating",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "TechValuationDetached"
+      ],
+      [
+       "BroadEconomicLift",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "HyperscalerCapexAccelerating",
+       "IPInvestmentRising"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ]
+     ],
+     "evidence_count": 12,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -64.018275901,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.281299074,
+     "bic_penalty_raw": 1.586884417,
+     "bic_score_explore": -5.678020179,
+     "bic_score_strict": -6.868183491,
+     "candidate_id": "<id56>",
+     "description": "variant_add_IPInvestmentRising->MarketConcentrationExtreme",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "IPInvestmentRising",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "LaborProductivityImproving",
+       "BroadEconomicLift"
+      ]
+     ],
+     "evidence_count": 9,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -47.53169167,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.290474425,
+     "bic_penalty_raw": 1.611809565,
+     "bic_score_explore": -5.693426816,
+     "bic_score_strict": -6.90228399,
+     "candidate_id": "<id57>",
+     "description": "variant_add_BroadEconomicLift->MarketConcentrationExtreme",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "BroadEconomicLift",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "LaborProductivityImproving",
+       "BroadEconomicLift"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "SemiconductorMomentum"
+      ]
+     ],
+     "evidence_count": 10,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -52.904744247,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.266482125,
+     "bic_penalty_raw": 1.667922985,
+     "bic_score_explore": -5.683462871,
+     "bic_score_strict": -6.93440511,
+     "candidate_id": "<id58>",
+     "description": "variant_add_SemiconductorMomentum->LaborProductivityImproving",
+     "edge_structure": [
+      [
+       "MarketConcentrationExtreme",
+       "AIRiskPremiumCompressed"
+      ],
+      [
+       "SemiconductorMomentum",
+       "LaborProductivityImproving"
+      ],
+      [
+       "SemiconductorMomentum",
+       "TechValuationDetached"
+      ],
+      [
+       "TechValuationDetached",
+       "MarketConcentrationExtreme"
+      ]
+     ],
+     "evidence_count": 7,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -36.865374874,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.269788131,
+     "bic_penalty_raw": 1.689546253,
+     "bic_score_explore": -5.692174694,
+     "bic_score_strict": -6.959334383,
+     "candidate_id": "<id59>",
+     "description": "variant_add_AIRiskPremiumCompressed->IPInvestmentRising",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "IPInvestmentRising"
+      ],
+      [
+       "HyperscalerCapexAccelerating",
+       "IPInvestmentRising"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ]
+     ],
+     "evidence_count": 8,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -42.158305046,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.260659075,
+     "bic_penalty_raw": 1.819511349,
+     "bic_score_explore": -5.715536912,
+     "bic_score_strict": -7.080170424,
+     "candidate_id": "<id60>",
+     "description": "variant_add_TechValuationDetached->LaborProductivityImproving",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "AIRiskPremiumCompressed",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "LaborProductivityImproving",
+       "BroadEconomicLift"
+      ],
+      [
+       "TechValuationDetached",
+       "LaborProductivityImproving"
+      ]
+     ],
+     "evidence_count": 8,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -42.085272602,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.229512027,
+     "bic_penalty_raw": 1.945910149,
+     "bic_score_explore": -5.715989564,
+     "bic_score_strict": -7.175422176,
+     "candidate_id": "<id61>",
+     "description": "variant_add_IPInvestmentRising->MarketConcentrationExtreme",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "AIRiskPremiumCompressed",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "IPInvestmentRising",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "LaborProductivityImproving",
+       "BroadEconomicLift"
+      ]
+     ],
+     "evidence_count": 7,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -36.606584187,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.248205952,
+     "bic_penalty_raw": 1.941072758,
+     "bic_score_explore": -5.733474142,
+     "bic_score_strict": -7.189278711,
+     "candidate_id": "<id62>",
+     "description": "variant_add_IPInvestmentRising->LaborProductivityImproving",
+     "edge_structure": [
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "AIRiskPremiumCompressed"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "SemiconductorMomentum",
+       "TechValuationDetached"
+      ],
+      [
+       "TechValuationDetached",
+       "MarketConcentrationExtreme"
+      ]
+     ],
+     "evidence_count": 6,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -31.489235713,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.253366974,
+     "bic_penalty_raw": 1.941072758,
+     "bic_score_explore": -5.738635164,
+     "bic_score_strict": -7.194439732,
+     "candidate_id": "<id63>",
+     "description": "variant_add_TechValuationDetached->HyperscalerCapexAccelerating",
+     "edge_structure": [
+      [
+       "HyperscalerCapexAccelerating",
+       "IPInvestmentRising"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "TechValuationDetached",
+       "HyperscalerCapexAccelerating"
+      ]
+     ],
+     "evidence_count": 6,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -31.520201844,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.224642235,
+     "bic_penalty_raw": 2.092269286,
+     "bic_score_explore": -5.747709557,
+     "bic_score_strict": -7.316911522,
+     "candidate_id": "<id64>",
+     "description": "variant_add_TechValuationDetached->HyperscalerCapexAccelerating",
+     "edge_structure": [
+      [
+       "HyperscalerCapexAccelerating",
+       "IPInvestmentRising"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "TechValuationDetached",
+       "HyperscalerCapexAccelerating"
+      ]
+     ],
+     "evidence_count": 5,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -26.123211177,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.233891712,
+     "bic_penalty_raw": 2.092269286,
+     "bic_score_explore": -5.756959034,
+     "bic_score_strict": -7.326160998,
+     "candidate_id": "<id65>",
+     "description": "variant_add_SemiconductorMomentum->MarketConcentrationExtreme",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "LaborProductivityImproving",
+       "BroadEconomicLift"
+      ],
+      [
+       "SemiconductorMomentum",
+       "MarketConcentrationExtreme"
+      ]
+     ],
+     "evidence_count": 5,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -26.16945856,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.198090875,
+     "bic_penalty_raw": 2.252728337,
+     "bic_score_explore": -5.761272959,
+     "bic_score_strict": -7.450819212,
+     "candidate_id": "<id66>",
+     "description": "variant_add_TechValuationDetached->AIRiskPremiumCompressed",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "MarketConcentrationExtreme"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "LaborProductivityImproving",
+       "BroadEconomicLift"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "SemiconductorMomentum"
+      ],
+      [
+       "TechValuationDetached",
+       "AIRiskPremiumCompressed"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -20.792363499,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.191643706,
+     "bic_penalty_raw": 2.380326625,
+     "bic_score_explore": -5.786725363,
+     "bic_score_strict": -7.571970332,
+     "candidate_id": "<id67>",
+     "description": "variant_add_BroadEconomicLift->HyperscalerCapexAccelerating",
+     "edge_structure": [
+      [
+       "BroadEconomicLift",
+       "HyperscalerCapexAccelerating"
+      ],
+      [
+       "HyperscalerCapexAccelerating",
+       "IPInvestmentRising"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ]
+     ],
+     "evidence_count": 3,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -15.574931119,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.189350911,
+     "bic_penalty_raw": 2.426015132,
+     "bic_score_explore": -5.795854694,
+     "bic_score_strict": -7.615366043,
+     "candidate_id": "<id68>",
+     "description": "variant_add_MarketConcentrationExtreme->IPInvestmentRising",
+     "edge_structure": [
+      [
+       "AIRiskPremiumCompressed",
+       "SemiconductorMomentum"
+      ],
+      [
+       "HyperscalerCapexAccelerating",
+       "IPInvestmentRising"
+      ],
+      [
+       "IPInvestmentRising",
+       "LaborProductivityImproving"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "IPInvestmentRising"
+      ],
+      [
+       "SemiconductorMomentum",
+       "HyperscalerCapexAccelerating"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -20.757403643,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.280913265,
+     "bic_penalty_raw": 2.380326625,
+     "bic_score_explore": -5.875994921,
+     "bic_score_strict": -7.66123989,
+     "candidate_id": "<id69>",
+     "description": "variant_add_HyperscalerCapexAccelerating->AIRiskPremiumCompressed",
+     "edge_structure": [
+      [
+       "HyperscalerCapexAccelerating",
+       "AIRiskPremiumCompressed"
+      ],
+      [
+       "MarketConcentrationExtreme",
+       "AIRiskPremiumCompressed"
+      ],
+      [
+       "SemiconductorMomentum",
+       "TechValuationDetached"
+      ],
+      [
+       "TechValuationDetached",
+       "MarketConcentrationExtreme"
+      ]
+     ],
+     "evidence_count": 3,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -15.842739794,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    }
+   ],
+   "domain": "AI Regime",
+   "domain_module_id": "ai-regime-v1",
+   "env_bic_multiplier": 1.0,
+   "env_mode": "strict",
+   "last_mutation_cycle": {
+    "dag_violations": 0,
+    "duplicate_rejections": 0,
+    "introduced": 2,
+    "total_attempts": 2
+   },
+   "total_evidence_records": 21
+  },
+  "status": 200
+ },
+ "evidence_recent": {
+  "body": {
+   "domain": "AI Regime",
+   "records": [
+    {
+     "description": "fake@2026-03-03",
+     "id": "<id11>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-03-02",
+     "id": "<id12>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-03-01",
+     "id": "<id13>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-28",
+     "id": "<id14>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-27",
+     "id": "<id15>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-26",
+     "id": "<id16>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-25",
+     "id": "<id17>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-24",
+     "id": "<id18>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-23",
+     "id": "<id19>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-22",
+     "id": "<id20>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-21",
+     "id": "<id21>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-20",
+     "id": "<id22>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-19",
+     "id": "<id23>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-18",
+     "id": "<id24>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-17",
+     "id": "<id25>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-16",
+     "id": "<id26>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-15",
+     "id": "<id27>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-14",
+     "id": "<id28>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-13",
+     "id": "<id29>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-12",
+     "id": "<id30>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-11",
+     "id": "<id31>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    }
+   ]
+  },
+  "status": 200
+ },
+ "inference_dominant": {
+  "body": {
+   "candidate_id": "<id0>",
+   "edges": [
+    {
+     "probability": 0.290929122,
+     "source": "MarketConcentrationExtreme",
+     "status": "explore",
+     "target": "HyperscalerCapexAccelerating"
+    },
+    {
+     "probability": 0.247615111,
+     "source": "HyperscalerCapexAccelerating",
+     "status": "weak",
+     "target": "TechValuationDetached"
+    }
+   ],
+   "frontier_edges": [
+    {
+     "explore_weight": 1.53636413,
+     "note": "existence_probability=0.291 in explore band [0.25, 0.75]",
+     "probability": 0.290929122,
+     "relation": "capital concentration \u2192 capex acceleration",
+     "source": "MarketConcentrationExtreme",
+     "target": "HyperscalerCapexAccelerating"
+    }
+   ],
+   "nodes": [
+    {
+     "id": "SemiconductorMomentum",
+     "label": "SemiconductorMomentum",
+     "observation": null,
+     "probability": 0.561113043,
+     "status": "target"
+    },
+    {
+     "id": "MarketConcentrationExtreme",
+     "label": "MarketConcentrationExtreme",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "HyperscalerCapexAccelerating",
+     "label": "HyperscalerCapexAccelerating",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "TechValuationDetached",
+     "label": "TechValuationDetached",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "IPInvestmentRising",
+     "label": "IPInvestmentRising",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "LaborProductivityImproving",
+     "label": "LaborProductivityImproving",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "BroadEconomicLift",
+     "label": "BroadEconomicLift",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "AIRiskPremiumCompressed",
+     "label": "AIRiskPremiumCompressed",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    }
+   ],
+   "target_probability": 0.561113043,
+   "target_variable": "SemiconductorMomentum"
+  },
+  "status": 200
+ },
+ "inference_other_candidate": {
+  "body": {
+   "candidate_id": "<id9>",
+   "edges": [
+    {
+     "probability": 0.304142065,
+     "source": "IPInvestmentRising",
+     "status": "explore",
+     "target": "LaborProductivityImproving"
+    },
+    {
+     "probability": 0.290037897,
+     "source": "LaborProductivityImproving",
+     "status": "explore",
+     "target": "BroadEconomicLift"
+    },
+    {
+     "probability": 0.24752639,
+     "source": "AIRiskPremiumCompressed",
+     "status": "weak",
+     "target": "MarketConcentrationExtreme"
+    },
+    {
+     "probability": 0.191947244,
+     "source": "MarketConcentrationExtreme",
+     "status": "weak",
+     "target": "SemiconductorMomentum"
+    },
+    {
+     "probability": 0.5,
+     "source": "TechValuationDetached",
+     "status": "explore",
+     "target": "AIRiskPremiumCompressed"
+    }
+   ],
+   "frontier_edges": [
+    {
+     "explore_weight": 2.0,
+     "note": "existence_probability=0.304 in explore band [0.25, 0.75]",
+     "probability": 0.304142065,
+     "relation": "IP investment \u2192 productivity gains",
+     "source": "IPInvestmentRising",
+     "target": "LaborProductivityImproving"
+    },
+    {
+     "explore_weight": 1.532888111,
+     "note": "existence_probability=0.290 in explore band [0.25, 0.75]",
+     "probability": 0.290037897,
+     "relation": "productivity \u2192 GDP lift",
+     "source": "LaborProductivityImproving",
+     "target": "BroadEconomicLift"
+    },
+    {
+     "explore_weight": 1.0,
+     "note": "existence_probability=0.500 in explore band [0.25, 0.75]",
+     "probability": 0.5,
+     "relation": "TechValuationDetached\u2192AIRiskPremiumCompressed",
+     "source": "TechValuationDetached",
+     "target": "AIRiskPremiumCompressed"
+    }
+   ],
+   "nodes": [
+    {
+     "id": "SemiconductorMomentum",
+     "label": "SemiconductorMomentum",
+     "observation": null,
+     "probability": 0.561113043,
+     "status": "target"
+    },
+    {
+     "id": "MarketConcentrationExtreme",
+     "label": "MarketConcentrationExtreme",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "HyperscalerCapexAccelerating",
+     "label": "HyperscalerCapexAccelerating",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "TechValuationDetached",
+     "label": "TechValuationDetached",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "IPInvestmentRising",
+     "label": "IPInvestmentRising",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "LaborProductivityImproving",
+     "label": "LaborProductivityImproving",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "BroadEconomicLift",
+     "label": "BroadEconomicLift",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "AIRiskPremiumCompressed",
+     "label": "AIRiskPremiumCompressed",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    }
+   ],
+   "target_probability": 0.561113043,
+   "target_variable": "SemiconductorMomentum"
+  },
+  "status": 200
+ },
+ "lineage_dominant": {
+  "body": {
+   "candidate_id": "<id0>",
+   "domain": "AI Regime",
+   "events": [
+    {
+     "description": "H3: winner_take_all \u2014 concentration drives capex and valuation",
+     "dominant_after": "H3: winner_take_all \u2014 concentration drives capex and valuation",
+     "event_type": "current",
+     "generation": 0
+    },
+    {
+     "description": "Became dominant candidate after 1 paradigm shift(s)",
+     "dominant_after": "H3: winner_take_all \u2014 concentration drives capex and valuation",
+     "event_type": "shift",
+     "generation": 44
+    }
+   ]
+  },
+  "status": 200
+ },
+ "narrative_snapshot": {
+  "body": {
+   "competing_candidates": {
+    "candidates": [
+     {
+      "edge_count": 2,
+      "log_score": -113.130070184,
+      "name": "H3: winner_take_all \u2014 concentration drives capex and valuation",
+      "score_normalized": 0.95,
+      "status": "dominant"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -112.795735464,
+      "name": "H1: infrastructure_buildout \u2014 rational capex \u2192 productivity chain",
+      "score_normalized": 0.691606901,
+      "status": "rising"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -112.817040569,
+      "name": "H2: bubble_detachment \u2014 narrative detached from fundamentals",
+      "score_normalized": 0.686972699,
+      "status": "rising"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -112.91062053,
+      "name": "variant_add_MarketConcentrationExtreme->SemiconductorMomentum",
+      "score_normalized": 0.666617554,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -112.930492085,
+      "name": "H4: productivity_regime \u2014 AI gains showing up in real economy",
+      "score_normalized": 0.662295171,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -112.598822038,
+      "name": "variant_add_AIRiskPremiumCompressed->TechValuationDetached",
+      "score_normalized": 0.403322464,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -112.666960016,
+      "name": "variant_add_SemiconductorMomentum->HyperscalerCapexAccelerating",
+      "score_normalized": 0.388501359,
+      "status": "falling"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -112.700911931,
+      "name": "variant_add_MarketConcentrationExtreme->SemiconductorMomentum",
+      "score_normalized": 0.381116272,
+      "status": "falling"
+     },
+     {
+      "edge_count": 5,
+      "log_score": -112.666960016,
+      "name": "variant_add_AIRiskPremiumCompressed->BroadEconomicLift",
+      "score_normalized": 0.057385087,
+      "status": "falling"
+     },
+     {
+      "edge_count": 5,
+      "log_score": -112.700911931,
+      "name": "variant_add_TechValuationDetached->AIRiskPremiumCompressed",
+      "score_normalized": 0.05,
+      "status": "falling"
+     }
+    ],
+    "score_gap_to_dominant": 0.056567929
+   },
+   "current_regime_state": [
+    {
+     "boolean_state": true,
+     "name": "SemiconductorMomentum",
+     "probability": 0.561113043
+    },
+    {
+     "boolean_state": false,
+     "name": "MarketConcentrationExtreme",
+     "probability": 0.395213043
+    },
+    {
+     "boolean_state": false,
+     "name": "HyperscalerCapexAccelerating",
+     "probability": 0.498787319
+    },
+    {
+     "boolean_state": false,
+     "name": "TechValuationDetached",
+     "probability": 0.488063329
+    },
+    {
+     "boolean_state": true,
+     "name": "IPInvestmentRising",
+     "probability": 0.527465217
+    },
+    {
+     "boolean_state": false,
+     "name": "LaborProductivityImproving",
+     "probability": 0.482634783
+    },
+    {
+     "boolean_state": false,
+     "name": "BroadEconomicLift",
+     "probability": 0.413391304
+    },
+    {
+     "boolean_state": true,
+     "name": "AIRiskPremiumCompressed",
+     "probability": 0.525921739
+    }
+   ],
+   "dominant_hypothesis": {
+    "candidate_id": "<id0>",
+    "edge_count": 2,
+    "edges": [
+     {
+      "existence_probability": 0.290929122,
+      "source": "MarketConcentrationExtreme",
+      "target": "HyperscalerCapexAccelerating"
+     },
+     {
+      "existence_probability": 0.247615111,
+      "source": "HyperscalerCapexAccelerating",
+      "target": "TechValuationDetached"
+     }
+    ],
+    "generations_dominant": 44,
+    "log_score": -113.130070184,
+    "name": "H3: winner_take_all \u2014 concentration drives capex and valuation"
+   },
+   "frontier": {
+    "frontier_edge_count": 1,
+    "frontier_edges": [
+     {
+      "probability": 0.290929122,
+      "relation": "capital concentration \u2192 capex acceleration",
+      "source": "MarketConcentrationExtreme",
+      "target": "HyperscalerCapexAccelerating"
+     }
+    ]
+   },
+   "interpretation_hints": [
+    "structure_entropy is high (2.301): engine has not converged; multiple causal stories remain plausible",
+    "dominant hypothesis has held for 44 generations",
+    "last paradigm shift was <ago>",
+    "evidence base: 21 records ingested",
+    "1 edge(s) are in the explore band: causal structure is still being refined in these relations"
+   ],
+   "metadata": {
+    "current_generation": 44,
+    "domain": "AI Regime",
+    "domain_module_id": "ai-regime-v1",
+    "evidence_count": 21,
+    "timestamp": "<ts>"
+   },
+   "ontology_competition": {
+    "active_candidates": 10,
+    "entropy_interpretation": "high",
+    "paradigm_shifts_total": 1,
+    "recent_shifts": [
+     {
+      "from_name": "H1: infrastructure_buildout \u2014 rational capex \u2192 productivity chain",
+      "generation": 6,
+      "timestamp": "<ts>",
+      "to_name": "H3: winner_take_all \u2014 concentration drives capex and valuation"
+     }
+    ],
+    "structure_entropy": 2.300778882
+   }
+  },
+  "status": 200
+ },
+ "shifts": {
+  "body": {
+   "domain": "AI Regime",
+   "domain_module_id": "ai-regime-v1",
+   "events": [
+    {
+     "evidence_count_at_shift": 1,
+     "generation": 6,
+     "new_dominant_id": "<id0>",
+     "new_dominant_name": "H3: winner_take_all \u2014 concentration drives capex and valuation",
+     "previous_dominant_id": "<id1>",
+     "previous_dominant_name": "H1: infrastructure_buildout \u2014 rational capex \u2192 productivity chain",
+     "shift_id": "<id10>",
+     "timestamp": "<ts>"
+    }
+   ],
+   "total_shifts": 1
+  },
+  "status": 200
+ },
+ "status": {
+  "body": {
+   "active_candidates": 10,
+   "current_generation": 44,
+   "domain": "AI Regime",
+   "dominant_hypothesis": {
+    "candidate_id": "<id0>",
+    "generations_dominant": 44,
+    "name": "H3: winner_take_all \u2014 concentration drives capex and valuation"
+   },
+   "engine_status": "online",
+   "frontier_edge_count": 1,
+   "last_evidence_cycle_ago": "<ago>",
+   "max_candidates": 10,
+   "paradigm_shifts_this_window": 1,
+   "structure_entropy": 2.300778882
+  },
+  "status": 200
+ }
+}

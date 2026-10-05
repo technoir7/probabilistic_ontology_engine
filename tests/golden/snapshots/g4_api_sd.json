@@ -1,0 +1,1864 @@
+{
+ "backfill": {
+  "body": {
+   "days_requested": 21,
+   "days_successfully_ingested": 4,
+   "domain": "Sovereign Debt"
+  },
+  "status": 200
+ },
+ "candidates": {
+  "body": {
+   "candidates": [
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id0>",
+     "log_score": -20.449365988,
+     "name": "H1: us_fiscal_stress",
+     "score_normalized": 0.95,
+     "status": "dominant"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id1>",
+     "log_score": -20.521458932,
+     "name": "H4: global_liquidity_crunch",
+     "score_normalized": 0.904805487,
+     "status": "rising"
+    },
+    {
+     "edge_count": 2,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id2>",
+     "log_score": -20.549698799,
+     "name": "T_null: credit-spread baseline",
+     "score_normalized": 0.887102132,
+     "status": "rising"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id3>",
+     "log_score": -20.690356211,
+     "name": "H3: em_contagion",
+     "score_normalized": 0.798925081,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id4>",
+     "log_score": -20.731143976,
+     "name": "H2: dollar_dominance_erosion",
+     "score_normalized": 0.773355544,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id5>",
+     "log_score": -20.455992168,
+     "name": "variant_add_SpreadWidening->FiscalDominanceRisk",
+     "score_normalized": 0.511317457,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id6>",
+     "log_score": -20.496822551,
+     "name": "variant_add_GlobalLiquidityContracting->CreditDefaultRisk",
+     "score_normalized": 0.485721204,
+     "status": "falling"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id7>",
+     "log_score": -20.498724892,
+     "name": "variant_add_SpreadWidening->FedBalanceSheetShrinking",
+     "score_normalized": 0.484528641,
+     "status": "falling"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id8>",
+     "log_score": -20.549698799,
+     "name": "variant_add_FedBalanceSheetShrinking->GlobalLiquidityContracting",
+     "score_normalized": 0.45257349,
+     "status": "falling"
+    },
+    {
+     "edge_count": 5,
+     "evidence_count": 4,
+     "generation_introduced": 2,
+     "id": "<id9>",
+     "log_score": -20.498724892,
+     "name": "variant_add_USYieldSpiking->EMStressElevated",
+     "score_normalized": 0.05,
+     "status": "falling"
+    }
+   ],
+   "domain": "Sovereign Debt",
+   "generation": 9
+  },
+  "status": 200
+ },
+ "debug_entropy": {
+  "body": {
+   "domain": "Sovereign Debt",
+   "domain_key": "sd",
+   "domain_module_id": "sovereign-debt-v1",
+   "pairwise_mutual_information": [
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "USYieldSpiking",
+     "variable_y": "SpreadWidening"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "USYieldSpiking",
+     "variable_y": "DollarStrengthening"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "USYieldSpiking",
+     "variable_y": "FedBalanceSheetShrinking"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "USYieldSpiking",
+     "variable_y": "EMStressElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "USYieldSpiking",
+     "variable_y": "FiscalDominanceRisk"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "USYieldSpiking",
+     "variable_y": "CreditDefaultRisk"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "USYieldSpiking",
+     "variable_y": "GlobalLiquidityContracting"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "SpreadWidening",
+     "variable_y": "DollarStrengthening"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "SpreadWidening",
+     "variable_y": "FedBalanceSheetShrinking"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "SpreadWidening",
+     "variable_y": "EMStressElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "SpreadWidening",
+     "variable_y": "FiscalDominanceRisk"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "SpreadWidening",
+     "variable_y": "CreditDefaultRisk"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "SpreadWidening",
+     "variable_y": "GlobalLiquidityContracting"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "DollarStrengthening",
+     "variable_y": "FedBalanceSheetShrinking"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "DollarStrengthening",
+     "variable_y": "EMStressElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "DollarStrengthening",
+     "variable_y": "FiscalDominanceRisk"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "DollarStrengthening",
+     "variable_y": "CreditDefaultRisk"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "DollarStrengthening",
+     "variable_y": "GlobalLiquidityContracting"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "FedBalanceSheetShrinking",
+     "variable_y": "EMStressElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "FedBalanceSheetShrinking",
+     "variable_y": "FiscalDominanceRisk"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "FedBalanceSheetShrinking",
+     "variable_y": "CreditDefaultRisk"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "FedBalanceSheetShrinking",
+     "variable_y": "GlobalLiquidityContracting"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EMStressElevated",
+     "variable_y": "FiscalDominanceRisk"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EMStressElevated",
+     "variable_y": "CreditDefaultRisk"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EMStressElevated",
+     "variable_y": "GlobalLiquidityContracting"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "FiscalDominanceRisk",
+     "variable_y": "CreditDefaultRisk"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "FiscalDominanceRisk",
+     "variable_y": "GlobalLiquidityContracting"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CreditDefaultRisk",
+     "variable_y": "GlobalLiquidityContracting"
+    }
+   ],
+   "total_evidence_rows": 4,
+   "unique_observed_patterns": [
+    {
+     "count": 4,
+     "pattern": {
+      "CreditDefaultRisk": null,
+      "DollarStrengthening": null,
+      "EMStressElevated": null,
+      "FedBalanceSheetShrinking": null,
+      "FiscalDominanceRisk": null,
+      "GlobalLiquidityContracting": null,
+      "SpreadWidening": null,
+      "USYieldSpiking": null
+     }
+    }
+   ],
+   "variables": {
+    "CreditDefaultRisk": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "DollarStrengthening": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "EMStressElevated": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "FedBalanceSheetShrinking": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "FiscalDominanceRisk": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "GlobalLiquidityContracting": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "SpreadWidening": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "USYieldSpiking": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    }
+   }
+  },
+  "status": 200
+ },
+ "debug_evidence-geometry": {
+  "body": {
+   "average_pairwise_mi": 0.182250223,
+   "cadence_detected": "weekly",
+   "compression_ratio_daily_to_weekly": 1.0,
+   "daily_state_count": 4,
+   "daily_transition_count": 3,
+   "daily_unique_state_count": 4,
+   "domain": "Sovereign Debt",
+   "domain_key": "sd",
+   "domain_module_id": "sovereign-debt-v1",
+   "effective_state_density": 1.0,
+   "effective_transitions_per_month": 4.348214286,
+   "highest_entropy_variable": {
+    "shannon_entropy": 1.0,
+    "variable": "USYieldSpiking"
+   },
+   "highest_mi_variable_pair": {
+    "joint_observed_count": 4,
+    "mutual_information": 1.0,
+    "variable_x": "SpreadWidening",
+    "variable_y": "FiscalDominanceRisk"
+   },
+   "lowest_entropy_variable": {
+    "shannon_entropy": 0.0,
+    "variable": "EMStressElevated"
+   },
+   "pairwise_joint_observed_counts": {
+    "CreditDefaultRisk": {
+     "CreditDefaultRisk": 4,
+     "DollarStrengthening": 4,
+     "EMStressElevated": 4,
+     "FedBalanceSheetShrinking": 4,
+     "FiscalDominanceRisk": 4,
+     "GlobalLiquidityContracting": 4,
+     "SpreadWidening": 4,
+     "USYieldSpiking": 4
+    },
+    "DollarStrengthening": {
+     "CreditDefaultRisk": 4,
+     "DollarStrengthening": 4,
+     "EMStressElevated": 4,
+     "FedBalanceSheetShrinking": 4,
+     "FiscalDominanceRisk": 4,
+     "GlobalLiquidityContracting": 4,
+     "SpreadWidening": 4,
+     "USYieldSpiking": 4
+    },
+    "EMStressElevated": {
+     "CreditDefaultRisk": 4,
+     "DollarStrengthening": 4,
+     "EMStressElevated": 4,
+     "FedBalanceSheetShrinking": 4,
+     "FiscalDominanceRisk": 4,
+     "GlobalLiquidityContracting": 4,
+     "SpreadWidening": 4,
+     "USYieldSpiking": 4
+    },
+    "FedBalanceSheetShrinking": {
+     "CreditDefaultRisk": 4,
+     "DollarStrengthening": 4,
+     "EMStressElevated": 4,
+     "FedBalanceSheetShrinking": 4,
+     "FiscalDominanceRisk": 4,
+     "GlobalLiquidityContracting": 4,
+     "SpreadWidening": 4,
+     "USYieldSpiking": 4
+    },
+    "FiscalDominanceRisk": {
+     "CreditDefaultRisk": 4,
+     "DollarStrengthening": 4,
+     "EMStressElevated": 4,
+     "FedBalanceSheetShrinking": 4,
+     "FiscalDominanceRisk": 4,
+     "GlobalLiquidityContracting": 4,
+     "SpreadWidening": 4,
+     "USYieldSpiking": 4
+    },
+    "GlobalLiquidityContracting": {
+     "CreditDefaultRisk": 4,
+     "DollarStrengthening": 4,
+     "EMStressElevated": 4,
+     "FedBalanceSheetShrinking": 4,
+     "FiscalDominanceRisk": 4,
+     "GlobalLiquidityContracting": 4,
+     "SpreadWidening": 4,
+     "USYieldSpiking": 4
+    },
+    "SpreadWidening": {
+     "CreditDefaultRisk": 4,
+     "DollarStrengthening": 4,
+     "EMStressElevated": 4,
+     "FedBalanceSheetShrinking": 4,
+     "FiscalDominanceRisk": 4,
+     "GlobalLiquidityContracting": 4,
+     "SpreadWidening": 4,
+     "USYieldSpiking": 4
+    },
+    "USYieldSpiking": {
+     "CreditDefaultRisk": 4,
+     "DollarStrengthening": 4,
+     "EMStressElevated": 4,
+     "FedBalanceSheetShrinking": 4,
+     "FiscalDominanceRisk": 4,
+     "GlobalLiquidityContracting": 4,
+     "SpreadWidening": 4,
+     "USYieldSpiking": 4
+    }
+   },
+   "pairwise_mutual_information_matrix": {
+    "CreditDefaultRisk": {
+     "CreditDefaultRisk": 0.811278124,
+     "DollarStrengthening": 0.122556249,
+     "EMStressElevated": 0.0,
+     "FedBalanceSheetShrinking": 0.122556249,
+     "FiscalDominanceRisk": 0.311278124,
+     "GlobalLiquidityContracting": 0.311278124,
+     "SpreadWidening": 0.311278124,
+     "USYieldSpiking": 0.311278124
+    },
+    "DollarStrengthening": {
+     "CreditDefaultRisk": 0.122556249,
+     "DollarStrengthening": 0.811278124,
+     "EMStressElevated": 0.0,
+     "FedBalanceSheetShrinking": 0.122556249,
+     "FiscalDominanceRisk": 0.311278124,
+     "GlobalLiquidityContracting": 0.311278124,
+     "SpreadWidening": 0.311278124,
+     "USYieldSpiking": 0.311278124
+    },
+    "EMStressElevated": {
+     "CreditDefaultRisk": 0.0,
+     "DollarStrengthening": 0.0,
+     "EMStressElevated": 0.0,
+     "FedBalanceSheetShrinking": 0.0,
+     "FiscalDominanceRisk": 0.0,
+     "GlobalLiquidityContracting": 0.0,
+     "SpreadWidening": 0.0,
+     "USYieldSpiking": 0.0
+    },
+    "FedBalanceSheetShrinking": {
+     "CreditDefaultRisk": 0.122556249,
+     "DollarStrengthening": 0.122556249,
+     "EMStressElevated": 0.0,
+     "FedBalanceSheetShrinking": 0.811278124,
+     "FiscalDominanceRisk": 0.311278124,
+     "GlobalLiquidityContracting": 0.311278124,
+     "SpreadWidening": 0.311278124,
+     "USYieldSpiking": 0.311278124
+    },
+    "FiscalDominanceRisk": {
+     "CreditDefaultRisk": 0.311278124,
+     "DollarStrengthening": 0.311278124,
+     "EMStressElevated": 0.0,
+     "FedBalanceSheetShrinking": 0.311278124,
+     "FiscalDominanceRisk": 1.0,
+     "GlobalLiquidityContracting": 0.0,
+     "SpreadWidening": 1.0,
+     "USYieldSpiking": 0.0
+    },
+    "GlobalLiquidityContracting": {
+     "CreditDefaultRisk": 0.311278124,
+     "DollarStrengthening": 0.311278124,
+     "EMStressElevated": 0.0,
+     "FedBalanceSheetShrinking": 0.311278124,
+     "FiscalDominanceRisk": 0.0,
+     "GlobalLiquidityContracting": 1.0,
+     "SpreadWidening": 0.0,
+     "USYieldSpiking": 0.0
+    },
+    "SpreadWidening": {
+     "CreditDefaultRisk": 0.311278124,
+     "DollarStrengthening": 0.311278124,
+     "EMStressElevated": 0.0,
+     "FedBalanceSheetShrinking": 0.311278124,
+     "FiscalDominanceRisk": 1.0,
+     "GlobalLiquidityContracting": 0.0,
+     "SpreadWidening": 1.0,
+     "USYieldSpiking": 0.0
+    },
+    "USYieldSpiking": {
+     "CreditDefaultRisk": 0.311278124,
+     "DollarStrengthening": 0.311278124,
+     "EMStressElevated": 0.0,
+     "FedBalanceSheetShrinking": 0.311278124,
+     "FiscalDominanceRisk": 0.0,
+     "GlobalLiquidityContracting": 0.0,
+     "SpreadWidening": 0.0,
+     "USYieldSpiking": 1.0
+    }
+   },
+   "position_fallback_assignment_count": 0,
+   "top_10_most_common_assignment_patterns": [
+    {
+     "count": 1,
+     "pattern": {
+      "CreditDefaultRisk": false,
+      "DollarStrengthening": true,
+      "EMStressElevated": true,
+      "FedBalanceSheetShrinking": true,
+      "FiscalDominanceRisk": false,
+      "GlobalLiquidityContracting": false,
+      "SpreadWidening": false,
+      "USYieldSpiking": false
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "CreditDefaultRisk": false,
+      "DollarStrengthening": false,
+      "EMStressElevated": true,
+      "FedBalanceSheetShrinking": true,
+      "FiscalDominanceRisk": true,
+      "GlobalLiquidityContracting": true,
+      "SpreadWidening": true,
+      "USYieldSpiking": false
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "CreditDefaultRisk": false,
+      "DollarStrengthening": false,
+      "EMStressElevated": true,
+      "FedBalanceSheetShrinking": false,
+      "FiscalDominanceRisk": false,
+      "GlobalLiquidityContracting": true,
+      "SpreadWidening": false,
+      "USYieldSpiking": true
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "CreditDefaultRisk": true,
+      "DollarStrengthening": false,
+      "EMStressElevated": true,
+      "FedBalanceSheetShrinking": true,
+      "FiscalDominanceRisk": true,
+      "GlobalLiquidityContracting": false,
+      "SpreadWidening": true,
+      "USYieldSpiking": true
+     }
+    }
+   ],
+   "total_assignment_count": 32,
+   "total_evidence_records": 4,
+   "unique_observed_assignment_patterns": 4,
+   "unique_state_retention_ratio": 1.0,
+   "used_assignment_position_fallback": false,
+   "variable_id_match_count": 32,
+   "variable_id_match_ratio": 1.0,
+   "variable_id_mismatch_count": 0,
+   "variables": {
+    "CreditDefaultRisk": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.811278124,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 3,
+      "True": 1
+     }
+    },
+    "DollarStrengthening": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.811278124,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 3,
+      "True": 1
+     }
+    },
+    "EMStressElevated": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.0,
+     "transition_count": 0,
+     "unique_value_count": 1,
+     "value_distribution": {
+      "True": 4
+     }
+    },
+    "FedBalanceSheetShrinking": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.811278124,
+     "transition_count": 2,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 3
+     }
+    },
+    "FiscalDominanceRisk": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 2,
+      "True": 2
+     }
+    },
+    "GlobalLiquidityContracting": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 2,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 2,
+      "True": 2
+     }
+    },
+    "SpreadWidening": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 2,
+      "True": 2
+     }
+    },
+    "USYieldSpiking": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 3,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 2,
+      "True": 2
+     }
+    }
+   },
+   "weekly_aggregation": [
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 6,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "CreditDefaultRisk": false,
+        "DollarStrengthening": true,
+        "EMStressElevated": true,
+        "FedBalanceSheetShrinking": true,
+        "FiscalDominanceRisk": false,
+        "GlobalLiquidityContracting": false,
+        "SpreadWidening": false,
+        "USYieldSpiking": false
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-02-02"
+    },
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 7,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "CreditDefaultRisk": false,
+        "DollarStrengthening": false,
+        "EMStressElevated": true,
+        "FedBalanceSheetShrinking": false,
+        "FiscalDominanceRisk": false,
+        "GlobalLiquidityContracting": true,
+        "SpreadWidening": false,
+        "USYieldSpiking": true
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-02-09"
+    },
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 8,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "CreditDefaultRisk": false,
+        "DollarStrengthening": false,
+        "EMStressElevated": true,
+        "FedBalanceSheetShrinking": true,
+        "FiscalDominanceRisk": true,
+        "GlobalLiquidityContracting": true,
+        "SpreadWidening": true,
+        "USYieldSpiking": false
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-02-16"
+    },
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 9,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "CreditDefaultRisk": true,
+        "DollarStrengthening": false,
+        "EMStressElevated": true,
+        "FedBalanceSheetShrinking": true,
+        "FiscalDominanceRisk": true,
+        "GlobalLiquidityContracting": false,
+        "SpreadWidening": true,
+        "USYieldSpiking": true
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-02-23"
+    }
+   ],
+   "weekly_bucket_count": 4,
+   "weekly_compressed_state_count": 4,
+   "weekly_compression_ratio": 1.0,
+   "weekly_retention_ratio": 1.0,
+   "weekly_transition_count": 3,
+   "weekly_unique_state_count": 4
+  },
+  "status": 200
+ },
+ "debug_learning": {
+  "body": {
+   "active_candidates": 10,
+   "current_generation": 9,
+   "domain": "Sovereign Debt",
+   "domain_module_id": "sovereign-debt-v1",
+   "dominant_evidence_count": 4,
+   "dominant_log_score": -20.449365988,
+   "last_learn_timestamp": "<ts>",
+   "last_mutation_introduced": 2,
+   "last_mutation_total_attempts": 5,
+   "learn_calls_this_session": 4,
+   "pipeline_status": {
+    "backfill_calls_learn": true,
+    "scheduler_calls_learn": true,
+    "trigger_calls_learn": true
+   },
+   "records_scored_this_session": 4,
+   "total_evidence_records": 4
+  },
+  "status": 200
+ },
+ "debug_structure": {
+  "body": {
+   "candidates": [
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.112341497,
+     "bic_penalty_raw": 1.906154747,
+     "bic_score_explore": -5.588880184,
+     "bic_score_strict": -7.018496244,
+     "candidate_id": "<id0>",
+     "description": "H1: us_fiscal_stress",
+     "edge_structure": [
+      [
+       "FedBalanceSheetShrinking",
+       "USYieldSpiking"
+      ],
+      [
+       "FiscalDominanceRisk",
+       "SpreadWidening"
+      ],
+      [
+       "USYieldSpiking",
+       "FiscalDominanceRisk"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": true,
+     "log_score": -20.449365988,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.130364733,
+     "bic_penalty_raw": 1.906154747,
+     "bic_score_explore": -5.60690342,
+     "bic_score_strict": -7.036519479,
+     "candidate_id": "<id1>",
+     "description": "H4: global_liquidity_crunch",
+     "edge_structure": [
+      [
+       "GlobalLiquidityContracting",
+       "DollarStrengthening"
+      ],
+      [
+       "GlobalLiquidityContracting",
+       "USYieldSpiking"
+      ],
+      [
+       "USYieldSpiking",
+       "FiscalDominanceRisk"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -20.521458932,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -5.1374247,
+     "bic_penalty_raw": 1.906154747,
+     "bic_score_explore": -5.613963386,
+     "bic_score_strict": -7.043579446,
+     "candidate_id": "<id2>",
+     "description": "T_null: credit-spread baseline",
+     "edge_structure": [
+      [
+       "CreditDefaultRisk",
+       "SpreadWidening"
+      ],
+      [
+       "USYieldSpiking",
+       "SpreadWidening"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -20.549698799,
+     "status": "ACTIVE",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.172589053,
+     "bic_penalty_raw": 1.906154747,
+     "bic_score_explore": -5.649127739,
+     "bic_score_strict": -7.078743799,
+     "candidate_id": "<id3>",
+     "description": "H3: em_contagion",
+     "edge_structure": [
+      [
+       "CreditDefaultRisk",
+       "SpreadWidening"
+      ],
+      [
+       "EMStressElevated",
+       "CreditDefaultRisk"
+      ],
+      [
+       "USYieldSpiking",
+       "EMStressElevated"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -20.690356211,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.182785994,
+     "bic_penalty_raw": 1.906154747,
+     "bic_score_explore": -5.659324681,
+     "bic_score_strict": -7.088940741,
+     "candidate_id": "<id4>",
+     "description": "H2: dollar_dominance_erosion",
+     "edge_structure": [
+      [
+       "DollarStrengthening",
+       "EMStressElevated"
+      ],
+      [
+       "EMStressElevated",
+       "SpreadWidening"
+      ],
+      [
+       "FedBalanceSheetShrinking",
+       "DollarStrengthening"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -20.731143976,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.113998042,
+     "bic_penalty_raw": 2.079441542,
+     "bic_score_explore": -5.633858427,
+     "bic_score_strict": -7.193439584,
+     "candidate_id": "<id5>",
+     "description": "variant_add_SpreadWidening->FiscalDominanceRisk",
+     "edge_structure": [
+      [
+       "CreditDefaultRisk",
+       "SpreadWidening"
+      ],
+      [
+       "SpreadWidening",
+       "FiscalDominanceRisk"
+      ],
+      [
+       "USYieldSpiking",
+       "SpreadWidening"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -20.455992168,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.124205638,
+     "bic_penalty_raw": 2.079441542,
+     "bic_score_explore": -5.644066023,
+     "bic_score_strict": -7.203647179,
+     "candidate_id": "<id6>",
+     "description": "variant_add_GlobalLiquidityContracting->CreditDefaultRisk",
+     "edge_structure": [
+      [
+       "GlobalLiquidityContracting",
+       "CreditDefaultRisk"
+      ],
+      [
+       "GlobalLiquidityContracting",
+       "DollarStrengthening"
+      ],
+      [
+       "GlobalLiquidityContracting",
+       "USYieldSpiking"
+      ],
+      [
+       "USYieldSpiking",
+       "FiscalDominanceRisk"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -20.496822551,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.124681223,
+     "bic_penalty_raw": 2.079441542,
+     "bic_score_explore": -5.644541608,
+     "bic_score_strict": -7.204122765,
+     "candidate_id": "<id7>",
+     "description": "variant_add_SpreadWidening->FedBalanceSheetShrinking",
+     "edge_structure": [
+      [
+       "GlobalLiquidityContracting",
+       "DollarStrengthening"
+      ],
+      [
+       "GlobalLiquidityContracting",
+       "USYieldSpiking"
+      ],
+      [
+       "SpreadWidening",
+       "FedBalanceSheetShrinking"
+      ],
+      [
+       "USYieldSpiking",
+       "FiscalDominanceRisk"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -20.498724892,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.1374247,
+     "bic_penalty_raw": 2.079441542,
+     "bic_score_explore": -5.657285085,
+     "bic_score_strict": -7.216866242,
+     "candidate_id": "<id8>",
+     "description": "variant_add_FedBalanceSheetShrinking->GlobalLiquidityContracting",
+     "edge_structure": [
+      [
+       "CreditDefaultRisk",
+       "SpreadWidening"
+      ],
+      [
+       "FedBalanceSheetShrinking",
+       "GlobalLiquidityContracting"
+      ],
+      [
+       "USYieldSpiking",
+       "SpreadWidening"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -20.549698799,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.124681223,
+     "bic_penalty_raw": 2.252728337,
+     "bic_score_explore": -5.687863307,
+     "bic_score_strict": -7.37740956,
+     "candidate_id": "<id9>",
+     "description": "variant_add_USYieldSpiking->EMStressElevated",
+     "edge_structure": [
+      [
+       "GlobalLiquidityContracting",
+       "DollarStrengthening"
+      ],
+      [
+       "GlobalLiquidityContracting",
+       "USYieldSpiking"
+      ],
+      [
+       "SpreadWidening",
+       "FedBalanceSheetShrinking"
+      ],
+      [
+       "USYieldSpiking",
+       "EMStressElevated"
+      ],
+      [
+       "USYieldSpiking",
+       "FiscalDominanceRisk"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -20.498724892,
+     "status": "ACTIVE",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.154660886,
+     "bic_penalty_raw": 2.197224577,
+     "bic_score_explore": -5.703967031,
+     "bic_score_strict": -7.351885464,
+     "candidate_id": "<id16>",
+     "description": "variant_add_GlobalLiquidityContracting->FedBalanceSheetShrinking",
+     "edge_structure": [
+      [
+       "CreditDefaultRisk",
+       "SpreadWidening"
+      ],
+      [
+       "GlobalLiquidityContracting",
+       "FedBalanceSheetShrinking"
+      ],
+      [
+       "USYieldSpiking",
+       "SpreadWidening"
+      ]
+     ],
+     "evidence_count": 3,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -15.463982659,
+     "status": "PRUNED",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.106456571,
+     "bic_penalty_raw": 2.252728337,
+     "bic_score_explore": -5.669638655,
+     "bic_score_strict": -7.359184908,
+     "candidate_id": "<id17>",
+     "description": "variant_add_SpreadWidening->GlobalLiquidityContracting",
+     "edge_structure": [
+      [
+       "GlobalLiquidityContracting",
+       "CreditDefaultRisk"
+      ],
+      [
+       "GlobalLiquidityContracting",
+       "DollarStrengthening"
+      ],
+      [
+       "GlobalLiquidityContracting",
+       "USYieldSpiking"
+      ],
+      [
+       "SpreadWidening",
+       "GlobalLiquidityContracting"
+      ],
+      [
+       "USYieldSpiking",
+       "FiscalDominanceRisk"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -20.425826285,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.118969091,
+     "bic_penalty_raw": 2.252728337,
+     "bic_score_explore": -5.682151175,
+     "bic_score_strict": -7.371697428,
+     "candidate_id": "<id18>",
+     "description": "variant_add_USYieldSpiking->DollarStrengthening",
+     "edge_structure": [
+      [
+       "GlobalLiquidityContracting",
+       "DollarStrengthening"
+      ],
+      [
+       "GlobalLiquidityContracting",
+       "USYieldSpiking"
+      ],
+      [
+       "USYieldSpiking",
+       "DollarStrengthening"
+      ],
+      [
+       "USYieldSpiking",
+       "FiscalDominanceRisk"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -20.475876363,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.127384046,
+     "bic_penalty_raw": 2.380326625,
+     "bic_score_explore": -5.722465702,
+     "bic_score_strict": -7.507710671,
+     "candidate_id": "<id19>",
+     "description": "variant_add_CreditDefaultRisk->SpreadWidening",
+     "edge_structure": [
+      [
+       "CreditDefaultRisk",
+       "SpreadWidening"
+      ],
+      [
+       "FedBalanceSheetShrinking",
+       "USYieldSpiking"
+      ],
+      [
+       "FiscalDominanceRisk",
+       "SpreadWidening"
+      ],
+      [
+       "USYieldSpiking",
+       "FiscalDominanceRisk"
+      ]
+     ],
+     "evidence_count": 3,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -15.382152137,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    }
+   ],
+   "domain": "Sovereign Debt",
+   "domain_module_id": "sovereign-debt-v1",
+   "env_bic_multiplier": 1.0,
+   "env_mode": "strict",
+   "last_mutation_cycle": {
+    "dag_violations": 0,
+    "duplicate_rejections": 3,
+    "introduced": 2,
+    "total_attempts": 5
+   },
+   "total_evidence_records": 4
+  },
+  "status": 200
+ },
+ "evidence_recent": {
+  "body": {
+   "domain": "Sovereign Debt",
+   "records": [
+    {
+     "description": "fake@2026-03-01",
+     "id": "<id12>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-22",
+     "id": "<id13>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-15",
+     "id": "<id14>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-08",
+     "id": "<id15>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    }
+   ]
+  },
+  "status": 200
+ },
+ "inference_dominant": {
+  "body": {
+   "candidate_id": "<id0>",
+   "edges": [
+    {
+     "probability": 0.541839248,
+     "source": "USYieldSpiking",
+     "status": "explore",
+     "target": "FiscalDominanceRisk"
+    },
+    {
+     "probability": 0.503722695,
+     "source": "FiscalDominanceRisk",
+     "status": "explore",
+     "target": "SpreadWidening"
+    },
+    {
+     "probability": 0.484993502,
+     "source": "FedBalanceSheetShrinking",
+     "status": "explore",
+     "target": "USYieldSpiking"
+    }
+   ],
+   "frontier_edges": [
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.542 in explore band [0.25, 0.75]",
+     "probability": 0.541839248,
+     "relation": "yield spike \u2192 fiscal dominance concern",
+     "source": "USYieldSpiking",
+     "target": "FiscalDominanceRisk"
+    },
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.504 in explore band [0.25, 0.75]",
+     "probability": 0.503722695,
+     "relation": "fiscal risk \u2192 credit spread widening",
+     "source": "FiscalDominanceRisk",
+     "target": "SpreadWidening"
+    },
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.485 in explore band [0.25, 0.75]",
+     "probability": 0.484993502,
+     "relation": "QT \u2192 term premium \u2192 yield spike",
+     "source": "FedBalanceSheetShrinking",
+     "target": "USYieldSpiking"
+    }
+   ],
+   "nodes": [
+    {
+     "id": "USYieldSpiking",
+     "label": "USYieldSpiking",
+     "observation": null,
+     "probability": 0.547070737,
+     "status": "target"
+    },
+    {
+     "id": "SpreadWidening",
+     "label": "SpreadWidening",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "DollarStrengthening",
+     "label": "DollarStrengthening",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "FedBalanceSheetShrinking",
+     "label": "FedBalanceSheetShrinking",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "EMStressElevated",
+     "label": "EMStressElevated",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "FiscalDominanceRisk",
+     "label": "FiscalDominanceRisk",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "CreditDefaultRisk",
+     "label": "CreditDefaultRisk",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "GlobalLiquidityContracting",
+     "label": "GlobalLiquidityContracting",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    }
+   ],
+   "target_probability": 0.547070737,
+   "target_variable": "USYieldSpiking"
+  },
+  "status": 200
+ },
+ "inference_other_candidate": {
+  "body": {
+   "candidate_id": "<id9>",
+   "edges": [
+    {
+     "probability": 0.482666516,
+     "source": "GlobalLiquidityContracting",
+     "status": "explore",
+     "target": "USYieldSpiking"
+    },
+    {
+     "probability": 0.431904879,
+     "source": "USYieldSpiking",
+     "status": "explore",
+     "target": "FiscalDominanceRisk"
+    },
+    {
+     "probability": 0.42945637,
+     "source": "GlobalLiquidityContracting",
+     "status": "explore",
+     "target": "DollarStrengthening"
+    },
+    {
+     "probability": 0.371545881,
+     "source": "SpreadWidening",
+     "status": "explore",
+     "target": "FedBalanceSheetShrinking"
+    },
+    {
+     "probability": 0.5,
+     "source": "USYieldSpiking",
+     "status": "explore",
+     "target": "EMStressElevated"
+    }
+   ],
+   "frontier_edges": [
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.483 in explore band [0.25, 0.75]",
+     "probability": 0.482666516,
+     "relation": "global liquidity drain \u2192 UST yield pressure",
+     "source": "GlobalLiquidityContracting",
+     "target": "USYieldSpiking"
+    },
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.432 in explore band [0.25, 0.75]",
+     "probability": 0.431904879,
+     "relation": "yield spike \u2192 fiscal dominance concern",
+     "source": "USYieldSpiking",
+     "target": "FiscalDominanceRisk"
+    },
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.429 in explore band [0.25, 0.75]",
+     "probability": 0.42945637,
+     "relation": "liquidity crunch \u2192 safe-haven dollar demand",
+     "source": "GlobalLiquidityContracting",
+     "target": "DollarStrengthening"
+    },
+    {
+     "explore_weight": 1.157625,
+     "note": "existence_probability=0.372 in explore band [0.25, 0.75]",
+     "probability": 0.371545881,
+     "relation": "SpreadWidening\u2192FedBalanceSheetShrinking",
+     "source": "SpreadWidening",
+     "target": "FedBalanceSheetShrinking"
+    },
+    {
+     "explore_weight": 1.0,
+     "note": "existence_probability=0.500 in explore band [0.25, 0.75]",
+     "probability": 0.5,
+     "relation": "USYieldSpiking\u2192EMStressElevated",
+     "source": "USYieldSpiking",
+     "target": "EMStressElevated"
+    }
+   ],
+   "nodes": [
+    {
+     "id": "USYieldSpiking",
+     "label": "USYieldSpiking",
+     "observation": null,
+     "probability": 0.547070737,
+     "status": "target"
+    },
+    {
+     "id": "SpreadWidening",
+     "label": "SpreadWidening",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "DollarStrengthening",
+     "label": "DollarStrengthening",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "FedBalanceSheetShrinking",
+     "label": "FedBalanceSheetShrinking",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "EMStressElevated",
+     "label": "EMStressElevated",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "FiscalDominanceRisk",
+     "label": "FiscalDominanceRisk",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "CreditDefaultRisk",
+     "label": "CreditDefaultRisk",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "GlobalLiquidityContracting",
+     "label": "GlobalLiquidityContracting",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    }
+   ],
+   "target_probability": 0.547070737,
+   "target_variable": "USYieldSpiking"
+  },
+  "status": 200
+ },
+ "lineage_dominant": {
+  "body": {
+   "candidate_id": "<id0>",
+   "domain": "Sovereign Debt",
+   "events": [
+    {
+     "description": "H1: us_fiscal_stress",
+     "dominant_after": "H1: us_fiscal_stress",
+     "event_type": "current",
+     "generation": 0
+    },
+    {
+     "description": "Became dominant candidate after 2 paradigm shift(s)",
+     "dominant_after": "H1: us_fiscal_stress",
+     "event_type": "shift",
+     "generation": 9
+    }
+   ]
+  },
+  "status": 200
+ },
+ "narrative_snapshot": {
+  "body": {
+   "competing_candidates": {
+    "candidates": [
+     {
+      "edge_count": 3,
+      "log_score": -20.449365988,
+      "name": "H1: us_fiscal_stress",
+      "score_normalized": 0.95,
+      "status": "dominant"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -20.521458932,
+      "name": "H4: global_liquidity_crunch",
+      "score_normalized": 0.904805487,
+      "status": "rising"
+     },
+     {
+      "edge_count": 2,
+      "log_score": -20.549698799,
+      "name": "T_null: credit-spread baseline",
+      "score_normalized": 0.887102132,
+      "status": "rising"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -20.690356211,
+      "name": "H3: em_contagion",
+      "score_normalized": 0.798925081,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -20.731143976,
+      "name": "H2: dollar_dominance_erosion",
+      "score_normalized": 0.773355544,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -20.455992168,
+      "name": "variant_add_SpreadWidening->FiscalDominanceRisk",
+      "score_normalized": 0.511317457,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -20.496822551,
+      "name": "variant_add_GlobalLiquidityContracting->CreditDefaultRisk",
+      "score_normalized": 0.485721204,
+      "status": "falling"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -20.498724892,
+      "name": "variant_add_SpreadWidening->FedBalanceSheetShrinking",
+      "score_normalized": 0.484528641,
+      "status": "falling"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -20.549698799,
+      "name": "variant_add_FedBalanceSheetShrinking->GlobalLiquidityContracting",
+      "score_normalized": 0.45257349,
+      "status": "falling"
+     },
+     {
+      "edge_count": 5,
+      "log_score": -20.498724892,
+      "name": "variant_add_USYieldSpiking->EMStressElevated",
+      "score_normalized": 0.05,
+      "status": "falling"
+     }
+    ],
+    "score_gap_to_dominant": 0.018023236
+   },
+   "current_regime_state": [
+    {
+     "boolean_state": true,
+     "name": "USYieldSpiking",
+     "probability": 0.547070737
+    },
+    {
+     "boolean_state": true,
+     "name": "SpreadWidening",
+     "probability": 0.553951669
+    },
+    {
+     "boolean_state": true,
+     "name": "DollarStrengthening",
+     "probability": 0.5048
+    },
+    {
+     "boolean_state": true,
+     "name": "FedBalanceSheetShrinking",
+     "probability": 0.5438
+    },
+    {
+     "boolean_state": true,
+     "name": "EMStressElevated",
+     "probability": 0.739516667
+    },
+    {
+     "boolean_state": false,
+     "name": "FiscalDominanceRisk",
+     "probability": 0.472092431
+    },
+    {
+     "boolean_state": false,
+     "name": "CreditDefaultRisk",
+     "probability": 0.4751
+    },
+    {
+     "boolean_state": false,
+     "name": "GlobalLiquidityContracting",
+     "probability": 0.4456
+    }
+   ],
+   "dominant_hypothesis": {
+    "candidate_id": "<id0>",
+    "edge_count": 3,
+    "edges": [
+     {
+      "existence_probability": 0.541839248,
+      "source": "USYieldSpiking",
+      "target": "FiscalDominanceRisk"
+     },
+     {
+      "existence_probability": 0.503722695,
+      "source": "FiscalDominanceRisk",
+      "target": "SpreadWidening"
+     },
+     {
+      "existence_probability": 0.484993502,
+      "source": "FedBalanceSheetShrinking",
+      "target": "USYieldSpiking"
+     }
+    ],
+    "generations_dominant": 9,
+    "log_score": -20.449365988,
+    "name": "H1: us_fiscal_stress"
+   },
+   "frontier": {
+    "frontier_edge_count": 3,
+    "frontier_edges": [
+     {
+      "probability": 0.541839248,
+      "relation": "yield spike \u2192 fiscal dominance concern",
+      "source": "USYieldSpiking",
+      "target": "FiscalDominanceRisk"
+     },
+     {
+      "probability": 0.503722695,
+      "relation": "fiscal risk \u2192 credit spread widening",
+      "source": "FiscalDominanceRisk",
+      "target": "SpreadWidening"
+     },
+     {
+      "probability": 0.484993502,
+      "relation": "QT \u2192 term premium \u2192 yield spike",
+      "source": "FedBalanceSheetShrinking",
+      "target": "USYieldSpiking"
+     }
+    ]
+   },
+   "interpretation_hints": [
+    "structure_entropy is high (2.297): engine has not converged; multiple causal stories remain plausible",
+    "dominant hypothesis has held for 9 generations",
+    "last paradigm shift was <ago>",
+    "evidence base is small (4 records); scores may not yet be reliable",
+    "3 edge(s) are in the explore band: causal structure is still being refined in these relations"
+   ],
+   "metadata": {
+    "current_generation": 9,
+    "domain": "Sovereign Debt",
+    "domain_module_id": "sovereign-debt-v1",
+    "evidence_count": 4,
+    "timestamp": "<ts>"
+   },
+   "ontology_competition": {
+    "active_candidates": 10,
+    "entropy_interpretation": "high",
+    "paradigm_shifts_total": 2,
+    "recent_shifts": [
+     {
+      "from_name": "H1: us_fiscal_stress",
+      "generation": 5,
+      "timestamp": "<ts>",
+      "to_name": "T_null: credit-spread baseline"
+     },
+     {
+      "from_name": "T_null: credit-spread baseline",
+      "generation": 7,
+      "timestamp": "<ts>",
+      "to_name": "H1: us_fiscal_stress"
+     }
+    ],
+    "structure_entropy": 2.297162086
+   }
+  },
+  "status": 200
+ },
+ "shifts": {
+  "body": {
+   "domain": "Sovereign Debt",
+   "domain_module_id": "sovereign-debt-v1",
+   "events": [
+    {
+     "evidence_count_at_shift": 1,
+     "generation": 5,
+     "new_dominant_id": "<id2>",
+     "new_dominant_name": "T_null: credit-spread baseline",
+     "previous_dominant_id": "<id0>",
+     "previous_dominant_name": "H1: us_fiscal_stress",
+     "shift_id": "<id10>",
+     "timestamp": "<ts>"
+    },
+    {
+     "evidence_count_at_shift": 3,
+     "generation": 7,
+     "new_dominant_id": "<id0>",
+     "new_dominant_name": "H1: us_fiscal_stress",
+     "previous_dominant_id": "<id2>",
+     "previous_dominant_name": "T_null: credit-spread baseline",
+     "shift_id": "<id11>",
+     "timestamp": "<ts>"
+    }
+   ],
+   "total_shifts": 2
+  },
+  "status": 200
+ },
+ "status": {
+  "body": {
+   "active_candidates": 10,
+   "current_generation": 9,
+   "domain": "Sovereign Debt",
+   "dominant_hypothesis": {
+    "candidate_id": "<id0>",
+    "generations_dominant": 9,
+    "name": "H1: us_fiscal_stress"
+   },
+   "engine_status": "online",
+   "frontier_edge_count": 3,
+   "last_evidence_cycle_ago": "<ago>",
+   "max_candidates": 10,
+   "paradigm_shifts_this_window": 2,
+   "structure_entropy": 2.297162086
+  },
+  "status": 200
+ }
+}

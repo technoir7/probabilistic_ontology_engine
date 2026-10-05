@@ -1,0 +1,2455 @@
+{
+ "health": {
+  "body": {
+   "status": "ok"
+  },
+  "status": 200
+ },
+ "openapi": {
+  "components": {
+   "schemas": {
+    "CandidateDiagOut": {
+     "properties": {
+      "active_edge_count": {
+       "title": "Active Edge Count",
+       "type": "integer"
+      },
+      "avg_ll": {
+       "title": "Avg Ll",
+       "type": "number"
+      },
+      "bic_penalty_raw": {
+       "title": "Bic Penalty Raw",
+       "type": "number"
+      },
+      "bic_score_explore": {
+       "title": "Bic Score Explore",
+       "type": "number"
+      },
+      "bic_score_strict": {
+       "title": "Bic Score Strict",
+       "type": "number"
+      },
+      "candidate_id": {
+       "title": "Candidate Id",
+       "type": "string"
+      },
+      "description": {
+       "title": "Description",
+       "type": "string"
+      },
+      "edge_structure": {
+       "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "string"
+         }
+        ],
+        "type": "array"
+       },
+       "title": "Edge Structure",
+       "type": "array"
+      },
+      "evidence_count": {
+       "title": "Evidence Count",
+       "type": "integer"
+      },
+      "generation": {
+       "title": "Generation",
+       "type": "integer"
+      },
+      "is_dominant": {
+       "title": "Is Dominant",
+       "type": "boolean"
+      },
+      "log_score": {
+       "title": "Log Score",
+       "type": "number"
+      },
+      "status": {
+       "title": "Status",
+       "type": "string"
+      },
+      "total_edge_count": {
+       "title": "Total Edge Count",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "candidate_id",
+      "description",
+      "generation",
+      "status",
+      "edge_structure",
+      "active_edge_count",
+      "total_edge_count",
+      "evidence_count",
+      "log_score",
+      "avg_ll",
+      "bic_penalty_raw",
+      "bic_score_strict",
+      "bic_score_explore",
+      "is_dominant"
+     ],
+     "title": "CandidateDiagOut",
+     "type": "object"
+    },
+    "CandidateOut": {
+     "properties": {
+      "edge_count": {
+       "title": "Edge Count",
+       "type": "integer"
+      },
+      "evidence_count": {
+       "title": "Evidence Count",
+       "type": "integer"
+      },
+      "generation_introduced": {
+       "title": "Generation Introduced",
+       "type": "integer"
+      },
+      "id": {
+       "title": "Id",
+       "type": "string"
+      },
+      "log_score": {
+       "title": "Log Score",
+       "type": "number"
+      },
+      "name": {
+       "title": "Name",
+       "type": "string"
+      },
+      "score_normalized": {
+       "title": "Score Normalized",
+       "type": "number"
+      },
+      "status": {
+       "enum": [
+        "dominant",
+        "rising",
+        "falling",
+        "neutral"
+       ],
+       "title": "Status",
+       "type": "string"
+      }
+     },
+     "required": [
+      "id",
+      "name",
+      "log_score",
+      "evidence_count",
+      "generation_introduced",
+      "edge_count",
+      "status",
+      "score_normalized"
+     ],
+     "title": "CandidateOut",
+     "type": "object"
+    },
+    "CandidatesOut": {
+     "properties": {
+      "candidates": {
+       "items": {
+        "$ref": "#/components/schemas/CandidateOut"
+       },
+       "title": "Candidates",
+       "type": "array"
+      },
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "generation": {
+       "title": "Generation",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "domain",
+      "generation",
+      "candidates"
+     ],
+     "title": "CandidatesOut",
+     "type": "object"
+    },
+    "DominantHypothesis": {
+     "properties": {
+      "candidate_id": {
+       "title": "Candidate Id",
+       "type": "string"
+      },
+      "generations_dominant": {
+       "title": "Generations Dominant",
+       "type": "integer"
+      },
+      "name": {
+       "title": "Name",
+       "type": "string"
+      }
+     },
+     "required": [
+      "name",
+      "candidate_id",
+      "generations_dominant"
+     ],
+     "title": "DominantHypothesis",
+     "type": "object"
+    },
+    "EntropyDebugOut": {
+     "properties": {
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "domain_key": {
+       "title": "Domain Key",
+       "type": "string"
+      },
+      "domain_module_id": {
+       "title": "Domain Module Id",
+       "type": "string"
+      },
+      "pairwise_mutual_information": {
+       "items": {
+        "$ref": "#/components/schemas/PairwiseMutualInformationOut"
+       },
+       "title": "Pairwise Mutual Information",
+       "type": "array"
+      },
+      "total_evidence_rows": {
+       "title": "Total Evidence Rows",
+       "type": "integer"
+      },
+      "unique_observed_patterns": {
+       "items": {
+        "$ref": "#/components/schemas/ObservedPatternOut"
+       },
+       "title": "Unique Observed Patterns",
+       "type": "array"
+      },
+      "variables": {
+       "additionalProperties": {
+        "$ref": "#/components/schemas/VariableEntropyDebugOut"
+       },
+       "title": "Variables",
+       "type": "object"
+      }
+     },
+     "required": [
+      "domain",
+      "domain_key",
+      "domain_module_id",
+      "total_evidence_rows",
+      "variables",
+      "unique_observed_patterns",
+      "pairwise_mutual_information"
+     ],
+     "title": "EntropyDebugOut",
+     "type": "object"
+    },
+    "EvidenceOut": {
+     "properties": {
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "records": {
+       "items": {
+        "$ref": "#/components/schemas/EvidenceRecordOut"
+       },
+       "title": "Records",
+       "type": "array"
+      }
+     },
+     "required": [
+      "domain",
+      "records"
+     ],
+     "title": "EvidenceOut",
+     "type": "object"
+    },
+    "EvidenceRecordOut": {
+     "properties": {
+      "description": {
+       "title": "Description",
+       "type": "string"
+      },
+      "id": {
+       "title": "Id",
+       "type": "string"
+      },
+      "impact_delta": {
+       "title": "Impact Delta",
+       "type": "number"
+      },
+      "strength": {
+       "enum": [
+        "strong",
+        "shift",
+        "weak"
+       ],
+       "title": "Strength",
+       "type": "string"
+      },
+      "timestamp": {
+       "title": "Timestamp",
+       "type": "string"
+      },
+      "variables_updated": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Variables Updated"
+      }
+     },
+     "required": [
+      "id",
+      "timestamp",
+      "description",
+      "impact_delta",
+      "strength"
+     ],
+     "title": "EvidenceRecordOut",
+     "type": "object"
+    },
+    "FrontierEdgeOut": {
+     "properties": {
+      "explore_weight": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Explore Weight"
+      },
+      "note": {
+       "title": "Note",
+       "type": "string"
+      },
+      "probability": {
+       "title": "Probability",
+       "type": "number"
+      },
+      "relation": {
+       "title": "Relation",
+       "type": "string"
+      },
+      "source": {
+       "title": "Source",
+       "type": "string"
+      },
+      "target": {
+       "title": "Target",
+       "type": "string"
+      }
+     },
+     "required": [
+      "relation",
+      "source",
+      "target",
+      "probability",
+      "note"
+     ],
+     "title": "FrontierEdgeOut",
+     "type": "object"
+    },
+    "GraphEdgeOut": {
+     "properties": {
+      "probability": {
+       "title": "Probability",
+       "type": "number"
+      },
+      "source": {
+       "title": "Source",
+       "type": "string"
+      },
+      "status": {
+       "enum": [
+        "strong",
+        "explore",
+        "weak"
+       ],
+       "title": "Status",
+       "type": "string"
+      },
+      "target": {
+       "title": "Target",
+       "type": "string"
+      }
+     },
+     "required": [
+      "source",
+      "target",
+      "probability",
+      "status"
+     ],
+     "title": "GraphEdgeOut",
+     "type": "object"
+    },
+    "GraphNodeOut": {
+     "properties": {
+      "id": {
+       "title": "Id",
+       "type": "string"
+      },
+      "label": {
+       "title": "Label",
+       "type": "string"
+      },
+      "observation": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Observation"
+      },
+      "probability": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Probability"
+      },
+      "status": {
+       "enum": [
+        "established",
+        "exploring",
+        "weak",
+        "target"
+       ],
+       "title": "Status",
+       "type": "string"
+      }
+     },
+     "required": [
+      "id",
+      "label",
+      "status"
+     ],
+     "title": "GraphNodeOut",
+     "type": "object"
+    },
+    "HTTPValidationError": {
+     "properties": {
+      "detail": {
+       "items": {
+        "$ref": "#/components/schemas/ValidationError"
+       },
+       "title": "Detail",
+       "type": "array"
+      }
+     },
+     "title": "HTTPValidationError",
+     "type": "object"
+    },
+    "InferenceOut": {
+     "properties": {
+      "candidate_id": {
+       "title": "Candidate Id",
+       "type": "string"
+      },
+      "edges": {
+       "items": {
+        "$ref": "#/components/schemas/GraphEdgeOut"
+       },
+       "title": "Edges",
+       "type": "array"
+      },
+      "frontier_edges": {
+       "items": {
+        "$ref": "#/components/schemas/FrontierEdgeOut"
+       },
+       "title": "Frontier Edges",
+       "type": "array"
+      },
+      "nodes": {
+       "items": {
+        "$ref": "#/components/schemas/GraphNodeOut"
+       },
+       "title": "Nodes",
+       "type": "array"
+      },
+      "target_probability": {
+       "title": "Target Probability",
+       "type": "number"
+      },
+      "target_variable": {
+       "title": "Target Variable",
+       "type": "string"
+      }
+     },
+     "required": [
+      "candidate_id",
+      "target_variable",
+      "target_probability",
+      "nodes",
+      "edges",
+      "frontier_edges"
+     ],
+     "title": "InferenceOut",
+     "type": "object"
+    },
+    "IngestBackfillOut": {
+     "properties": {
+      "days_requested": {
+       "title": "Days Requested",
+       "type": "integer"
+      },
+      "days_successfully_ingested": {
+       "title": "Days Successfully Ingested",
+       "type": "integer"
+      },
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      }
+     },
+     "required": [
+      "domain",
+      "days_requested",
+      "days_successfully_ingested"
+     ],
+     "title": "IngestBackfillOut",
+     "type": "object"
+    },
+    "IngestTriggerOut": {
+     "properties": {
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "evidence_records_ingested": {
+       "title": "Evidence Records Ingested",
+       "type": "integer"
+      },
+      "population_status": {
+       "$ref": "#/components/schemas/PopStatusOut"
+      }
+     },
+     "required": [
+      "domain",
+      "evidence_records_ingested",
+      "population_status"
+     ],
+     "title": "IngestTriggerOut",
+     "type": "object"
+    },
+    "LearningDebugOut": {
+     "properties": {
+      "active_candidates": {
+       "title": "Active Candidates",
+       "type": "integer"
+      },
+      "current_generation": {
+       "title": "Current Generation",
+       "type": "integer"
+      },
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "domain_module_id": {
+       "title": "Domain Module Id",
+       "type": "string"
+      },
+      "dominant_evidence_count": {
+       "title": "Dominant Evidence Count",
+       "type": "integer"
+      },
+      "dominant_log_score": {
+       "title": "Dominant Log Score",
+       "type": "number"
+      },
+      "last_learn_timestamp": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Last Learn Timestamp"
+      },
+      "last_mutation_introduced": {
+       "title": "Last Mutation Introduced",
+       "type": "integer"
+      },
+      "last_mutation_total_attempts": {
+       "title": "Last Mutation Total Attempts",
+       "type": "integer"
+      },
+      "learn_calls_this_session": {
+       "title": "Learn Calls This Session",
+       "type": "integer"
+      },
+      "pipeline_status": {
+       "$ref": "#/components/schemas/LearningPipelineStatusOut"
+      },
+      "records_scored_this_session": {
+       "title": "Records Scored This Session",
+       "type": "integer"
+      },
+      "total_evidence_records": {
+       "title": "Total Evidence Records",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "domain",
+      "domain_module_id",
+      "total_evidence_records",
+      "active_candidates",
+      "dominant_evidence_count",
+      "dominant_log_score",
+      "learn_calls_this_session",
+      "last_learn_timestamp",
+      "records_scored_this_session",
+      "last_mutation_total_attempts",
+      "last_mutation_introduced",
+      "current_generation",
+      "pipeline_status"
+     ],
+     "title": "LearningDebugOut",
+     "type": "object"
+    },
+    "LearningPipelineStatusOut": {
+     "description": "Flags showing which code paths call engine.learn().",
+     "properties": {
+      "backfill_calls_learn": {
+       "title": "Backfill Calls Learn",
+       "type": "boolean"
+      },
+      "scheduler_calls_learn": {
+       "title": "Scheduler Calls Learn",
+       "type": "boolean"
+      },
+      "trigger_calls_learn": {
+       "title": "Trigger Calls Learn",
+       "type": "boolean"
+      }
+     },
+     "required": [
+      "scheduler_calls_learn",
+      "backfill_calls_learn",
+      "trigger_calls_learn"
+     ],
+     "title": "LearningPipelineStatusOut",
+     "type": "object"
+    },
+    "LineageEventOut": {
+     "properties": {
+      "description": {
+       "title": "Description",
+       "type": "string"
+      },
+      "dominant_after": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Dominant After"
+      },
+      "event_type": {
+       "enum": [
+        "shift",
+        "introduce",
+        "milestone",
+        "current"
+       ],
+       "title": "Event Type",
+       "type": "string"
+      },
+      "generation": {
+       "title": "Generation",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "generation",
+      "event_type",
+      "description"
+     ],
+     "title": "LineageEventOut",
+     "type": "object"
+    },
+    "LineageOut": {
+     "properties": {
+      "candidate_id": {
+       "title": "Candidate Id",
+       "type": "string"
+      },
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "events": {
+       "items": {
+        "$ref": "#/components/schemas/LineageEventOut"
+       },
+       "title": "Events",
+       "type": "array"
+      }
+     },
+     "required": [
+      "domain",
+      "candidate_id",
+      "events"
+     ],
+     "title": "LineageOut",
+     "type": "object"
+    },
+    "ManualArtIngestOut": {
+     "properties": {
+      "causal_prior_candidates_scored": {
+       "default": 0,
+       "title": "Causal Prior Candidates Scored",
+       "type": "integer"
+      },
+      "causal_prior_dominant_changed": {
+       "default": false,
+       "title": "Causal Prior Dominant Changed",
+       "type": "boolean"
+      },
+      "causal_prior_total_applied": {
+       "default": 0.0,
+       "title": "Causal Prior Total Applied",
+       "type": "number"
+      },
+      "causal_prior_weight": {
+       "default": 0.0,
+       "title": "Causal Prior Weight",
+       "type": "number"
+      },
+      "db_path": {
+       "title": "Db Path",
+       "type": "string"
+      },
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "domain_key": {
+       "title": "Domain Key",
+       "type": "string"
+      },
+      "domain_module_id": {
+       "title": "Domain Module Id",
+       "type": "string"
+      },
+      "evidence_count_after": {
+       "title": "Evidence Count After",
+       "type": "integer"
+      },
+      "evidence_count_before": {
+       "title": "Evidence Count Before",
+       "type": "integer"
+      },
+      "files_scanned": {
+       "title": "Files Scanned",
+       "type": "integer"
+      },
+      "input_path": {
+       "title": "Input Path",
+       "type": "string"
+      },
+      "objects_found": {
+       "title": "Objects Found",
+       "type": "integer"
+      },
+      "rebuild_mode": {
+       "title": "Rebuild Mode",
+       "type": "boolean"
+      },
+      "records_failed": {
+       "title": "Records Failed",
+       "type": "integer"
+      },
+      "records_found": {
+       "title": "Records Found",
+       "type": "integer"
+      },
+      "records_ingested": {
+       "title": "Records Ingested",
+       "type": "integer"
+      },
+      "records_learned": {
+       "title": "Records Learned",
+       "type": "integer"
+      },
+      "records_loaded_from_files": {
+       "title": "Records Loaded From Files",
+       "type": "integer"
+      },
+      "records_removed_stale": {
+       "title": "Records Removed Stale",
+       "type": "integer"
+      },
+      "records_replaced": {
+       "title": "Records Replaced",
+       "type": "integer"
+      },
+      "records_skipped_duplicates": {
+       "title": "Records Skipped Duplicates",
+       "type": "integer"
+      },
+      "verification_endpoint": {
+       "title": "Verification Endpoint",
+       "type": "string"
+      }
+     },
+     "required": [
+      "domain",
+      "domain_key",
+      "domain_module_id",
+      "input_path",
+      "db_path",
+      "rebuild_mode",
+      "files_scanned",
+      "objects_found",
+      "records_loaded_from_files",
+      "records_replaced",
+      "records_removed_stale",
+      "records_found",
+      "records_ingested",
+      "records_skipped_duplicates",
+      "records_failed",
+      "records_learned",
+      "evidence_count_before",
+      "evidence_count_after",
+      "verification_endpoint"
+     ],
+     "title": "ManualArtIngestOut",
+     "type": "object"
+    },
+    "MutationCycleDiagOut": {
+     "properties": {
+      "dag_violations": {
+       "title": "Dag Violations",
+       "type": "integer"
+      },
+      "duplicate_rejections": {
+       "title": "Duplicate Rejections",
+       "type": "integer"
+      },
+      "introduced": {
+       "title": "Introduced",
+       "type": "integer"
+      },
+      "total_attempts": {
+       "title": "Total Attempts",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "total_attempts",
+      "dag_violations",
+      "duplicate_rejections",
+      "introduced"
+     ],
+     "title": "MutationCycleDiagOut",
+     "type": "object"
+    },
+    "NarrativeCompetingCandidatesOut": {
+     "properties": {
+      "candidates": {
+       "items": {
+        "$ref": "#/components/schemas/NarrativeCompetitorOut"
+       },
+       "title": "Candidates",
+       "type": "array"
+      },
+      "score_gap_to_dominant": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Score Gap To Dominant"
+      }
+     },
+     "required": [
+      "candidates",
+      "score_gap_to_dominant"
+     ],
+     "title": "NarrativeCompetingCandidatesOut",
+     "type": "object"
+    },
+    "NarrativeCompetitorOut": {
+     "properties": {
+      "edge_count": {
+       "title": "Edge Count",
+       "type": "integer"
+      },
+      "log_score": {
+       "title": "Log Score",
+       "type": "number"
+      },
+      "name": {
+       "title": "Name",
+       "type": "string"
+      },
+      "score_normalized": {
+       "title": "Score Normalized",
+       "type": "number"
+      },
+      "status": {
+       "title": "Status",
+       "type": "string"
+      }
+     },
+     "required": [
+      "name",
+      "log_score",
+      "edge_count",
+      "status",
+      "score_normalized"
+     ],
+     "title": "NarrativeCompetitorOut",
+     "type": "object"
+    },
+    "NarrativeDominantHypothesisOut": {
+     "properties": {
+      "candidate_id": {
+       "title": "Candidate Id",
+       "type": "string"
+      },
+      "edge_count": {
+       "title": "Edge Count",
+       "type": "integer"
+      },
+      "edges": {
+       "items": {
+        "$ref": "#/components/schemas/NarrativeEdgeOut"
+       },
+       "title": "Edges",
+       "type": "array"
+      },
+      "generations_dominant": {
+       "title": "Generations Dominant",
+       "type": "integer"
+      },
+      "log_score": {
+       "title": "Log Score",
+       "type": "number"
+      },
+      "name": {
+       "title": "Name",
+       "type": "string"
+      }
+     },
+     "required": [
+      "name",
+      "candidate_id",
+      "edge_count",
+      "edges",
+      "generations_dominant",
+      "log_score"
+     ],
+     "title": "NarrativeDominantHypothesisOut",
+     "type": "object"
+    },
+    "NarrativeEdgeOut": {
+     "properties": {
+      "existence_probability": {
+       "title": "Existence Probability",
+       "type": "number"
+      },
+      "source": {
+       "title": "Source",
+       "type": "string"
+      },
+      "target": {
+       "title": "Target",
+       "type": "string"
+      }
+     },
+     "required": [
+      "source",
+      "target",
+      "existence_probability"
+     ],
+     "title": "NarrativeEdgeOut",
+     "type": "object"
+    },
+    "NarrativeFrontierEdgeOut": {
+     "properties": {
+      "probability": {
+       "title": "Probability",
+       "type": "number"
+      },
+      "relation": {
+       "title": "Relation",
+       "type": "string"
+      },
+      "source": {
+       "title": "Source",
+       "type": "string"
+      },
+      "target": {
+       "title": "Target",
+       "type": "string"
+      }
+     },
+     "required": [
+      "source",
+      "target",
+      "probability",
+      "relation"
+     ],
+     "title": "NarrativeFrontierEdgeOut",
+     "type": "object"
+    },
+    "NarrativeFrontierOut": {
+     "properties": {
+      "frontier_edge_count": {
+       "title": "Frontier Edge Count",
+       "type": "integer"
+      },
+      "frontier_edges": {
+       "items": {
+        "$ref": "#/components/schemas/NarrativeFrontierEdgeOut"
+       },
+       "title": "Frontier Edges",
+       "type": "array"
+      }
+     },
+     "required": [
+      "frontier_edge_count",
+      "frontier_edges"
+     ],
+     "title": "NarrativeFrontierOut",
+     "type": "object"
+    },
+    "NarrativeMetadataOut": {
+     "properties": {
+      "current_generation": {
+       "title": "Current Generation",
+       "type": "integer"
+      },
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "domain_module_id": {
+       "title": "Domain Module Id",
+       "type": "string"
+      },
+      "evidence_count": {
+       "title": "Evidence Count",
+       "type": "integer"
+      },
+      "timestamp": {
+       "title": "Timestamp",
+       "type": "string"
+      }
+     },
+     "required": [
+      "domain",
+      "domain_module_id",
+      "timestamp",
+      "evidence_count",
+      "current_generation"
+     ],
+     "title": "NarrativeMetadataOut",
+     "type": "object"
+    },
+    "NarrativeOntologyCompetitionOut": {
+     "properties": {
+      "active_candidates": {
+       "title": "Active Candidates",
+       "type": "integer"
+      },
+      "entropy_interpretation": {
+       "title": "Entropy Interpretation",
+       "type": "string"
+      },
+      "paradigm_shifts_total": {
+       "title": "Paradigm Shifts Total",
+       "type": "integer"
+      },
+      "recent_shifts": {
+       "items": {
+        "$ref": "#/components/schemas/NarrativeRecentShiftOut"
+       },
+       "title": "Recent Shifts",
+       "type": "array"
+      },
+      "structure_entropy": {
+       "title": "Structure Entropy",
+       "type": "number"
+      }
+     },
+     "required": [
+      "structure_entropy",
+      "entropy_interpretation",
+      "active_candidates",
+      "paradigm_shifts_total",
+      "recent_shifts"
+     ],
+     "title": "NarrativeOntologyCompetitionOut",
+     "type": "object"
+    },
+    "NarrativeRecentShiftOut": {
+     "properties": {
+      "from_name": {
+       "title": "From Name",
+       "type": "string"
+      },
+      "generation": {
+       "title": "Generation",
+       "type": "integer"
+      },
+      "timestamp": {
+       "title": "Timestamp",
+       "type": "string"
+      },
+      "to_name": {
+       "title": "To Name",
+       "type": "string"
+      }
+     },
+     "required": [
+      "timestamp",
+      "from_name",
+      "to_name",
+      "generation"
+     ],
+     "title": "NarrativeRecentShiftOut",
+     "type": "object"
+    },
+    "NarrativeRegimeVariableOut": {
+     "properties": {
+      "boolean_state": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Boolean State"
+      },
+      "name": {
+       "title": "Name",
+       "type": "string"
+      },
+      "probability": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Probability"
+      }
+     },
+     "required": [
+      "name",
+      "boolean_state",
+      "probability"
+     ],
+     "title": "NarrativeRegimeVariableOut",
+     "type": "object"
+    },
+    "NarrativeSnapshotOut": {
+     "properties": {
+      "competing_candidates": {
+       "$ref": "#/components/schemas/NarrativeCompetingCandidatesOut"
+      },
+      "current_regime_state": {
+       "items": {
+        "$ref": "#/components/schemas/NarrativeRegimeVariableOut"
+       },
+       "title": "Current Regime State",
+       "type": "array"
+      },
+      "dominant_hypothesis": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/NarrativeDominantHypothesisOut"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "frontier": {
+       "$ref": "#/components/schemas/NarrativeFrontierOut"
+      },
+      "interpretation_hints": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Interpretation Hints",
+       "type": "array"
+      },
+      "metadata": {
+       "$ref": "#/components/schemas/NarrativeMetadataOut"
+      },
+      "ontology_competition": {
+       "$ref": "#/components/schemas/NarrativeOntologyCompetitionOut"
+      }
+     },
+     "required": [
+      "metadata",
+      "current_regime_state",
+      "dominant_hypothesis",
+      "competing_candidates",
+      "ontology_competition",
+      "frontier",
+      "interpretation_hints"
+     ],
+     "title": "NarrativeSnapshotOut",
+     "type": "object"
+    },
+    "ObservedPatternOut": {
+     "properties": {
+      "count": {
+       "title": "Count",
+       "type": "integer"
+      },
+      "pattern": {
+       "additionalProperties": true,
+       "title": "Pattern",
+       "type": "object"
+      }
+     },
+     "required": [
+      "pattern",
+      "count"
+     ],
+     "title": "ObservedPatternOut",
+     "type": "object"
+    },
+    "PairwiseMutualInformationOut": {
+     "properties": {
+      "joint_observed_count": {
+       "title": "Joint Observed Count",
+       "type": "integer"
+      },
+      "mutual_information": {
+       "title": "Mutual Information",
+       "type": "number"
+      },
+      "variable_x": {
+       "title": "Variable X",
+       "type": "string"
+      },
+      "variable_y": {
+       "title": "Variable Y",
+       "type": "string"
+      }
+     },
+     "required": [
+      "variable_x",
+      "variable_y",
+      "joint_observed_count",
+      "mutual_information"
+     ],
+     "title": "PairwiseMutualInformationOut",
+     "type": "object"
+    },
+    "ParadigmShiftEventOut": {
+     "properties": {
+      "evidence_count_at_shift": {
+       "title": "Evidence Count At Shift",
+       "type": "integer"
+      },
+      "generation": {
+       "title": "Generation",
+       "type": "integer"
+      },
+      "new_dominant_id": {
+       "title": "New Dominant Id",
+       "type": "string"
+      },
+      "new_dominant_name": {
+       "title": "New Dominant Name",
+       "type": "string"
+      },
+      "previous_dominant_id": {
+       "title": "Previous Dominant Id",
+       "type": "string"
+      },
+      "previous_dominant_name": {
+       "title": "Previous Dominant Name",
+       "type": "string"
+      },
+      "shift_id": {
+       "title": "Shift Id",
+       "type": "string"
+      },
+      "timestamp": {
+       "title": "Timestamp",
+       "type": "string"
+      }
+     },
+     "required": [
+      "shift_id",
+      "generation",
+      "timestamp",
+      "previous_dominant_id",
+      "previous_dominant_name",
+      "new_dominant_id",
+      "new_dominant_name",
+      "evidence_count_at_shift"
+     ],
+     "title": "ParadigmShiftEventOut",
+     "type": "object"
+    },
+    "ParadigmShiftsOut": {
+     "properties": {
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "domain_module_id": {
+       "title": "Domain Module Id",
+       "type": "string"
+      },
+      "events": {
+       "items": {
+        "$ref": "#/components/schemas/ParadigmShiftEventOut"
+       },
+       "title": "Events",
+       "type": "array"
+      },
+      "total_shifts": {
+       "title": "Total Shifts",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "domain",
+      "domain_module_id",
+      "total_shifts",
+      "events"
+     ],
+     "title": "ParadigmShiftsOut",
+     "type": "object"
+    },
+    "PopStatusOut": {
+     "properties": {
+      "active_candidates": {
+       "title": "Active Candidates",
+       "type": "integer"
+      },
+      "current_generation": {
+       "title": "Current Generation",
+       "type": "integer"
+      },
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "dominant_hypothesis": {
+       "$ref": "#/components/schemas/DominantHypothesis"
+      },
+      "engine_status": {
+       "enum": [
+        "online",
+        "degraded",
+        "offline"
+       ],
+       "title": "Engine Status",
+       "type": "string"
+      },
+      "frontier_edge_count": {
+       "title": "Frontier Edge Count",
+       "type": "integer"
+      },
+      "last_evidence_cycle_ago": {
+       "title": "Last Evidence Cycle Ago",
+       "type": "string"
+      },
+      "max_candidates": {
+       "title": "Max Candidates",
+       "type": "integer"
+      },
+      "paradigm_shifts_this_window": {
+       "title": "Paradigm Shifts This Window",
+       "type": "integer"
+      },
+      "structure_entropy": {
+       "title": "Structure Entropy",
+       "type": "number"
+      }
+     },
+     "required": [
+      "domain",
+      "structure_entropy",
+      "active_candidates",
+      "max_candidates",
+      "current_generation",
+      "dominant_hypothesis",
+      "paradigm_shifts_this_window",
+      "frontier_edge_count",
+      "last_evidence_cycle_ago",
+      "engine_status"
+     ],
+     "title": "PopStatusOut",
+     "type": "object"
+    },
+    "QueryBodyIn": {
+     "properties": {
+      "aggregation": {
+       "anyOf": [
+        {
+         "enum": [
+          "weighted_avg",
+          "map",
+          "marginal"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Aggregation"
+      },
+      "candidate_id": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Candidate Id"
+      },
+      "conditions": {
+       "anyOf": [
+        {
+         "additionalProperties": true,
+         "type": "object"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Conditions"
+      },
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "ontology_mode": {
+       "anyOf": [
+        {
+         "enum": [
+          "apriori",
+          "dynamic"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Ontology Mode"
+      },
+      "target_variable": {
+       "title": "Target Variable",
+       "type": "string"
+      }
+     },
+     "required": [
+      "domain",
+      "target_variable"
+     ],
+     "title": "QueryBodyIn",
+     "type": "object"
+    },
+    "StructureDiagOut": {
+     "properties": {
+      "candidates": {
+       "items": {
+        "$ref": "#/components/schemas/CandidateDiagOut"
+       },
+       "title": "Candidates",
+       "type": "array"
+      },
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "domain_module_id": {
+       "title": "Domain Module Id",
+       "type": "string"
+      },
+      "env_bic_multiplier": {
+       "title": "Env Bic Multiplier",
+       "type": "number"
+      },
+      "env_mode": {
+       "title": "Env Mode",
+       "type": "string"
+      },
+      "last_mutation_cycle": {
+       "$ref": "#/components/schemas/MutationCycleDiagOut"
+      },
+      "total_evidence_records": {
+       "title": "Total Evidence Records",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "domain",
+      "domain_module_id",
+      "env_mode",
+      "env_bic_multiplier",
+      "total_evidence_records",
+      "candidates",
+      "last_mutation_cycle"
+     ],
+     "title": "StructureDiagOut",
+     "type": "object"
+    },
+    "ValidationError": {
+     "properties": {
+      "ctx": {
+       "title": "Context",
+       "type": "object"
+      },
+      "input": {
+       "title": "Input"
+      },
+      "loc": {
+       "items": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "integer"
+         }
+        ]
+       },
+       "title": "Location",
+       "type": "array"
+      },
+      "msg": {
+       "title": "Message",
+       "type": "string"
+      },
+      "type": {
+       "title": "Error Type",
+       "type": "string"
+      }
+     },
+     "required": [
+      "loc",
+      "msg",
+      "type"
+     ],
+     "title": "ValidationError",
+     "type": "object"
+    },
+    "VariableEntropyDebugOut": {
+     "properties": {
+      "entropy": {
+       "title": "Entropy",
+       "type": "number"
+      },
+      "missing_count": {
+       "title": "Missing Count",
+       "type": "integer"
+      },
+      "observed_count": {
+       "title": "Observed Count",
+       "type": "integer"
+      },
+      "value_counts": {
+       "additionalProperties": {
+        "type": "integer"
+       },
+       "title": "Value Counts",
+       "type": "object"
+      }
+     },
+     "required": [
+      "value_counts",
+      "observed_count",
+      "missing_count",
+      "entropy"
+     ],
+     "title": "VariableEntropyDebugOut",
+     "type": "object"
+    }
+   }
+  },
+  "info": {
+   "title": "Probabilistic Ontology Engine",
+   "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+   "/health": {
+    "get": {
+     "operationId": "health_health_get",
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "additionalProperties": {
+           "type": "string"
+          },
+          "title": "Response Health Health Get",
+          "type": "object"
+         }
+        }
+       },
+       "description": "Successful Response"
+      }
+     },
+     "summary": "Health"
+    }
+   },
+   "/runtime": {
+    "get": {
+     "operationId": "runtime_status_runtime_get",
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "additionalProperties": true,
+          "title": "Response Runtime Status Runtime Get",
+          "type": "object"
+         }
+        }
+       },
+       "description": "Successful Response"
+      }
+     },
+     "summary": "Runtime Status"
+    }
+   },
+   "/v1/debug/entropy": {
+    "get": {
+     "operationId": "debug_entropy_v1_debug_entropy_get",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "domain",
+       "required": false,
+       "schema": {
+        "default": "ng",
+        "title": "Domain",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/EntropyDebugOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Debug Entropy"
+    }
+   },
+   "/v1/debug/evidence-geometry": {
+    "get": {
+     "operationId": "debug_evidence_geometry_v1_debug_evidence_geometry_get",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "domain",
+       "required": false,
+       "schema": {
+        "default": "ng",
+        "title": "Domain",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "additionalProperties": true,
+          "title": "Response Debug Evidence Geometry V1 Debug Evidence Geometry Get",
+          "type": "object"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Debug Evidence Geometry"
+    }
+   },
+   "/v1/debug/learning": {
+    "get": {
+     "description": "Learning-pipeline diagnostics.\n\nReturns:\n- Evidence record count vs candidate scoring counts\n- How many times ``engine.learn()`` has been called in the current session\n- Last learn timestamp\n- Mutation cycle stats\n- Pipeline status flags (which code paths call learn)\n\nUseful for diagnosing the \"evidence accumulates but candidates never\nscore / evolve\" failure mode that occurs when the scheduler calls\n``engine.ingest()`` without ``engine.learn()``.",
+     "operationId": "debug_learning_v1_debug_learning_get",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "domain",
+       "required": false,
+       "schema": {
+        "default": "ng",
+        "title": "Domain",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/LearningDebugOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Debug Learning"
+    }
+   },
+   "/v1/debug/structure": {
+    "get": {
+     "description": "Per-candidate structure-learning diagnostics.\n\nReturns BIC scores under both strict (multiplier=1.0) and explore\n(multiplier=0.25) regimes so operators can distinguish genuine graph\nsparsity from over-regularisation.  Also reports mutation-cycle stats\n(attempts, DAG violations, duplicate rejections, introductions) from the\nmost recent ``introduce_variants()`` call.\n\nThe ``env_mode`` and ``env_bic_multiplier`` fields reflect the current\nvalue of the ``POE_STRUCTURE_MODE`` environment variable.  Setting it to\n``explore`` does **not** change live population management \u2014 it only\ncontrols which multiplier is shown in ``env_bic_multiplier``.",
+     "operationId": "debug_structure_v1_debug_structure_get",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "domain",
+       "required": false,
+       "schema": {
+        "default": "ng",
+        "title": "Domain",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/StructureDiagOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Debug Structure"
+    }
+   },
+   "/v1/evidence/recent": {
+    "get": {
+     "operationId": "evidence_recent_v1_evidence_recent_get",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "domain",
+       "required": false,
+       "schema": {
+        "default": "ng",
+        "title": "Domain",
+        "type": "string"
+       }
+      },
+      {
+       "in": "query",
+       "name": "limit",
+       "required": false,
+       "schema": {
+        "default": 20,
+        "maximum": 100,
+        "minimum": 1,
+        "title": "Limit",
+        "type": "integer"
+       }
+      },
+      {
+       "in": "query",
+       "name": "ontology_mode",
+       "required": false,
+       "schema": {
+        "default": "apriori",
+        "title": "Ontology Mode",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/EvidenceOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Evidence Recent"
+    }
+   },
+   "/v1/export/narrative-snapshot": {
+    "get": {
+     "description": "Structured epistemic-state snapshot designed to be passed to an LLM for\nprose interpretation.  Returns the full current state of the probabilistic\nengine for a domain: regime variables, dominant hypothesis, population\ncompetition, causal frontier, and machine-readable interpretation hints.\n\nPass ontology_mode=dynamic for a POE-A artifact snapshot (art domain only).\nDynamic snapshots use induced concepts and support scores rather than old\nPOE posterior probabilities.",
+     "operationId": "narrative_snapshot_v1_export_narrative_snapshot_get",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "domain",
+       "required": false,
+       "schema": {
+        "default": "ng",
+        "title": "Domain",
+        "type": "string"
+       }
+      },
+      {
+       "in": "query",
+       "name": "ontology_mode",
+       "required": false,
+       "schema": {
+        "default": "apriori",
+        "title": "Ontology Mode",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/NarrativeSnapshotOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Narrative Snapshot"
+    }
+   },
+   "/v1/inference/query": {
+    "post": {
+     "operationId": "inference_query_v1_inference_query_post",
+     "requestBody": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/QueryBodyIn"
+        }
+       }
+      },
+      "required": true
+     },
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/InferenceOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Inference Query"
+    }
+   },
+   "/v1/ingest/art/manual": {
+    "post": {
+     "operationId": "ingest_art_manual_v1_ingest_art_manual_post",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "path",
+       "required": false,
+       "schema": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Path"
+       }
+      },
+      {
+       "in": "query",
+       "name": "force",
+       "required": false,
+       "schema": {
+        "default": false,
+        "title": "Force",
+        "type": "boolean"
+       }
+      },
+      {
+       "in": "query",
+       "name": "append",
+       "required": false,
+       "schema": {
+        "default": false,
+        "title": "Append",
+        "type": "boolean"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/ManualArtIngestOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Ingest Art Manual"
+    }
+   },
+   "/v1/ingest/backfill": {
+    "post": {
+     "operationId": "ingest_backfill_v1_ingest_backfill_post",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "domain",
+       "required": false,
+       "schema": {
+        "default": "ng",
+        "title": "Domain",
+        "type": "string"
+       }
+      },
+      {
+       "in": "query",
+       "name": "days",
+       "required": false,
+       "schema": {
+        "default": 90,
+        "minimum": 1,
+        "title": "Days",
+        "type": "integer"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/IngestBackfillOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Ingest Backfill"
+    }
+   },
+   "/v1/ingest/trigger": {
+    "post": {
+     "operationId": "ingest_trigger_v1_ingest_trigger_post",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "domain",
+       "required": false,
+       "schema": {
+        "default": "ng",
+        "title": "Domain",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/IngestTriggerOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Ingest Trigger"
+    }
+   },
+   "/v1/population/candidates": {
+    "get": {
+     "operationId": "population_candidates_v1_population_candidates_get",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "domain",
+       "required": false,
+       "schema": {
+        "default": "ng",
+        "title": "Domain",
+        "type": "string"
+       }
+      },
+      {
+       "in": "query",
+       "name": "ontology_mode",
+       "required": false,
+       "schema": {
+        "default": "apriori",
+        "title": "Ontology Mode",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/CandidatesOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Population Candidates"
+    }
+   },
+   "/v1/population/lineage/{candidate_id}": {
+    "get": {
+     "operationId": "population_lineage_v1_population_lineage__candidate_id__get",
+     "parameters": [
+      {
+       "in": "path",
+       "name": "candidate_id",
+       "required": true,
+       "schema": {
+        "title": "Candidate Id",
+        "type": "string"
+       }
+      },
+      {
+       "in": "query",
+       "name": "domain",
+       "required": false,
+       "schema": {
+        "default": "ng",
+        "title": "Domain",
+        "type": "string"
+       }
+      },
+      {
+       "in": "query",
+       "name": "ontology_mode",
+       "required": false,
+       "schema": {
+        "default": "apriori",
+        "title": "Ontology Mode",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/LineageOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Population Lineage"
+    }
+   },
+   "/v1/population/shifts": {
+    "get": {
+     "operationId": "population_shifts_v1_population_shifts_get",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "domain",
+       "required": false,
+       "schema": {
+        "default": "ng",
+        "title": "Domain",
+        "type": "string"
+       }
+      },
+      {
+       "in": "query",
+       "name": "ontology_mode",
+       "required": false,
+       "schema": {
+        "default": "apriori",
+        "title": "Ontology Mode",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/ParadigmShiftsOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Population Shifts"
+    }
+   },
+   "/v1/population/status": {
+    "get": {
+     "operationId": "population_status_v1_population_status_get",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "domain",
+       "required": false,
+       "schema": {
+        "default": "ng",
+        "title": "Domain",
+        "type": "string"
+       }
+      },
+      {
+       "in": "query",
+       "name": "ontology_mode",
+       "required": false,
+       "schema": {
+        "default": "apriori",
+        "title": "Ontology Mode",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/PopStatusOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Population Status"
+    }
+   },
+   "/v1/report/{domain}": {
+    "get": {
+     "description": "Read-only: return the latest cached report for this domain/mode without\nrebuilding the snapshot or calling the LLM.  Returns found=False when no\ncached report exists so callers can distinguish \"never generated\" from an\nerror.",
+     "operationId": "domain_report_read_v1_report__domain__get",
+     "parameters": [
+      {
+       "in": "path",
+       "name": "domain",
+       "required": true,
+       "schema": {
+        "title": "Domain",
+        "type": "string"
+       }
+      },
+      {
+       "in": "query",
+       "name": "ontology_mode",
+       "required": false,
+       "schema": {
+        "default": "apriori",
+        "title": "Ontology Mode",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "title": "Response Domain Report Read V1 Report  Domain  Get"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Domain Report Read"
+    }
+   },
+   "/v1/report/{domain}/refresh": {
+    "post": {
+     "description": "Build the current snapshot, compute its hash, and return a report.\n\n- If the snapshot hash matches the latest cached report, return that\n  cached report immediately (cached=True, regenerated=False).\n- If the hash has changed (new evidence, changed beliefs, new frontier),\n  call Fireworks AI, persist the new report, and return it\n  (cached=False, regenerated=True).\n- On Fireworks failure: serve matching or stale cached report with\n  stale=True; return 502 only if no cached report exists at all.\n\nRequires FIREWORKS_API_KEY to be set when generation is needed.",
+     "operationId": "domain_report_refresh_v1_report__domain__refresh_post",
+     "parameters": [
+      {
+       "in": "path",
+       "name": "domain",
+       "required": true,
+       "schema": {
+        "title": "Domain",
+        "type": "string"
+       }
+      },
+      {
+       "in": "query",
+       "name": "ontology_mode",
+       "required": false,
+       "schema": {
+        "default": "apriori",
+        "title": "Ontology Mode",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "title": "Response Domain Report Refresh V1 Report  Domain  Refresh Post"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Domain Report Refresh"
+    }
+   }
+  }
+ },
+ "runtime": {
+  "body": {
+   "scheduler_enabled": false,
+   "schedulers": []
+  },
+  "status": 200
+ }
+}
