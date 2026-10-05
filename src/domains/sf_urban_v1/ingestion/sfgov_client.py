@@ -214,10 +214,14 @@ class SFGovClient:
         for rec in records:
             try:
                 start = _parse_date_flexible(rec.get("location_start_date", ""))
-                if start is None:
+                # As of end_date: later openings did not exist yet, and a
+                # later closure means the business was still open.
+                if start is None or start > end_date:
                     continue
                 end_raw = rec.get("location_end_date", "")
                 end = _parse_date_flexible(end_raw) if end_raw else None
+                if end is not None and end > end_date:
+                    end = None
                 result.append(SFBusinessObs(start_date=start, end_date=end))
             except Exception:
                 continue
