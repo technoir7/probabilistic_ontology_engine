@@ -216,6 +216,12 @@ class ProbabilisticOntologyEngine:
         self.evidence_store.append(record, self.active_domain)
         return record.evidence_id
 
+    def has_evidence_at(self, timestamp: datetime, domain_module_id: str | None = None) -> bool:
+        """Whether a record for this exact timestamp is already stored (one DB query)."""
+        domain = domain_module_id or self.active_domain
+        assert domain, "No active domain"
+        return self.evidence_store.has_record_at(domain, timestamp)
+
     def ingest_batch(self, records: list[EvidenceRecord]) -> int:
         """Append a batch of evidence records."""
         assert self.active_domain, "No active domain"

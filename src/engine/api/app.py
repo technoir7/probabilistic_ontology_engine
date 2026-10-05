@@ -772,6 +772,12 @@ async def _ingest_domain_evidence(
         target_date = latest_week_ending_on_or_before(target_date)
 
     record = await _fetch_evidence_record(domain_key, target_date)
+    # evidence_id is a fresh uuid4 per fetch, so the store's INSERT OR IGNORE
+    # never dedups; re-running a trigger or an overlapping backfill would store
+    # and learn the same day twice.
+    if engine.has_evidence_at(record.timestamp, domain_id):
+        logger.info("Skipping %s: evidence for %s already stored", domain_id, record.timestamp.date())
+        return 0
     if is_agriculture_domain(domain_id):
         recent = engine.evidence_store.load_recent(domain_id, limit=1)
         if is_duplicate_recent_state(record, recent):

@@ -173,6 +173,15 @@ class EvidenceStore:
         }
 
     # ------------------------------------------------------------------
+    def has_record_at(self, domain_module_id: str, timestamp: datetime) -> bool:
+        """True if a record with exactly this timestamp is stored. One query; unindexed until Phase 3."""
+        cur = self._conn.execute(
+            "SELECT 1 FROM evidence_records WHERE domain_module=? AND timestamp=? LIMIT 1",
+            (domain_module_id, timestamp.isoformat()),
+        )
+        return cur.fetchone() is not None
+
+    # ------------------------------------------------------------------
     def latest_timestamp(self, domain_module_id: str) -> str | None:
         """Return the ISO timestamp of the most recent record, or None."""
         cur = self._conn.execute(
