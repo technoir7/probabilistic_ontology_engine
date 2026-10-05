@@ -209,8 +209,9 @@ class PopulationManager:
         if slots <= 0:
             return []
 
-        # Sort survivors by score (best first)
-        survivors = sorted(active, key=lambda c: c.log_score, reverse=True)
+        # Best first by the same score that decides dominance and pruning; raw
+        # log_score mostly measures how much evidence a candidate has seen.
+        survivors = sorted(active, key=candidate_score, reverse=True)
         admissible = self._admissible_edges.get(domain_module_id, set())
 
         new_candidates: list[OntologyCandidate] = []
@@ -222,8 +223,8 @@ class PopulationManager:
         _duplicate_rejections = 0
 
         while len(new_candidates) < slots and attempts < max_attempts:
-            attempts += 1
             parent_cand = survivors[attempts % len(survivors)]
+            attempts += 1
             variant = self._make_variant(domain_module_id, parent_cand, admissible)
             if variant is None:
                 continue

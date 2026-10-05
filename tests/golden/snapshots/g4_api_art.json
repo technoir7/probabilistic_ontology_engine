@@ -27,7 +27,7 @@
      "id": "<id1>",
      "log_score": -353.528830055,
      "name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
-     "score_normalized": 0.942112718,
+     "score_normalized": 0.937753274,
      "status": "rising"
     },
     {
@@ -35,9 +35,9 @@
      "evidence_count": 21,
      "generation_introduced": 1,
      "id": "<id2>",
-     "log_score": -353.229890197,
-     "name": "variant_add_AuctionSpeculationElevated->MuseumFigurativeAcceptance",
-     "score_normalized": 0.689156158,
+     "log_score": -353.109493782,
+     "name": "variant_add_CollectorFlightToSafety->BlueChipInstitutionalCapture",
+     "score_normalized": 0.583638548,
      "status": "rising"
     },
     {
@@ -45,9 +45,9 @@
      "evidence_count": 21,
      "generation_introduced": 1,
      "id": "<id3>",
-     "log_score": -353.274228186,
-     "name": "variant_add_NeoAcademicResurgence->InstitutionalRiskAversion",
-     "score_normalized": 0.679988015,
+     "log_score": -353.188990074,
+     "name": "variant_add_InstitutionalRiskAversion->BlueChipInstitutionalCapture",
+     "score_normalized": 0.558114774,
      "status": "neutral"
     },
     {
@@ -55,9 +55,9 @@
      "evidence_count": 21,
      "generation_introduced": 1,
      "id": "<id4>",
-     "log_score": -353.276386162,
-     "name": "variant_add_EmbodimentDiscourseRising->RegionalSceneMomentum",
-     "score_normalized": 0.679541792,
+     "log_score": -353.249302014,
+     "name": "variant_add_CuratorialMaterialityShift->NeoAcademicResurgence",
+     "score_normalized": 0.538750495,
      "status": "neutral"
     },
     {
@@ -65,9 +65,9 @@
      "evidence_count": 21,
      "generation_introduced": 1,
      "id": "<id5>",
-     "log_score": -353.351713186,
-     "name": "variant_add_CuratorialMaterialityShift->MuseumAcquisitionMomentum",
-     "score_normalized": 0.663965783,
+     "log_score": -353.265258955,
+     "name": "variant_add_EmbodimentDiscourseRising->CuratorialMaterialityShift",
+     "score_normalized": 0.53362722,
      "status": "neutral"
     },
     {
@@ -75,9 +75,9 @@
      "evidence_count": 21,
      "generation_introduced": 1,
      "id": "<id6>",
-     "log_score": -353.421389888,
-     "name": "variant_add_RitualAuraPremium->AIImageSaturation",
-     "score_normalized": 0.649558139,
+     "log_score": -353.274228186,
+     "name": "variant_add_NeoAcademicResurgence->InstitutionalRiskAversion",
+     "score_normalized": 0.53074748,
      "status": "falling"
     },
     {
@@ -85,9 +85,9 @@
      "evidence_count": 21,
      "generation_introduced": 1,
      "id": "<id7>",
-     "log_score": -353.453055667,
-     "name": "variant_add_MarketUncertainty->AttentionFragmentation",
-     "score_normalized": 0.643010336,
+     "log_score": -353.293588773,
+     "name": "variant_add_AuctionSpeculationElevated->CraftPrestigeRising",
+     "score_normalized": 0.524531401,
      "status": "falling"
     },
     {
@@ -95,9 +95,9 @@
      "evidence_count": 21,
      "generation_introduced": 2,
      "id": "<id8>",
-     "log_score": -353.421389888,
-     "name": "variant_add_RitualAuraPremium->CuratorialMaterialityShift",
-     "score_normalized": 0.334787243,
+     "log_score": -353.188990074,
+     "name": "variant_add_CollectorFlightToSafety->MarketUncertainty",
+     "score_normalized": 0.069364279,
      "status": "falling"
     },
     {
@@ -105,8 +105,8 @@
      "evidence_count": 21,
      "generation_introduced": 2,
      "id": "<id9>",
-     "log_score": -353.276386162,
-     "name": "variant_add_CuratorialMaterialityShift->AIArtInstitutionalAcceptance",
+     "log_score": -353.249302014,
+     "name": "variant_add_EmergingMarketLiquidity->FigurativeAuctionMomentum",
      "score_normalized": 0.05,
      "status": "falling"
     }
@@ -4821,7 +4821,7 @@
    "dominant_log_score": -353.490686429,
    "last_learn_timestamp": "<ts>",
    "last_mutation_introduced": 2,
-   "last_mutation_total_attempts": 4,
+   "last_mutation_total_attempts": 5,
    "learn_calls_this_session": 21,
    "pipeline_status": {
     "backfill_calls_learn": true,
@@ -4896,12 +4896,45 @@
     },
     {
      "active_edge_count": 4,
-     "avg_ll": -16.820470962,
+     "avg_ll": -16.814737799,
      "bic_penalty_raw": 2.102170255,
-     "bic_score_explore": -17.346013525,
-     "bic_score_strict": -18.922641216,
+     "bic_score_explore": -17.340280363,
+     "bic_score_strict": -18.916908054,
      "candidate_id": "<id2>",
-     "description": "variant_add_AuctionSpeculationElevated->MuseumFigurativeAcceptance",
+     "description": "variant_add_CollectorFlightToSafety->BlueChipInstitutionalCapture",
+     "edge_structure": [
+      [
+       "AttentionFragmentation",
+       "PrestigeFragmentation"
+      ],
+      [
+       "CollectorFlightToSafety",
+       "BlueChipInstitutionalCapture"
+      ],
+      [
+       "PrestigeFragmentation",
+       "BlueChipConcentration"
+      ],
+      [
+       "PrestigeFragmentation",
+       "RegionalSceneMomentum"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -353.109493782,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -16.818523337,
+     "bic_penalty_raw": 2.102170255,
+     "bic_score_explore": -17.344065901,
+     "bic_score_strict": -18.920693591,
+     "candidate_id": "<id3>",
+     "description": "variant_add_InstitutionalRiskAversion->BlueChipInstitutionalCapture",
      "edge_structure": [
       [
        "AIArtInstitutionalAcceptance",
@@ -4916,14 +4949,80 @@
        "AIArtInstitutionalAcceptance"
       ],
       [
-       "AuctionSpeculationElevated",
-       "MuseumFigurativeAcceptance"
+       "InstitutionalRiskAversion",
+       "BlueChipInstitutionalCapture"
       ]
      ],
      "evidence_count": 21,
      "generation": 1,
      "is_dominant": false,
-     "log_score": -353.229890197,
+     "log_score": -353.188990074,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -16.821395334,
+     "bic_penalty_raw": 2.102170255,
+     "bic_score_explore": -17.346937898,
+     "bic_score_strict": -18.923565589,
+     "candidate_id": "<id4>",
+     "description": "variant_add_CuratorialMaterialityShift->NeoAcademicResurgence",
+     "edge_structure": [
+      [
+       "AIArtInstitutionalAcceptance",
+       "ConceptualDominance"
+      ],
+      [
+       "AIArtInstitutionalAcceptance",
+       "MuseumAcquisitionMomentum"
+      ],
+      [
+       "AIImageSaturation",
+       "AIArtInstitutionalAcceptance"
+      ],
+      [
+       "CuratorialMaterialityShift",
+       "NeoAcademicResurgence"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -353.249302014,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -16.822155188,
+     "bic_penalty_raw": 2.102170255,
+     "bic_score_explore": -17.347697752,
+     "bic_score_strict": -18.924325443,
+     "candidate_id": "<id5>",
+     "description": "variant_add_EmbodimentDiscourseRising->CuratorialMaterialityShift",
+     "edge_structure": [
+      [
+       "AttentionFragmentation",
+       "PrestigeFragmentation"
+      ],
+      [
+       "EmbodimentDiscourseRising",
+       "CuratorialMaterialityShift"
+      ],
+      [
+       "PrestigeFragmentation",
+       "BlueChipConcentration"
+      ],
+      [
+       "PrestigeFragmentation",
+       "RegionalSceneMomentum"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -353.265258955,
      "status": "ACTIVE",
      "total_edge_count": 4
     },
@@ -4933,7 +5032,7 @@
      "bic_penalty_raw": 2.102170255,
      "bic_score_explore": -17.348124858,
      "bic_score_strict": -18.924752549,
-     "candidate_id": "<id3>",
+     "candidate_id": "<id6>",
      "description": "variant_add_NeoAcademicResurgence->InstitutionalRiskAversion",
      "edge_structure": [
       [
@@ -4962,111 +5061,12 @@
     },
     {
      "active_edge_count": 4,
-     "avg_ll": -16.822685055,
+     "avg_ll": -16.823504227,
      "bic_penalty_raw": 2.102170255,
-     "bic_score_explore": -17.348227619,
-     "bic_score_strict": -18.92485531,
-     "candidate_id": "<id4>",
-     "description": "variant_add_EmbodimentDiscourseRising->RegionalSceneMomentum",
-     "edge_structure": [
-      [
-       "AIArtInstitutionalAcceptance",
-       "ConceptualDominance"
-      ],
-      [
-       "AIArtInstitutionalAcceptance",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "AIImageSaturation",
-       "AIArtInstitutionalAcceptance"
-      ],
-      [
-       "EmbodimentDiscourseRising",
-       "RegionalSceneMomentum"
-      ]
-     ],
-     "evidence_count": 21,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -353.276386162,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -16.826272056,
-     "bic_penalty_raw": 2.102170255,
-     "bic_score_explore": -17.35181462,
-     "bic_score_strict": -18.928442311,
-     "candidate_id": "<id5>",
-     "description": "variant_add_CuratorialMaterialityShift->MuseumAcquisitionMomentum",
-     "edge_structure": [
-      [
-       "AttentionFragmentation",
-       "PrestigeFragmentation"
-      ],
-      [
-       "CuratorialMaterialityShift",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "PrestigeFragmentation",
-       "BlueChipConcentration"
-      ],
-      [
-       "PrestigeFragmentation",
-       "RegionalSceneMomentum"
-      ]
-     ],
-     "evidence_count": 21,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -353.351713186,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -16.829589995,
-     "bic_penalty_raw": 2.102170255,
-     "bic_score_explore": -17.355132558,
-     "bic_score_strict": -18.931760249,
-     "candidate_id": "<id6>",
-     "description": "variant_add_RitualAuraPremium->AIImageSaturation",
-     "edge_structure": [
-      [
-       "AttentionFragmentation",
-       "PrestigeFragmentation"
-      ],
-      [
-       "PrestigeFragmentation",
-       "BlueChipConcentration"
-      ],
-      [
-       "PrestigeFragmentation",
-       "RegionalSceneMomentum"
-      ],
-      [
-       "RitualAuraPremium",
-       "AIImageSaturation"
-      ]
-     ],
-     "evidence_count": 21,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -353.421389888,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -16.831097889,
-     "bic_penalty_raw": 2.102170255,
-     "bic_score_explore": -17.356640453,
-     "bic_score_strict": -18.933268144,
+     "bic_score_explore": -17.349046791,
+     "bic_score_strict": -18.925674482,
      "candidate_id": "<id7>",
-     "description": "variant_add_MarketUncertainty->AttentionFragmentation",
+     "description": "variant_add_AuctionSpeculationElevated->CraftPrestigeRising",
      "edge_structure": [
       [
        "AIArtInstitutionalAcceptance",
@@ -5079,175 +5079,27 @@
       [
        "AIImageSaturation",
        "AIArtInstitutionalAcceptance"
-      ],
-      [
-       "MarketUncertainty",
-       "AttentionFragmentation"
-      ]
-     ],
-     "evidence_count": 21,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -353.453055667,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.829589995,
-     "bic_penalty_raw": 2.174658884,
-     "bic_score_explore": -17.373254716,
-     "bic_score_strict": -19.004248879,
-     "candidate_id": "<id8>",
-     "description": "variant_add_RitualAuraPremium->CuratorialMaterialityShift",
-     "edge_structure": [
-      [
-       "AttentionFragmentation",
-       "PrestigeFragmentation"
-      ],
-      [
-       "PrestigeFragmentation",
-       "BlueChipConcentration"
-      ],
-      [
-       "PrestigeFragmentation",
-       "RegionalSceneMomentum"
-      ],
-      [
-       "RitualAuraPremium",
-       "AIImageSaturation"
-      ],
-      [
-       "RitualAuraPremium",
-       "CuratorialMaterialityShift"
-      ]
-     ],
-     "evidence_count": 21,
-     "generation": 2,
-     "is_dominant": false,
-     "log_score": -353.421389888,
-     "status": "ACTIVE",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.822685055,
-     "bic_penalty_raw": 2.247147514,
-     "bic_score_explore": -17.384471934,
-     "bic_score_strict": -19.069832569,
-     "candidate_id": "<id9>",
-     "description": "variant_add_CuratorialMaterialityShift->AIArtInstitutionalAcceptance",
-     "edge_structure": [
-      [
-       "AIArtInstitutionalAcceptance",
-       "ConceptualDominance"
-      ],
-      [
-       "AIArtInstitutionalAcceptance",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "AIImageSaturation",
-       "AIArtInstitutionalAcceptance"
-      ],
-      [
-       "CuratorialMaterialityShift",
-       "AIArtInstitutionalAcceptance"
-      ],
-      [
-       "EmbodimentDiscourseRising",
-       "RegionalSceneMomentum"
-      ]
-     ],
-     "evidence_count": 21,
-     "generation": 2,
-     "is_dominant": false,
-     "log_score": -353.276386162,
-     "status": "ACTIVE",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.817942214,
-     "bic_penalty_raw": 2.174658884,
-     "bic_score_explore": -17.361606935,
-     "bic_score_strict": -18.992601098,
-     "candidate_id": "<id38>",
-     "description": "variant_add_CollectorFlightToSafety->MuseumFigurativeAcceptance",
-     "edge_structure": [
-      [
-       "AttentionFragmentation",
-       "PrestigeFragmentation"
-      ],
-      [
-       "CollectorFlightToSafety",
-       "MuseumFigurativeAcceptance"
-      ],
-      [
-       "CuratorialMaterialityShift",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "PrestigeFragmentation",
-       "BlueChipConcentration"
-      ],
-      [
-       "PrestigeFragmentation",
-       "RegionalSceneMomentum"
-      ]
-     ],
-     "evidence_count": 21,
-     "generation": 2,
-     "is_dominant": false,
-     "log_score": -353.176786492,
-     "status": "PRUNED",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.820610073,
-     "bic_penalty_raw": 2.174658884,
-     "bic_score_explore": -17.364274794,
-     "bic_score_strict": -18.995268957,
-     "candidate_id": "<id39>",
-     "description": "variant_add_AIImageSaturation->CuratorialMaterialityShift",
-     "edge_structure": [
-      [
-       "AIArtInstitutionalAcceptance",
-       "ConceptualDominance"
-      ],
-      [
-       "AIArtInstitutionalAcceptance",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "AIImageSaturation",
-       "AIArtInstitutionalAcceptance"
-      ],
-      [
-       "AIImageSaturation",
-       "CuratorialMaterialityShift"
       ],
       [
        "AuctionSpeculationElevated",
-       "MuseumFigurativeAcceptance"
+       "CraftPrestigeRising"
       ]
      ],
      "evidence_count": 21,
-     "generation": 2,
+     "generation": 1,
      "is_dominant": false,
-     "log_score": -353.232811538,
-     "status": "PRUNED",
-     "total_edge_count": 5
+     "log_score": -353.293588773,
+     "status": "ACTIVE",
+     "total_edge_count": 4
     },
     {
      "active_edge_count": 5,
-     "avg_ll": -16.800172049,
-     "bic_penalty_raw": 2.246799205,
-     "bic_score_explore": -17.361871851,
-     "bic_score_strict": -19.046971255,
-     "candidate_id": "<id40>",
-     "description": "variant_add_CollectorFlightToSafety->EmbodimentDiscourseRising",
+     "avg_ll": -16.818523337,
+     "bic_penalty_raw": 2.174658884,
+     "bic_score_explore": -17.362188058,
+     "bic_score_strict": -18.993182221,
+     "candidate_id": "<id8>",
+     "description": "variant_add_CollectorFlightToSafety->MarketUncertainty",
      "edge_structure": [
       [
        "AIArtInstitutionalAcceptance",
@@ -5263,139 +5115,28 @@
       ],
       [
        "CollectorFlightToSafety",
-       "EmbodimentDiscourseRising"
-      ],
-      [
-       "EmbodimentDiscourseRising",
-       "RegionalSceneMomentum"
-      ]
-     ],
-     "evidence_count": 20,
-     "generation": 2,
-     "is_dominant": false,
-     "log_score": -336.00344099,
-     "status": "PRUNED",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.806978494,
-     "bic_penalty_raw": 2.246799205,
-     "bic_score_explore": -17.368678296,
-     "bic_score_strict": -19.0537777,
-     "candidate_id": "<id41>",
-     "description": "variant_add_AttentionFragmentation->AuctionSpeculationElevated",
-     "edge_structure": [
-      [
-       "AIArtInstitutionalAcceptance",
-       "ConceptualDominance"
-      ],
-      [
-       "AIArtInstitutionalAcceptance",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "AIImageSaturation",
-       "AIArtInstitutionalAcceptance"
-      ],
-      [
-       "AttentionFragmentation",
-       "AuctionSpeculationElevated"
-      ],
-      [
-       "MarketUncertainty",
-       "AttentionFragmentation"
-      ]
-     ],
-     "evidence_count": 20,
-     "generation": 2,
-     "is_dominant": false,
-     "log_score": -336.139569887,
-     "status": "PRUNED",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.807198473,
-     "bic_penalty_raw": 2.324557089,
-     "bic_score_explore": -17.388337746,
-     "bic_score_strict": -19.131755562,
-     "candidate_id": "<id42>",
-     "description": "variant_add_ConceptualDominance->MarketPolarization",
-     "edge_structure": [
-      [
-       "AIArtInstitutionalAcceptance",
-       "ConceptualDominance"
-      ],
-      [
-       "AIArtInstitutionalAcceptance",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "AIImageSaturation",
-       "AIArtInstitutionalAcceptance"
-      ],
-      [
-       "ConceptualDominance",
-       "MarketPolarization"
-      ],
-      [
-       "MarketUncertainty",
-       "AttentionFragmentation"
-      ]
-     ],
-     "evidence_count": 19,
-     "generation": 2,
-     "is_dominant": false,
-     "log_score": -319.336770996,
-     "status": "PRUNED",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.808701471,
-     "bic_penalty_raw": 2.324557089,
-     "bic_score_explore": -17.389840743,
-     "bic_score_strict": -19.133258559,
-     "candidate_id": "<id43>",
-     "description": "variant_add_AntiDigitalSentiment->MarketUncertainty",
-     "edge_structure": [
-      [
-       "AntiDigitalSentiment",
        "MarketUncertainty"
       ],
       [
-       "AttentionFragmentation",
-       "PrestigeFragmentation"
-      ],
-      [
-       "CuratorialMaterialityShift",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "PrestigeFragmentation",
-       "BlueChipConcentration"
-      ],
-      [
-       "PrestigeFragmentation",
-       "RegionalSceneMomentum"
+       "InstitutionalRiskAversion",
+       "BlueChipInstitutionalCapture"
       ]
      ],
-     "evidence_count": 19,
+     "evidence_count": 21,
      "generation": 2,
      "is_dominant": false,
-     "log_score": -319.365327943,
-     "status": "PRUNED",
+     "log_score": -353.188990074,
+     "status": "ACTIVE",
      "total_edge_count": 5
     },
     {
      "active_edge_count": 5,
-     "avg_ll": -16.789425507,
-     "bic_penalty_raw": 2.408643132,
-     "bic_score_explore": -17.39158629,
-     "bic_score_strict": -19.198068638,
-     "candidate_id": "<id44>",
-     "description": "variant_add_RegionalSceneMomentum->AuctionSpeculationElevated",
+     "avg_ll": -16.821395334,
+     "bic_penalty_raw": 2.174658884,
+     "bic_score_explore": -17.365060055,
+     "bic_score_strict": -18.996054218,
+     "candidate_id": "<id9>",
+     "description": "variant_add_EmergingMarketLiquidity->FigurativeAuctionMomentum",
      "edge_structure": [
       [
        "AIArtInstitutionalAcceptance",
@@ -5410,29 +5151,66 @@
        "AIArtInstitutionalAcceptance"
       ],
       [
-       "EmbodimentDiscourseRising",
-       "RegionalSceneMomentum"
+       "CuratorialMaterialityShift",
+       "NeoAcademicResurgence"
       ],
       [
-       "RegionalSceneMomentum",
-       "AuctionSpeculationElevated"
+       "EmergingMarketLiquidity",
+       "FigurativeAuctionMomentum"
       ]
      ],
-     "evidence_count": 18,
+     "evidence_count": 21,
      "generation": 2,
      "is_dominant": false,
-     "log_score": -302.209659124,
+     "log_score": -353.249302014,
+     "status": "ACTIVE",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -16.81628589,
+     "bic_penalty_raw": 2.174658884,
+     "bic_score_explore": -17.359950611,
+     "bic_score_strict": -18.990944774,
+     "candidate_id": "<id38>",
+     "description": "variant_add_EmbodimentDiscourseRising->CraftPrestigeRising",
+     "edge_structure": [
+      [
+       "AIArtInstitutionalAcceptance",
+       "ConceptualDominance"
+      ],
+      [
+       "AIArtInstitutionalAcceptance",
+       "MuseumAcquisitionMomentum"
+      ],
+      [
+       "AIImageSaturation",
+       "AIArtInstitutionalAcceptance"
+      ],
+      [
+       "CuratorialMaterialityShift",
+       "NeoAcademicResurgence"
+      ],
+      [
+       "EmbodimentDiscourseRising",
+       "CraftPrestigeRising"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -353.142003683,
      "status": "PRUNED",
      "total_edge_count": 5
     },
     {
      "active_edge_count": 4,
-     "avg_ll": -16.800249956,
-     "bic_penalty_raw": 2.408643132,
-     "bic_score_explore": -17.402410738,
-     "bic_score_strict": -19.208893087,
-     "candidate_id": "<id45>",
-     "description": "variant_add_EmbodimentDiscourseRising->ConceptualDominance",
+     "avg_ll": -16.833234532,
+     "bic_penalty_raw": 2.174658884,
+     "bic_score_explore": -17.376899253,
+     "bic_score_strict": -19.007893416,
+     "candidate_id": "<id39>",
+     "description": "variant_add_CraftPrestigeRising->ConceptualDominance",
      "edge_structure": [
       [
        "AIArtInstitutionalAcceptance",
@@ -5447,24 +5225,24 @@
        "AIArtInstitutionalAcceptance"
       ],
       [
-       "EmbodimentDiscourseRising",
+       "CraftPrestigeRising",
        "ConceptualDominance"
       ]
      ],
-     "evidence_count": 18,
+     "evidence_count": 21,
      "generation": 1,
      "is_dominant": false,
-     "log_score": -302.404499199,
+     "log_score": -353.497925166,
      "status": "PRUNED",
      "total_edge_count": 4
     },
     {
      "active_edge_count": 5,
-     "avg_ll": -16.790454892,
-     "bic_penalty_raw": 2.499894127,
-     "bic_score_explore": -17.415428424,
-     "bic_score_strict": -19.29034902,
-     "candidate_id": "<id46>",
+     "avg_ll": -16.79349496,
+     "bic_penalty_raw": 2.246799205,
+     "bic_score_explore": -17.355194761,
+     "bic_score_strict": -19.040294165,
+     "candidate_id": "<id40>",
      "description": "variant_add_AuthenticityPremium->FigurativeAuctionMomentum",
      "edge_structure": [
       [
@@ -5484,94 +5262,24 @@
        "FigurativeAuctionMomentum"
       ],
       [
-       "EmbodimentDiscourseRising",
-       "RegionalSceneMomentum"
+       "CuratorialMaterialityShift",
+       "NeoAcademicResurgence"
       ]
      ],
-     "evidence_count": 17,
+     "evidence_count": 20,
      "generation": 2,
      "is_dominant": false,
-     "log_score": -285.437733171,
+     "log_score": -335.869899199,
      "status": "PRUNED",
      "total_edge_count": 5
     },
     {
      "active_edge_count": 4,
-     "avg_ll": -16.713891536,
-     "bic_penalty_raw": 2.617781861,
-     "bic_score_explore": -17.368337001,
-     "bic_score_strict": -19.331673397,
-     "candidate_id": "<id47>",
-     "description": "variant_add_BiennialFatigue->NeoAcademicResurgence",
-     "edge_structure": [
-      [
-       "AttentionFragmentation",
-       "PrestigeFragmentation"
-      ],
-      [
-       "BiennialFatigue",
-       "NeoAcademicResurgence"
-      ],
-      [
-       "PrestigeFragmentation",
-       "BlueChipConcentration"
-      ],
-      [
-       "PrestigeFragmentation",
-       "RegionalSceneMomentum"
-      ]
-     ],
-     "evidence_count": 15,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -250.708373043,
-     "status": "PRUNED",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.751083942,
-     "bic_penalty_raw": 2.599301927,
-     "bic_score_explore": -17.400909424,
-     "bic_score_strict": -19.350385869,
-     "candidate_id": "<id48>",
-     "description": "variant_add_FigurativeAuctionMomentum->EmergingMarketLiquidity",
-     "edge_structure": [
-      [
-       "AIArtInstitutionalAcceptance",
-       "ConceptualDominance"
-      ],
-      [
-       "AIArtInstitutionalAcceptance",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "AIImageSaturation",
-       "AIArtInstitutionalAcceptance"
-      ],
-      [
-       "FigurativeAuctionMomentum",
-       "EmergingMarketLiquidity"
-      ],
-      [
-       "MarketUncertainty",
-       "AttentionFragmentation"
-      ]
-     ],
-     "evidence_count": 16,
-     "generation": 2,
-     "is_dominant": false,
-     "log_score": -268.017343068,
-     "status": "PRUNED",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.781296508,
-     "bic_penalty_raw": 2.583223931,
-     "bic_score_explore": -17.427102491,
-     "bic_score_strict": -19.364520439,
-     "candidate_id": "<id49>",
+     "avg_ll": -16.811577174,
+     "bic_penalty_raw": 2.246799205,
+     "bic_score_explore": -17.373276975,
+     "bic_score_strict": -19.058376379,
+     "candidate_id": "<id41>",
      "description": "variant_add_AttentionFragmentation->MuseumAcquisitionMomentum",
      "edge_structure": [
       [
@@ -5589,35 +5297,31 @@
       [
        "AttentionFragmentation",
        "MuseumAcquisitionMomentum"
-      ],
-      [
-       "NeoAcademicResurgence",
-       "InstitutionalRiskAversion"
       ]
      ],
-     "evidence_count": 17,
-     "generation": 2,
+     "evidence_count": 20,
+     "generation": 1,
      "is_dominant": false,
-     "log_score": -285.282040633,
+     "log_score": -336.231543477,
      "status": "PRUNED",
-     "total_edge_count": 5
+     "total_edge_count": 4
     },
     {
-     "active_edge_count": 5,
-     "avg_ll": -16.754093435,
-     "bic_penalty_raw": 2.685945325,
-     "bic_score_explore": -17.425579766,
-     "bic_score_strict": -19.440038759,
-     "candidate_id": "<id50>",
-     "description": "variant_add_ConceptualDominance->BlueChipConcentration",
+     "active_edge_count": 4,
+     "avg_ll": -16.814971093,
+     "bic_penalty_raw": 2.247071853,
+     "bic_score_explore": -17.376739056,
+     "bic_score_strict": -19.062042946,
+     "candidate_id": "<id42>",
+     "description": "variant_add_FigurativeAuctionMomentum->CuratorialMaterialityShift",
      "edge_structure": [
       [
        "AttentionFragmentation",
        "PrestigeFragmentation"
       ],
       [
-       "ConceptualDominance",
-       "BlueChipConcentration"
+       "FigurativeAuctionMomentum",
+       "CuratorialMaterialityShift"
       ],
       [
        "PrestigeFragmentation",
@@ -5626,55 +5330,22 @@
       [
        "PrestigeFragmentation",
        "RegionalSceneMomentum"
-      ],
-      [
-       "RitualAuraPremium",
-       "AIImageSaturation"
       ]
      ],
-     "evidence_count": 16,
-     "generation": 2,
+     "evidence_count": 19,
+     "generation": 1,
      "is_dominant": false,
-     "log_score": -268.065494954,
+     "log_score": -319.48445077,
      "status": "PRUNED",
-     "total_edge_count": 5
+     "total_edge_count": 4
     },
     {
-     "active_edge_count": 3,
-     "avg_ll": -16.71878059,
-     "bic_penalty_raw": 2.733309377,
-     "bic_score_explore": -17.402107934,
-     "bic_score_strict": -19.452089967,
-     "candidate_id": "<id51>",
-     "description": "H5: NeoAcademicResurgence \u2014 aura + authenticity premium \u2192 neo-academic figurative revival",
-     "edge_structure": [
-      [
-       "AuthenticityPremium",
-       "NeoAcademicResurgence"
-      ],
-      [
-       "NeoAcademicResurgence",
-       "MuseumFigurativeAcceptance"
-      ],
-      [
-       "RitualAuraPremium",
-       "NeoAcademicResurgence"
-      ]
-     ],
-     "evidence_count": 14,
-     "generation": 0,
-     "is_dominant": false,
-     "log_score": -234.062928253,
-     "status": "PRUNED",
-     "total_edge_count": 3
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.69571548,
-     "bic_penalty_raw": 2.798318541,
-     "bic_score_explore": -17.395295115,
-     "bic_score_strict": -19.494034021,
-     "candidate_id": "<id52>",
+     "active_edge_count": 4,
+     "avg_ll": -16.804909542,
+     "bic_penalty_raw": 2.328355027,
+     "bic_score_explore": -17.386998298,
+     "bic_score_strict": -19.133264569,
+     "candidate_id": "<id43>",
      "description": "variant_add_BiennialFatigue->InstitutionalRiskAversion",
      "edge_structure": [
       [
@@ -5692,105 +5363,101 @@
       [
        "BiennialFatigue",
        "InstitutionalRiskAversion"
-      ],
-      [
-       "NeoAcademicResurgence",
-       "InstitutionalRiskAversion"
       ]
      ],
-     "evidence_count": 15,
-     "generation": 2,
-     "is_dominant": false,
-     "log_score": -250.435732196,
-     "status": "PRUNED",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.692695837,
-     "bic_penalty_raw": 2.827561425,
-     "bic_score_explore": -17.399586193,
-     "bic_score_strict": -19.520257262,
-     "candidate_id": "<id53>",
-     "description": "variant_add_CuratorialMaterialityShift->InstitutionalRiskAversion",
-     "edge_structure": [
-      [
-       "AIArtInstitutionalAcceptance",
-       "ConceptualDominance"
-      ],
-      [
-       "AIArtInstitutionalAcceptance",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "AIImageSaturation",
-       "AIArtInstitutionalAcceptance"
-      ],
-      [
-       "CuratorialMaterialityShift",
-       "InstitutionalRiskAversion"
-      ],
-      [
-       "MarketUncertainty",
-       "AttentionFragmentation"
-      ]
-     ],
-     "evidence_count": 14,
-     "generation": 2,
-     "is_dominant": false,
-     "log_score": -233.697741721,
-     "status": "PRUNED",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -16.660705406,
-     "bic_penalty_raw": 2.959556951,
-     "bic_score_explore": -17.400594643,
-     "bic_score_strict": -19.620262356,
-     "candidate_id": "<id54>",
-     "description": "variant_add_RegionalSceneMomentum->AIArtInstitutionalAcceptance",
-     "edge_structure": [
-      [
-       "AIArtInstitutionalAcceptance",
-       "ConceptualDominance"
-      ],
-      [
-       "AIArtInstitutionalAcceptance",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "AIImageSaturation",
-       "AIArtInstitutionalAcceptance"
-      ],
-      [
-       "RegionalSceneMomentum",
-       "AIArtInstitutionalAcceptance"
-      ]
-     ],
-     "evidence_count": 13,
+     "evidence_count": 18,
      "generation": 1,
      "is_dominant": false,
-     "log_score": -216.589170272,
+     "log_score": -302.48837175,
      "status": "PRUNED",
      "total_edge_count": 4
     },
     {
      "active_edge_count": 5,
-     "avg_ll": -16.669589367,
-     "bic_penalty_raw": 2.959556951,
-     "bic_score_explore": -17.409478605,
-     "bic_score_strict": -19.629146318,
-     "candidate_id": "<id55>",
-     "description": "variant_add_BiennialFatigue->NeoAcademicResurgence",
+     "avg_ll": -16.788622817,
+     "bic_penalty_raw": 2.408643132,
+     "bic_score_explore": -17.3907836,
+     "bic_score_strict": -19.197265949,
+     "candidate_id": "<id44>",
+     "description": "variant_add_EmbodimentDiscourseRising->RitualAuraPremium",
+     "edge_structure": [
+      [
+       "AIArtInstitutionalAcceptance",
+       "ConceptualDominance"
+      ],
+      [
+       "AIArtInstitutionalAcceptance",
+       "MuseumAcquisitionMomentum"
+      ],
+      [
+       "AIImageSaturation",
+       "AIArtInstitutionalAcceptance"
+      ],
+      [
+       "AuctionSpeculationElevated",
+       "CraftPrestigeRising"
+      ],
+      [
+       "EmbodimentDiscourseRising",
+       "RitualAuraPremium"
+      ]
+     ],
+     "evidence_count": 18,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -302.195210708,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -16.796356723,
+     "bic_penalty_raw": 2.402042325,
+     "bic_score_explore": -17.396867304,
+     "bic_score_strict": -19.198399048,
+     "candidate_id": "<id45>",
+     "description": "variant_add_ConceptualDominance->CraftPrestigeRising",
+     "edge_structure": [
+      [
+       "AIArtInstitutionalAcceptance",
+       "ConceptualDominance"
+      ],
+      [
+       "AIArtInstitutionalAcceptance",
+       "MuseumAcquisitionMomentum"
+      ],
+      [
+       "AIImageSaturation",
+       "AIArtInstitutionalAcceptance"
+      ],
+      [
+       "AuctionSpeculationElevated",
+       "CraftPrestigeRising"
+      ],
+      [
+       "ConceptualDominance",
+       "CraftPrestigeRising"
+      ]
+     ],
+     "evidence_count": 19,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -319.13077773,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -16.799511959,
+     "bic_penalty_raw": 2.416564323,
+     "bic_score_explore": -17.40365304,
+     "bic_score_strict": -19.216076282,
+     "candidate_id": "<id46>",
+     "description": "variant_add_RitualAuraPremium->AIImageSaturation",
      "edge_structure": [
       [
        "AttentionFragmentation",
        "PrestigeFragmentation"
-      ],
-      [
-       "BiennialFatigue",
-       "NeoAcademicResurgence"
       ],
       [
        "PrestigeFragmentation",
@@ -5805,20 +5472,555 @@
        "AIImageSaturation"
       ]
      ],
-     "evidence_count": 13,
+     "evidence_count": 17,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -285.591703306,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -16.80535593,
+     "bic_penalty_raw": 2.416564323,
+     "bic_score_explore": -17.409497011,
+     "bic_score_strict": -19.221920253,
+     "candidate_id": "<id47>",
+     "description": "variant_add_NeoAcademicResurgence->InstitutionalRiskAversion",
+     "edge_structure": [
+      [
+       "AttentionFragmentation",
+       "PrestigeFragmentation"
+      ],
+      [
+       "NeoAcademicResurgence",
+       "InstitutionalRiskAversion"
+      ],
+      [
+       "PrestigeFragmentation",
+       "BlueChipConcentration"
+      ],
+      [
+       "PrestigeFragmentation",
+       "RegionalSceneMomentum"
+      ]
+     ],
+     "evidence_count": 17,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -285.691050813,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -16.726921617,
+     "bic_penalty_raw": 2.599301927,
+     "bic_score_explore": -17.376747099,
+     "bic_score_strict": -19.326223544,
+     "candidate_id": "<id48>",
+     "description": "variant_add_MuseumAcquisitionMomentum->CuratorialMaterialityShift",
+     "edge_structure": [
+      [
+       "AIArtInstitutionalAcceptance",
+       "ConceptualDominance"
+      ],
+      [
+       "AIArtInstitutionalAcceptance",
+       "MuseumAcquisitionMomentum"
+      ],
+      [
+       "AIImageSaturation",
+       "AIArtInstitutionalAcceptance"
+      ],
+      [
+       "AuctionSpeculationElevated",
+       "CraftPrestigeRising"
+      ],
+      [
+       "MuseumAcquisitionMomentum",
+       "CuratorialMaterialityShift"
+      ]
+     ],
+     "evidence_count": 16,
      "generation": 2,
      "is_dominant": false,
-     "log_score": -216.704661775,
+     "log_score": -267.630745873,
      "status": "PRUNED",
      "total_edge_count": 5
     },
     {
      "active_edge_count": 4,
-     "avg_ll": -16.682886716,
+     "avg_ll": -16.713978277,
+     "bic_penalty_raw": 2.617781861,
+     "bic_score_explore": -17.368423742,
+     "bic_score_strict": -19.331760138,
+     "candidate_id": "<id49>",
+     "description": "variant_add_InstitutionalRiskAversion->CraftPrestigeRising",
+     "edge_structure": [
+      [
+       "AttentionFragmentation",
+       "PrestigeFragmentation"
+      ],
+      [
+       "InstitutionalRiskAversion",
+       "CraftPrestigeRising"
+      ],
+      [
+       "PrestigeFragmentation",
+       "BlueChipConcentration"
+      ],
+      [
+       "PrestigeFragmentation",
+       "RegionalSceneMomentum"
+      ]
+     ],
+     "evidence_count": 15,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -250.709674153,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -16.744916726,
+     "bic_penalty_raw": 2.599301927,
+     "bic_score_explore": -17.394742208,
+     "bic_score_strict": -19.344218653,
+     "candidate_id": "<id50>",
+     "description": "variant_add_CraftPrestigeRising->BlueChipInstitutionalCapture",
+     "edge_structure": [
+      [
+       "AIArtInstitutionalAcceptance",
+       "ConceptualDominance"
+      ],
+      [
+       "AIArtInstitutionalAcceptance",
+       "MuseumAcquisitionMomentum"
+      ],
+      [
+       "AIImageSaturation",
+       "AIArtInstitutionalAcceptance"
+      ],
+      [
+       "CraftPrestigeRising",
+       "BlueChipInstitutionalCapture"
+      ],
+      [
+       "NeoAcademicResurgence",
+       "InstitutionalRiskAversion"
+      ]
+     ],
+     "evidence_count": 16,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -267.918667622,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -16.692687692,
+     "bic_penalty_raw": 2.708050201,
+     "bic_score_explore": -17.369700242,
+     "bic_score_strict": -19.400737893,
+     "candidate_id": "<id51>",
+     "description": "variant_add_RegionalSceneMomentum->AIImageSaturation",
+     "edge_structure": [
+      [
+       "AIArtInstitutionalAcceptance",
+       "ConceptualDominance"
+      ],
+      [
+       "AIArtInstitutionalAcceptance",
+       "MuseumAcquisitionMomentum"
+      ],
+      [
+       "AIImageSaturation",
+       "AIArtInstitutionalAcceptance"
+      ],
+      [
+       "InstitutionalRiskAversion",
+       "BlueChipInstitutionalCapture"
+      ],
+      [
+       "RegionalSceneMomentum",
+       "AIImageSaturation"
+      ]
+     ],
+     "evidence_count": 15,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -250.390315374,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -16.703624824,
+     "bic_penalty_raw": 2.733309377,
+     "bic_score_explore": -17.386952168,
+     "bic_score_strict": -19.436934201,
+     "candidate_id": "<id52>",
+     "description": "variant_add_AuctionSpeculationElevated->MarketUncertainty",
+     "edge_structure": [
+      [
+       "AttentionFragmentation",
+       "PrestigeFragmentation"
+      ],
+      [
+       "AuctionSpeculationElevated",
+       "MarketUncertainty"
+      ],
+      [
+       "PrestigeFragmentation",
+       "BlueChipConcentration"
+      ],
+      [
+       "PrestigeFragmentation",
+       "RegionalSceneMomentum"
+      ]
+     ],
+     "evidence_count": 14,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -233.850747536,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -16.6763227,
+     "bic_penalty_raw": 2.827561425,
+     "bic_score_explore": -17.383213056,
+     "bic_score_strict": -19.503884125,
+     "candidate_id": "<id53>",
+     "description": "variant_add_BiennialFatigue->NeoAcademicResurgence",
+     "edge_structure": [
+      [
+       "AttentionFragmentation",
+       "PrestigeFragmentation"
+      ],
+      [
+       "BiennialFatigue",
+       "NeoAcademicResurgence"
+      ],
+      [
+       "CollectorFlightToSafety",
+       "BlueChipInstitutionalCapture"
+      ],
+      [
+       "PrestigeFragmentation",
+       "BlueChipConcentration"
+      ],
+      [
+       "PrestigeFragmentation",
+       "RegionalSceneMomentum"
+      ]
+     ],
+     "evidence_count": 14,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -233.468517803,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -16.648901857,
+     "bic_penalty_raw": 2.959556951,
+     "bic_score_explore": -17.388791094,
+     "bic_score_strict": -19.608458808,
+     "candidate_id": "<id54>",
+     "description": "variant_add_RitualAuraPremium->AntiDigitalSentiment",
+     "edge_structure": [
+      [
+       "AIArtInstitutionalAcceptance",
+       "ConceptualDominance"
+      ],
+      [
+       "AIArtInstitutionalAcceptance",
+       "MuseumAcquisitionMomentum"
+      ],
+      [
+       "AIImageSaturation",
+       "AIArtInstitutionalAcceptance"
+      ],
+      [
+       "InstitutionalRiskAversion",
+       "BlueChipInstitutionalCapture"
+      ],
+      [
+       "RitualAuraPremium",
+       "AntiDigitalSentiment"
+      ]
+     ],
+     "evidence_count": 13,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -216.435724138,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -16.677506259,
      "bic_penalty_raw": 3.002595535,
-     "bic_score_explore": -17.4335356,
-     "bic_score_strict": -19.685482252,
+     "bic_score_explore": -17.428155143,
+     "bic_score_strict": -19.680101795,
+     "candidate_id": "<id55>",
+     "description": "H5: NeoAcademicResurgence \u2014 aura + authenticity premium \u2192 neo-academic figurative revival",
+     "edge_structure": [
+      [
+       "AuthenticityPremium",
+       "NeoAcademicResurgence"
+      ],
+      [
+       "NeoAcademicResurgence",
+       "MuseumFigurativeAcceptance"
+      ],
+      [
+       "RitualAuraPremium",
+       "NeoAcademicResurgence"
+      ]
+     ],
+     "evidence_count": 12,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -200.130075114,
+     "status": "PRUNED",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -16.615865645,
+     "bic_penalty_raw": 3.106133312,
+     "bic_score_explore": -17.392398974,
+     "bic_score_strict": -19.721998958,
      "candidate_id": "<id56>",
+     "description": "variant_add_CollectorFlightToSafety->AIImageSaturation",
+     "edge_structure": [
+      [
+       "AttentionFragmentation",
+       "PrestigeFragmentation"
+      ],
+      [
+       "CollectorFlightToSafety",
+       "AIImageSaturation"
+      ],
+      [
+       "CollectorFlightToSafety",
+       "BlueChipInstitutionalCapture"
+      ],
+      [
+       "PrestigeFragmentation",
+       "BlueChipConcentration"
+      ],
+      [
+       "PrestigeFragmentation",
+       "RegionalSceneMomentum"
+      ]
+     ],
+     "evidence_count": 12,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -199.390387746,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -16.664900167,
+     "bic_penalty_raw": 3.058208849,
+     "bic_score_explore": -17.429452379,
+     "bic_score_strict": -19.723109016,
+     "candidate_id": "<id57>",
+     "description": "variant_add_AuthenticityPremium->RegionalSceneMomentum",
+     "edge_structure": [
+      [
+       "AttentionFragmentation",
+       "PrestigeFragmentation"
+      ],
+      [
+       "AuthenticityPremium",
+       "RegionalSceneMomentum"
+      ],
+      [
+       "EmbodimentDiscourseRising",
+       "CuratorialMaterialityShift"
+      ],
+      [
+       "PrestigeFragmentation",
+       "BlueChipConcentration"
+      ],
+      [
+       "PrestigeFragmentation",
+       "RegionalSceneMomentum"
+      ]
+     ],
+     "evidence_count": 13,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -216.643702167,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -16.597564906,
+     "bic_penalty_raw": 3.26985719,
+     "bic_score_explore": -17.415029204,
+     "bic_score_strict": -19.867422097,
+     "candidate_id": "<id58>",
+     "description": "variant_add_CollectorFlightToSafety->MuseumFigurativeAcceptance",
+     "edge_structure": [
+      [
+       "AttentionFragmentation",
+       "PrestigeFragmentation"
+      ],
+      [
+       "CollectorFlightToSafety",
+       "MuseumFigurativeAcceptance"
+      ],
+      [
+       "PrestigeFragmentation",
+       "BlueChipConcentration"
+      ],
+      [
+       "PrestigeFragmentation",
+       "RegionalSceneMomentum"
+      ],
+      [
+       "RitualAuraPremium",
+       "AIImageSaturation"
+      ]
+     ],
+     "evidence_count": 11,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -182.573213971,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -16.546725598,
+     "bic_penalty_raw": 3.37885243,
+     "bic_score_explore": -17.391438705,
+     "bic_score_strict": -19.925578028,
+     "candidate_id": "<id59>",
+     "description": "variant_add_EmbodimentDiscourseRising->RegionalSceneMomentum",
+     "edge_structure": [
+      [
+       "AttentionFragmentation",
+       "PrestigeFragmentation"
+      ],
+      [
+       "CollectorFlightToSafety",
+       "BlueChipInstitutionalCapture"
+      ],
+      [
+       "EmbodimentDiscourseRising",
+       "RegionalSceneMomentum"
+      ],
+      [
+       "PrestigeFragmentation",
+       "BlueChipConcentration"
+      ],
+      [
+       "PrestigeFragmentation",
+       "RegionalSceneMomentum"
+      ]
+     ],
+     "evidence_count": 11,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -182.013981578,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -16.490906362,
+     "bic_penalty_raw": 3.453877639,
+     "bic_score_explore": -17.354375772,
+     "bic_score_strict": -19.944784002,
+     "candidate_id": "<id60>",
+     "description": "variant_add_BlueChipConcentration->CollectorFlightToSafety",
+     "edge_structure": [
+      [
+       "AttentionFragmentation",
+       "PrestigeFragmentation"
+      ],
+      [
+       "BlueChipConcentration",
+       "CollectorFlightToSafety"
+      ],
+      [
+       "CollectorFlightToSafety",
+       "BlueChipInstitutionalCapture"
+      ],
+      [
+       "PrestigeFragmentation",
+       "BlueChipConcentration"
+      ],
+      [
+       "PrestigeFragmentation",
+       "RegionalSceneMomentum"
+      ]
+     ],
+     "evidence_count": 10,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -164.909063625,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -16.535943598,
+     "bic_penalty_raw": 3.453877639,
+     "bic_score_explore": -17.399413008,
+     "bic_score_strict": -19.989821238,
+     "candidate_id": "<id61>",
+     "description": "variant_add_BlueChipConcentration->AIArtInstitutionalAcceptance",
+     "edge_structure": [
+      [
+       "AttentionFragmentation",
+       "PrestigeFragmentation"
+      ],
+      [
+       "BlueChipConcentration",
+       "AIArtInstitutionalAcceptance"
+      ],
+      [
+       "PrestigeFragmentation",
+       "BlueChipConcentration"
+      ],
+      [
+       "PrestigeFragmentation",
+       "RegionalSceneMomentum"
+      ],
+      [
+       "RitualAuraPremium",
+       "AIImageSaturation"
+      ]
+     ],
+     "evidence_count": 10,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -165.359435982,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -16.509739531,
+     "bic_penalty_raw": 3.53997293,
+     "bic_score_explore": -17.394732763,
+     "bic_score_strict": -20.049712461,
+     "candidate_id": "<id62>",
      "description": "H3: DefensiveBlueChipConsolidation \u2014 market uncertainty \u2192 blue-chip flight \u2192 institutional conservatism",
      "edge_structure": [
       [
@@ -5838,314 +6040,22 @@
        "CollectorFlightToSafety"
       ]
      ],
-     "evidence_count": 12,
+     "evidence_count": 9,
      "generation": 0,
      "is_dominant": false,
-     "log_score": -200.194640597,
+     "log_score": -148.587655775,
      "status": "PRUNED",
      "total_edge_count": 4
     },
     {
      "active_edge_count": 5,
-     "avg_ll": -16.595639335,
-     "bic_penalty_raw": 3.26985719,
-     "bic_score_explore": -17.413103632,
-     "bic_score_strict": -19.865496525,
-     "candidate_id": "<id57>",
-     "description": "variant_add_RitualAuraPremium->AntiDigitalSentiment",
-     "edge_structure": [
-      [
-       "AttentionFragmentation",
-       "PrestigeFragmentation"
-      ],
-      [
-       "PrestigeFragmentation",
-       "BlueChipConcentration"
-      ],
-      [
-       "PrestigeFragmentation",
-       "RegionalSceneMomentum"
-      ],
-      [
-       "RitualAuraPremium",
-       "AIImageSaturation"
-      ],
-      [
-       "RitualAuraPremium",
-       "AntiDigitalSentiment"
-      ]
-     ],
-     "evidence_count": 11,
-     "generation": 2,
-     "is_dominant": false,
-     "log_score": -182.552032682,
-     "status": "PRUNED",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.666804705,
-     "bic_penalty_raw": 3.209671089,
-     "bic_score_explore": -17.469222478,
-     "bic_score_strict": -19.876475795,
-     "candidate_id": "<id58>",
-     "description": "variant_add_BiennialFatigue->AIArtInstitutionalAcceptance",
-     "edge_structure": [
-      [
-       "AIArtInstitutionalAcceptance",
-       "ConceptualDominance"
-      ],
-      [
-       "AIArtInstitutionalAcceptance",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "AIImageSaturation",
-       "AIArtInstitutionalAcceptance"
-      ],
-      [
-       "BiennialFatigue",
-       "AIArtInstitutionalAcceptance"
-      ],
-      [
-       "MarketUncertainty",
-       "AttentionFragmentation"
-      ]
-     ],
-     "evidence_count": 12,
-     "generation": 2,
-     "is_dominant": false,
-     "log_score": -200.001656463,
-     "status": "PRUNED",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.608368762,
-     "bic_penalty_raw": 3.26985719,
-     "bic_score_explore": -17.42583306,
-     "bic_score_strict": -19.878225952,
-     "candidate_id": "<id59>",
-     "description": "variant_add_RitualAuraPremium->BlueChipInstitutionalCapture",
-     "edge_structure": [
-      [
-       "AIArtInstitutionalAcceptance",
-       "ConceptualDominance"
-      ],
-      [
-       "AIArtInstitutionalAcceptance",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "AIImageSaturation",
-       "AIArtInstitutionalAcceptance"
-      ],
-      [
-       "NeoAcademicResurgence",
-       "InstitutionalRiskAversion"
-      ],
-      [
-       "RitualAuraPremium",
-       "BlueChipInstitutionalCapture"
-      ]
-     ],
-     "evidence_count": 11,
-     "generation": 2,
-     "is_dominant": false,
-     "log_score": -182.692056382,
-     "status": "PRUNED",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.534011768,
-     "bic_penalty_raw": 3.453877639,
-     "bic_score_explore": -17.397481178,
-     "bic_score_strict": -19.987889407,
-     "candidate_id": "<id60>",
-     "description": "variant_add_BlueChipConcentration->AIImageSaturation",
-     "edge_structure": [
-      [
-       "AttentionFragmentation",
-       "PrestigeFragmentation"
-      ],
-      [
-       "BiennialFatigue",
-       "NeoAcademicResurgence"
-      ],
-      [
-       "BlueChipConcentration",
-       "AIImageSaturation"
-      ],
-      [
-       "PrestigeFragmentation",
-       "BlueChipConcentration"
-      ],
-      [
-       "PrestigeFragmentation",
-       "RegionalSceneMomentum"
-      ]
-     ],
-     "evidence_count": 10,
-     "generation": 2,
-     "is_dominant": false,
-     "log_score": -165.340117678,
-     "status": "PRUNED",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -16.578456005,
-     "bic_penalty_raw": 3.453877639,
-     "bic_score_explore": -17.441925415,
-     "bic_score_strict": -20.032333645,
-     "candidate_id": "<id61>",
-     "description": "variant_add_AIImageSaturation->CollectorFlightToSafety",
-     "edge_structure": [
-      [
-       "AIImageSaturation",
-       "CollectorFlightToSafety"
-      ],
-      [
-       "AuthenticityPremium",
-       "NeoAcademicResurgence"
-      ],
-      [
-       "NeoAcademicResurgence",
-       "MuseumFigurativeAcceptance"
-      ],
-      [
-       "RitualAuraPremium",
-       "NeoAcademicResurgence"
-      ]
-     ],
-     "evidence_count": 10,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -165.784560055,
-     "status": "PRUNED",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -16.494230267,
+     "avg_ll": -16.509820319,
      "bic_penalty_raw": 3.662040962,
-     "bic_score_explore": -17.409740507,
-     "bic_score_strict": -20.156271229,
-     "candidate_id": "<id62>",
-     "description": "variant_add_BlueChipConcentration->CollectorFlightToSafety",
-     "edge_structure": [
-      [
-       "AuthenticityPremium",
-       "NeoAcademicResurgence"
-      ],
-      [
-       "BlueChipConcentration",
-       "CollectorFlightToSafety"
-      ],
-      [
-       "NeoAcademicResurgence",
-       "MuseumFigurativeAcceptance"
-      ],
-      [
-       "RitualAuraPremium",
-       "NeoAcademicResurgence"
-      ]
-     ],
-     "evidence_count": 9,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -148.448072401,
-     "status": "PRUNED",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.504331535,
-     "bic_penalty_raw": 3.662040962,
-     "bic_score_explore": -17.419841776,
-     "bic_score_strict": -20.166372497,
+     "bic_score_explore": -17.42533056,
+     "bic_score_strict": -20.171861282,
      "candidate_id": "<id63>",
-     "description": "variant_add_CraftPrestigeRising->EmbodimentDiscourseRising",
+     "description": "variant_add_FigurativeAuctionMomentum->RegionalSceneMomentum",
      "edge_structure": [
-      [
-       "AIArtInstitutionalAcceptance",
-       "ConceptualDominance"
-      ],
-      [
-       "AIArtInstitutionalAcceptance",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "AIImageSaturation",
-       "AIArtInstitutionalAcceptance"
-      ],
-      [
-       "CraftPrestigeRising",
-       "EmbodimentDiscourseRising"
-      ],
-      [
-       "MarketUncertainty",
-       "AttentionFragmentation"
-      ]
-     ],
-     "evidence_count": 9,
-     "generation": 2,
-     "is_dominant": false,
-     "log_score": -148.538983816,
-     "status": "PRUNED",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.417399366,
-     "bic_penalty_raw": 3.898952891,
-     "bic_score_explore": -17.392137589,
-     "bic_score_strict": -20.316352257,
-     "candidate_id": "<id64>",
-     "description": "variant_add_CollectorFlightToSafety->MuseumFigurativeAcceptance",
-     "edge_structure": [
-      [
-       "AttentionFragmentation",
-       "PrestigeFragmentation"
-      ],
-      [
-       "BiennialFatigue",
-       "NeoAcademicResurgence"
-      ],
-      [
-       "CollectorFlightToSafety",
-       "MuseumFigurativeAcceptance"
-      ],
-      [
-       "PrestigeFragmentation",
-       "BlueChipConcentration"
-      ],
-      [
-       "PrestigeFragmentation",
-       "RegionalSceneMomentum"
-      ]
-     ],
-     "evidence_count": 8,
-     "generation": 2,
-     "is_dominant": false,
-     "log_score": -131.339194928,
-     "status": "PRUNED",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.419015888,
-     "bic_penalty_raw": 3.898952891,
-     "bic_score_explore": -17.393754111,
-     "bic_score_strict": -20.317968779,
-     "candidate_id": "<id65>",
-     "description": "variant_add_AuctionSpeculationElevated->BlueChipInstitutionalCapture",
-     "edge_structure": [
-      [
-       "AuctionSpeculationElevated",
-       "BlueChipInstitutionalCapture"
-      ],
       [
        "BlueChipConcentration",
        "InstitutionalRiskAversion"
@@ -6159,24 +6069,65 @@
        "BlueChipConcentration"
       ],
       [
+       "FigurativeAuctionMomentum",
+       "RegionalSceneMomentum"
+      ],
+      [
        "MarketUncertainty",
        "CollectorFlightToSafety"
       ]
      ],
-     "evidence_count": 8,
+     "evidence_count": 9,
      "generation": 1,
      "is_dominant": false,
-     "log_score": -131.352127105,
+     "log_score": -148.588382874,
      "status": "PRUNED",
      "total_edge_count": 5
     },
     {
      "active_edge_count": 5,
-     "avg_ll": -16.316585425,
-     "bic_penalty_raw": 4.169807462,
-     "bic_score_explore": -17.35903729,
-     "bic_score_strict": -20.486392887,
-     "candidate_id": "<id66>",
+     "avg_ll": -16.427744061,
+     "bic_penalty_raw": 3.898952891,
+     "bic_score_explore": -17.402482284,
+     "bic_score_strict": -20.326696952,
+     "candidate_id": "<id64>",
+     "description": "variant_add_CollectorFlightToSafety->NeoAcademicResurgence",
+     "edge_structure": [
+      [
+       "AIArtInstitutionalAcceptance",
+       "ConceptualDominance"
+      ],
+      [
+       "AIArtInstitutionalAcceptance",
+       "MuseumAcquisitionMomentum"
+      ],
+      [
+       "AIImageSaturation",
+       "AIArtInstitutionalAcceptance"
+      ],
+      [
+       "CollectorFlightToSafety",
+       "NeoAcademicResurgence"
+      ],
+      [
+       "NeoAcademicResurgence",
+       "InstitutionalRiskAversion"
+      ]
+     ],
+     "evidence_count": 8,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -131.421952487,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -16.443329942,
+     "bic_penalty_raw": 3.898952891,
+     "bic_score_explore": -17.418068165,
+     "bic_score_strict": -20.342282833,
+     "candidate_id": "<id65>",
      "description": "variant_add_AntiDigitalSentiment->RitualAuraPremium",
      "edge_structure": [
       [
@@ -6184,74 +6135,33 @@
        "RitualAuraPremium"
       ],
       [
-       "AttentionFragmentation",
-       "PrestigeFragmentation"
-      ],
-      [
-       "PrestigeFragmentation",
-       "BlueChipConcentration"
-      ],
-      [
-       "PrestigeFragmentation",
-       "RegionalSceneMomentum"
-      ],
-      [
-       "RitualAuraPremium",
-       "AIImageSaturation"
-      ]
-     ],
-     "evidence_count": 7,
-     "generation": 2,
-     "is_dominant": false,
-     "log_score": -114.216097972,
-     "status": "PRUNED",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -16.317848982,
-     "bic_penalty_raw": 4.169807462,
-     "bic_score_explore": -17.360300848,
-     "bic_score_strict": -20.487656444,
-     "candidate_id": "<id67>",
-     "description": "variant_add_AttentionFragmentation->RitualAuraPremium",
-     "edge_structure": [
-      [
-       "AttentionFragmentation",
-       "PrestigeFragmentation"
-      ],
-      [
-       "AttentionFragmentation",
-       "RitualAuraPremium"
-      ],
-      [
-       "BiennialFatigue",
+       "AuthenticityPremium",
        "NeoAcademicResurgence"
       ],
       [
-       "PrestigeFragmentation",
-       "BlueChipConcentration"
+       "NeoAcademicResurgence",
+       "MuseumFigurativeAcceptance"
       ],
       [
-       "PrestigeFragmentation",
-       "RegionalSceneMomentum"
+       "RitualAuraPremium",
+       "NeoAcademicResurgence"
       ]
      ],
-     "evidence_count": 7,
-     "generation": 2,
+     "evidence_count": 8,
+     "generation": 1,
      "is_dominant": false,
-     "log_score": -114.224942874,
+     "log_score": -131.546639536,
      "status": "PRUNED",
-     "total_edge_count": 5
+     "total_edge_count": 4
     },
     {
-     "active_edge_count": 5,
-     "avg_ll": -16.205595511,
-     "bic_penalty_raw": 4.479398673,
-     "bic_score_explore": -17.325445179,
-     "bic_score_strict": -20.684994184,
-     "candidate_id": "<id68>",
-     "description": "variant_add_CollectorFlightToSafety->CraftPrestigeRising",
+     "active_edge_count": 4,
+     "avg_ll": -16.368299656,
+     "bic_penalty_raw": 4.03081388,
+     "bic_score_explore": -17.376003126,
+     "bic_score_strict": -20.399113537,
+     "candidate_id": "<id66>",
+     "description": "variant_add_RegionalSceneMomentum->CollectorFlightToSafety",
      "edge_structure": [
       [
        "AIArtInstitutionalAcceptance",
@@ -6266,64 +6176,196 @@
        "AIArtInstitutionalAcceptance"
       ],
       [
-       "CollectorFlightToSafety",
-       "CraftPrestigeRising"
-      ],
-      [
-       "MarketUncertainty",
-       "AttentionFragmentation"
+       "RegionalSceneMomentum",
+       "CollectorFlightToSafety"
       ]
      ],
-     "evidence_count": 6,
+     "evidence_count": 7,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -114.578097595,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -16.266352335,
+     "bic_penalty_raw": 4.169807462,
+     "bic_score_explore": -17.3088042,
+     "bic_score_strict": -20.436159797,
+     "candidate_id": "<id67>",
+     "description": "variant_add_FigurativeAuctionMomentum->CollectorFlightToSafety",
+     "edge_structure": [
+      [
+       "AttentionFragmentation",
+       "PrestigeFragmentation"
+      ],
+      [
+       "CollectorFlightToSafety",
+       "BlueChipInstitutionalCapture"
+      ],
+      [
+       "FigurativeAuctionMomentum",
+       "CollectorFlightToSafety"
+      ],
+      [
+       "PrestigeFragmentation",
+       "BlueChipConcentration"
+      ],
+      [
+       "PrestigeFragmentation",
+       "RegionalSceneMomentum"
+      ]
+     ],
+     "evidence_count": 7,
      "generation": 2,
      "is_dominant": false,
-     "log_score": -97.233573065,
+     "log_score": -113.864466344,
      "status": "PRUNED",
      "total_edge_count": 5
     },
     {
      "active_edge_count": 5,
-     "avg_ll": -16.213843129,
+     "avg_ll": -16.153358394,
      "bic_penalty_raw": 4.479398673,
-     "bic_score_explore": -17.333692797,
-     "bic_score_strict": -20.693241802,
-     "candidate_id": "<id69>",
-     "description": "variant_add_EmergingMarketLiquidity->CraftPrestigeRising",
+     "bic_score_explore": -17.273208062,
+     "bic_score_strict": -20.632757067,
+     "candidate_id": "<id68>",
+     "description": "variant_add_CollectorFlightToSafety->AuthenticityPremium",
      "edge_structure": [
       [
-       "BlueChipConcentration",
-       "InstitutionalRiskAversion"
-      ],
-      [
-       "BlueChipInstitutionalCapture",
-       "MuseumAcquisitionMomentum"
+       "AttentionFragmentation",
+       "PrestigeFragmentation"
       ],
       [
        "CollectorFlightToSafety",
+       "AuthenticityPremium"
+      ],
+      [
+       "PrestigeFragmentation",
        "BlueChipConcentration"
       ],
       [
-       "EmergingMarketLiquidity",
-       "CraftPrestigeRising"
+       "PrestigeFragmentation",
+       "RegionalSceneMomentum"
       ],
       [
-       "MarketUncertainty",
-       "CollectorFlightToSafety"
+       "RitualAuraPremium",
+       "AIImageSaturation"
       ]
      ],
      "evidence_count": 6,
-     "generation": 1,
+     "generation": 2,
      "is_dominant": false,
-     "log_score": -97.283058774,
+     "log_score": -96.920150361,
      "status": "PRUNED",
      "total_edge_count": 5
     },
     {
      "active_edge_count": 4,
-     "avg_ll": -16.22409908,
+     "avg_ll": -16.182870982,
+     "bic_penalty_raw": 4.479398673,
+     "bic_score_explore": -17.302720651,
+     "bic_score_strict": -20.662269655,
+     "candidate_id": "<id69>",
+     "description": "variant_add_MarketUncertainty->AIImageSaturation",
+     "edge_structure": [
+      [
+       "AuthenticityPremium",
+       "NeoAcademicResurgence"
+      ],
+      [
+       "MarketUncertainty",
+       "AIImageSaturation"
+      ],
+      [
+       "NeoAcademicResurgence",
+       "MuseumFigurativeAcceptance"
+      ],
+      [
+       "RitualAuraPremium",
+       "NeoAcademicResurgence"
+      ]
+     ],
+     "evidence_count": 6,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -97.097225894,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -16.241695943,
+     "bic_penalty_raw": 4.667369946,
+     "bic_score_explore": -17.40853843,
+     "bic_score_strict": -20.909065889,
+     "candidate_id": "<id70>",
+     "description": "variant_add_AIImageSaturation->AuthenticityPremium",
+     "edge_structure": [
+      [
+       "AIArtInstitutionalAcceptance",
+       "ConceptualDominance"
+      ],
+      [
+       "AIArtInstitutionalAcceptance",
+       "MuseumAcquisitionMomentum"
+      ],
+      [
+       "AIImageSaturation",
+       "AIArtInstitutionalAcceptance"
+      ],
+      [
+       "AIImageSaturation",
+       "AuthenticityPremium"
+      ]
+     ],
+     "evidence_count": 5,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -81.208479715,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -16.23255382,
      "bic_penalty_raw": 4.828313737,
-     "bic_score_explore": -17.431177514,
-     "bic_score_strict": -21.052412817,
+     "bic_score_explore": -17.439632254,
+     "bic_score_strict": -21.060867557,
+     "candidate_id": "<id71>",
+     "description": "variant_add_AIImageSaturation->ConceptualDominance",
+     "edge_structure": [
+      [
+       "AIArtInstitutionalAcceptance",
+       "ConceptualDominance"
+      ],
+      [
+       "AIArtInstitutionalAcceptance",
+       "MuseumAcquisitionMomentum"
+      ],
+      [
+       "AIImageSaturation",
+       "AIArtInstitutionalAcceptance"
+      ],
+      [
+       "AIImageSaturation",
+       "ConceptualDominance"
+      ]
+     ],
+     "evidence_count": 5,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -81.162769101,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -16.022968206,
+     "bic_penalty_raw": 5.198603854,
+     "bic_score_explore": -17.32261917,
+     "bic_score_strict": -21.221572061,
      "candidate_id": "<id11>",
      "description": "H1: CraftAuraBacklash \u2014 AI saturation \u2192 aura premium \u2192 craft/figurative institutionalisation",
      "edge_structure": [
@@ -6344,10 +6386,10 @@
        "CraftPrestigeRising"
       ]
      ],
-     "evidence_count": 5,
+     "evidence_count": 4,
      "generation": 0,
      "is_dominant": false,
-     "log_score": -81.120495398,
+     "log_score": -64.091872826,
      "status": "PRUNED",
      "total_edge_count": 4
     },
@@ -6357,7 +6399,7 @@
      "bic_penalty_raw": 5.198603854,
      "bic_score_explore": -17.327296624,
      "bic_score_strict": -21.226249515,
-     "candidate_id": "<id70>",
+     "candidate_id": "<id72>",
      "description": "variant_add_AuthenticityPremium->RegionalSceneMomentum",
      "edge_structure": [
       [
@@ -6390,11 +6432,11 @@
     },
     {
      "active_edge_count": 4,
-     "avg_ll": -16.038863031,
-     "bic_penalty_raw": 5.198603854,
-     "bic_score_explore": -17.338513994,
-     "bic_score_strict": -21.237466885,
-     "candidate_id": "<id71>",
+     "avg_ll": -15.858237716,
+     "bic_penalty_raw": 5.493061443,
+     "bic_score_explore": -17.231503077,
+     "bic_score_strict": -21.35129916,
+     "candidate_id": "<id73>",
      "description": "variant_add_RegionalSceneMomentum->BlueChipInstitutionalCapture",
      "edge_structure": [
       [
@@ -6414,36 +6456,32 @@
        "NeoAcademicResurgence"
       ]
      ],
-     "evidence_count": 4,
+     "evidence_count": 3,
      "generation": 1,
      "is_dominant": false,
-     "log_score": -64.155452123,
+     "log_score": -47.574713149,
      "status": "PRUNED",
      "total_edge_count": 4
     },
     {
-     "active_edge_count": 6,
-     "avg_ll": -16.232887635,
-     "bic_penalty_raw": 5.15020132,
-     "bic_score_explore": -17.520437965,
-     "bic_score_strict": -21.383088955,
-     "candidate_id": "<id72>",
-     "description": "variant_add_RegionalSceneMomentum->CraftPrestigeRising",
+     "active_edge_count": 5,
+     "avg_ll": -15.793321433,
+     "bic_penalty_raw": 5.676163491,
+     "bic_score_explore": -17.212362306,
+     "bic_score_strict": -21.469484924,
+     "candidate_id": "<id74>",
+     "description": "variant_add_MarketUncertainty->AttentionFragmentation",
      "edge_structure": [
       [
-       "AIArtInstitutionalAcceptance",
-       "ConceptualDominance"
-      ],
-      [
-       "AIArtInstitutionalAcceptance",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
        "AIImageSaturation",
-       "AIArtInstitutionalAcceptance"
+       "RitualAuraPremium"
       ],
       [
-       "CollectorFlightToSafety",
+       "CraftPrestigeRising",
+       "MuseumFigurativeAcceptance"
+      ],
+      [
+       "CuratorialMaterialityShift",
        "CraftPrestigeRising"
       ],
       [
@@ -6451,43 +6489,6 @@
        "AttentionFragmentation"
       ],
       [
-       "RegionalSceneMomentum",
-       "CraftPrestigeRising"
-      ]
-     ],
-     "evidence_count": 5,
-     "generation": 3,
-     "is_dominant": false,
-     "log_score": -81.164438177,
-     "status": "PRUNED",
-     "total_edge_count": 6
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -15.788922481,
-     "bic_penalty_raw": 5.676163491,
-     "bic_score_explore": -17.207963354,
-     "bic_score_strict": -21.465085973,
-     "candidate_id": "<id73>",
-     "description": "variant_add_AIImageSaturation->BlueChipConcentration",
-     "edge_structure": [
-      [
-       "AIImageSaturation",
-       "BlueChipConcentration"
-      ],
-      [
-       "AIImageSaturation",
-       "RitualAuraPremium"
-      ],
-      [
-       "CraftPrestigeRising",
-       "MuseumFigurativeAcceptance"
-      ],
-      [
-       "CuratorialMaterialityShift",
-       "CraftPrestigeRising"
-      ],
-      [
        "RitualAuraPremium",
        "CraftPrestigeRising"
       ]
@@ -6495,44 +6496,7 @@
      "evidence_count": 3,
      "generation": 1,
      "is_dominant": false,
-     "log_score": -47.366767444,
-     "status": "PRUNED",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -15.808036148,
-     "bic_penalty_raw": 5.676163491,
-     "bic_score_explore": -17.227077021,
-     "bic_score_strict": -21.484199639,
-     "candidate_id": "<id74>",
-     "description": "variant_add_AIImageSaturation->AntiDigitalSentiment",
-     "edge_structure": [
-      [
-       "AIImageSaturation",
-       "AntiDigitalSentiment"
-      ],
-      [
-       "AIImageSaturation",
-       "RitualAuraPremium"
-      ],
-      [
-       "CraftPrestigeRising",
-       "MuseumFigurativeAcceptance"
-      ],
-      [
-       "CuratorialMaterialityShift",
-       "CraftPrestigeRising"
-      ],
-      [
-       "RitualAuraPremium",
-       "CraftPrestigeRising"
-      ]
-     ],
-     "evidence_count": 3,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -47.424108443,
+     "log_score": -47.379964299,
      "status": "PRUNED",
      "total_edge_count": 5
     }
@@ -6543,9 +6507,9 @@
    "env_mode": "strict",
    "last_mutation_cycle": {
     "dag_violations": 0,
-    "duplicate_rejections": 2,
+    "duplicate_rejections": 3,
     "introduced": 2,
-    "total_attempts": 4
+    "total_attempts": 5
    },
    "total_evidence_records": 21
   },
@@ -6973,16 +6937,16 @@
      "target": "ConceptualDominance"
     },
     {
-     "probability": 0.278911672,
-     "source": "EmbodimentDiscourseRising",
+     "probability": 0.315581703,
+     "source": "CuratorialMaterialityShift",
      "status": "explore",
-     "target": "RegionalSceneMomentum"
+     "target": "NeoAcademicResurgence"
     },
     {
      "probability": 0.5,
-     "source": "CuratorialMaterialityShift",
+     "source": "EmergingMarketLiquidity",
      "status": "explore",
-     "target": "AIArtInstitutionalAcceptance"
+     "target": "FigurativeAuctionMomentum"
     }
    ],
    "frontier_edges": [
@@ -7011,20 +6975,20 @@
      "target": "ConceptualDominance"
     },
     {
-     "explore_weight": 1.407100423,
-     "note": "existence_probability=0.279 in explore band [0.25, 0.75]",
-     "probability": 0.278911672,
-     "relation": "EmbodimentDiscourseRising\u2192RegionalSceneMomentum",
-     "source": "EmbodimentDiscourseRising",
-     "target": "RegionalSceneMomentum"
+     "explore_weight": 1.276281563,
+     "note": "existence_probability=0.316 in explore band [0.25, 0.75]",
+     "probability": 0.315581703,
+     "relation": "CuratorialMaterialityShift\u2192NeoAcademicResurgence",
+     "source": "CuratorialMaterialityShift",
+     "target": "NeoAcademicResurgence"
     },
     {
      "explore_weight": 1.0,
      "note": "existence_probability=0.500 in explore band [0.25, 0.75]",
      "probability": 0.5,
-     "relation": "CuratorialMaterialityShift\u2192AIArtInstitutionalAcceptance",
-     "source": "CuratorialMaterialityShift",
-     "target": "AIArtInstitutionalAcceptance"
+     "relation": "EmergingMarketLiquidity\u2192FigurativeAuctionMomentum",
+     "source": "EmergingMarketLiquidity",
+     "target": "FigurativeAuctionMomentum"
     }
    ],
    "nodes": [
@@ -7082,7 +7046,7 @@
      "label": "RegionalSceneMomentum",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
      "id": "BlueChipInstitutionalCapture",
@@ -7131,14 +7095,14 @@
      "label": "FigurativeAuctionMomentum",
      "observation": null,
      "probability": null,
-     "status": "weak"
+     "status": "exploring"
     },
     {
      "id": "EmergingMarketLiquidity",
      "label": "EmergingMarketLiquidity",
      "observation": null,
      "probability": null,
-     "status": "weak"
+     "status": "exploring"
     },
     {
      "id": "MarketPolarization",
@@ -7166,7 +7130,7 @@
      "label": "EmbodimentDiscourseRising",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
      "id": "AntiDigitalSentiment",
@@ -7194,7 +7158,7 @@
      "label": "NeoAcademicResurgence",
      "observation": null,
      "probability": null,
-     "status": "weak"
+     "status": "exploring"
     },
     {
      "id": "AttentionFragmentation",
@@ -7245,62 +7209,62 @@
       "edge_count": 3,
       "log_score": -353.528830055,
       "name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
-      "score_normalized": 0.942112718,
+      "score_normalized": 0.937753274,
       "status": "rising"
      },
      {
       "edge_count": 4,
-      "log_score": -353.229890197,
-      "name": "variant_add_AuctionSpeculationElevated->MuseumFigurativeAcceptance",
-      "score_normalized": 0.689156158,
+      "log_score": -353.109493782,
+      "name": "variant_add_CollectorFlightToSafety->BlueChipInstitutionalCapture",
+      "score_normalized": 0.583638548,
       "status": "rising"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -353.188990074,
+      "name": "variant_add_InstitutionalRiskAversion->BlueChipInstitutionalCapture",
+      "score_normalized": 0.558114774,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -353.249302014,
+      "name": "variant_add_CuratorialMaterialityShift->NeoAcademicResurgence",
+      "score_normalized": 0.538750495,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -353.265258955,
+      "name": "variant_add_EmbodimentDiscourseRising->CuratorialMaterialityShift",
+      "score_normalized": 0.53362722,
+      "status": "neutral"
      },
      {
       "edge_count": 4,
       "log_score": -353.274228186,
       "name": "variant_add_NeoAcademicResurgence->InstitutionalRiskAversion",
-      "score_normalized": 0.679988015,
-      "status": "neutral"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -353.276386162,
-      "name": "variant_add_EmbodimentDiscourseRising->RegionalSceneMomentum",
-      "score_normalized": 0.679541792,
-      "status": "neutral"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -353.351713186,
-      "name": "variant_add_CuratorialMaterialityShift->MuseumAcquisitionMomentum",
-      "score_normalized": 0.663965783,
-      "status": "neutral"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -353.421389888,
-      "name": "variant_add_RitualAuraPremium->AIImageSaturation",
-      "score_normalized": 0.649558139,
+      "score_normalized": 0.53074748,
       "status": "falling"
      },
      {
       "edge_count": 4,
-      "log_score": -353.453055667,
-      "name": "variant_add_MarketUncertainty->AttentionFragmentation",
-      "score_normalized": 0.643010336,
+      "log_score": -353.293588773,
+      "name": "variant_add_AuctionSpeculationElevated->CraftPrestigeRising",
+      "score_normalized": 0.524531401,
       "status": "falling"
      },
      {
       "edge_count": 5,
-      "log_score": -353.421389888,
-      "name": "variant_add_RitualAuraPremium->CuratorialMaterialityShift",
-      "score_normalized": 0.334787243,
+      "log_score": -353.188990074,
+      "name": "variant_add_CollectorFlightToSafety->MarketUncertainty",
+      "score_normalized": 0.069364279,
       "status": "falling"
      },
      {
       "edge_count": 5,
-      "log_score": -353.276386162,
-      "name": "variant_add_CuratorialMaterialityShift->AIArtInstitutionalAcceptance",
+      "log_score": -353.249302014,
+      "name": "variant_add_EmergingMarketLiquidity->FigurativeAuctionMomentum",
       "score_normalized": 0.05,
       "status": "falling"
      }
@@ -7476,7 +7440,7 @@
     ]
    },
    "interpretation_hints": [
-    "structure_entropy is high (2.301): engine has not converged; multiple causal stories remain plausible",
+    "structure_entropy is high (2.302): engine has not converged; multiple causal stories remain plausible",
     "dominant hypothesis has held for 43 generations",
     "last paradigm shift was <ago>",
     "evidence base: 21 records ingested",
@@ -7513,7 +7477,7 @@
       "to_name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum"
      }
     ],
-    "structure_entropy": 2.300967125
+    "structure_entropy": 2.301724109
    }
   },
   "status": 200
@@ -7603,7 +7567,7 @@
    "last_evidence_cycle_ago": "<ago>",
    "max_candidates": 10,
    "paradigm_shifts_this_window": 6,
-   "structure_entropy": 2.300967125
+   "structure_entropy": 2.301724109
   },
   "status": 200
  }
