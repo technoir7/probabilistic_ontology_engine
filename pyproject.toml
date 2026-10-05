@@ -11,7 +11,9 @@ dependencies = [
     "pydantic>=2.0",
     "fastapi>=0.100",
     "networkx>=3.0",
-    "pgmpy>=0.1.20",
+    # The code uses DiscreteBayesianNetwork (pgmpy 1.x); 1.3 removes APIs pgmpy
+    # already warns about, so stay below it until checked.
+    "pgmpy>=1.1,<1.3",
     "numpy>=1.24",
     "scipy>=1.10",
     "uvicorn>=0.22",
@@ -21,8 +23,8 @@ dependencies = [
     "openai>=1.0",
 ]
 
-[project.optional-dependencies]
-dev = ["pytest>=7.0", "httpx>=0.24"]
+[dependency-groups]
+dev = ["pytest>=7.0"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
