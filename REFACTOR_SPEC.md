@@ -1,6 +1,6 @@
 # Refactor Spec — Probabilistic Ontology Engine
 
-Status: in progress — Phases 0–2 done except 2.3 (parked, D14) and 2.7 (waits on D3/D4) (branch `refactor/phase-0-safety-net`) · Date: 2026-10-04 · Scope: `src/`, `tests/`, `scripts/`, repo hygiene
+Status: in progress — Phases 0–3 done except 2.3 (parked, D14) and 2.7 (waits on D3/D4); Phases 4–6 not started (branch `refactor/phase-0-safety-net`, not pushed) · Date: 2026-10-04 · Scope: `src/`, `tests/`, `scripts/`, repo hygiene
 
 This is the plan we follow to refactor the backend. It says what is wrong (with
 evidence), what the code should look like afterwards, and the order to get there
@@ -636,7 +636,28 @@ the `learning_service` flag parameter. (C7, C8)
 2.7 Act on decision D3/D4: wire up or delete unused services. (C11)
 Exit: golden tests unchanged except where a behavior commit says why.
 
-### Phase 3 — Persistence
+### Phase 3 — Persistence — **done**
+
+Landed: 3.1 (`stores/database.py`, migrations `0001`/`0002`), 3.1b (portable
+`ON CONFLICT` upserts), 3.2 (`learn()` is one transaction; B6), 3.3 (whole
+population persisted and resumed; B1b), 3.4 (typed soft-evidence keys, legacy
+rows read back correctly; B1a), 3.5 (hot-path ID shim removed), 3.6 (bounded
+shift/debug reads). G3 now asserts a restart is invisible, including learning
+after it. Measured: `learn()` on one record 59 ms → 6 ms (one commit per
+cycle instead of one per row); register with 300 cycles of history 260 ms.
+
+Deviation from the plan, for D1: pre-0002 databases are **not** fully
+relearned. They take the old restore path once (seed CPTs from the signature
+table, scores recomputed from evidence — now correct), then persist. A full
+relearn costs ~60 ms per record and could exceed Railway's 300 s health
+check. Variants were never stored, so neither path could recover them.
+A fixture written by `main`'s code (`tests/fixtures/pre_0002_test_domain.db`)
+pins this path.
+
+Before deploying: snapshot the Railway volume (D1). Known growth: pruned
+candidates stay in the population (as before) and are now also loaded on
+start; and the art package's rebuild leaves orphan `candidate_edges` /
+`candidate_parameters` rows until Phase 5.6 gives it a real reset.
 
 3.1 `stores/database.py`: one connection per DB file, `transaction()` context
 manager, migration runner with a `schema_version` table; migrations as `.sql`
