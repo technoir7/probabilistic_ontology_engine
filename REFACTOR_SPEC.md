@@ -1,6 +1,6 @@
 # Refactor Spec — Probabilistic Ontology Engine
 
-Status: draft for review · Date: 2026-10-04 · Scope: `src/`, `tests/`, `scripts/`, repo hygiene
+Status: in progress — Phase 0 done (branch `refactor/phase-0-safety-net`) · Date: 2026-10-04 · Scope: `src/`, `tests/`, `scripts/`, repo hygiene
 
 This is the plan we follow to refactor the backend. It says what is wrong (with
 evidence), what the code should look like afterwards, and the order to get there
@@ -124,7 +124,7 @@ Each finding has an ID used by the plan in §7.
 | A3 | **Four copies of the backfill loop**: `_backfill_if_empty` (`:793`), `_backfill_macro_if_empty` (`:2193`), `_backfill_ai_if_empty` (`:2290`), `_backfill_fred_domain_if_empty` (`:2517`). They differ only in the date list and sleep (1.0 vs 2.0 s). Plus the manual `ingest_backfill` route (`:1283`) has a fifth inline copy. | — |
 | A4 | **API imports private helpers from domains**: `_weekly_backfill_dates` from `macro_regime_v1.scheduler` (used for *all* FRED domains, `:2529`), `_last_friday` (imported, unused, `:2172, :2266`). | — |
 | A5 | **API reaches into engine internals**: `engine._modules[...]` (`:602, :1502, :1869`), `engine._learn_call_count/_learn_last_ts/_learn_records_total` (`:1162-1164`), `engine.evidence_store.*` (~15 call sites), `engine.population_store.load_shift_events` (`:1683, :1848`), `engine.inference_service.query` (`:1495, :1764`), `pop._avg_score` (`:1428, :1801`). | — |
-| A6 | **An external package drives the engine from inside.** The art route passes the whole engine to `art_prestige_regime_v1.manual_ingest.rebuild_art_evidence_state(engine, …)` and reads back `getattr(engine, "_art_causal_prior_result", …)` — a domain package setting a private attribute on the engine. | `app.py:1353-1384` |
+| A6 | **An external package drives the engine from inside.** The art route passes the whole engine to `art_prestige_regime_v1.manual_ingest.rebuild_art_evidence_state(engine, …)` and reads back `getattr(engine, "_art_causal_prior_result", …)` — a domain package setting a private attribute on the engine. The art package (pinned commit `f6327080`) also imports `src.engine.*` directly and touches `engine._batch_index`, `_modules`, `_learn_call_count/_learn_last_ts/_learn_records_total`, `evidence_store` (10 sites), `parameter_store`, `population_store`, `population_manager`, and `learning_service`. It is a second consumer of engine internals, so any rename in Phases 2–5 breaks it unless Phase 5.6 lands first or keeps a compatibility shim. | `app.py:1353-1384`; `art_prestige_regime_v1/manual_ingest.py` |
 | A7 | **View logic duplicated.** Candidate status (dominant/rising/falling/neutral) is computed identically in `population_candidates` (`:1436-1444`) and `narrative_snapshot` (`:1808-1816`). "P(True)" extraction `dist.get("True", dist.get("true", …))` at `:1499` and `:1767`. `_time_ago` and score normalization are copied again in `poea_dynamic.py:75, :107`. Explore band `0.3/0.7` is hard-coded in `poea_dynamic.py:20-21` while the apriori path reads it from the domain. | — |
 | A8 | **Two read backends selected by `if` in every route.** 7 routes start with `if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(...)`. `ontology_mode` is an unvalidated `str`; a typo silently falls back to apriori. | `app.py:1084, 1419, 1469, 1559, 1663, 1723, 2118` |
 | A9 | **A route calls another route.** `domain_report_refresh` awaits the `narrative_snapshot` route function (`:2051`). The snapshot builder should be a function both call. | — |
@@ -260,7 +260,7 @@ is moved (so the fix is easy to review) — except where noted.
 | B5 | `mean-field` accumulation assumes binary parents in one place: `{v: 1.0 / 2 for v in pv.support}` (`learning.py:224`) vs `1.0 / len(pv.support)` everywhere else. | Wrong for any non-BOOLEAN variable. | — |
 | B6 | Shift-event write failure is logged and the learn cycle continues (`population_manager.py:467-473`), so the shift log can silently miss events. Becomes moot once learn runs in one transaction (Phase 3). | — | — |
 | B7 | **Evidence dedup never fires.** Every pipeline sets `evidence_id=uuid4()`; the store dedups with `INSERT OR IGNORE` on `evidence_id`. So re-running a trigger or backfill for a date that is already stored appends a duplicate and learns it twice. The `after > before` guards in `app.py:784-789, 2230-2235` are always true. | Double-counted evidence after any manual re-run or overlapping backfill. | `evidence_store.py:44-60`; `*/ingestion/pipeline.py` |
-| B8 | **Weekly timestamps depend on the entry point** (DL2): Sunday via the API, Friday via the scheduler, any weekday for mr/ai via the API; daily backfill of weekly domains. | Duplicate and oversampled weeks. | `agriculture_weekly.py:36`; `app.py:766-772, 1294-1297` |
+| B8 | **Weekly timestamps depend on the entry point** (DL2): Sunday via the API, Friday via the scheduler, any weekday for mr/ai via the API; daily backfill of weekly domains, and of the monthly art domain (G7 snapshot `g7_calendars_api.json`). | Duplicate and oversampled weeks. | `agriculture_weekly.py:36`; `app.py:766-772, 1294-1297` |
 | B9 | **Upstream outage is learned as real evidence** (DL7). | CPTs drift toward independence during outages. Fix decided in D10. | — |
 | B10 | **Look-ahead in backfills.** FRED is fetched without vintages and monthly series are dated by period start, so a backfill for 2026-09-04 sees September CPI (published in October). EDGAR filters by period end, not filing date. Worst case: `scripts/backfill_sf_urban.py:248` caches every FRED series with `end_date=today` and serves it to every historical week. | Backfilled history uses data that did not exist yet. Out of refactor scope except the script (D11). | — |
 | B11 | **`backfill_sf_urban.py` is not idempotent.** Its "already exists" check compares `'<date> 00:00:00'` against stored `isoformat()` (`…T00:00:00+00:00`), so it never matches. | Duplicates on every run. Don't run it until fixed or retired. | `scripts/backfill_sf_urban.py:260-265` |
@@ -515,7 +515,12 @@ The refactor is wasted if nothing stops the next feature from re-tangling it.
 
 Each step is one PR unless noted. "Exit" is what must be true to merge.
 
-### Phase 0 — Safety net (no behavior changes)
+### Phase 0 — Safety net (no behavior changes) — **done**
+
+Result: suite 345 passed / 66 failed / 9 skipped → **448 passed, 0 failed,
+9 skipped** (POE-A artifacts only). Golden snapshots G1–G7 in `tests/golden/`.
+Not verifiable locally: the CI workflow (needs a push) and the Railway build
+(only the art tarball URL changed, to the same commit as `main`).
 
 0.1 **Hygiene.** `git rm -r --cached .venv` and all tracked `*.pyc`; add
 `uv.lock` (`uv lock`), move `dev` extras to `[dependency-groups]`, pin pgmpy to
@@ -573,7 +578,10 @@ signature, not UUID (IDs are `uuid4`), and strip wall-clock fields.
   document B8 before the fix.
 
 Then, so the refactor doesn't trip over them: rewrite the T3 hand-wired loops
-to call `engine.learn`; replace module-path patches (T4) with the G4 injection
+to call `engine.learn` — **deferred to Phase 2**: they need a configurable
+population size (TEST-L3-05 uses 5; the engine hard-codes 10) and per-domain
+thresholds, which the engine ignores (B2), so they can only move once
+`DomainEngine` exists; G1/G2 already cover the facade; replace module-path patches (T4) with the G4 injection
 fixture; move private-helper imports (T5) onto G6 where they test pipeline
 math. Collapse the 10 ingestion test files' shared template into G6 in Phase 4,
 not now.
@@ -675,6 +683,11 @@ written comparison of dominant histories. (DL7)
 4.9 Delete per-domain `scheduler.py` (10) once Phase 5.3's generic scheduler
 lands. Fix `scripts/backfill_sf_urban.py` on top of the shared backfill or
 delete it (D11). (DL9, B11, B14)
+
+Each domain's PR first adds a pipeline golden at the HTTP layer (canned
+upstream responses via `httpx.MockTransport`; `yf.download` stubbed for
+yfinance) through the public `fetch_evidence`, so client and helper merges are
+checked against real request/response shapes, not mocked client methods.
 
 Convert one domain end-to-end first (**sf_urban_v1** — it has live tests),
 then macro, then the rest one PR each. Golden evidence-record tests (Phase 0)
