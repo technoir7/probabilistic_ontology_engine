@@ -1,6 +1,6 @@
 # Refactor Spec — Probabilistic Ontology Engine
 
-Status: in progress — Phases 0–1 done (branch `refactor/phase-0-safety-net`) · Date: 2026-10-04 · Scope: `src/`, `tests/`, `scripts/`, repo hygiene
+Status: in progress — Phases 0–2 done except 2.3 (parked, D14) and 2.7 (waits on D3/D4) (branch `refactor/phase-0-safety-net`) · Date: 2026-10-04 · Scope: `src/`, `tests/`, `scripts/`, repo hygiene
 
 This is the plan we follow to refactor the backend. It says what is wrong (with
 evidence), what the code should look like afterwards, and the order to get there
@@ -608,7 +608,18 @@ until implemented — see D6), B5, B7 (the ingest path skips a record whose
 B15, DL3 (keep tracebacks). B13 after a live check. B1 is fixed in Phase 3
 because it needs the new persistence. B9 is fixed after Phase 4 (D10); B10 depends on D11.
 
-### Phase 2 — Core barriers (pure code, no I/O changes)
+### Phase 2 — Core barriers (pure code, no I/O changes) — **done except 2.3, 2.7**
+
+Landed: 2.1 (`model/cpt.py`; nothing outside it touches `.counts`), 2.2 (one
+score — placed in **`model/scoring.py`**, not `services/`, because
+`OntologyPopulation.dominant()` needs it and the art package calls that),
+2.4 (`services/bn_model.py`), 2.5 (`model/errors.py`; inference raises, API
+maps to 422/500), 2.6, and B4 from 2.3. **2.3's variant-parent change is
+parked** on `refactor/2.3-variant-parents-parked` (D14). 2.7 waits on D3/D4.
+T3 (hand-wired level-3 harness) moves to Phase 5.2, where `DomainEngine`
+gains the `max_population_size` it needs. Also found and parked with 2.3:
+B18, `introduce_variants` starts at `survivors[1]`, so the first variant
+comes from the second-ranked survivor.
 
 2.1 Move `CPTData` to `model/cpt.py`; add `config_key`, `add(weight)`, `row`;
 rewrite learning to use them; no direct `.counts` access outside `cpt.py`. (C2, C3)
@@ -747,6 +758,7 @@ Status key: **Decided** (answered 2026-10-04, with the downsides we accepted) ·
 | D6 | `POST /v1/inference/query` accepts `conditions` and `aggregation` but ignores them. **Checked:** the frontend sends `aggregation: 'weighted_avg'` from 3 components (never `conditions`), so rejecting would break the dashboard. Options: (a) keep ignoring; (b) implement `weighted_avg` — dashboard probabilities change to population-weighted; (c) reject after the frontend stops sending it. | **Open.** Recommend (b): the UI already asks for it, and the engine already implements it (`WEIGHTED_AVERAGE`). Behavior commit with a G4 diff. |
 | D7 | Is a shared-secret header acceptable for POST routes, and what origins should CORS allow? | **Open.** Recommend: Yes; the Vercel URL + localhost. |
 | D8 | Learn order (C9): score each batch before updating counts (prequential), or keep today's order? | **Open.** Recommend: Prequential — it is the standard fair comparison and removes the bias toward denser graphs. Behavior change; would get its own commit after Phase 3 and will move dominant-candidate history. |
+| D14 | **Milestone robustness.** Fixing variant-parent selection (2.3: rank by `candidate_score`, start at the best) fails golden G2: seed 42 detects the A→D shift at 270 records (bound 200). Measured over 10 seeds, the fix is not worse than today. But the bigger finding is that today's engine is not reliable on this scenario either: T* dominant after 300 records in **4/10** seeds, shift detected within 200 records in **4/10** (with the fix: 5/10 and 6/10). TEST-L3-03 / G2 pass because seed 42 is a good seed. | **Open.** Recommend: (1) merge the parked fix, since it removes two clear bugs and is not worse on average; (2) redefine G2 / TEST-L3-03 as a multi-seed rate (e.g. ≥ 8/10 seeds within 200 records) so the milestone measures the engine, not one seed; (3) treat reaching that rate as algorithm work outside this refactor (variant diversity, pruning of seeded alternatives). Until you decide, the parked branch stays unmerged and G2 stays single-seed. |
 | D9 | Rename the import package from `src` to a real name (e.g. `poe`)? `CLAUDE.md` prescribes the `src/engine` layout. | **Open.** Recommend: Not in this refactor. Revisit after Phase 6. |
 | D10 | When an upstream signal is unavailable, emit `MISSING` instead of a soft 0.5? | **Decided (my call): emit `MISSING`; if every input fails, raise `EvidenceUnavailable` and write no record.** Why this is the best option: a soft 0.5 is treated as a real half-true/half-false observation. It adds counts that pull every CPT toward 0.5 and toward independence, and it counts in scoring. `MISSING` uses machinery that already exists and is tested. Learning imputes the value from the current model (no pull toward 0.5), scoring skips it (`learning.py:498`), and the diagnostics already skip non-observed values. Accepted downsides: (1) learning results change, so this gets its own behavior commit after Phase 4, and we re-run G1, G2 (L3-03) and compare dominant-candidate histories before merging. (2) Imputed counts still raise `n` slightly for the missing variable, which mildly overstates confidence. That is far smaller than today's bias. Not done: per-assignment `confidence` stays unused, which is out of scope. |
 | D11 | `scripts/backfill_sf_urban.py`: fix or retire? It writes duplicates and gives every historical week today's FRED data. | **Open.** Recommend: Retire; use `POST /v1/ingest/backfill` on the shared runner. Fixing FRED look-ahead (vintages via ALFRED, filing dates for EDGAR) is a separate project. |
