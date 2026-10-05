@@ -2357,7 +2357,7 @@
      "id": "TempAnom",
      "label": "TempAnom",
      "observation": null,
-     "probability": 0.467482609,
+     "probability": 0.467409869,
      "status": "target"
     },
     {
@@ -2382,7 +2382,7 @@
      "status": "weak"
     }
    ],
-   "target_probability": 0.467482609,
+   "target_probability": 0.467409869,
    "target_variable": "TempAnom"
   },
   "status": 200

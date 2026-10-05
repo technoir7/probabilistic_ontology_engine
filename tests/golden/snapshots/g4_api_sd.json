@@ -1530,7 +1530,7 @@
      "id": "USYieldSpiking",
      "label": "USYieldSpiking",
      "observation": null,
-     "probability": 0.547070737,
+     "probability": 0.54723341,
      "status": "target"
     },
     {
@@ -1583,7 +1583,7 @@
      "status": "exploring"
     }
    ],
-   "target_probability": 0.547070737,
+   "target_probability": 0.54723341,
    "target_variable": "USYieldSpiking"
   },
   "status": 200

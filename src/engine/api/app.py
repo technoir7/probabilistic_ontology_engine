@@ -1485,14 +1485,15 @@ async def inference_query(body: QueryBodyIn) -> InferenceOut:
             detail=f"Variable '{body.target_variable}' not found in domain '{body.domain}'",
         )
 
-    # Run inference (single candidate ACTIVE_ONLY)
+    # Query the resolved candidate itself; population-level ACTIVE_ONLY always
+    # answers for the dominant one, whatever candidate the caller asked about.
     iq = InferenceQuery(
         domain_module_id=domain_id,
         target_variables=[target_var.name],
         query_type=QueryType.MARGINAL,
         population_aggregation=PopulationAggregation.ACTIVE_ONLY,
     )
-    raw = engine.inference_service.query(iq, pop)
+    raw = engine.inference_service.query_candidate(cand, iq)
     posteriors = raw.get("posteriors", {})
     dist = posteriors.get(target_var.name, {})
     # P(True) for BOOLEAN variables; first value otherwise

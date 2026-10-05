@@ -1472,7 +1472,7 @@
      "id": "BTCMomentumPositive",
      "label": "BTCMomentumPositive",
      "observation": null,
-     "probability": 0.496016667,
+     "probability": 0.498284207,
      "status": "target"
     },
     {
@@ -1525,7 +1525,7 @@
      "status": "weak"
     }
    ],
-   "target_probability": 0.496016667,
+   "target_probability": 0.498284207,
    "target_variable": "BTCMomentumPositive"
   },
   "status": 200

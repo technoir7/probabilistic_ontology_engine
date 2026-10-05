@@ -44,7 +44,7 @@ class InferenceService:
             dom = population.dominant()
             if dom is None:
                 return {"error": "no active candidates"}
-            result = self._query_candidate(dom, inference_query)
+            result = self.query_candidate(dom, inference_query)
             result["population_summary"] = population.summary()
             return result
 
@@ -52,7 +52,7 @@ class InferenceService:
             active = population.active_candidates()
             weights = population.score_weights()
             all_results = [
-                self._query_candidate(c, inference_query) for c in active
+                self.query_candidate(c, inference_query) for c in active
             ]
             merged = self._weighted_merge(all_results, weights, inference_query.target_variables)
             merged["population_summary"] = population.summary()
@@ -63,13 +63,13 @@ class InferenceService:
                 population.active_candidates(), key=lambda c: c.log_score, reverse=True
             )[:3]
             weights = self._normalize_weights([math.exp(c.log_score) for c in top_k])
-            all_results = [self._query_candidate(c, inference_query) for c in top_k]
+            all_results = [self.query_candidate(c, inference_query) for c in top_k]
             merged = self._weighted_merge(all_results, weights, inference_query.target_variables)
             merged["population_summary"] = population.summary()
             return merged
 
     # ------------------------------------------------------------------
-    def _query_candidate(
+    def query_candidate(
         self, candidate: OntologyCandidate, query: InferenceQuery
     ) -> dict:
         """Run inference on a single candidate and return posterior dict."""
