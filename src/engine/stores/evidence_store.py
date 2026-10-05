@@ -28,9 +28,10 @@ class EvidenceStore:
         )
         self._conn.execute(
             """
-            INSERT OR IGNORE INTO evidence_records
+            INSERT INTO evidence_records
               (evidence_id, domain_module, timestamp, source_type, source_ref, confidence, assignments)
             VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT (evidence_id) DO NOTHING
             """,
             (
                 str(record.evidence_id),
@@ -59,9 +60,10 @@ class EvidenceStore:
             ))
         self._conn.executemany(
             """
-            INSERT OR IGNORE INTO evidence_records
+            INSERT INTO evidence_records
               (evidence_id, domain_module, timestamp, source_type, source_ref, confidence, assignments)
             VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT (evidence_id) DO NOTHING
             """,
             rows,
         )

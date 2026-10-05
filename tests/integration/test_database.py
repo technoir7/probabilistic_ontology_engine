@@ -47,3 +47,16 @@ def test_migrations_apply_once_and_adopt_pre_migration_databases(tmp_path):
     assert first.conn.execute("SELECT COUNT(*) FROM evidence_records").fetchone()[0] == 1
     first.conn.close()
     assert Database(path).schema_version() == version
+
+
+def test_saving_a_new_population_for_the_same_domain_replaces_the_old_row(tmp_path):
+    # Every restart builds a new population_id for the same domain; the table
+    # is UNIQUE on domain_module_id, so the save must replace, not fail.
+    from src.domains.test_domain_v1.domain import TestDomainV1
+
+    path = str(tmp_path / "x.db")
+    ProbabilisticOntologyEngine(db_path=path).register_domain(TestDomainV1())
+    second = ProbabilisticOntologyEngine(db_path=path)
+    second.register_domain(TestDomainV1())
+    rows = second.db.conn.execute("SELECT population_id FROM ontology_populations").fetchall()
+    assert [r[0] for r in rows] == [str(second.get_population("test-domain-v1").population_id)]

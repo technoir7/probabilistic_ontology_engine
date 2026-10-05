@@ -146,10 +146,16 @@ class ParameterStore:
         ]
         self._conn.executemany(
             """
-            INSERT OR REPLACE INTO parameters
+            INSERT INTO parameters
               (candidate_id, domain_module_id, edge_signature,
                variable_name, alpha, counts_json, parent_ids_json, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT (domain_module_id, edge_signature, variable_name) DO UPDATE SET
+              candidate_id = excluded.candidate_id,
+              alpha = excluded.alpha,
+              counts_json = excluded.counts_json,
+              parent_ids_json = excluded.parent_ids_json,
+              updated_at = excluded.updated_at
             """,
             rows,
         )

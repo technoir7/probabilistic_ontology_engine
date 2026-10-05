@@ -27,10 +27,17 @@ class PopulationStore:
     def save_population(self, pop: OntologyPopulation) -> None:
         self._conn.execute(
             """
-            INSERT OR REPLACE INTO ontology_populations
+            INSERT INTO ontology_populations
               (population_id, domain_module_id, max_population_size,
                active_candidate_id, generation, paradigm_shift_count, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT (domain_module_id) DO UPDATE SET
+              population_id = excluded.population_id,
+              max_population_size = excluded.max_population_size,
+              active_candidate_id = excluded.active_candidate_id,
+              generation = excluded.generation,
+              paradigm_shift_count = excluded.paradigm_shift_count,
+              updated_at = excluded.updated_at
             """,
             (
                 str(pop.population_id),
@@ -59,11 +66,23 @@ class PopulationStore:
     def save_candidate(self, cand: OntologyCandidate) -> None:
         self._conn.execute(
             """
-            INSERT OR REPLACE INTO ontology_candidates
+            INSERT INTO ontology_candidates
               (candidate_id, domain_module_id, generation, parent_candidate_id,
                log_score, evidence_count, status, introduced_at, pruned_at,
                pruning_reason, description, metadata)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT (candidate_id) DO UPDATE SET
+              domain_module_id = excluded.domain_module_id,
+              generation = excluded.generation,
+              parent_candidate_id = excluded.parent_candidate_id,
+              log_score = excluded.log_score,
+              evidence_count = excluded.evidence_count,
+              status = excluded.status,
+              introduced_at = excluded.introduced_at,
+              pruned_at = excluded.pruned_at,
+              pruning_reason = excluded.pruning_reason,
+              description = excluded.description,
+              metadata = excluded.metadata
             """,
             (
                 str(cand.candidate_id),
