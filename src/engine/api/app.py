@@ -2555,6 +2555,10 @@ async def _backfill_fred_domain_if_empty(
 # ── Utilities ─────────────────────────────────────────────────────────────────
 
 def _load_env() -> None:
+    # Tests set POE_LOAD_DOTENV=0 so a developer's .env (real API keys) cannot
+    # leak into the session and turn mocked tests into network calls.
+    if os.environ.get("POE_LOAD_DOTENV", "1") == "0":
+        return
     try:
         from dotenv import load_dotenv
         load_dotenv()
