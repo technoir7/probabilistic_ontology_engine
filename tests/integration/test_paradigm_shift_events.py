@@ -79,7 +79,7 @@ def _run_cycle(ps, ls, ees, pm, batch, idx=0):
         ll = ls.compute_log_likelihood(batch, c)
         pm.update_score(DOMAIN_ID, c.candidate_id, ll, idx, batch_size=len(batch))
     pm.prune_low_scorers(DOMAIN_ID)
-    pm.introduce_variants(DOMAIN_ID, ls)
+    pm.introduce_variants(DOMAIN_ID)
     pm.end_cycle(DOMAIN_ID)
 
 
@@ -240,7 +240,7 @@ def test_pse_04_domain_isolation():
             ls.accumulate(batch, c); ees.update(c); ees.prune_below_threshold(c, ps)
             pm.update_score(DOMAIN_A, c.candidate_id, ls.compute_log_likelihood(batch, c), i, len(batch))
         pm.prune_low_scorers(DOMAIN_A)
-        pm.introduce_variants(DOMAIN_A, ls)
+        pm.introduce_variants(DOMAIN_A)
         pm.end_cycle(DOMAIN_A)
 
     gen_a.switch_regime("T_alt")
@@ -250,7 +250,7 @@ def test_pse_04_domain_isolation():
             ls.accumulate(batch, c); ees.update(c); ees.prune_below_threshold(c, ps)
             pm.update_score(DOMAIN_A, c.candidate_id, ls.compute_log_likelihood(batch, c), 10+i, len(batch))
         pm.prune_low_scorers(DOMAIN_A)
-        pm.introduce_variants(DOMAIN_A, ls)
+        pm.introduce_variants(DOMAIN_A)
         pm.end_cycle(DOMAIN_A)
 
     events_a = pop_store.load_shift_events(DOMAIN_A)

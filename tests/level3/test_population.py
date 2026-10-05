@@ -97,7 +97,7 @@ def run_learning_cycle(ps, ls, ees, pm, batch, batch_idx=0):
         pm.update_score(DOMAIN_ID, candidate.candidate_id, log_lik, batch_idx, batch_size=len(batch))
 
     pm.prune_low_scorers(DOMAIN_ID)
-    pm.introduce_variants(DOMAIN_ID, ls)
+    pm.introduce_variants(DOMAIN_ID)
     pm.end_cycle(DOMAIN_ID)
 
 

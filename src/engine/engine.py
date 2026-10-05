@@ -298,7 +298,7 @@ class ProbabilisticOntologyEngine:
             )
 
         logger.debug("introduce_variants(): domain=%s", domain)
-        new_variants = self.population_manager.introduce_variants(domain, self.learning_service)
+        new_variants = self.population_manager.introduce_variants(domain)
         if new_variants:
             for v in new_variants:
                 logger.info(

@@ -35,8 +35,8 @@ from ..stores.parameter_store import ParameterStore
 from ..stores.population_store import PopulationStore
 
 
-# Minimum number of batches before pruning is considered
-_MIN_BATCHES_FOR_PRUNING = 3
+# Pruning starts once any candidate has scored this many evidence records.
+_MIN_RECORDS_FOR_PRUNING = 3
 
 
 class PopulationManager:
@@ -147,7 +147,7 @@ class PopulationManager:
             return []
 
         # Only prune if enough evidence processed (at least 3 batches of any candidate)
-        if not any(c.evidence_count >= _MIN_BATCHES_FOR_PRUNING for c in active):
+        if not any(c.evidence_count >= _MIN_RECORDS_FOR_PRUNING for c in active):
             return []
 
         # Rank by average score (fair across candidates with different evidence counts)
@@ -171,11 +171,7 @@ class PopulationManager:
     # Variant introduction
     # ------------------------------------------------------------------
 
-    def introduce_variants(
-        self,
-        domain_module_id: str,
-        learning_service=None,
-    ) -> list[OntologyCandidate]:
+    def introduce_variants(self, domain_module_id: str) -> list[OntologyCandidate]:
         """
         Introduce new candidates as variants of the top survivors.
         Variants are: add one edge OR remove one edge.
@@ -224,18 +220,17 @@ class PopulationManager:
             # Initialize CPTs for the new candidate (clone from parent)
             self.ps.clone_candidate(parent_cand.candidate_id, variant.candidate_id)
 
-            # If learning_service provided, re-initialize new edges
-            if learning_service is not None:
-                for var in variant.variables:
-                    parent_vars = variant.get_parents(var.variable_id)
-                    parent_names = sorted(pv.name for pv in parent_vars)
-                    old_parents = (
-                        self.ps.get(variant.candidate_id, var.name).parents
-                        if self.ps.has(variant.candidate_id, var.name)
-                        else []
-                    )
-                    if set(parent_names) != set(old_parents):
-                        self.ps.update_parents(variant.candidate_id, var.name, parent_names)
+            # The clone has the parent's parent sets; reset the CPT of every
+            # variable whose parents the mutation changed.
+            for var in variant.variables:
+                parent_names = sorted(pv.name for pv in variant.get_parents(var.variable_id))
+                old_parents = (
+                    self.ps.get(variant.candidate_id, var.name).parents
+                    if self.ps.has(variant.candidate_id, var.name)
+                    else []
+                )
+                if set(parent_names) != set(old_parents):
+                    self.ps.update_parents(variant.candidate_id, var.name, parent_names)
 
             new_candidates.append(variant)
 
