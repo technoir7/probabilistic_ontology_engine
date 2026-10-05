@@ -402,29 +402,23 @@ class PopulationManager:
         if shifted and prev_cand is not None:
             new_dom = pop.dominant()
             if new_dom is not None:
-                try:
-                    self.pop_store.append_shift_event(
-                        domain_module_id=domain_module_id,
-                        generation=pop.generation,
-                        prev_dominant_id=prev_cand.candidate_id,
-                        prev_dominant_name=(
-                            prev_cand.description
-                            or str(prev_cand.candidate_id)[:8]
-                        ),
-                        new_dominant_id=new_dom.candidate_id,
-                        new_dominant_name=(
-                            new_dom.description
-                            or str(new_dom.candidate_id)[:8]
-                        ),
-                        evidence_count_at_shift=new_dom.evidence_count,
-                    )
-                except Exception as exc:
-                    # Shift logging must never crash the learning loop.
-                    import logging
-                    logging.getLogger(__name__).warning(
-                        "Failed to persist paradigm-shift event for %s: %s",
-                        domain_module_id, exc,
-                    )
+                # Inside the learning cycle's transaction: a failed write fails
+                # the cycle instead of silently losing the event.
+                self.pop_store.append_shift_event(
+                    domain_module_id=domain_module_id,
+                    generation=pop.generation,
+                    prev_dominant_id=prev_cand.candidate_id,
+                    prev_dominant_name=(
+                        prev_cand.description
+                        or str(prev_cand.candidate_id)[:8]
+                    ),
+                    new_dominant_id=new_dom.candidate_id,
+                    new_dominant_name=(
+                        new_dom.description
+                        or str(new_dom.candidate_id)[:8]
+                    ),
+                    evidence_count_at_shift=new_dom.evidence_count,
+                )
 
         self.pop_store.save_population(pop)
         return pop.summary()

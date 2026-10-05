@@ -237,8 +237,17 @@ class ProbabilisticOntologyEngine:
 
     def learn(self, batch: list[EvidenceRecord], domain_module_id: str | None = None) -> ModelSnapshot:
         """
-        Run one learning cycle on the given evidence batch.
+        Run one learning cycle on the given evidence batch, as one transaction.
 
+        If any step fails, nothing from this cycle is written and the error
+        propagates. In-memory state may then be ahead of the database; the
+        database is the source of truth on the next start.
+        """
+        with self.db.transaction():
+            return self._learn(batch, domain_module_id)
+
+    def _learn(self, batch: list[EvidenceRecord], domain_module_id: str | None) -> ModelSnapshot:
+        """
         Steps:
           1. For each active candidate:
              a. Level 1: update CPT parameters (sufficient statistics)
