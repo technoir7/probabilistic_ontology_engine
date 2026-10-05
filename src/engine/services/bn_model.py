@@ -14,6 +14,7 @@ from pgmpy.factors.discrete import TabularCPD
 from pgmpy.models import DiscreteBayesianNetwork
 
 from ..model.cpt import CPTData
+from ..model.errors import UnknownValue
 from ..schemas import OntologyCandidate
 from ..stores.parameter_store import ParameterStore
 
@@ -58,11 +59,11 @@ def _uniform_cpd(var, parent_vars) -> TabularCPD:
 
 
 def encode_value(value: Any, support: list) -> int:
-    """Map a Python value to its index in the support list (pgmpy uses 0-based int states)."""
+    """Index of *value* in the support (pgmpy uses 0-based int states)."""
     for i, s in enumerate(support):
         if s == value or str(s) == str(value):
             return i
-    return 0
+    raise UnknownValue(f"{value!r} is not one of {support!r}")
 
 
 def tabular_cpd(var, parent_vars, cpt_data: CPTData) -> TabularCPD:

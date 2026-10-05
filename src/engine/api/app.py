@@ -13,8 +13,9 @@ from pathlib import Path
 from typing import Any, Callable, Literal, Optional
 from uuid import UUID
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ValidationError
 
 from ...domains.crypto_regime_v1.domain import CryptoRegimeV1
@@ -81,6 +82,7 @@ from ..schemas import (
     QueryType,
 )
 from ..config import get_structure_mode_config
+from ..model.errors import EngineError, UnknownValue
 from ..model.scoring import candidate_score
 from ..services.evidence_diagnostics import build_entropy_diagnostics
 from ..services.evidence_geometry import build_evidence_geometry_diagnostics
@@ -1047,6 +1049,17 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+@app.exception_handler(UnknownValue)
+async def _unknown_value(_request: Request, exc: UnknownValue) -> JSONResponse:
+    return JSONResponse(status_code=422, content={"detail": str(exc)})
+
+
+@app.exception_handler(EngineError)
+async def _engine_error(_request: Request, exc: EngineError) -> JSONResponse:
+    logger.error("Engine error: %s", exc, exc_info=exc)
+    return JSONResponse(status_code=500, content={"detail": f"{type(exc).__name__}: {exc}"})
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],          # Tighten to Vercel deploy URL in production
@@ -1762,20 +1775,17 @@ async def narrative_snapshot(
             ))
     else:
         for v in variables:
-            try:
-                iq = InferenceQuery(
-                    domain_module_id=domain_id,
-                    target_variables=[v.name],
-                    query_type=QueryType.MARGINAL,
-                    population_aggregation=PopulationAggregation.ACTIVE_ONLY,
-                )
-                raw_inf = engine.inference_service.query(iq, pop)
-                dist = raw_inf.get("posteriors", {}).get(v.name, {})
-                prob: float = float(
-                    dist.get("True", dist.get("true", next(iter(dist.values()), 0.5)))
-                )
-            except Exception:
-                prob = 0.5
+            iq = InferenceQuery(
+                domain_module_id=domain_id,
+                target_variables=[v.name],
+                query_type=QueryType.MARGINAL,
+                population_aggregation=PopulationAggregation.ACTIVE_ONLY,
+            )
+            raw_inf = engine.inference_service.query(iq, pop)
+            dist = raw_inf.get("posteriors", {}).get(v.name, {})
+            prob: float = float(
+                dist.get("True", dist.get("true", next(iter(dist.values()), 0.5)))
+            )
             regime_state.append(NarrativeRegimeVariableOut(
                 name=v.name,
                 boolean_state=prob > 0.5,

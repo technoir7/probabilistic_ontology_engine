@@ -20,6 +20,7 @@ from ..schemas import (
     OntologyPopulation,
     PopulationAggregation,
 )
+from ..model.errors import InferenceFailed
 from ..model.scoring import candidate_score, score_weights
 from ..stores.parameter_store import ParameterStore
 from .bn_model import build_network, encode_value
@@ -73,50 +74,39 @@ class InferenceService:
     def query_candidate(
         self, candidate: OntologyCandidate, query: InferenceQuery
     ) -> dict:
-        """Run inference on a single candidate and return posterior dict."""
-        try:
-            model = self._build_pgmpy_model(candidate)
-            ve = VariableElimination(model)
+        """
+        Posteriors for the query's target variables under this one candidate.
 
-            evidence = {}
-            for obs in query.conditioned_on:
-                var = candidate.get_variable_by_id(obs.variable_id)
-                if var is None:
-                    for v in candidate.variables:
-                        if str(v.variable_id) == str(obs.variable_id):
-                            var = v
-                            break
-                if var is not None:
-                    evidence[var.name] = encode_value(obs.observed_value, var.support)
+        Raises UnknownValue for evidence outside a variable's support and
+        InferenceFailed if pgmpy cannot answer; it does not fall back to a
+        uniform distribution, which would read as "maximally uncertain".
+        """
+        model = self._build_pgmpy_model(candidate)
+        ve = VariableElimination(model)
 
-            posteriors = {}
-            for vname in query.target_variables:
-                var = candidate.get_variable_by_name(vname)
-                if var is None:
-                    continue
-                try:
-                    q = ve.query([vname], evidence=evidence, show_progress=False)
-                    dist = {}
-                    for i, val in enumerate(var.support):
-                        dist[str(val)] = float(q.values[i])
-                    posteriors[vname] = dist
-                except Exception as e:
-                    # Fallback: use marginal from CPT
-                    posteriors[vname] = self._marginal_fallback(candidate, vname)
+        evidence = {}
+        for obs in query.conditioned_on:
+            var = candidate.get_variable_by_id(obs.variable_id)
+            if var is not None:
+                evidence[var.name] = encode_value(obs.observed_value, var.support)
 
-            result: dict = {"posteriors": posteriors, "candidate_id": str(candidate.candidate_id)}
+        posteriors = {}
+        for vname in query.target_variables:
+            var = candidate.get_variable_by_name(vname)
+            if var is None:
+                continue
+            try:
+                q = ve.query([vname], evidence=evidence, show_progress=False)
+            except Exception as exc:
+                raise InferenceFailed(
+                    f"inference for {vname!r} failed on candidate {candidate.candidate_id}: {exc}"
+                ) from exc
+            posteriors[vname] = {str(val): float(q.values[i]) for i, val in enumerate(var.support)}
 
-            if query.explain:
-                result["explanations"] = self._explain(candidate, query, posteriors)
-
-            return result
-
-        except Exception as e:
-            return {
-                "posteriors": {},
-                "candidate_id": str(candidate.candidate_id),
-                "error": str(e),
-            }
+        result: dict = {"posteriors": posteriors, "candidate_id": str(candidate.candidate_id)}
+        if query.explain:
+            result["explanations"] = self._explain(candidate, query, posteriors)
+        return result
 
     # ------------------------------------------------------------------
     def _build_pgmpy_model(self, candidate: OntologyCandidate) -> BayesianNetwork:
@@ -169,14 +159,6 @@ class InferenceService:
                     pass
 
         return explanations
-
-    # ------------------------------------------------------------------
-    def _marginal_fallback(self, candidate: OntologyCandidate, vname: str) -> dict:
-        var = candidate.get_variable_by_name(vname)
-        if var is None:
-            return {}
-        n = len(var.support)
-        return {str(v): 1.0 / n for v in var.support}
 
     # ------------------------------------------------------------------
     @staticmethod
