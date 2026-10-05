@@ -109,7 +109,7 @@ class AIRegimeScheduler:
             )
         except Exception as exc:
             logger.error(
-                "AI regime ingestion failed for %s: %s", target_date, exc
+                "AI regime ingestion failed for %s: %s", target_date, exc, exc_info=True,
             )
             return False
 

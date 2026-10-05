@@ -43,7 +43,7 @@ class SovereignDebtScheduler:
             record = await self._pipeline.fetch_evidence(target_date)
             self._engine.ingest(record)
         except Exception as exc:
-            logger.error("Sovereign debt ingestion failed for %s: %s", target_date, exc)
+            logger.error("Sovereign debt ingestion failed for %s: %s", target_date, exc, exc_info=True)
             return False
 
         domain_id = self._engine.active_domain
@@ -51,7 +51,7 @@ class SovereignDebtScheduler:
             try:
                 self._engine.learn([record], domain_id)
             except Exception as exc:
-                logger.error("Learning failed for sovereign-debt-v1 @ %s: %s", target_date, exc)
+                logger.error("Learning failed for sovereign-debt-v1 @ %s: %s", target_date, exc, exc_info=True)
         return True
 
     async def backfill(self) -> int:

@@ -130,7 +130,7 @@ class MacroRegimeScheduler:
             )
         except Exception as exc:
             logger.error(
-                "Macro regime ingestion failed for %s: %s", target_date, exc
+                "Macro regime ingestion failed for %s: %s", target_date, exc, exc_info=True,
             )
             return False
 

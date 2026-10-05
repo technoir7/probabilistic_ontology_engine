@@ -37,14 +37,14 @@ class LaborMarketScheduler:
             record = await self._pipeline.fetch_evidence(target_date)
             self._engine.ingest(record)
         except Exception as exc:
-            logger.error("Labor market ingestion failed for %s: %s", target_date, exc)
+            logger.error("Labor market ingestion failed for %s: %s", target_date, exc, exc_info=True)
             return False
         domain_id = self._engine.active_domain
         if domain_id:
             try:
                 self._engine.learn([record], domain_id)
             except Exception as exc:
-                logger.error("Learning failed for labor-market-v1 @ %s: %s", target_date, exc)
+                logger.error("Learning failed for labor-market-v1 @ %s: %s", target_date, exc, exc_info=True)
         return True
 
     async def backfill(self) -> int:

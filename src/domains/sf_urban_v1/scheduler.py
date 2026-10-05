@@ -44,7 +44,7 @@ class SFUrbanScheduler:
             record = await self._pipeline.fetch_evidence(target_date)
             self._engine.ingest(record)
         except Exception as exc:
-            logger.error("SF urban ingestion failed for %s: %s", target_date, exc)
+            logger.error("SF urban ingestion failed for %s: %s", target_date, exc, exc_info=True)
             return False
 
         domain_id = self._engine.active_domain
@@ -52,7 +52,7 @@ class SFUrbanScheduler:
             try:
                 self._engine.learn([record], domain_id)
             except Exception as exc:
-                logger.error("Learning failed for sf-urban-v1 @ %s: %s", target_date, exc)
+                logger.error("Learning failed for sf-urban-v1 @ %s: %s", target_date, exc, exc_info=True)
         return True
 
     async def backfill(self) -> int:

@@ -104,7 +104,7 @@ class IngestionScheduler:
             self._engine.ingest(record)
             logger.info("Ingested evidence_id=%s for %s", record.evidence_id, target_date)
         except Exception as exc:
-            logger.error("Ingestion failed for %s: %s", target_date, exc)
+            logger.error("Ingestion failed for %s: %s", target_date, exc, exc_info=True)
             return False
 
         # Trigger the learning / evolution cycle for every ingested record.
