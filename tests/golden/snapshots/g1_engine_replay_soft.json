@@ -1,0 +1,5241 @@
+{
+ "batches": [
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "ACTIVE",
+     -54.730608921,
+     30,
+     "A->C,B->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "ACTIVE",
+     -56.229338452,
+     30,
+     "A->C,A->D,B->C,C->E,D->E"
+    ],
+    [
+     "null",
+     "PRUNED",
+     -69.667402859,
+     30,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -56.229338452,
+     30,
+     "A->B,A->C,A->D,B->C,C->E,D->E"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -56.229338452,
+     30,
+     "A->C,A->D,B->A,B->C,C->E,D->E"
+    ],
+    [
+     "variant_add_D->C",
+     "ACTIVE",
+     -54.730608921,
+     30,
+     "A->C,B->C,B->D,C->E,D->C,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -56.229338452,
+     30,
+     "A->C,A->D,B->C,C->E,D->B,D->E"
+    ],
+    [
+     "variant_add_A->E",
+     "ACTIVE",
+     -56.229338452,
+     30,
+     "A->C,A->D,A->E,B->C,C->E,D->E"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -54.730608921,
+     30,
+     "A->C,B->A,B->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->C",
+     "ACTIVE",
+     -56.229338452,
+     30,
+     "A->C,A->D,B->C,C->E,D->C,D->E"
+    ],
+    [
+     "variant_add_A->E",
+     "ACTIVE",
+     -54.730608921,
+     30,
+     "A->C,A->E,B->C,B->D,C->E,D->E"
+    ]
+   ],
+   "dominant_signature": [
+    "A->C",
+    "B->C",
+    "B->D",
+    "C->E",
+    "D->E"
+   ],
+   "generation": 8,
+   "mutation_stats": {
+    "dag_violations": 12,
+    "duplicate_rejections": 20,
+    "introduced": 8,
+    "total_attempts": 40
+   },
+   "paradigm_shift_count": 0,
+   "structure_entropy": 2.298128949
+  },
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "ACTIVE",
+     -127.777088416,
+     60,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "ACTIVE",
+     -130.449570531,
+     60,
+     "A->C,A->D,C->E,D->E"
+    ],
+    [
+     "null",
+     "PRUNED",
+     -69.667402859,
+     30,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -128.077701372,
+     60,
+     "A->B,A->C,A->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -127.581107577,
+     60,
+     "A->C,A->D,B->A,C->E,D->E"
+    ],
+    [
+     "variant_add_D->C",
+     "ACTIVE",
+     -129.856345633,
+     60,
+     "B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -123.749076531,
+     60,
+     "A->C,A->D,C->E,D->B,D->E"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -139.510860299,
+     60,
+     "A->C,A->D"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -124.915801312,
+     60,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->C",
+     "ACTIVE",
+     -132.528924494,
+     60,
+     "A->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -136.851677278,
+     60,
+     "A->C,B->D"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -128.077701372,
+     60,
+     "A->B,A->C,A->D,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->A",
+     "ACTIVE",
+     -129.856345633,
+     60,
+     "B->D,C->E,D->A,D->E"
+    ]
+   ],
+   "dominant_signature": [
+    "A->C",
+    "A->D",
+    "C->E",
+    "D->B",
+    "D->E"
+   ],
+   "generation": 10,
+   "mutation_stats": {
+    "dag_violations": 1,
+    "duplicate_rejections": 2,
+    "introduced": 2,
+    "total_attempts": 5
+   },
+   "paradigm_shift_count": 1,
+   "structure_entropy": 2.298877815
+  },
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "ACTIVE",
+     -195.627884679,
+     90,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "ACTIVE",
+     -197.7221326,
+     90,
+     "A->C,A->D,C->E,D->E"
+    ],
+    [
+     "null",
+     "PRUNED",
+     -69.667402859,
+     30,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -191.914743554,
+     90,
+     "A->B,A->C,A->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -193.56021187,
+     90,
+     "A->C,A->D,B->A,C->E,D->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -199.739861961,
+     90,
+     "B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -184.804140756,
+     90,
+     "A->C,A->D,C->E,D->B,D->E"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -139.510860299,
+     60,
+     "A->C,A->D"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -191.474377191,
+     90,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -201.833869245,
+     90,
+     "A->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -136.851677278,
+     60,
+     "A->C,B->D"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -193.99319623,
+     90,
+     "A->B,A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->A",
+     "ACTIVE",
+     -194.01628502,
+     90,
+     "B->D,C->E,D->A,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -191.914743554,
+     90,
+     "A->B,A->C,A->D,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_C->D",
+     "ACTIVE",
+     -197.7221326,
+     90,
+     "A->C,A->D,C->D,C->E,D->E"
+    ]
+   ],
+   "dominant_signature": [
+    "A->C",
+    "A->D",
+    "C->E",
+    "D->B",
+    "D->E"
+   ],
+   "generation": 12,
+   "mutation_stats": {
+    "dag_violations": 0,
+    "duplicate_rejections": 5,
+    "introduced": 2,
+    "total_attempts": 7
+   },
+   "paradigm_shift_count": 1,
+   "structure_entropy": 2.30112605
+  },
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "ACTIVE",
+     -264.786020087,
+     120,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "ACTIVE",
+     -273.599285455,
+     120,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "null",
+     "PRUNED",
+     -69.667402859,
+     30,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -266.448673608,
+     120,
+     "A->B,A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -266.681769418,
+     120,
+     "A->C,A->D,B->A,C->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -199.739861961,
+     90,
+     "B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -256.609717763,
+     120,
+     "A->C,A->D,C->E,D->B"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -139.510860299,
+     60,
+     "A->C,A->D"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -257.88185793,
+     120,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -201.833869245,
+     90,
+     "A->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -136.851677278,
+     60,
+     "A->C,B->D"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -261.869450943,
+     120,
+     "A->B,A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->A",
+     "PRUNED",
+     -263.678055833,
+     120,
+     "B->D,C->E,D->A,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -264.833112424,
+     120,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_C->D",
+     "PRUNED",
+     -276.142607354,
+     120,
+     "A->C,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "ACTIVE",
+     -264.786020087,
+     120,
+     "A->C,B->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -266.448673608,
+     120,
+     "A->B,A->C,A->D,B->D,C->E"
+    ]
+   ],
+   "dominant_signature": [
+    "A->C",
+    "A->D",
+    "C->E",
+    "D->B"
+   ],
+   "generation": 14,
+   "mutation_stats": {
+    "dag_violations": 0,
+    "duplicate_rejections": 3,
+    "introduced": 2,
+    "total_attempts": 5
+   },
+   "paradigm_shift_count": 1,
+   "structure_entropy": 2.301625447
+  },
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "ACTIVE",
+     -330.280110138,
+     150,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "PRUNED",
+     -339.995151085,
+     150,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "null",
+     "PRUNED",
+     -69.667402859,
+     30,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -327.400473666,
+     150,
+     "A->B,A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -329.62678929,
+     150,
+     "A->C,A->D,B->A,C->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -199.739861961,
+     90,
+     "B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -319.648745956,
+     150,
+     "A->C,A->D,C->E,D->B"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -139.510860299,
+     60,
+     "A->C,A->D"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -319.925429488,
+     150,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -201.833869245,
+     90,
+     "A->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -136.851677278,
+     60,
+     "A->C,B->D"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -322.16656701,
+     150,
+     "A->B,A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->A",
+     "PRUNED",
+     -263.678055833,
+     120,
+     "B->D,C->E,D->A,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -325.85300987,
+     150,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_C->D",
+     "PRUNED",
+     -276.142607354,
+     120,
+     "A->C,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "PRUNED",
+     -331.940351478,
+     150,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -328.625199322,
+     150,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_D->C",
+     "ACTIVE",
+     -319.925429488,
+     150,
+     "A->C,B->A,B->D,C->E,D->C,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -329.62678929,
+     150,
+     "A->C,A->D,B->A,B->D,C->E"
+    ]
+   ],
+   "dominant_signature": [
+    "A->C",
+    "A->D",
+    "C->E",
+    "D->B"
+   ],
+   "generation": 16,
+   "mutation_stats": {
+    "dag_violations": 1,
+    "duplicate_rejections": 3,
+    "introduced": 2,
+    "total_attempts": 6
+   },
+   "paradigm_shift_count": 1,
+   "structure_entropy": 2.302075581
+  },
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "ACTIVE",
+     -402.006737162,
+     180,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "PRUNED",
+     -339.995151085,
+     150,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "null",
+     "PRUNED",
+     -69.667402859,
+     30,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -404.204930661,
+     180,
+     "A->B,A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -403.695456255,
+     180,
+     "A->C,A->D,B->A,C->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -199.739861961,
+     90,
+     "B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -394.7088205,
+     180,
+     "A->C,A->D,C->E,D->B"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -139.510860299,
+     60,
+     "A->C,A->D"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -386.691750467,
+     180,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -201.833869245,
+     90,
+     "A->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -136.851677278,
+     60,
+     "A->C,B->D"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -391.776782882,
+     180,
+     "A->B,A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->A",
+     "PRUNED",
+     -263.678055833,
+     120,
+     "B->D,C->E,D->A,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -398.237121927,
+     180,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_C->D",
+     "PRUNED",
+     -276.142607354,
+     120,
+     "A->C,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "PRUNED",
+     -331.940351478,
+     150,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -401.166922154,
+     180,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_D->C",
+     "ACTIVE",
+     -389.456263251,
+     180,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -403.859755718,
+     180,
+     "A->C,B->A,C->E"
+    ],
+    [
+     "variant_add_B->E",
+     "ACTIVE",
+     -391.776782882,
+     180,
+     "A->B,A->C,B->D,B->E,C->E,D->E"
+    ],
+    [
+     "variant_add_B->E",
+     "ACTIVE",
+     -404.204930661,
+     180,
+     "A->B,A->C,A->D,B->E,C->E"
+    ]
+   ],
+   "dominant_signature": [
+    "A->C",
+    "B->A",
+    "B->D",
+    "C->E",
+    "D->E"
+   ],
+   "generation": 18,
+   "mutation_stats": {
+    "dag_violations": 1,
+    "duplicate_rejections": 4,
+    "introduced": 2,
+    "total_attempts": 7
+   },
+   "paradigm_shift_count": 2,
+   "structure_entropy": 2.301790433
+  },
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "ACTIVE",
+     -467.188128209,
+     210,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "PRUNED",
+     -339.995151085,
+     150,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "null",
+     "PRUNED",
+     -69.667402859,
+     30,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -467.019589403,
+     210,
+     "A->B,A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -468.669673713,
+     210,
+     "A->C,A->D,B->A,C->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -199.739861961,
+     90,
+     "B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -458.190193553,
+     210,
+     "A->C,A->D,C->E,D->B"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -139.510860299,
+     60,
+     "A->C,A->D"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -449.636385989,
+     210,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -201.833869245,
+     90,
+     "A->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -136.851677278,
+     60,
+     "A->C,B->D"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -452.350456207,
+     210,
+     "A->B,A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->A",
+     "PRUNED",
+     -263.678055833,
+     120,
+     "B->D,C->E,D->A,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -462.105114777,
+     210,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_C->D",
+     "PRUNED",
+     -276.142607354,
+     120,
+     "A->C,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "PRUNED",
+     -331.940351478,
+     150,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -401.166922154,
+     180,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_D->C",
+     "ACTIVE",
+     -452.57060839,
+     210,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -403.859755718,
+     180,
+     "A->C,B->A,C->E"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -461.280528113,
+     210,
+     "A->B,A->C,B->D"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -468.458091447,
+     210,
+     "A->B,A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "ACTIVE",
+     -462.105114777,
+     210,
+     "A->B,A->C,B->C,B->D,C->E"
+    ],
+    [
+     "variant_add_A->D",
+     "ACTIVE",
+     -467.188128209,
+     210,
+     "A->C,A->D,B->D,C->E,D->E"
+    ]
+   ],
+   "dominant_signature": [
+    "A->C",
+    "B->A",
+    "B->D",
+    "C->E",
+    "D->E"
+   ],
+   "generation": 20,
+   "mutation_stats": {
+    "dag_violations": 1,
+    "duplicate_rejections": 3,
+    "introduced": 2,
+    "total_attempts": 6
+   },
+   "paradigm_shift_count": 2,
+   "structure_entropy": 2.301951393
+  },
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "ACTIVE",
+     -525.363455395,
+     240,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "PRUNED",
+     -339.995151085,
+     150,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "null",
+     "PRUNED",
+     -69.667402859,
+     30,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -521.984147451,
+     240,
+     "A->B,A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -525.719689813,
+     240,
+     "A->C,A->D,B->A,C->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -199.739861961,
+     90,
+     "B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -511.469683555,
+     240,
+     "A->C,A->D,C->E,D->B"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -139.510860299,
+     60,
+     "A->C,A->D"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -504.387011635,
+     240,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -201.833869245,
+     90,
+     "A->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -136.851677278,
+     60,
+     "A->C,B->D"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -505.217405078,
+     240,
+     "A->B,A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->A",
+     "PRUNED",
+     -263.678055833,
+     120,
+     "B->D,C->E,D->A,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -516.632638635,
+     240,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_C->D",
+     "PRUNED",
+     -276.142607354,
+     120,
+     "A->C,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "PRUNED",
+     -331.940351478,
+     150,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -401.166922154,
+     180,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_D->C",
+     "ACTIVE",
+     -507.146413682,
+     240,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -403.859755718,
+     180,
+     "A->C,B->A,C->E"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -461.280528113,
+     210,
+     "A->B,A->C,B->D"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -468.458091447,
+     210,
+     "A->B,A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "PRUNED",
+     -513.129876078,
+     240,
+     "A->B,A->C,B->C,B->D,C->E"
+    ],
+    [
+     "variant_add_A->D",
+     "PRUNED",
+     -525.345203422,
+     240,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->D",
+     "ACTIVE",
+     -507.146413682,
+     240,
+     "A->C,A->D,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->E",
+     "ACTIVE",
+     -516.632638635,
+     240,
+     "A->B,A->C,B->D,B->E,C->E"
+    ]
+   ],
+   "dominant_signature": [
+    "A->C",
+    "B->A",
+    "B->D",
+    "C->E",
+    "D->E"
+   ],
+   "generation": 22,
+   "mutation_stats": {
+    "dag_violations": 1,
+    "duplicate_rejections": 1,
+    "introduced": 2,
+    "total_attempts": 4
+   },
+   "paradigm_shift_count": 2,
+   "structure_entropy": 2.302030615
+  },
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "ACTIVE",
+     -589.639978252,
+     270,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "PRUNED",
+     -339.995151085,
+     150,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "null",
+     "PRUNED",
+     -69.667402859,
+     30,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -587.576949804,
+     270,
+     "A->B,A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -589.87675145,
+     270,
+     "A->C,A->D,B->A,C->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -199.739861961,
+     90,
+     "B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -576.915654528,
+     270,
+     "A->C,A->D,C->E,D->B"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -139.510860299,
+     60,
+     "A->C,A->D"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -563.797768332,
+     270,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -201.833869245,
+     90,
+     "A->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -136.851677278,
+     60,
+     "A->C,B->D"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -565.840569316,
+     270,
+     "A->B,A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->A",
+     "PRUNED",
+     -263.678055833,
+     120,
+     "B->D,C->E,D->A,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -580.639248314,
+     270,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_C->D",
+     "PRUNED",
+     -276.142607354,
+     120,
+     "A->C,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "PRUNED",
+     -331.940351478,
+     150,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -401.166922154,
+     180,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_D->C",
+     "ACTIVE",
+     -566.510661754,
+     270,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -403.859755718,
+     180,
+     "A->C,B->A,C->E"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -461.280528113,
+     210,
+     "A->B,A->C,B->D"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -468.458091447,
+     210,
+     "A->B,A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "PRUNED",
+     -513.129876078,
+     240,
+     "A->B,A->C,B->C,B->D,C->E"
+    ],
+    [
+     "variant_add_A->D",
+     "PRUNED",
+     -525.345203422,
+     240,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->D",
+     "ACTIVE",
+     -562.298757715,
+     270,
+     "A->C,A->D,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -582.101062098,
+     270,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_B->E",
+     "ACTIVE",
+     -565.840569316,
+     270,
+     "A->B,A->C,B->D,B->E,C->E,D->E"
+    ],
+    [
+     "variant_add_C->B",
+     "ACTIVE",
+     -589.639978252,
+     270,
+     "A->C,B->D,C->B,C->E,D->E"
+    ]
+   ],
+   "dominant_signature": [
+    "A->C",
+    "B->A",
+    "B->D",
+    "C->E",
+    "D->E"
+   ],
+   "generation": 24,
+   "mutation_stats": {
+    "dag_violations": 1,
+    "duplicate_rejections": 4,
+    "introduced": 2,
+    "total_attempts": 7
+   },
+   "paradigm_shift_count": 2,
+   "structure_entropy": 2.302172031
+  },
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "PRUNED",
+     -663.049401066,
+     300,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "PRUNED",
+     -339.995151085,
+     150,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "null",
+     "PRUNED",
+     -69.667402859,
+     30,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -659.825644586,
+     300,
+     "A->B,A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -589.87675145,
+     270,
+     "A->C,A->D,B->A,C->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -199.739861961,
+     90,
+     "B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -648.972158134,
+     300,
+     "A->C,A->D,C->E,D->B"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -139.510860299,
+     60,
+     "A->C,A->D"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -634.237691981,
+     300,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -201.833869245,
+     90,
+     "A->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -136.851677278,
+     60,
+     "A->C,B->D"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -636.735992816,
+     300,
+     "A->B,A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->A",
+     "PRUNED",
+     -263.678055833,
+     120,
+     "B->D,C->E,D->A,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -653.672796068,
+     300,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_C->D",
+     "PRUNED",
+     -276.142607354,
+     120,
+     "A->C,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "PRUNED",
+     -331.940351478,
+     150,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -401.166922154,
+     180,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_D->C",
+     "ACTIVE",
+     -637.12668118,
+     300,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -403.859755718,
+     180,
+     "A->C,B->A,C->E"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -461.280528113,
+     210,
+     "A->B,A->C,B->D"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -468.458091447,
+     210,
+     "A->B,A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "PRUNED",
+     -513.129876078,
+     240,
+     "A->B,A->C,B->C,B->D,C->E"
+    ],
+    [
+     "variant_add_A->D",
+     "PRUNED",
+     -525.345203422,
+     240,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->D",
+     "ACTIVE",
+     -632.983144125,
+     300,
+     "A->C,A->D,B->A,C->E,D->E"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -582.101062098,
+     270,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -642.829139599,
+     300,
+     "A->B,A->C,B->D"
+    ],
+    [
+     "variant_add_C->B",
+     "ACTIVE",
+     -659.377500094,
+     300,
+     "A->C,B->D,C->B,C->E,D->E"
+    ],
+    [
+     "variant_add_A->D",
+     "ACTIVE",
+     -634.237691981,
+     300,
+     "A->C,A->D,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -648.972158134,
+     300,
+     "A->B,A->C,A->D,C->E,D->B"
+    ]
+   ],
+   "dominant_signature": [
+    "A->C",
+    "B->A",
+    "B->D",
+    "C->E",
+    "D->E"
+   ],
+   "generation": 26,
+   "mutation_stats": {
+    "dag_violations": 1,
+    "duplicate_rejections": 1,
+    "introduced": 2,
+    "total_attempts": 4
+   },
+   "paradigm_shift_count": 2,
+   "structure_entropy": 2.302191631
+  },
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "PRUNED",
+     -663.049401066,
+     300,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "PRUNED",
+     -339.995151085,
+     150,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "null",
+     "PRUNED",
+     -69.667402859,
+     30,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "PRUNED",
+     -714.186164512,
+     330,
+     "A->B,A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -589.87675145,
+     270,
+     "A->C,A->D,B->A,C->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -199.739861961,
+     90,
+     "B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -702.601949591,
+     330,
+     "A->C,A->D,C->E,D->B"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -139.510860299,
+     60,
+     "A->C,A->D"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -686.359304275,
+     330,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -201.833869245,
+     90,
+     "A->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -136.851677278,
+     60,
+     "A->C,B->D"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -689.424821084,
+     330,
+     "A->B,A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->A",
+     "PRUNED",
+     -263.678055833,
+     120,
+     "B->D,C->E,D->A,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -708.606101936,
+     330,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_C->D",
+     "PRUNED",
+     -276.142607354,
+     120,
+     "A->C,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "PRUNED",
+     -331.940351478,
+     150,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -401.166922154,
+     180,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_D->C",
+     "ACTIVE",
+     -689.244643507,
+     330,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -403.859755718,
+     180,
+     "A->C,B->A,C->E"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -461.280528113,
+     210,
+     "A->B,A->C,B->D"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -468.458091447,
+     210,
+     "A->B,A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "PRUNED",
+     -513.129876078,
+     240,
+     "A->B,A->C,B->C,B->D,C->E"
+    ],
+    [
+     "variant_add_A->D",
+     "PRUNED",
+     -525.345203422,
+     240,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->D",
+     "ACTIVE",
+     -682.695901606,
+     330,
+     "A->C,A->D,B->A,C->E,D->E"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -582.101062098,
+     270,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -642.829139599,
+     300,
+     "A->B,A->C,B->D"
+    ],
+    [
+     "variant_add_C->B",
+     "ACTIVE",
+     -708.837758336,
+     330,
+     "A->C,B->D,C->B,C->E,D->E"
+    ],
+    [
+     "variant_add_A->D",
+     "ACTIVE",
+     -681.560913001,
+     330,
+     "A->C,A->D,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -706.959743739,
+     330,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "ACTIVE",
+     -686.359304275,
+     330,
+     "A->C,B->A,B->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_C->D",
+     "ACTIVE",
+     -706.959743739,
+     330,
+     "A->C,A->D,C->D,C->E"
+    ]
+   ],
+   "dominant_signature": [
+    "A->C",
+    "B->A",
+    "B->D",
+    "C->E",
+    "D->E"
+   ],
+   "generation": 28,
+   "mutation_stats": {
+    "dag_violations": 3,
+    "duplicate_rejections": 1,
+    "introduced": 2,
+    "total_attempts": 6
+   },
+   "paradigm_shift_count": 2,
+   "structure_entropy": 2.302148331
+  },
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "PRUNED",
+     -663.049401066,
+     300,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "PRUNED",
+     -339.995151085,
+     150,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "null",
+     "PRUNED",
+     -69.667402859,
+     30,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "PRUNED",
+     -714.186164512,
+     330,
+     "A->B,A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -589.87675145,
+     270,
+     "A->C,A->D,B->A,C->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -199.739861961,
+     90,
+     "B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -778.416637704,
+     360,
+     "A->C,A->D,C->E,D->B"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -139.510860299,
+     60,
+     "A->C,A->D"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -757.937193207,
+     360,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -201.833869245,
+     90,
+     "A->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -136.851677278,
+     60,
+     "A->C,B->D"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -763.049524123,
+     360,
+     "A->B,A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->A",
+     "PRUNED",
+     -263.678055833,
+     120,
+     "B->D,C->E,D->A,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -708.606101936,
+     330,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_C->D",
+     "PRUNED",
+     -276.142607354,
+     120,
+     "A->C,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "PRUNED",
+     -331.940351478,
+     150,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -401.166922154,
+     180,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_D->C",
+     "ACTIVE",
+     -760.859630953,
+     360,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -403.859755718,
+     180,
+     "A->C,B->A,C->E"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -461.280528113,
+     210,
+     "A->B,A->C,B->D"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -468.458091447,
+     210,
+     "A->B,A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "PRUNED",
+     -513.129876078,
+     240,
+     "A->B,A->C,B->C,B->D,C->E"
+    ],
+    [
+     "variant_add_A->D",
+     "PRUNED",
+     -525.345203422,
+     240,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_A->D",
+     "ACTIVE",
+     -754.890972088,
+     360,
+     "A->C,A->D,B->A,C->E,D->E"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -582.101062098,
+     270,
+     "A->B,A->C,B->D,C->E"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -642.829139599,
+     300,
+     "A->B,A->C,B->D"
+    ],
+    [
+     "variant_add_C->B",
+     "ACTIVE",
+     -781.570165214,
+     360,
+     "A->C,B->D,C->B,C->E,D->E"
+    ],
+    [
+     "variant_add_A->D",
+     "ACTIVE",
+     -755.717684351,
+     360,
+     "A->C,A->D,B->A,C->E,D->E"
+    ],
+    [
+     "variant_add_A->B",
+     "PRUNED",
+     -787.48120655,
+     360,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "ACTIVE",
+     -759.846838407,
+     360,
+     "A->C,B->A,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_C->D",
+     "PRUNED",
+     -788.631596039,
+     360,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "variant_add_A->E",
+     "ACTIVE",
+     -763.049524123,
+     360,
+     "A->B,A->C,A->E,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_E->B",
+     "ACTIVE",
+     -778.416637704,
+     360,
+     "A->C,A->D,C->E,D->B,E->B"
+    ]
+   ],
+   "dominant_signature": [
+    "A->C",
+    "B->A",
+    "B->D",
+    "C->E",
+    "D->E"
+   ],
+   "generation": 30,
+   "mutation_stats": {
+    "dag_violations": 1,
+    "duplicate_rejections": 3,
+    "introduced": 2,
+    "total_attempts": 6
+   },
+   "paradigm_shift_count": 2,
+   "structure_entropy": 2.302326716
+  }
+ ],
+ "phase_end": {
+  "T*": {
+   "dominant_cpts": {
+    "A": {
+     "B=False": 0.519400402,
+     "B=True": 0.493511049
+    },
+    "B": {
+     "()": 0.492321203
+    },
+    "C": {
+     "A=False": 0.451096373,
+     "A=True": 0.672043174
+    },
+    "D": {
+     "B=False": 0.357230854,
+     "B=True": 0.556230792
+    },
+    "E": {
+     "C=False,D=False": 0.38827915,
+     "C=False,D=True": 0.541228428,
+     "C=True,D=False": 0.556576367,
+     "C=True,D=True": 0.668726004
+    }
+   },
+   "marginals": {
+    "ACTIVE_ONLY": {
+     "error": null,
+     "posteriors": {
+      "A": {
+       "False": 0.493345476,
+       "True": 0.506654524
+      },
+      "B": {
+       "False": 0.507678797,
+       "True": 0.492321203
+      },
+      "C": {
+       "False": 0.436959931,
+       "True": 0.563040069
+      },
+      "D": {
+       "False": 0.544797257,
+       "True": 0.455202743
+      },
+      "E": {
+       "False": 0.457785076,
+       "True": 0.542214924
+      }
+     }
+    },
+    "TOP_K": {
+     "error": null,
+     "posteriors": {
+      "A": {
+       "False": 0.49331878,
+       "True": 0.50668122
+      },
+      "B": {
+       "False": 0.507650666,
+       "True": 0.492349334
+      },
+      "C": {
+       "False": 0.440671196,
+       "True": 0.559328804
+      },
+      "D": {
+       "False": 0.544937093,
+       "True": 0.455062907
+      },
+      "E": {
+       "False": 0.458341005,
+       "True": 0.541658995
+      }
+     }
+    },
+    "WEIGHTED_AVERAGE": {
+     "error": null,
+     "posteriors": {
+      "A": {
+       "False": 0.490150913,
+       "True": 0.509849087
+      },
+      "B": {
+       "False": 0.5055832,
+       "True": 0.4944168
+      },
+      "C": {
+       "False": 0.442868007,
+       "True": 0.557131993
+      },
+      "D": {
+       "False": 0.546747877,
+       "True": 0.453252123
+      },
+      "E": {
+       "False": 0.45851283,
+       "True": 0.54148717
+      }
+     }
+    }
+   },
+   "population": {
+    "active_candidates": 10,
+    "candidates": [
+     {
+      "active_signature": [
+       "A->C",
+       "B->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "T*",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.842267269,
+        "existence_update_count": 6,
+        "explore_weight": 0.62960791
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037691493,
+        "existence_update_count": 2,
+        "explore_weight": 0.537412593
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.883966491,
+        "existence_update_count": 6,
+        "explore_weight": 0.457178741
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.111076462,
+        "existence_update_count": 6,
+        "explore_weight": 0.174741684
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.069846348,
+        "existence_update_count": 6,
+        "explore_weight": 0.161703405
+       }
+      },
+      "evidence_count": 180,
+      "generation": 0,
+      "log_score": -402.006737162,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "A->D",
+       "C->E"
+      ],
+      "description": "T_alt",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.508375909,
+        "existence_update_count": 5,
+        "explore_weight": 0.792318781
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.075511266,
+        "existence_update_count": 5,
+        "explore_weight": 0.263492547
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037691493,
+        "existence_update_count": 2,
+        "explore_weight": 0.537412593
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.345391304,
+        "existence_update_count": 5,
+        "explore_weight": 0.322314336
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.045815037,
+        "existence_update_count": 4,
+        "explore_weight": 0.294802292
+       }
+      },
+      "evidence_count": 150,
+      "generation": 0,
+      "log_score": -339.995151085,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "C->E"
+      ],
+      "description": "null",
+      "edges": {
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.208270219,
+        "existence_update_count": 1,
+        "explore_weight": 0.824962131
+       }
+      },
+      "evidence_count": 30,
+      "generation": 0,
+      "log_score": -69.667402859,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "A->C",
+       "A->D",
+       "C->E"
+      ],
+      "description": "variant_add_A->B",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.080438575,
+        "existence_update_count": 5,
+        "explore_weight": 0.26177757
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.842267269,
+        "existence_update_count": 6,
+        "explore_weight": 0.629707061
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.069739062,
+        "existence_update_count": 6,
+        "explore_weight": 0.195470217
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037935437,
+        "existence_update_count": 2,
+        "explore_weight": 0.537521446
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.444421897,
+        "existence_update_count": 6,
+        "explore_weight": 0.338414292
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.045820129,
+        "existence_update_count": 4,
+        "explore_weight": 0.294807647
+       }
+      },
+      "evidence_count": 180,
+      "generation": 1,
+      "log_score": -404.204930661,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "A->D",
+       "B->A",
+       "C->E"
+      ],
+      "description": "variant_add_B->A",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.837816859,
+        "existence_update_count": 6,
+        "explore_weight": 0.632040743
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.069647373,
+        "existence_update_count": 6,
+        "explore_weight": 0.195304932
+       },
+       "B->A": {
+        "enabled": true,
+        "existence_probability": 0.079267227,
+        "existence_update_count": 5,
+        "explore_weight": 0.260440207
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037821288,
+        "existence_update_count": 2,
+        "explore_weight": 0.537470511
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.444383269,
+        "existence_update_count": 6,
+        "explore_weight": 0.338413334
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.04582176,
+        "existence_update_count": 4,
+        "explore_weight": 0.294810218
+       }
+      },
+      "evidence_count": 180,
+      "generation": 1,
+      "log_score": -403.695456255,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "B->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_D->C",
+      "edges": {
+       "A->C": {
+        "enabled": false,
+        "existence_probability": 0.007175055,
+        "existence_update_count": 2,
+        "explore_weight": 0.569055209
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.002676597,
+        "existence_update_count": 2,
+        "explore_weight": 0.521788133
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.728713507,
+        "existence_update_count": 3,
+        "explore_weight": 0.951206015
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.06274572,
+        "existence_update_count": 3,
+        "explore_weight": 0.413926705
+       },
+       "D->C": {
+        "enabled": false,
+        "existence_probability": 0.001194416,
+        "existence_update_count": 1,
+        "explore_weight": 0.70071665
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.055376571,
+        "existence_update_count": 3,
+        "explore_weight": 0.40724958
+       }
+      },
+      "evidence_count": 90,
+      "generation": 1,
+      "log_score": -199.739861961,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "A->D",
+       "C->E",
+       "D->B"
+      ],
+      "description": "variant_add_D->B",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.842267269,
+        "existence_update_count": 6,
+        "explore_weight": 0.62965912
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.069739062,
+        "existence_update_count": 6,
+        "explore_weight": 0.195470217
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037768837,
+        "existence_update_count": 2,
+        "explore_weight": 0.537447106
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.444421897,
+        "existence_update_count": 6,
+        "explore_weight": 0.338424138
+       },
+       "D->B": {
+        "enabled": true,
+        "existence_probability": 0.62644984,
+        "existence_update_count": 5,
+        "explore_weight": 1.057513774
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.045816932,
+        "existence_update_count": 4,
+        "explore_weight": 0.294804279
+       }
+      },
+      "evidence_count": 180,
+      "generation": 1,
+      "log_score": -394.7088205,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "A->D"
+      ],
+      "description": "variant_add_A->E",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.245178891,
+        "existence_update_count": 2,
+        "explore_weight": 0.684434753
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.117952301,
+        "existence_update_count": 2,
+        "explore_weight": 0.621560654
+       },
+       "A->E": {
+        "enabled": false,
+        "existence_probability": 0.001150049,
+        "existence_update_count": 1,
+        "explore_weight": 0.700690029
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037691493,
+        "existence_update_count": 2,
+        "explore_weight": 0.537412593
+       },
+       "C->E": {
+        "enabled": false,
+        "existence_probability": 0.003100009,
+        "existence_update_count": 2,
+        "explore_weight": 0.534861031
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.003696129,
+        "existence_update_count": 2,
+        "explore_weight": 0.526638305
+       }
+      },
+      "evidence_count": 60,
+      "generation": 1,
+      "log_score": -139.510860299,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "B->A",
+       "B->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_B->A",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.837816859,
+        "existence_update_count": 6,
+        "explore_weight": 0.632040743
+       },
+       "B->A": {
+        "enabled": true,
+        "existence_probability": 0.079267227,
+        "existence_update_count": 5,
+        "explore_weight": 0.260440207
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037821288,
+        "existence_update_count": 2,
+        "explore_weight": 0.537470511
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.883966491,
+        "existence_update_count": 6,
+        "explore_weight": 0.457178741
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.110874278,
+        "existence_update_count": 6,
+        "explore_weight": 0.174686887
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.069841492,
+        "existence_update_count": 6,
+        "explore_weight": 0.161703499
+       }
+      },
+      "evidence_count": 180,
+      "generation": 1,
+      "log_score": -386.691750467,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "A->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_D->C",
+      "edges": {
+       "A->C": {
+        "enabled": false,
+        "existence_probability": 0.007149454,
+        "existence_update_count": 2,
+        "explore_weight": 0.569042799
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.096946149,
+        "existence_update_count": 3,
+        "explore_weight": 0.471247205
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.002690621,
+        "existence_update_count": 2,
+        "explore_weight": 0.521794391
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.062958653,
+        "existence_update_count": 3,
+        "explore_weight": 0.414175351
+       },
+       "D->C": {
+        "enabled": false,
+        "existence_probability": 0.001213792,
+        "existence_update_count": 1,
+        "explore_weight": 0.700728275
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.05196251,
+        "existence_update_count": 3,
+        "explore_weight": 0.405214101
+       }
+      },
+      "evidence_count": 90,
+      "generation": 1,
+      "log_score": -201.833869245,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "B->D"
+      ],
+      "description": "variant_add_A->E",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.245178891,
+        "existence_update_count": 2,
+        "explore_weight": 0.684434753
+       },
+       "A->E": {
+        "enabled": false,
+        "existence_probability": 0.001151687,
+        "existence_update_count": 1,
+        "explore_weight": 0.700691012
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037691493,
+        "existence_update_count": 2,
+        "explore_weight": 0.537412593
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.604348982,
+        "existence_update_count": 2,
+        "explore_weight": 1.1025
+       },
+       "C->E": {
+        "enabled": false,
+        "existence_probability": 0.00311248,
+        "existence_update_count": 2,
+        "explore_weight": 0.534637167
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.003818119,
+        "existence_update_count": 2,
+        "explore_weight": 0.52690938
+       }
+      },
+      "evidence_count": 60,
+      "generation": 1,
+      "log_score": -136.851677278,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "A->C",
+       "B->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_B->D",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.080438575,
+        "existence_update_count": 5,
+        "explore_weight": 0.26177757
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.842267269,
+        "existence_update_count": 6,
+        "explore_weight": 0.629707061
+       },
+       "A->D": {
+        "enabled": false,
+        "existence_probability": 0.032497988,
+        "existence_update_count": 3,
+        "explore_weight": 0.44721214
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037935437,
+        "existence_update_count": 2,
+        "explore_weight": 0.537521446
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.3078839,
+        "existence_update_count": 4,
+        "explore_weight": 0.689690532
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.111199122,
+        "existence_update_count": 6,
+        "explore_weight": 0.174745573
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.067840166,
+        "existence_update_count": 6,
+        "explore_weight": 0.160625031
+       }
+      },
+      "evidence_count": 180,
+      "generation": 2,
+      "log_score": -391.776782882,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "B->D",
+       "C->E",
+       "D->A",
+       "D->E"
+      ],
+      "description": "variant_add_D->A",
+      "edges": {
+       "A->C": {
+        "enabled": false,
+        "existence_probability": 0.007175055,
+        "existence_update_count": 2,
+        "explore_weight": 0.569055209
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.002676597,
+        "existence_update_count": 2,
+        "explore_weight": 0.521788133
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.817073076,
+        "existence_update_count": 4,
+        "explore_weight": 0.770244925
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.064792058,
+        "existence_update_count": 4,
+        "explore_weight": 0.305840192
+       },
+       "D->A": {
+        "enabled": true,
+        "existence_probability": 0.115948309,
+        "existence_update_count": 2,
+        "explore_weight": 0.610082633
+       },
+       "D->C": {
+        "enabled": false,
+        "existence_probability": 0.001194416,
+        "existence_update_count": 1,
+        "explore_weight": 0.70071665
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.051298271,
+        "existence_update_count": 4,
+        "explore_weight": 0.297609426
+       }
+      },
+      "evidence_count": 120,
+      "generation": 2,
+      "log_score": -263.678055833,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "A->C",
+       "B->D",
+       "C->E"
+      ],
+      "description": "variant_add_B->D",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.080438575,
+        "existence_update_count": 5,
+        "explore_weight": 0.26177757
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.842267269,
+        "existence_update_count": 6,
+        "explore_weight": 0.629707061
+       },
+       "A->D": {
+        "enabled": false,
+        "existence_probability": 0.037393148,
+        "existence_update_count": 4,
+        "explore_weight": 0.340445893
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037935437,
+        "existence_update_count": 2,
+        "explore_weight": 0.537521446
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.216265886,
+        "existence_update_count": 3,
+        "explore_weight": 0.521182064
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.444421897,
+        "existence_update_count": 6,
+        "explore_weight": 0.338231798
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.048517244,
+        "existence_update_count": 4,
+        "explore_weight": 0.295463432
+       }
+      },
+      "evidence_count": 180,
+      "generation": 2,
+      "log_score": -398.237121927,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "C->E"
+      ],
+      "description": "variant_add_C->D",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.401981368,
+        "existence_update_count": 4,
+        "explore_weight": 0.754589315
+       },
+       "A->D": {
+        "enabled": false,
+        "existence_probability": 0.036957268,
+        "existence_update_count": 4,
+        "explore_weight": 0.340322649
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037691493,
+        "existence_update_count": 2,
+        "explore_weight": 0.537412593
+       },
+       "C->D": {
+        "enabled": false,
+        "existence_probability": 0.03439018,
+        "existence_update_count": 1,
+        "explore_weight": 0.720634108
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.068675267,
+        "existence_update_count": 4,
+        "explore_weight": 0.306899898
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.046826088,
+        "existence_update_count": 4,
+        "explore_weight": 0.295048119
+       }
+      },
+      "evidence_count": 120,
+      "generation": 1,
+      "log_score": -276.142607354,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "B->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_B->C",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.127366788,
+        "existence_update_count": 5,
+        "explore_weight": 0.585878291
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.042635039,
+        "existence_update_count": 1,
+        "explore_weight": 0.725581023
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.881292619,
+        "existence_update_count": 5,
+        "explore_weight": 0.594031702
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.069439059,
+        "existence_update_count": 5,
+        "explore_weight": 0.227468632
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.054259767,
+        "existence_update_count": 5,
+        "explore_weight": 0.217992026
+       }
+      },
+      "evidence_count": 150,
+      "generation": 1,
+      "log_score": -331.940351478,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "A->C",
+       "B->D",
+       "C->E"
+      ],
+      "description": "variant_add_B->D",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.080438575,
+        "existence_update_count": 5,
+        "explore_weight": 0.26177757
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.842267269,
+        "existence_update_count": 6,
+        "explore_weight": 0.629707061
+       },
+       "A->D": {
+        "enabled": false,
+        "existence_probability": 0.032366364,
+        "existence_update_count": 5,
+        "explore_weight": 0.25434059
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037935437,
+        "existence_update_count": 2,
+        "explore_weight": 0.537521446
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.183505122,
+        "existence_update_count": 2,
+        "explore_weight": 0.595359614
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.444421897,
+        "existence_update_count": 6,
+        "explore_weight": 0.338414292
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.045820129,
+        "existence_update_count": 4,
+        "explore_weight": 0.294807647
+       }
+      },
+      "evidence_count": 180,
+      "generation": 2,
+      "log_score": -401.166922154,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "B->A",
+       "B->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_D->C",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.382627758,
+        "existence_update_count": 6,
+        "explore_weight": 0.83235238
+       },
+       "B->A": {
+        "enabled": true,
+        "existence_probability": 0.079267227,
+        "existence_update_count": 5,
+        "explore_weight": 0.260440207
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037821288,
+        "existence_update_count": 2,
+        "explore_weight": 0.537470511
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.883966491,
+        "existence_update_count": 6,
+        "explore_weight": 0.457178741
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.108826002,
+        "existence_update_count": 6,
+        "explore_weight": 0.174406812
+       },
+       "D->C": {
+        "enabled": false,
+        "existence_probability": 0.034303994,
+        "existence_update_count": 1,
+        "explore_weight": 0.720582397
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.070013396,
+        "existence_update_count": 6,
+        "explore_weight": 0.16172598
+       }
+      },
+      "evidence_count": 180,
+      "generation": 2,
+      "log_score": -389.456263251,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "B->A",
+       "C->E"
+      ],
+      "description": "variant_add_B->D",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.837816859,
+        "existence_update_count": 6,
+        "explore_weight": 0.632040743
+       },
+       "A->D": {
+        "enabled": false,
+        "existence_probability": 0.038104024,
+        "existence_update_count": 6,
+        "explore_weight": 0.190321917
+       },
+       "B->A": {
+        "enabled": true,
+        "existence_probability": 0.079267227,
+        "existence_update_count": 5,
+        "explore_weight": 0.260440207
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037821288,
+        "existence_update_count": 2,
+        "explore_weight": 0.537470511
+       },
+       "B->D": {
+        "enabled": false,
+        "existence_probability": 0.044023607,
+        "existence_update_count": 1,
+        "explore_weight": 0.726414164
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.444383269,
+        "existence_update_count": 6,
+        "explore_weight": 0.338413334
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.04582176,
+        "existence_update_count": 4,
+        "explore_weight": 0.294810218
+       }
+      },
+      "evidence_count": 180,
+      "generation": 2,
+      "log_score": -403.859755718,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "A->C",
+       "B->D",
+       "B->E",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_B->E",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.080438575,
+        "existence_update_count": 5,
+        "explore_weight": 0.26177757
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.842267269,
+        "existence_update_count": 6,
+        "explore_weight": 0.629707061
+       },
+       "A->D": {
+        "enabled": false,
+        "existence_probability": 0.032497988,
+        "existence_update_count": 3,
+        "explore_weight": 0.44721214
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037935437,
+        "existence_update_count": 2,
+        "explore_weight": 0.537521446
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.3078839,
+        "existence_update_count": 4,
+        "explore_weight": 0.689690532
+       },
+       "B->E": {
+        "enabled": true,
+        "existence_probability": 0.5,
+        "existence_update_count": 0,
+        "explore_weight": 1.0
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.111199122,
+        "existence_update_count": 6,
+        "explore_weight": 0.174745573
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.067840166,
+        "existence_update_count": 6,
+        "explore_weight": 0.160625031
+       }
+      },
+      "evidence_count": 180,
+      "generation": 3,
+      "log_score": -391.776782882,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "A->C",
+       "A->D",
+       "B->E",
+       "C->E"
+      ],
+      "description": "variant_add_B->E",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.080438575,
+        "existence_update_count": 5,
+        "explore_weight": 0.26177757
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.842267269,
+        "existence_update_count": 6,
+        "explore_weight": 0.629707061
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.069739062,
+        "existence_update_count": 6,
+        "explore_weight": 0.195470217
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037935437,
+        "existence_update_count": 2,
+        "explore_weight": 0.537521446
+       },
+       "B->E": {
+        "enabled": true,
+        "existence_probability": 0.5,
+        "existence_update_count": 0,
+        "explore_weight": 1.0
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.444421897,
+        "existence_update_count": 6,
+        "explore_weight": 0.338414292
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.045820129,
+        "existence_update_count": 4,
+        "explore_weight": 0.294807647
+       }
+      },
+      "evidence_count": 180,
+      "generation": 2,
+      "log_score": -404.204930661,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     }
+    ],
+    "dominant_signature": [
+     "A->C",
+     "B->A",
+     "B->D",
+     "C->E",
+     "D->E"
+    ],
+    "generation": 18,
+    "mutation_stats": {
+     "dag_violations": 1,
+     "duplicate_rejections": 4,
+     "introduced": 2,
+     "total_attempts": 7
+    },
+    "paradigm_shift_count": 2,
+    "structure_entropy": 2.301790433
+   }
+  },
+  "T_alt": {
+   "dominant_cpts": {
+    "A": {
+     "B=False": 0.504216939,
+     "B=True": 0.470348454
+    },
+    "B": {
+     "()": 0.494243835
+    },
+    "C": {
+     "A=False": 0.426610009,
+     "A=True": 0.639830539
+    },
+    "D": {
+     "B=False": 0.402001775,
+     "B=True": 0.504783434
+    },
+    "E": {
+     "C=False,D=False": 0.355480534,
+     "C=False,D=True": 0.519049661,
+     "C=True,D=False": 0.552005824,
+     "C=True,D=True": 0.678262148
+    }
+   },
+   "marginals": {
+    "ACTIVE_ONLY": {
+     "error": null,
+     "posteriors": {
+      "A": {
+       "False": 0.512522351,
+       "True": 0.487477649
+      },
+      "B": {
+       "False": 0.505756165,
+       "True": 0.494243835
+      },
+      "C": {
+       "False": 0.469449748,
+       "True": 0.530550252
+      },
+      "D": {
+       "False": 0.547199023,
+       "True": 0.452800977
+      },
+      "E": {
+       "False": 0.475145533,
+       "True": 0.524854467
+      }
+     }
+    },
+    "TOP_K": {
+     "error": null,
+     "posteriors": {
+      "A": {
+       "False": 0.0,
+       "True": 0.0
+      },
+      "B": {
+       "False": 0.0,
+       "True": 0.0
+      },
+      "C": {
+       "False": 0.0,
+       "True": 0.0
+      },
+      "D": {
+       "False": 0.0,
+       "True": 0.0
+      },
+      "E": {
+       "False": 0.0,
+       "True": 0.0
+      }
+     }
+    },
+    "WEIGHTED_AVERAGE": {
+     "error": null,
+     "posteriors": {
+      "A": {
+       "False": 0.510522836,
+       "True": 0.489477164
+      },
+      "B": {
+       "False": 0.506480841,
+       "True": 0.493519159
+      },
+      "C": {
+       "False": 0.47773849,
+       "True": 0.52226151
+      },
+      "D": {
+       "False": 0.537347232,
+       "True": 0.462652768
+      },
+      "E": {
+       "False": 0.477266528,
+       "True": 0.522733472
+      }
+     }
+    }
+   },
+   "population": {
+    "active_candidates": 10,
+    "candidates": [
+     {
+      "active_signature": [
+       "A->C",
+       "B->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "T*",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.980064858,
+        "existence_update_count": 10,
+        "explore_weight": 0.177279234
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037691493,
+        "existence_update_count": 2,
+        "explore_weight": 0.537412593
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.668613663,
+        "existence_update_count": 10,
+        "explore_weight": 0.270047183
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.581143965,
+        "existence_update_count": 10,
+        "explore_weight": 0.160697189
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.151056821,
+        "existence_update_count": 10,
+        "explore_weight": 0.061233261
+       }
+      },
+      "evidence_count": 300,
+      "generation": 0,
+      "log_score": -663.049401066,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "A->D",
+       "C->E"
+      ],
+      "description": "T_alt",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.508375909,
+        "existence_update_count": 5,
+        "explore_weight": 0.792318781
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.075511266,
+        "existence_update_count": 5,
+        "explore_weight": 0.263492547
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037691493,
+        "existence_update_count": 2,
+        "explore_weight": 0.537412593
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.345391304,
+        "existence_update_count": 5,
+        "explore_weight": 0.322314336
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.045815037,
+        "existence_update_count": 4,
+        "explore_weight": 0.294802292
+       }
+      },
+      "evidence_count": 150,
+      "generation": 0,
+      "log_score": -339.995151085,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "C->E"
+      ],
+      "description": "null",
+      "edges": {
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.208270219,
+        "existence_update_count": 1,
+        "explore_weight": 0.824962131
+       }
+      },
+      "evidence_count": 30,
+      "generation": 0,
+      "log_score": -69.667402859,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "A->C",
+       "A->D",
+       "C->E"
+      ],
+      "description": "variant_add_A->B",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.070583966,
+        "existence_update_count": 10,
+        "explore_weight": 0.059142322
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.982164164,
+        "existence_update_count": 11,
+        "explore_weight": 0.126012459
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.208233719,
+        "existence_update_count": 11,
+        "explore_weight": 0.052964693
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037935437,
+        "existence_update_count": 2,
+        "explore_weight": 0.537521446
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.960045795,
+        "existence_update_count": 11,
+        "explore_weight": 0.118982843
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.045820129,
+        "existence_update_count": 4,
+        "explore_weight": 0.294807647
+       }
+      },
+      "evidence_count": 330,
+      "generation": 1,
+      "log_score": -714.186164512,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "A->D",
+       "B->A",
+       "C->E"
+      ],
+      "description": "variant_add_B->A",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.976397244,
+        "existence_update_count": 9,
+        "explore_weight": 0.251263306
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.102904804,
+        "existence_update_count": 9,
+        "explore_weight": 0.08230775
+       },
+       "B->A": {
+        "enabled": true,
+        "existence_probability": 0.064582045,
+        "existence_update_count": 8,
+        "explore_weight": 0.106710431
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037821288,
+        "existence_update_count": 2,
+        "explore_weight": 0.537470511
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.896696942,
+        "existence_update_count": 9,
+        "explore_weight": 0.222800078
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.04582176,
+        "existence_update_count": 4,
+        "explore_weight": 0.294810218
+       }
+      },
+      "evidence_count": 270,
+      "generation": 1,
+      "log_score": -589.87675145,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "B->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_D->C",
+      "edges": {
+       "A->C": {
+        "enabled": false,
+        "existence_probability": 0.007175055,
+        "existence_update_count": 2,
+        "explore_weight": 0.569055209
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.002676597,
+        "existence_update_count": 2,
+        "explore_weight": 0.521788133
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.728713507,
+        "existence_update_count": 3,
+        "explore_weight": 0.951206015
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.06274572,
+        "existence_update_count": 3,
+        "explore_weight": 0.413926705
+       },
+       "D->C": {
+        "enabled": false,
+        "existence_probability": 0.001194416,
+        "existence_update_count": 1,
+        "explore_weight": 0.70071665
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.055376571,
+        "existence_update_count": 3,
+        "explore_weight": 0.40724958
+       }
+      },
+      "evidence_count": 90,
+      "generation": 1,
+      "log_score": -199.739861961,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "A->D",
+       "C->E",
+       "D->B"
+      ],
+      "description": "variant_add_D->B",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.994144619,
+        "existence_update_count": 12,
+        "explore_weight": 0.088644683
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.33532869,
+        "existence_update_count": 12,
+        "explore_weight": 0.055612927
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037768837,
+        "existence_update_count": 2,
+        "explore_weight": 0.537447106
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.978679338,
+        "existence_update_count": 12,
+        "explore_weight": 0.084812533
+       },
+       "D->B": {
+        "enabled": true,
+        "existence_probability": 0.1775553,
+        "existence_update_count": 11,
+        "explore_weight": 0.850981722
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.045816932,
+        "existence_update_count": 4,
+        "explore_weight": 0.294804279
+       }
+      },
+      "evidence_count": 360,
+      "generation": 1,
+      "log_score": -778.416637704,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "A->D"
+      ],
+      "description": "variant_add_A->E",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.245178891,
+        "existence_update_count": 2,
+        "explore_weight": 0.684434753
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.117952301,
+        "existence_update_count": 2,
+        "explore_weight": 0.621560654
+       },
+       "A->E": {
+        "enabled": false,
+        "existence_probability": 0.001150049,
+        "existence_update_count": 1,
+        "explore_weight": 0.700690029
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037691493,
+        "existence_update_count": 2,
+        "explore_weight": 0.537412593
+       },
+       "C->E": {
+        "enabled": false,
+        "existence_probability": 0.003100009,
+        "existence_update_count": 2,
+        "explore_weight": 0.534861031
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.003696129,
+        "existence_update_count": 2,
+        "explore_weight": 0.526638305
+       }
+      },
+      "evidence_count": 60,
+      "generation": 1,
+      "log_score": -139.510860299,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "B->A",
+       "B->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_B->A",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.993859647,
+        "existence_update_count": 12,
+        "explore_weight": 0.089594168
+       },
+       "B->A": {
+        "enabled": true,
+        "existence_probability": 0.062650669,
+        "existence_update_count": 11,
+        "explore_weight": 0.05
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037821288,
+        "existence_update_count": 2,
+        "explore_weight": 0.537470511
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.467255632,
+        "existence_update_count": 12,
+        "explore_weight": 0.297727019
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.767591085,
+        "existence_update_count": 12,
+        "explore_weight": 0.141556044
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.265982764,
+        "existence_update_count": 12,
+        "explore_weight": 0.05
+       }
+      },
+      "evidence_count": 360,
+      "generation": 1,
+      "log_score": -757.937193207,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "A->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_D->C",
+      "edges": {
+       "A->C": {
+        "enabled": false,
+        "existence_probability": 0.007149454,
+        "existence_update_count": 2,
+        "explore_weight": 0.569042799
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.096946149,
+        "existence_update_count": 3,
+        "explore_weight": 0.471247205
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.002690621,
+        "existence_update_count": 2,
+        "explore_weight": 0.521794391
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.062958653,
+        "existence_update_count": 3,
+        "explore_weight": 0.414175351
+       },
+       "D->C": {
+        "enabled": false,
+        "existence_probability": 0.001213792,
+        "existence_update_count": 1,
+        "explore_weight": 0.700728275
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.05196251,
+        "existence_update_count": 3,
+        "explore_weight": 0.405214101
+       }
+      },
+      "evidence_count": 90,
+      "generation": 1,
+      "log_score": -201.833869245,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "B->D"
+      ],
+      "description": "variant_add_A->E",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.245178891,
+        "existence_update_count": 2,
+        "explore_weight": 0.684434753
+       },
+       "A->E": {
+        "enabled": false,
+        "existence_probability": 0.001151687,
+        "existence_update_count": 1,
+        "explore_weight": 0.700691012
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037691493,
+        "existence_update_count": 2,
+        "explore_weight": 0.537412593
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.604348982,
+        "existence_update_count": 2,
+        "explore_weight": 1.1025
+       },
+       "C->E": {
+        "enabled": false,
+        "existence_probability": 0.00311248,
+        "existence_update_count": 2,
+        "explore_weight": 0.534637167
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.003818119,
+        "existence_update_count": 2,
+        "explore_weight": 0.52690938
+       }
+      },
+      "evidence_count": 60,
+      "generation": 1,
+      "log_score": -136.851677278,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "A->C",
+       "B->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_B->D",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.063997634,
+        "existence_update_count": 11,
+        "explore_weight": 0.05
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.994144619,
+        "existence_update_count": 12,
+        "explore_weight": 0.088651432
+       },
+       "A->D": {
+        "enabled": false,
+        "existence_probability": 0.032497988,
+        "existence_update_count": 3,
+        "explore_weight": 0.44721214
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037935437,
+        "existence_update_count": 2,
+        "explore_weight": 0.537521446
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.08696298,
+        "existence_update_count": 10,
+        "explore_weight": 0.170423064
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.770851837,
+        "existence_update_count": 12,
+        "explore_weight": 0.141365772
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.252662339,
+        "existence_update_count": 12,
+        "explore_weight": 0.05
+       }
+      },
+      "evidence_count": 360,
+      "generation": 2,
+      "log_score": -763.049524123,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "B->D",
+       "C->E",
+       "D->A",
+       "D->E"
+      ],
+      "description": "variant_add_D->A",
+      "edges": {
+       "A->C": {
+        "enabled": false,
+        "existence_probability": 0.007175055,
+        "existence_update_count": 2,
+        "explore_weight": 0.569055209
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.002676597,
+        "existence_update_count": 2,
+        "explore_weight": 0.521788133
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.817073076,
+        "existence_update_count": 4,
+        "explore_weight": 0.770244925
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.064792058,
+        "existence_update_count": 4,
+        "explore_weight": 0.305840192
+       },
+       "D->A": {
+        "enabled": true,
+        "existence_probability": 0.115948309,
+        "existence_update_count": 2,
+        "explore_weight": 0.610082633
+       },
+       "D->C": {
+        "enabled": false,
+        "existence_probability": 0.001194416,
+        "existence_update_count": 1,
+        "explore_weight": 0.70071665
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.051298271,
+        "existence_update_count": 4,
+        "explore_weight": 0.297609426
+       }
+      },
+      "evidence_count": 120,
+      "generation": 2,
+      "log_score": -263.678055833,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "A->C",
+       "B->D",
+       "C->E"
+      ],
+      "description": "variant_add_B->D",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.070583966,
+        "existence_update_count": 10,
+        "explore_weight": 0.059142322
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.982164164,
+        "existence_update_count": 11,
+        "explore_weight": 0.126012459
+       },
+       "A->D": {
+        "enabled": false,
+        "existence_probability": 0.037393148,
+        "existence_update_count": 4,
+        "explore_weight": 0.340445893
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037935437,
+        "existence_update_count": 2,
+        "explore_weight": 0.537521446
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.076591585,
+        "existence_update_count": 8,
+        "explore_weight": 0.141412888
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.960045795,
+        "existence_update_count": 11,
+        "explore_weight": 0.11891868
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.048517244,
+        "existence_update_count": 4,
+        "explore_weight": 0.295463432
+       }
+      },
+      "evidence_count": 330,
+      "generation": 2,
+      "log_score": -708.606101936,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "C->E"
+      ],
+      "description": "variant_add_C->D",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.401981368,
+        "existence_update_count": 4,
+        "explore_weight": 0.754589315
+       },
+       "A->D": {
+        "enabled": false,
+        "existence_probability": 0.036957268,
+        "existence_update_count": 4,
+        "explore_weight": 0.340322649
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037691493,
+        "existence_update_count": 2,
+        "explore_weight": 0.537412593
+       },
+       "C->D": {
+        "enabled": false,
+        "existence_probability": 0.03439018,
+        "existence_update_count": 1,
+        "explore_weight": 0.720634108
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.068675267,
+        "existence_update_count": 4,
+        "explore_weight": 0.306899898
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.046826088,
+        "existence_update_count": 4,
+        "explore_weight": 0.295048119
+       }
+      },
+      "evidence_count": 120,
+      "generation": 1,
+      "log_score": -276.142607354,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "B->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_B->C",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.127366788,
+        "existence_update_count": 5,
+        "explore_weight": 0.585878291
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.042635039,
+        "existence_update_count": 1,
+        "explore_weight": 0.725581023
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.881292619,
+        "existence_update_count": 5,
+        "explore_weight": 0.594031702
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.069439059,
+        "existence_update_count": 5,
+        "explore_weight": 0.227468632
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.054259767,
+        "existence_update_count": 5,
+        "explore_weight": 0.217992026
+       }
+      },
+      "evidence_count": 150,
+      "generation": 1,
+      "log_score": -331.940351478,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "A->C",
+       "B->D",
+       "C->E"
+      ],
+      "description": "variant_add_B->D",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.080438575,
+        "existence_update_count": 5,
+        "explore_weight": 0.26177757
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.842267269,
+        "existence_update_count": 6,
+        "explore_weight": 0.629707061
+       },
+       "A->D": {
+        "enabled": false,
+        "existence_probability": 0.032366364,
+        "existence_update_count": 5,
+        "explore_weight": 0.25434059
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037935437,
+        "existence_update_count": 2,
+        "explore_weight": 0.537521446
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.183505122,
+        "existence_update_count": 2,
+        "explore_weight": 0.595359614
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.444421897,
+        "existence_update_count": 6,
+        "explore_weight": 0.338414292
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.045820129,
+        "existence_update_count": 4,
+        "explore_weight": 0.294807647
+       }
+      },
+      "evidence_count": 180,
+      "generation": 2,
+      "log_score": -401.166922154,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "B->A",
+       "B->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_D->C",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.87076776,
+        "existence_update_count": 12,
+        "explore_weight": 0.687260448
+       },
+       "B->A": {
+        "enabled": true,
+        "existence_probability": 0.062650669,
+        "existence_update_count": 11,
+        "explore_weight": 0.05
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037821288,
+        "existence_update_count": 2,
+        "explore_weight": 0.537470511
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.467255632,
+        "existence_update_count": 12,
+        "explore_weight": 0.297727019
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.76180312,
+        "existence_update_count": 12,
+        "explore_weight": 0.141694079
+       },
+       "D->C": {
+        "enabled": false,
+        "existence_probability": 0.034303994,
+        "existence_update_count": 1,
+        "explore_weight": 0.720582397
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.269087966,
+        "existence_update_count": 12,
+        "explore_weight": 0.05
+       }
+      },
+      "evidence_count": 360,
+      "generation": 2,
+      "log_score": -760.859630953,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "B->A",
+       "C->E"
+      ],
+      "description": "variant_add_B->D",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.837816859,
+        "existence_update_count": 6,
+        "explore_weight": 0.632040743
+       },
+       "A->D": {
+        "enabled": false,
+        "existence_probability": 0.038104024,
+        "existence_update_count": 6,
+        "explore_weight": 0.190321917
+       },
+       "B->A": {
+        "enabled": true,
+        "existence_probability": 0.079267227,
+        "existence_update_count": 5,
+        "explore_weight": 0.260440207
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037821288,
+        "existence_update_count": 2,
+        "explore_weight": 0.537470511
+       },
+       "B->D": {
+        "enabled": false,
+        "existence_probability": 0.044023607,
+        "existence_update_count": 1,
+        "explore_weight": 0.726414164
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.444383269,
+        "existence_update_count": 6,
+        "explore_weight": 0.338413334
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.04582176,
+        "existence_update_count": 4,
+        "explore_weight": 0.294810218
+       }
+      },
+      "evidence_count": 180,
+      "generation": 2,
+      "log_score": -403.859755718,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "A->C",
+       "B->D"
+      ],
+      "description": "variant_add_B->E",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.080574275,
+        "existence_update_count": 6,
+        "explore_weight": 0.195899821
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.903716489,
+        "existence_update_count": 7,
+        "explore_weight": 0.477173187
+       },
+       "A->D": {
+        "enabled": false,
+        "existence_probability": 0.032497988,
+        "existence_update_count": 3,
+        "explore_weight": 0.44721214
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037935437,
+        "existence_update_count": 2,
+        "explore_weight": 0.537521446
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.212471749,
+        "existence_update_count": 5,
+        "explore_weight": 0.570707224
+       },
+       "B->E": {
+        "enabled": false,
+        "existence_probability": 0.001139908,
+        "existence_update_count": 1,
+        "explore_weight": 0.700683945
+       },
+       "C->E": {
+        "enabled": false,
+        "existence_probability": 0.004247815,
+        "existence_update_count": 7,
+        "explore_weight": 0.122767273
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.005340889,
+        "existence_update_count": 7,
+        "explore_weight": 0.11295225
+       }
+      },
+      "evidence_count": 210,
+      "generation": 3,
+      "log_score": -461.280528113,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "A->C",
+       "A->D",
+       "C->E"
+      ],
+      "description": "variant_add_B->E",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.080574275,
+        "existence_update_count": 6,
+        "explore_weight": 0.195899821
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.903716489,
+        "existence_update_count": 7,
+        "explore_weight": 0.477173187
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.071926459,
+        "existence_update_count": 7,
+        "explore_weight": 0.14526484
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037935437,
+        "existence_update_count": 2,
+        "explore_weight": 0.537521446
+       },
+       "B->E": {
+        "enabled": false,
+        "existence_probability": 0.032604286,
+        "existence_update_count": 1,
+        "explore_weight": 0.719562571
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.135736161,
+        "existence_update_count": 7,
+        "explore_weight": 0.264451038
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.045820129,
+        "existence_update_count": 4,
+        "explore_weight": 0.294807647
+       }
+      },
+      "evidence_count": 210,
+      "generation": 2,
+      "log_score": -468.458091447,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "A->C",
+       "B->C",
+       "B->D",
+       "C->E"
+      ],
+      "description": "variant_add_B->C",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.071420463,
+        "existence_update_count": 7,
+        "explore_weight": 0.145524629
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.135943342,
+        "existence_update_count": 8,
+        "explore_weight": 0.372942342
+       },
+       "A->D": {
+        "enabled": false,
+        "existence_probability": 0.037393148,
+        "existence_update_count": 4,
+        "explore_weight": 0.340445893
+       },
+       "B->C": {
+        "enabled": true,
+        "existence_probability": 0.05336971,
+        "existence_update_count": 1,
+        "explore_weight": 0.732021826
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.138114112,
+        "existence_update_count": 5,
+        "explore_weight": 0.321235966
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.803885114,
+        "existence_update_count": 8,
+        "explore_weight": 0.290389715
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.048517244,
+        "existence_update_count": 4,
+        "explore_weight": 0.295463432
+       }
+      },
+      "evidence_count": 240,
+      "generation": 3,
+      "log_score": -513.129876078,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "B->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_A->D",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.947342573,
+        "existence_update_count": 8,
+        "explore_weight": 0.349042291
+       },
+       "A->D": {
+        "enabled": false,
+        "existence_probability": 0.039938187,
+        "existence_update_count": 1,
+        "explore_weight": 0.723962912
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037691493,
+        "existence_update_count": 2,
+        "explore_weight": 0.537412593
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.077350497,
+        "existence_update_count": 8,
+        "explore_weight": 0.279218943
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.314171601,
+        "existence_update_count": 8,
+        "explore_weight": 0.145757087
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.115941097,
+        "existence_update_count": 8,
+        "explore_weight": 0.095262613
+       }
+      },
+      "evidence_count": 240,
+      "generation": 1,
+      "log_score": -525.345203422,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "A->D",
+       "B->A",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_A->D",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.87076776,
+        "existence_update_count": 12,
+        "explore_weight": 0.687260448
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.514132351,
+        "existence_update_count": 4,
+        "explore_weight": 0.60445291
+       },
+       "B->A": {
+        "enabled": true,
+        "existence_probability": 0.062650669,
+        "existence_update_count": 11,
+        "explore_weight": 0.05
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037821288,
+        "existence_update_count": 2,
+        "explore_weight": 0.537470511
+       },
+       "B->D": {
+        "enabled": false,
+        "existence_probability": 0.037877801,
+        "existence_update_count": 10,
+        "explore_weight": 0.164886088
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.763717043,
+        "existence_update_count": 12,
+        "explore_weight": 0.141501041
+       },
+       "D->C": {
+        "enabled": false,
+        "existence_probability": 0.034303994,
+        "existence_update_count": 1,
+        "explore_weight": 0.720582397
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.271950773,
+        "existence_update_count": 12,
+        "explore_weight": 0.05
+       }
+      },
+      "evidence_count": 360,
+      "generation": 3,
+      "log_score": -754.890972088,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "A->C",
+       "B->D",
+       "C->E"
+      ],
+      "description": "variant_add_B->E",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.065396593,
+        "existence_update_count": 8,
+        "explore_weight": 0.107577329
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.977692799,
+        "existence_update_count": 9,
+        "explore_weight": 0.24904051
+       },
+       "A->D": {
+        "enabled": false,
+        "existence_probability": 0.037393148,
+        "existence_update_count": 4,
+        "explore_weight": 0.340445893
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037935437,
+        "existence_update_count": 2,
+        "explore_weight": 0.537521446
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.127041826,
+        "existence_update_count": 6,
+        "explore_weight": 0.249351419
+       },
+       "B->E": {
+        "enabled": false,
+        "existence_probability": 0.033143012,
+        "existence_update_count": 1,
+        "explore_weight": 0.719885807
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.132542802,
+        "existence_update_count": 9,
+        "explore_weight": 0.227752645
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.048517244,
+        "existence_update_count": 4,
+        "explore_weight": 0.295463432
+       }
+      },
+      "evidence_count": 270,
+      "generation": 3,
+      "log_score": -582.101062098,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "A->C",
+       "B->D"
+      ],
+      "description": "variant_add_B->E",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.067623964,
+        "existence_update_count": 9,
+        "explore_weight": 0.079669013
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.980064858,
+        "existence_update_count": 10,
+        "explore_weight": 0.177307152
+       },
+       "A->D": {
+        "enabled": false,
+        "existence_probability": 0.032497988,
+        "existence_update_count": 3,
+        "explore_weight": 0.44721214
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037935437,
+        "existence_update_count": 2,
+        "explore_weight": 0.537521446
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.138464362,
+        "existence_update_count": 8,
+        "explore_weight": 0.298873695
+       },
+       "B->E": {
+        "enabled": false,
+        "existence_probability": 0.001281614,
+        "existence_update_count": 1,
+        "explore_weight": 0.700768968
+       },
+       "C->E": {
+        "enabled": false,
+        "existence_probability": 0.004568391,
+        "existence_update_count": 10,
+        "explore_weight": 0.107592482
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.002873183,
+        "existence_update_count": 10,
+        "explore_weight": 0.053376586
+       }
+      },
+      "evidence_count": 300,
+      "generation": 3,
+      "log_score": -642.829139599,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "B->D",
+       "C->B",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_C->B",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.994144619,
+        "existence_update_count": 12,
+        "explore_weight": 0.088637473
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037691493,
+        "existence_update_count": 2,
+        "explore_weight": 0.537412593
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.471221991,
+        "existence_update_count": 12,
+        "explore_weight": 0.297727019
+       },
+       "C->B": {
+        "enabled": true,
+        "existence_probability": 0.107829164,
+        "existence_update_count": 3,
+        "explore_weight": 0.472098249
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.768690674,
+        "existence_update_count": 12,
+        "explore_weight": 0.141530011
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.265939346,
+        "existence_update_count": 12,
+        "explore_weight": 0.05
+       }
+      },
+      "evidence_count": 360,
+      "generation": 1,
+      "log_score": -781.570165214,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "A->D",
+       "B->A",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_A->D",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.993859647,
+        "existence_update_count": 12,
+        "explore_weight": 0.089594168
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.123285946,
+        "existence_update_count": 2,
+        "explore_weight": 0.57722473
+       },
+       "B->A": {
+        "enabled": true,
+        "existence_probability": 0.062650669,
+        "existence_update_count": 11,
+        "explore_weight": 0.05
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037821288,
+        "existence_update_count": 2,
+        "explore_weight": 0.537470511
+       },
+       "B->D": {
+        "enabled": false,
+        "existence_probability": 0.041729638,
+        "existence_update_count": 12,
+        "explore_weight": 0.14675517
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.768943358,
+        "existence_update_count": 12,
+        "explore_weight": 0.141419224
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.260110115,
+        "existence_update_count": 12,
+        "explore_weight": 0.05
+       }
+      },
+      "evidence_count": 360,
+      "generation": 2,
+      "log_score": -755.717684351,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "A->D",
+       "C->E"
+      ],
+      "description": "variant_add_A->B",
+      "edges": {
+       "A->B": {
+        "enabled": false,
+        "existence_probability": 0.038464324,
+        "existence_update_count": 1,
+        "explore_weight": 0.723078594
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.994144619,
+        "existence_update_count": 12,
+        "explore_weight": 0.088644683
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.33532869,
+        "existence_update_count": 12,
+        "explore_weight": 0.055612927
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037768837,
+        "existence_update_count": 2,
+        "explore_weight": 0.537447106
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.978679338,
+        "existence_update_count": 12,
+        "explore_weight": 0.084812533
+       },
+       "D->B": {
+        "enabled": false,
+        "existence_probability": 0.039105094,
+        "existence_update_count": 10,
+        "explore_weight": 0.929949977
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.045816932,
+        "existence_update_count": 4,
+        "explore_weight": 0.294804279
+       }
+      },
+      "evidence_count": 360,
+      "generation": 2,
+      "log_score": -787.48120655,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "B->A",
+       "B->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_B->C",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.213900878,
+        "existence_update_count": 12,
+        "explore_weight": 0.105465604
+       },
+       "B->A": {
+        "enabled": true,
+        "existence_probability": 0.062650669,
+        "existence_update_count": 11,
+        "explore_weight": 0.05
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.036950008,
+        "existence_update_count": 1,
+        "explore_weight": 0.722170005
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.467255632,
+        "existence_update_count": 12,
+        "explore_weight": 0.297727019
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.769291333,
+        "existence_update_count": 12,
+        "explore_weight": 0.141384016
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.266107458,
+        "existence_update_count": 12,
+        "explore_weight": 0.05
+       }
+      },
+      "evidence_count": 360,
+      "generation": 2,
+      "log_score": -759.846838407,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "A->D",
+       "C->E"
+      ],
+      "description": "variant_add_C->D",
+      "edges": {
+       "A->B": {
+        "enabled": false,
+        "existence_probability": 0.038464324,
+        "existence_update_count": 1,
+        "explore_weight": 0.723078594
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.994144619,
+        "existence_update_count": 12,
+        "explore_weight": 0.088644683
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.080188169,
+        "existence_update_count": 12,
+        "explore_weight": 0.05
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037768837,
+        "existence_update_count": 2,
+        "explore_weight": 0.537447106
+       },
+       "C->D": {
+        "enabled": false,
+        "existence_probability": 0.033930469,
+        "existence_update_count": 1,
+        "explore_weight": 0.720358281
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.978679338,
+        "existence_update_count": 12,
+        "explore_weight": 0.084812533
+       },
+       "D->B": {
+        "enabled": false,
+        "existence_probability": 0.039105094,
+        "existence_update_count": 10,
+        "explore_weight": 0.929949977
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.045816932,
+        "existence_update_count": 4,
+        "explore_weight": 0.294804279
+       }
+      },
+      "evidence_count": 360,
+      "generation": 3,
+      "log_score": -788.631596039,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED"
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "A->C",
+       "A->E",
+       "B->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_A->E",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.063997634,
+        "existence_update_count": 11,
+        "explore_weight": 0.05
+       },
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.994144619,
+        "existence_update_count": 12,
+        "explore_weight": 0.088651432
+       },
+       "A->D": {
+        "enabled": false,
+        "existence_probability": 0.032497988,
+        "existence_update_count": 3,
+        "explore_weight": 0.44721214
+       },
+       "A->E": {
+        "enabled": true,
+        "existence_probability": 0.5,
+        "existence_update_count": 0,
+        "explore_weight": 1.0
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037935437,
+        "existence_update_count": 2,
+        "explore_weight": 0.537521446
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.08696298,
+        "existence_update_count": 10,
+        "explore_weight": 0.170423064
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.770851837,
+        "existence_update_count": 12,
+        "explore_weight": 0.141365772
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.252662339,
+        "existence_update_count": 12,
+        "explore_weight": 0.05
+       }
+      },
+      "evidence_count": 360,
+      "generation": 3,
+      "log_score": -763.049524123,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "A->D",
+       "C->E",
+       "D->B",
+       "E->B"
+      ],
+      "description": "variant_add_E->B",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.994144619,
+        "existence_update_count": 12,
+        "explore_weight": 0.088644683
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.33532869,
+        "existence_update_count": 12,
+        "explore_weight": 0.055612927
+       },
+       "B->C": {
+        "enabled": false,
+        "existence_probability": 0.037768837,
+        "existence_update_count": 2,
+        "explore_weight": 0.537447106
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.978679338,
+        "existence_update_count": 12,
+        "explore_weight": 0.084812533
+       },
+       "D->B": {
+        "enabled": true,
+        "existence_probability": 0.1775553,
+        "existence_update_count": 11,
+        "explore_weight": 0.850981722
+       },
+       "D->E": {
+        "enabled": false,
+        "existence_probability": 0.045816932,
+        "existence_update_count": 4,
+        "explore_weight": 0.294804279
+       },
+       "E->B": {
+        "enabled": true,
+        "existence_probability": 0.5,
+        "existence_update_count": 0,
+        "explore_weight": 1.0
+       }
+      },
+      "evidence_count": 360,
+      "generation": 2,
+      "log_score": -778.416637704,
+      "pruning_reason": null,
+      "status": "ACTIVE"
+     }
+    ],
+    "dominant_signature": [
+     "A->C",
+     "B->A",
+     "B->D",
+     "C->E",
+     "D->E"
+    ],
+    "generation": 30,
+    "mutation_stats": {
+     "dag_violations": 1,
+     "duplicate_rejections": 3,
+     "introduced": 2,
+     "total_attempts": 6
+    },
+    "paradigm_shift_count": 2,
+    "structure_entropy": 2.302326716
+   }
+  }
+ }
+}

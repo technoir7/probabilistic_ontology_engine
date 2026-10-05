@@ -1,0 +1,1463 @@
+{
+ "after": {
+  "active_candidates": 3,
+  "candidates": [
+   {
+    "active_signature": [
+     "A->C",
+     "B->C",
+     "B->D",
+     "C->E",
+     "D->E"
+    ],
+    "description": "T*",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.7,
+      "existence_update_count": 0,
+      "explore_weight": 1.0
+     },
+     "B->C": {
+      "enabled": true,
+      "existence_probability": 0.7,
+      "existence_update_count": 0,
+      "explore_weight": 1.0
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.7,
+      "existence_update_count": 0,
+      "explore_weight": 1.0
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.7,
+      "existence_update_count": 0,
+      "explore_weight": 1.0
+     },
+     "D->E": {
+      "enabled": true,
+      "existence_probability": 0.7,
+      "existence_update_count": 0,
+      "explore_weight": 1.0
+     }
+    },
+    "evidence_count": 300,
+    "generation": 0,
+    "log_score": -2703.274004184,
+    "pruning_reason": null,
+    "status": "ACTIVE"
+   },
+   {
+    "active_signature": [
+     "A->C",
+     "A->D",
+     "B->C",
+     "C->E",
+     "D->E"
+    ],
+    "description": "T_alt",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.7,
+      "existence_update_count": 0,
+      "explore_weight": 1.0
+     },
+     "A->D": {
+      "enabled": true,
+      "existence_probability": 0.5,
+      "existence_update_count": 0,
+      "explore_weight": 1.0
+     },
+     "B->C": {
+      "enabled": true,
+      "existence_probability": 0.7,
+      "existence_update_count": 0,
+      "explore_weight": 1.0
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.7,
+      "existence_update_count": 0,
+      "explore_weight": 1.0
+     },
+     "D->E": {
+      "enabled": true,
+      "existence_probability": 0.7,
+      "existence_update_count": 0,
+      "explore_weight": 1.0
+     }
+    },
+    "evidence_count": 300,
+    "generation": 0,
+    "log_score": -2703.274004184,
+    "pruning_reason": null,
+    "status": "ACTIVE"
+   },
+   {
+    "active_signature": [
+     "C->E"
+    ],
+    "description": "null",
+    "edges": {
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.5,
+      "existence_update_count": 0,
+      "explore_weight": 1.0
+     }
+    },
+    "evidence_count": 300,
+    "generation": 0,
+    "log_score": -6635.847683774,
+    "pruning_reason": null,
+    "status": "ACTIVE"
+   }
+  ],
+  "dominant_signature": [
+   "A->C",
+   "B->C",
+   "B->D",
+   "C->E",
+   "D->E"
+  ],
+  "generation": 0,
+  "mutation_stats": {},
+  "paradigm_shift_count": 0,
+  "structure_entropy": 0.693162263
+ },
+ "before": {
+  "active_candidates": 10,
+  "candidates": [
+   {
+    "active_signature": [
+     "A->C",
+     "B->D",
+     "C->E"
+    ],
+    "description": "T*",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.999998739,
+      "existence_update_count": 10,
+      "explore_weight": 0.05
+     },
+     "B->C": {
+      "enabled": false,
+      "existence_probability": 0.04054332,
+      "existence_update_count": 2,
+      "explore_weight": 0.538495898
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.998423686,
+      "existence_update_count": 10,
+      "explore_weight": 0.137432997
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.995616011,
+      "existence_update_count": 10,
+      "explore_weight": 0.148328662
+     },
+     "D->E": {
+      "enabled": false,
+      "existence_probability": 0.047165332,
+      "existence_update_count": 3,
+      "explore_weight": 0.406957143
+     }
+    },
+    "evidence_count": 300,
+    "generation": 0,
+    "log_score": -962.500216192,
+    "pruning_reason": null,
+    "status": "ACTIVE"
+   },
+   {
+    "active_signature": [
+     "A->C",
+     "A->D",
+     "B->C",
+     "C->E",
+     "D->E"
+    ],
+    "description": "T_alt",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.764824994,
+      "existence_update_count": 1,
+      "explore_weight": 0.841105004
+     },
+     "A->D": {
+      "enabled": true,
+      "existence_probability": 0.154541472,
+      "existence_update_count": 1,
+      "explore_weight": 0.792724883
+     },
+     "B->C": {
+      "enabled": true,
+      "existence_probability": 0.072406863,
+      "existence_update_count": 1,
+      "explore_weight": 0.743444118
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.311335659,
+      "existence_update_count": 1,
+      "explore_weight": 1.05
+     },
+     "D->E": {
+      "enabled": true,
+      "existence_probability": 0.092544086,
+      "existence_update_count": 1,
+      "explore_weight": 0.755526451
+     }
+    },
+    "evidence_count": 30,
+    "generation": 0,
+    "log_score": -93.576312445,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "C->E"
+    ],
+    "description": "null",
+    "edges": {
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.999597216,
+      "existence_update_count": 7,
+      "explore_weight": 0.153231424
+     }
+    },
+    "evidence_count": 210,
+    "generation": 0,
+    "log_score": -702.48030753,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "A->B",
+     "C->E"
+    ],
+    "description": "variant_add_A->B",
+    "edges": {
+     "A->B": {
+      "enabled": true,
+      "existence_probability": 0.101409044,
+      "existence_update_count": 4,
+      "explore_weight": 0.374715634
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.997900278,
+      "existence_update_count": 5,
+      "explore_weight": 0.312139416
+     }
+    },
+    "evidence_count": 150,
+    "generation": 1,
+    "log_score": -497.659768406,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "B->A",
+     "C->E"
+    ],
+    "description": "variant_add_B->A",
+    "edges": {
+     "B->A": {
+      "enabled": true,
+      "existence_probability": 0.120140189,
+      "existence_update_count": 6,
+      "explore_weight": 0.219830609
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.999597216,
+      "existence_update_count": 7,
+      "explore_weight": 0.153231424
+     }
+    },
+    "evidence_count": 210,
+    "generation": 1,
+    "log_score": -701.009152246,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "B->D",
+     "C->E",
+     "D->E"
+    ],
+    "description": "variant_add_D->C",
+    "edges": {
+     "A->C": {
+      "enabled": false,
+      "existence_probability": 0.011064913,
+      "existence_update_count": 2,
+      "explore_weight": 0.594357555
+     },
+     "B->C": {
+      "enabled": false,
+      "existence_probability": 0.002885742,
+      "existence_update_count": 2,
+      "explore_weight": 0.521698115
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.605965254,
+      "existence_update_count": 2,
+      "explore_weight": 1.1025
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.478066447,
+      "existence_update_count": 2,
+      "explore_weight": 1.1025
+     },
+     "D->C": {
+      "enabled": false,
+      "existence_probability": 0.001258233,
+      "existence_update_count": 1,
+      "explore_weight": 0.70075494
+     },
+     "D->E": {
+      "enabled": true,
+      "existence_probability": 0.065978051,
+      "existence_update_count": 2,
+      "explore_weight": 0.558777414
+     }
+    },
+    "evidence_count": 60,
+    "generation": 1,
+    "log_score": -189.873286995,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "C->E",
+     "E->D"
+    ],
+    "description": "variant_add_E->D",
+    "edges": {
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.999799784,
+      "existence_update_count": 8,
+      "explore_weight": 0.107280405
+     },
+     "E->D": {
+      "enabled": true,
+      "existence_probability": 0.411596783,
+      "existence_update_count": 7,
+      "explore_weight": 0.707063674
+     }
+    },
+    "evidence_count": 240,
+    "generation": 1,
+    "log_score": -800.403299725,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "A->D",
+     "C->E"
+    ],
+    "description": "variant_add_A->D",
+    "edges": {
+     "A->D": {
+      "enabled": true,
+      "existence_probability": 0.109419032,
+      "existence_update_count": 3,
+      "explore_weight": 0.471632494
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.993906412,
+      "existence_update_count": 4,
+      "explore_weight": 0.445112355
+     }
+    },
+    "evidence_count": 120,
+    "generation": 1,
+    "log_score": -397.685086196,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "A->C",
+     "B->A",
+     "B->D",
+     "C->E"
+    ],
+    "description": "variant_add_B->A",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.999998739,
+      "existence_update_count": 10,
+      "explore_weight": 0.05
+     },
+     "B->A": {
+      "enabled": true,
+      "existence_probability": 0.141438198,
+      "existence_update_count": 9,
+      "explore_weight": 0.108479234
+     },
+     "B->C": {
+      "enabled": false,
+      "existence_probability": 0.04054332,
+      "existence_update_count": 2,
+      "explore_weight": 0.538495898
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.998423686,
+      "existence_update_count": 10,
+      "explore_weight": 0.137432997
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.995616011,
+      "existence_update_count": 10,
+      "explore_weight": 0.148328662
+     },
+     "D->E": {
+      "enabled": false,
+      "existence_probability": 0.047165332,
+      "existence_update_count": 3,
+      "explore_weight": 0.406957143
+     }
+    },
+    "evidence_count": 300,
+    "generation": 1,
+    "log_score": -960.364777506,
+    "pruning_reason": null,
+    "status": "ACTIVE"
+   },
+   {
+    "active_signature": [
+     "C->D",
+     "C->E"
+    ],
+    "description": "variant_add_C->D",
+    "edges": {
+     "C->D": {
+      "enabled": true,
+      "existence_probability": 0.129271611,
+      "existence_update_count": 3,
+      "explore_weight": 0.487411803
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.993906412,
+      "existence_update_count": 4,
+      "explore_weight": 0.445112355
+     }
+    },
+    "evidence_count": 120,
+    "generation": 1,
+    "log_score": -397.439979134,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "A->C",
+     "B->D",
+     "C->E",
+     "D->E"
+    ],
+    "description": "variant_add_A->D",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.870738671,
+      "existence_update_count": 2,
+      "explore_weight": 0.654006913
+     },
+     "A->D": {
+      "enabled": false,
+      "existence_probability": 0.033030483,
+      "existence_update_count": 1,
+      "explore_weight": 0.71981829
+     },
+     "B->C": {
+      "enabled": false,
+      "existence_probability": 0.04054332,
+      "existence_update_count": 2,
+      "explore_weight": 0.538495898
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.103005077,
+      "existence_update_count": 2,
+      "explore_weight": 0.799893199
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.478066447,
+      "existence_update_count": 2,
+      "explore_weight": 1.1025
+     },
+     "D->E": {
+      "enabled": true,
+      "existence_probability": 0.065978051,
+      "existence_update_count": 2,
+      "explore_weight": 0.558777414
+     }
+    },
+    "evidence_count": 60,
+    "generation": 1,
+    "log_score": -190.729762463,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "A->C",
+     "B->A",
+     "B->D",
+     "C->E"
+    ],
+    "description": "variant_add_D->C",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.42667595,
+      "existence_update_count": 3,
+      "explore_weight": 0.686707259
+     },
+     "B->A": {
+      "enabled": true,
+      "existence_probability": 0.145470695,
+      "existence_update_count": 2,
+      "explore_weight": 0.645163582
+     },
+     "B->C": {
+      "enabled": false,
+      "existence_probability": 0.04054332,
+      "existence_update_count": 2,
+      "explore_weight": 0.538495898
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.696673732,
+      "existence_update_count": 3,
+      "explore_weight": 1.157625
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.898698078,
+      "existence_update_count": 3,
+      "explore_weight": 0.838761221
+     },
+     "D->C": {
+      "enabled": false,
+      "existence_probability": 0.032987543,
+      "existence_update_count": 1,
+      "explore_weight": 0.719792526
+     },
+     "D->E": {
+      "enabled": false,
+      "existence_probability": 0.047165332,
+      "existence_update_count": 3,
+      "explore_weight": 0.406957143
+     }
+    },
+    "evidence_count": 90,
+    "generation": 2,
+    "log_score": -291.633080566,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "A->C",
+     "B->D",
+     "C->E",
+     "D->A"
+    ],
+    "description": "variant_add_D->A",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.815143884,
+      "existence_update_count": 3,
+      "explore_weight": 0.530343146
+     },
+     "B->C": {
+      "enabled": false,
+      "existence_probability": 0.04054332,
+      "existence_update_count": 2,
+      "explore_weight": 0.538495898
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.696673732,
+      "existence_update_count": 3,
+      "explore_weight": 1.157625
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.898698078,
+      "existence_update_count": 3,
+      "explore_weight": 0.838761221
+     },
+     "D->A": {
+      "enabled": true,
+      "existence_probability": 0.187156073,
+      "existence_update_count": 1,
+      "explore_weight": 0.812293644
+     },
+     "D->E": {
+      "enabled": false,
+      "existence_probability": 0.047165332,
+      "existence_update_count": 3,
+      "explore_weight": 0.406957143
+     }
+    },
+    "evidence_count": 90,
+    "generation": 1,
+    "log_score": -287.619882471,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "A->C",
+     "B->D",
+     "C->B",
+     "C->E"
+    ],
+    "description": "variant_add_C->B",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.999998739,
+      "existence_update_count": 10,
+      "explore_weight": 0.05
+     },
+     "B->C": {
+      "enabled": false,
+      "existence_probability": 0.04054332,
+      "existence_update_count": 2,
+      "explore_weight": 0.538495898
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.998423686,
+      "existence_update_count": 10,
+      "explore_weight": 0.137432997
+     },
+     "C->B": {
+      "enabled": true,
+      "existence_probability": 0.075857711,
+      "existence_update_count": 7,
+      "explore_weight": 0.159449775
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.995616011,
+      "existence_update_count": 10,
+      "explore_weight": 0.148328662
+     },
+     "D->E": {
+      "enabled": false,
+      "existence_probability": 0.047165332,
+      "existence_update_count": 3,
+      "explore_weight": 0.406957143
+     }
+    },
+    "evidence_count": 300,
+    "generation": 1,
+    "log_score": -961.233198621,
+    "pruning_reason": null,
+    "status": "ACTIVE"
+   },
+   {
+    "active_signature": [
+     "C->E",
+     "D->B",
+     "E->D"
+    ],
+    "description": "variant_add_D->B",
+    "edges": {
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.999957156,
+      "existence_update_count": 10,
+      "explore_weight": 0.05257221
+     },
+     "D->B": {
+      "enabled": true,
+      "existence_probability": 0.968188218,
+      "existence_update_count": 7,
+      "explore_weight": 0.43463116
+     },
+     "E->D": {
+      "enabled": true,
+      "existence_probability": 0.673121685,
+      "existence_update_count": 9,
+      "explore_weight": 0.779537701
+     }
+    },
+    "evidence_count": 300,
+    "generation": 2,
+    "log_score": -990.377124222,
+    "pruning_reason": null,
+    "status": "ACTIVE"
+   },
+   {
+    "active_signature": [
+     "C->A",
+     "C->E",
+     "E->D"
+    ],
+    "description": "variant_add_C->A",
+    "edges": {
+     "C->A": {
+      "enabled": true,
+      "existence_probability": 0.999616378,
+      "existence_update_count": 6,
+      "explore_weight": 0.238240083
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.999957156,
+      "existence_update_count": 10,
+      "explore_weight": 0.05257221
+     },
+     "E->D": {
+      "enabled": true,
+      "existence_probability": 0.673121685,
+      "existence_update_count": 9,
+      "explore_weight": 0.779537701
+     }
+    },
+    "evidence_count": 300,
+    "generation": 2,
+    "log_score": -982.665348086,
+    "pruning_reason": null,
+    "status": "ACTIVE"
+   },
+   {
+    "active_signature": [
+     "B->A",
+     "B->D",
+     "C->E"
+    ],
+    "description": "variant_add_B->D",
+    "edges": {
+     "B->A": {
+      "enabled": true,
+      "existence_probability": 0.101409044,
+      "existence_update_count": 4,
+      "explore_weight": 0.374715634
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.188750387,
+      "existence_update_count": 1,
+      "explore_weight": 0.813250232
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.997900278,
+      "existence_update_count": 5,
+      "explore_weight": 0.312139416
+     }
+    },
+    "evidence_count": 150,
+    "generation": 2,
+    "log_score": -496.862443894,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "A->C",
+     "B->D",
+     "C->B",
+     "C->E"
+    ],
+    "description": "variant_add_B->E",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.998724988,
+      "existence_update_count": 6,
+      "explore_weight": 0.186339635
+     },
+     "B->C": {
+      "enabled": false,
+      "existence_probability": 0.04054332,
+      "existence_update_count": 2,
+      "explore_weight": 0.538495898
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.9194514,
+      "existence_update_count": 6,
+      "explore_weight": 0.549460904
+     },
+     "B->E": {
+      "enabled": false,
+      "existence_probability": 0.034309385,
+      "existence_update_count": 1,
+      "explore_weight": 0.720585631
+     },
+     "C->B": {
+      "enabled": true,
+      "existence_probability": 0.130878504,
+      "existence_update_count": 3,
+      "explore_weight": 0.497677523
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.116463599,
+      "existence_update_count": 6,
+      "explore_weight": 0.557701771
+     },
+     "D->E": {
+      "enabled": false,
+      "existence_probability": 0.047165332,
+      "existence_update_count": 3,
+      "explore_weight": 0.406957143
+     }
+    },
+    "evidence_count": 180,
+    "generation": 2,
+    "log_score": -576.505558291,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "C->A",
+     "C->E",
+     "E->D"
+    ],
+    "description": "variant_add_D->A",
+    "edges": {
+     "C->A": {
+      "enabled": true,
+      "existence_probability": 0.191361873,
+      "existence_update_count": 2,
+      "explore_weight": 0.85555798
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.998243866,
+      "existence_update_count": 6,
+      "explore_weight": 0.218826486
+     },
+     "D->A": {
+      "enabled": false,
+      "existence_probability": 0.032459689,
+      "existence_update_count": 1,
+      "explore_weight": 0.719475814
+     },
+     "E->D": {
+      "enabled": true,
+      "existence_probability": 0.401263805,
+      "existence_update_count": 5,
+      "explore_weight": 0.641327596
+     }
+    },
+    "evidence_count": 180,
+    "generation": 3,
+    "log_score": -594.408535296,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "A->C",
+     "B->D",
+     "C->B",
+     "C->E"
+    ],
+    "description": "variant_add_C->D",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.999998739,
+      "existence_update_count": 10,
+      "explore_weight": 0.05
+     },
+     "B->C": {
+      "enabled": false,
+      "existence_probability": 0.04054332,
+      "existence_update_count": 2,
+      "explore_weight": 0.538495898
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.873162715,
+      "existence_update_count": 10,
+      "explore_weight": 0.379474156
+     },
+     "C->B": {
+      "enabled": true,
+      "existence_probability": 0.075857711,
+      "existence_update_count": 7,
+      "explore_weight": 0.159449775
+     },
+     "C->D": {
+      "enabled": false,
+      "existence_probability": 0.033516531,
+      "existence_update_count": 1,
+      "explore_weight": 0.720109919
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.995616011,
+      "existence_update_count": 10,
+      "explore_weight": 0.148328662
+     },
+     "D->E": {
+      "enabled": false,
+      "existence_probability": 0.047165332,
+      "existence_update_count": 3,
+      "explore_weight": 0.406957143
+     }
+    },
+    "evidence_count": 300,
+    "generation": 2,
+    "log_score": -961.99550914,
+    "pruning_reason": null,
+    "status": "ACTIVE"
+   },
+   {
+    "active_signature": [
+     "B->A",
+     "C->E",
+     "D->B",
+     "E->D"
+    ],
+    "description": "variant_add_B->A",
+    "edges": {
+     "B->A": {
+      "enabled": true,
+      "existence_probability": 0.182017545,
+      "existence_update_count": 3,
+      "explore_weight": 0.572496933
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.999936059,
+      "existence_update_count": 9,
+      "explore_weight": 0.075100399
+     },
+     "D->B": {
+      "enabled": true,
+      "existence_probability": 0.892387314,
+      "existence_update_count": 6,
+      "explore_weight": 0.60442077
+     },
+     "E->D": {
+      "enabled": true,
+      "existence_probability": 0.447496043,
+      "existence_update_count": 8,
+      "explore_weight": 0.742416858
+     }
+    },
+    "evidence_count": 270,
+    "generation": 3,
+    "log_score": -890.298556978,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "A->C",
+     "B->D",
+     "C->B",
+     "C->E"
+    ],
+    "description": "variant_add_B->E",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.999921466,
+      "existence_update_count": 8,
+      "explore_weight": 0.091354938
+     },
+     "B->C": {
+      "enabled": false,
+      "existence_probability": 0.04054332,
+      "existence_update_count": 2,
+      "explore_weight": 0.538495898
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.636471043,
+      "existence_update_count": 8,
+      "explore_weight": 0.465665319
+     },
+     "B->E": {
+      "enabled": false,
+      "existence_probability": 0.033116881,
+      "existence_update_count": 1,
+      "explore_weight": 0.719870129
+     },
+     "C->B": {
+      "enabled": true,
+      "existence_probability": 0.083860497,
+      "existence_update_count": 5,
+      "explore_weight": 0.284969771
+     },
+     "C->D": {
+      "enabled": false,
+      "existence_probability": 0.033516531,
+      "existence_update_count": 1,
+      "explore_weight": 0.720109919
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.143821389,
+      "existence_update_count": 8,
+      "explore_weight": 0.330998166
+     },
+     "D->E": {
+      "enabled": false,
+      "existence_probability": 0.047165332,
+      "existence_update_count": 3,
+      "explore_weight": 0.406957143
+     }
+    },
+    "evidence_count": 240,
+    "generation": 3,
+    "log_score": -771.467501809,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "A->C",
+     "B->A",
+     "B->D",
+     "C->E"
+    ],
+    "description": "variant_add_B->C",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.782393927,
+      "existence_update_count": 9,
+      "explore_weight": 0.113806475
+     },
+     "B->A": {
+      "enabled": true,
+      "existence_probability": 0.14836617,
+      "existence_update_count": 8,
+      "explore_weight": 0.138214243
+     },
+     "B->C": {
+      "enabled": false,
+      "existence_probability": 0.032923016,
+      "existence_update_count": 1,
+      "explore_weight": 0.71975381
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.993616539,
+      "existence_update_count": 9,
+      "explore_weight": 0.196067941
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.993118716,
+      "existence_update_count": 9,
+      "explore_weight": 0.211104818
+     },
+     "D->E": {
+      "enabled": false,
+      "existence_probability": 0.047165332,
+      "existence_update_count": 3,
+      "explore_weight": 0.406957143
+     }
+    },
+    "evidence_count": 270,
+    "generation": 2,
+    "log_score": -868.119576704,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "A->C",
+     "B->D",
+     "C->E",
+     "D->A"
+    ],
+    "description": "variant_add_D->A",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.999998739,
+      "existence_update_count": 10,
+      "explore_weight": 0.05
+     },
+     "B->C": {
+      "enabled": false,
+      "existence_probability": 0.04054332,
+      "existence_update_count": 2,
+      "explore_weight": 0.538495898
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.998423686,
+      "existence_update_count": 10,
+      "explore_weight": 0.137432997
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.995616011,
+      "existence_update_count": 10,
+      "explore_weight": 0.148328662
+     },
+     "D->A": {
+      "enabled": true,
+      "existence_probability": 0.116725043,
+      "existence_update_count": 2,
+      "explore_weight": 0.610396871
+     },
+     "D->E": {
+      "enabled": false,
+      "existence_probability": 0.047165332,
+      "existence_update_count": 3,
+      "explore_weight": 0.406957143
+     }
+    },
+    "evidence_count": 300,
+    "generation": 1,
+    "log_score": -962.102165442,
+    "pruning_reason": null,
+    "status": "ACTIVE"
+   },
+   {
+    "active_signature": [
+     "A->C",
+     "B->A",
+     "B->D",
+     "C->E"
+    ],
+    "description": "variant_add_B->E",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.999998739,
+      "existence_update_count": 10,
+      "explore_weight": 0.05
+     },
+     "B->A": {
+      "enabled": true,
+      "existence_probability": 0.141438198,
+      "existence_update_count": 9,
+      "explore_weight": 0.108479234
+     },
+     "B->C": {
+      "enabled": false,
+      "existence_probability": 0.04054332,
+      "existence_update_count": 2,
+      "explore_weight": 0.538495898
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.998423686,
+      "existence_update_count": 10,
+      "explore_weight": 0.137432997
+     },
+     "B->E": {
+      "enabled": false,
+      "existence_probability": 0.034531115,
+      "existence_update_count": 1,
+      "explore_weight": 0.720718669
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.44061085,
+      "existence_update_count": 10,
+      "explore_weight": 0.265055837
+     },
+     "D->E": {
+      "enabled": false,
+      "existence_probability": 0.047165332,
+      "existence_update_count": 3,
+      "explore_weight": 0.406957143
+     }
+    },
+    "evidence_count": 300,
+    "generation": 2,
+    "log_score": -962.361266424,
+    "pruning_reason": null,
+    "status": "ACTIVE"
+   },
+   {
+    "active_signature": [
+     "A->C",
+     "B->D",
+     "C->E",
+     "D->A"
+    ],
+    "description": "variant_add_D->C",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.46248848,
+      "existence_update_count": 10,
+      "explore_weight": 0.067146586
+     },
+     "B->C": {
+      "enabled": false,
+      "existence_probability": 0.04054332,
+      "existence_update_count": 2,
+      "explore_weight": 0.538495898
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.998423686,
+      "existence_update_count": 10,
+      "explore_weight": 0.137432997
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.995616011,
+      "existence_update_count": 10,
+      "explore_weight": 0.148328662
+     },
+     "D->A": {
+      "enabled": true,
+      "existence_probability": 0.116725043,
+      "existence_update_count": 2,
+      "explore_weight": 0.610396871
+     },
+     "D->C": {
+      "enabled": false,
+      "existence_probability": 0.035360233,
+      "existence_update_count": 1,
+      "explore_weight": 0.72121614
+     },
+     "D->E": {
+      "enabled": false,
+      "existence_probability": 0.047165332,
+      "existence_update_count": 3,
+      "explore_weight": 0.406957143
+     }
+    },
+    "evidence_count": 300,
+    "generation": 2,
+    "log_score": -966.278511996,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "A->C",
+     "B->D",
+     "C->B",
+     "C->E",
+     "D->E"
+    ],
+    "description": "variant_add_D->E",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.999998739,
+      "existence_update_count": 10,
+      "explore_weight": 0.05
+     },
+     "B->C": {
+      "enabled": false,
+      "existence_probability": 0.04054332,
+      "existence_update_count": 2,
+      "explore_weight": 0.538495898
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.873162715,
+      "existence_update_count": 10,
+      "explore_weight": 0.379474156
+     },
+     "C->B": {
+      "enabled": true,
+      "existence_probability": 0.075857711,
+      "existence_update_count": 7,
+      "explore_weight": 0.159449775
+     },
+     "C->D": {
+      "enabled": false,
+      "existence_probability": 0.033516531,
+      "existence_update_count": 1,
+      "explore_weight": 0.720109919
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.143060822,
+      "existence_update_count": 10,
+      "explore_weight": 0.16589387
+     },
+     "D->E": {
+      "enabled": true,
+      "existence_probability": 0.104978883,
+      "existence_update_count": 1,
+      "explore_weight": 0.76298733
+     }
+    },
+    "evidence_count": 300,
+    "generation": 3,
+    "log_score": -959.911091312,
+    "pruning_reason": "bottom_quartile_log_score",
+    "status": "PRUNED"
+   },
+   {
+    "active_signature": [
+     "A->C",
+     "B->D",
+     "C->B",
+     "C->D",
+     "C->E"
+    ],
+    "description": "variant_add_C->D",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.999998739,
+      "existence_update_count": 10,
+      "explore_weight": 0.05
+     },
+     "B->C": {
+      "enabled": false,
+      "existence_probability": 0.04054332,
+      "existence_update_count": 2,
+      "explore_weight": 0.538495898
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.873162715,
+      "existence_update_count": 10,
+      "explore_weight": 0.379474156
+     },
+     "C->B": {
+      "enabled": true,
+      "existence_probability": 0.075857711,
+      "existence_update_count": 7,
+      "explore_weight": 0.159449775
+     },
+     "C->D": {
+      "enabled": true,
+      "existence_probability": 0.5,
+      "existence_update_count": 0,
+      "explore_weight": 1.0
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.995616011,
+      "existence_update_count": 10,
+      "explore_weight": 0.148328662
+     },
+     "D->E": {
+      "enabled": false,
+      "existence_probability": 0.047165332,
+      "existence_update_count": 3,
+      "explore_weight": 0.406957143
+     }
+    },
+    "evidence_count": 300,
+    "generation": 3,
+    "log_score": -961.99550914,
+    "pruning_reason": null,
+    "status": "ACTIVE"
+   },
+   {
+    "active_signature": [
+     "A->C",
+     "A->E",
+     "B->D",
+     "C->E",
+     "D->A"
+    ],
+    "description": "variant_add_A->E",
+    "edges": {
+     "A->C": {
+      "enabled": true,
+      "existence_probability": 0.999998739,
+      "existence_update_count": 10,
+      "explore_weight": 0.05
+     },
+     "A->E": {
+      "enabled": true,
+      "existence_probability": 0.5,
+      "existence_update_count": 0,
+      "explore_weight": 1.0
+     },
+     "B->C": {
+      "enabled": false,
+      "existence_probability": 0.04054332,
+      "existence_update_count": 2,
+      "explore_weight": 0.538495898
+     },
+     "B->D": {
+      "enabled": true,
+      "existence_probability": 0.998423686,
+      "existence_update_count": 10,
+      "explore_weight": 0.137432997
+     },
+     "C->E": {
+      "enabled": true,
+      "existence_probability": 0.995616011,
+      "existence_update_count": 10,
+      "explore_weight": 0.148328662
+     },
+     "D->A": {
+      "enabled": true,
+      "existence_probability": 0.116725043,
+      "existence_update_count": 2,
+      "explore_weight": 0.610396871
+     },
+     "D->E": {
+      "enabled": false,
+      "existence_probability": 0.047165332,
+      "existence_update_count": 3,
+      "explore_weight": 0.406957143
+     }
+    },
+    "evidence_count": 300,
+    "generation": 2,
+    "log_score": -962.102165442,
+    "pruning_reason": null,
+    "status": "ACTIVE"
+   }
+  ],
+  "dominant_signature": [
+   "A->C",
+   "B->D",
+   "C->E"
+  ],
+  "generation": 26,
+  "mutation_stats": {
+   "dag_violations": 0,
+   "duplicate_rejections": 1,
+   "introduced": 2,
+   "total_attempts": 3
+  },
+  "paradigm_shift_count": 2,
+  "structure_entropy": 2.30232937
+ }
+}
