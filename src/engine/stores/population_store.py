@@ -5,87 +5,20 @@ Scores and status are persisted here; CPT data lives in ParameterStore (in-memor
 from __future__ import annotations
 
 import json
-import sqlite3
 from datetime import datetime
 from pathlib import Path
 from uuid import UUID
 
 from ..schemas import CandidateStatus, OntologyCandidate, OntologyPopulation
-
-
-_POPULATIONS_TABLE = """
-CREATE TABLE IF NOT EXISTS ontology_populations (
-    population_id         TEXT PRIMARY KEY,
-    domain_module_id      TEXT NOT NULL UNIQUE,
-    max_population_size   INT  NOT NULL DEFAULT 10,
-    active_candidate_id   TEXT,
-    generation            INT  NOT NULL DEFAULT 0,
-    paradigm_shift_count  INT  NOT NULL DEFAULT 0,
-    updated_at            TEXT NOT NULL
-)
-"""
-
-_CANDIDATES_TABLE = """
-CREATE TABLE IF NOT EXISTS ontology_candidates (
-    candidate_id         TEXT PRIMARY KEY,
-    domain_module_id     TEXT NOT NULL,
-    generation           INT  NOT NULL DEFAULT 0,
-    parent_candidate_id  TEXT,
-    log_score            REAL NOT NULL DEFAULT 0.0,
-    evidence_count       INT  NOT NULL DEFAULT 0,
-    status               TEXT NOT NULL DEFAULT 'ACTIVE',
-    introduced_at        TEXT NOT NULL,
-    pruned_at            TEXT,
-    pruning_reason       TEXT,
-    description          TEXT NOT NULL DEFAULT '',
-    metadata             TEXT NOT NULL DEFAULT '{}'
-)
-"""
-
-_SCORES_TABLE = """
-CREATE TABLE IF NOT EXISTS candidate_scores (
-    score_id          TEXT PRIMARY KEY,
-    candidate_id      TEXT NOT NULL,
-    ts                TEXT NOT NULL,
-    log_likelihood    REAL NOT NULL,
-    batch_index       INT  NOT NULL DEFAULT 0,
-    context           TEXT NOT NULL DEFAULT '{}'
-)
-"""
-
-_SHIFTS_TABLE = """
-CREATE TABLE IF NOT EXISTS paradigm_shifts (
-    shift_id                TEXT PRIMARY KEY,
-    domain_module_id        TEXT NOT NULL,
-    generation              INT  NOT NULL,
-    shift_ts                TEXT NOT NULL,
-    prev_dominant_id        TEXT NOT NULL,
-    prev_dominant_name      TEXT NOT NULL DEFAULT '',
-    new_dominant_id         TEXT NOT NULL,
-    new_dominant_name       TEXT NOT NULL DEFAULT '',
-    evidence_count_at_shift INT  NOT NULL DEFAULT 0
-)
-"""
-
-_SHIFTS_INDEX = """
-CREATE INDEX IF NOT EXISTS idx_paradigm_shifts_domain
-ON paradigm_shifts (domain_module_id, shift_ts ASC)
-"""
+from .database import Database
 
 
 class PopulationStore:
 
-    def __init__(self, db_path: str | Path = ":memory:"):
-        self.db_path = str(db_path)
-        self._conn = sqlite3.connect(self.db_path, check_same_thread=False)
-        self._conn.row_factory = sqlite3.Row
-        self._conn.execute("PRAGMA journal_mode=WAL")
-        self._conn.execute(_POPULATIONS_TABLE)
-        self._conn.execute(_CANDIDATES_TABLE)
-        self._conn.execute(_SCORES_TABLE)
-        self._conn.execute(_SHIFTS_TABLE)
-        self._conn.execute(_SHIFTS_INDEX)
-        self._conn.commit()
+    def __init__(self, db: Database | str | Path = ":memory:"):
+        self._db = db if isinstance(db, Database) else Database(db)
+        self._conn = self._db.conn
+        self.db_path = self._db.path
 
     # ------------------------------------------------------------------
     # Population CRUD
@@ -109,7 +42,7 @@ class PopulationStore:
                 datetime.utcnow().isoformat(),
             ),
         )
-        self._conn.commit()
+        self._db.commit()
 
     def load_population_id(self, domain_module_id: str) -> UUID | None:
         cur = self._conn.execute(
@@ -147,14 +80,14 @@ class PopulationStore:
                 "{}",
             ),
         )
-        self._conn.commit()
+        self._db.commit()
 
     def update_score(self, candidate_id: UUID, log_score: float, evidence_count: int) -> None:
         self._conn.execute(
             "UPDATE ontology_candidates SET log_score=?, evidence_count=? WHERE candidate_id=?",
             (log_score, evidence_count, str(candidate_id)),
         )
-        self._conn.commit()
+        self._db.commit()
 
     def mark_pruned(self, candidate_id: UUID, reason: str) -> None:
         self._conn.execute(
@@ -165,7 +98,7 @@ class PopulationStore:
             """,
             (datetime.utcnow().isoformat(), reason, str(candidate_id)),
         )
-        self._conn.commit()
+        self._db.commit()
 
     def append_score_record(
         self,
@@ -187,7 +120,7 @@ class PopulationStore:
                 batch_index,
             ),
         )
-        self._conn.commit()
+        self._db.commit()
 
     # ------------------------------------------------------------------
     # Paradigm shift events
@@ -227,7 +160,7 @@ class PopulationStore:
                 evidence_count_at_shift,
             ),
         )
-        self._conn.commit()
+        self._db.commit()
 
     def load_shift_events(self, domain_module_id: str) -> list[dict]:
         """

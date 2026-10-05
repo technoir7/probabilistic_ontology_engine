@@ -11,35 +11,12 @@ from __future__ import annotations
 
 import hashlib
 import json
-import sqlite3
 from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID
 
 from ..model.cpt import CPTData, deserialize_counts
-
-
-# ---------------------------------------------------------------------------
-# SQLite schema
-# ---------------------------------------------------------------------------
-
-_CREATE_PARAMETERS_TABLE = """
-CREATE TABLE IF NOT EXISTS parameters (
-    candidate_id     TEXT NOT NULL,
-    domain_module_id TEXT NOT NULL DEFAULT '',
-    edge_signature   TEXT NOT NULL DEFAULT '',
-    variable_name    TEXT NOT NULL,
-    alpha            REAL NOT NULL DEFAULT 1.0,
-    counts_json      TEXT NOT NULL DEFAULT '[]',
-    parent_ids_json  TEXT NOT NULL DEFAULT '[]',
-    updated_at       TEXT NOT NULL,
-    PRIMARY KEY (domain_module_id, edge_signature, variable_name)
-)
-"""
-# candidate_id is stored as-is per the spec; the actual stable primary key is
-# (domain_module_id, edge_signature, variable_name) because candidate_id is a
-# session-local UUID that changes on every restart.  domain_module_id +
-# edge_signature together identify a structural variant stably across restarts.
+from .database import Database
 
 
 # ---------------------------------------------------------------------------
@@ -50,33 +27,17 @@ class ParameterStore:
     """
     CPT store mapping (candidate_id, variable_name) → CPTData.
 
-    In-memory by default.  When *db_path* is a real file path the store also
-    maintains a ``parameters`` table in the same SQLite database used by
-    EvidenceStore / PopulationStore.  Call :meth:`load_from_db` after
-    initialising candidates to restore previously learned parameters, and
-    :meth:`flush_to_db` at the end of each learning cycle to persist them.
+    Holds CPTs in memory and mirrors them to the ``parameters`` table of the
+    shared Database (an in-memory one for ``":memory:"``). Call
+    :meth:`load_from_db` after initialising candidates to restore learned
+    parameters, and :meth:`save_candidate` at the end of a learning cycle.
     """
 
-    def __init__(self, db_path: str = ":memory:") -> None:
+    def __init__(self, db: Database | str = ":memory:") -> None:
         # {str(candidate_id): {variable_name: CPTData}}
         self._store: dict[str, dict[str, CPTData]] = {}
-
-        # SQLite persistence (None when in-memory / not configured)
-        self._conn: sqlite3.Connection | None = None
-        if db_path and db_path != ":memory:":
-            self._conn = sqlite3.connect(db_path, check_same_thread=False)
-            self._conn.execute("PRAGMA journal_mode=WAL")
-            self._conn.execute(_CREATE_PARAMETERS_TABLE)
-            for sql in (
-                "ALTER TABLE parameters ADD COLUMN edge_signature TEXT",
-                "ALTER TABLE parameters ADD COLUMN domain_module_id TEXT",
-            ):
-                try:
-                    self._conn.execute(sql)
-                except sqlite3.OperationalError as exc:
-                    if "duplicate column name" not in str(exc).lower():
-                        raise
-            self._conn.commit()
+        self._db = db if isinstance(db, Database) else Database(db)
+        self._conn = self._db.conn
 
     # ------------------------------------------------------------------
     def initialize_candidate(
@@ -164,10 +125,7 @@ class ParameterStore:
         primary key used for cross-session matching (since candidate_id is a
         session-local UUID).
 
-        No-op when there is no DB connection.
         """
-        if self._conn is None:
-            return
         cid = str(candidate_id)
         cpts = self._store.get(cid, {})
         if not cpts:
@@ -195,7 +153,7 @@ class ParameterStore:
             """,
             rows,
         )
-        self._conn.commit()
+        self._db.commit()
 
     def load_from_db(
         self,
@@ -214,8 +172,6 @@ class ParameterStore:
         ``support`` list (which comes from the domain definition) is already
         populated.
         """
-        if self._conn is None:
-            return
         if not sig_to_candidate_id:
             return
         cur = self._conn.execute(

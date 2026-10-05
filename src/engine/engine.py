@@ -26,6 +26,7 @@ from .services.edge_existence import EdgeExistenceService
 from .services.inference import InferenceService
 from .services.learning import LearningService
 from .services.population_manager import PopulationManager
+from .stores.database import Database
 from .stores.evidence_store import EvidenceStore
 from .stores.parameter_store import ParameterStore
 from .stores.population_store import PopulationStore
@@ -49,10 +50,12 @@ class ProbabilisticOntologyEngine:
     def __init__(self, db_path: str = ":memory:", random_seed: int = 42) -> None:
         self.random_seed = random_seed
 
-        # Stores — all three share the same SQLite file (or :memory:)
-        self.evidence_store = EvidenceStore(db_path)
-        self.parameter_store = ParameterStore(db_path)
-        self.population_store = PopulationStore(db_path)
+        # One connection shared by all stores, so a learning cycle can be a
+        # single transaction.
+        self.db = Database(db_path)
+        self.evidence_store = EvidenceStore(self.db)
+        self.parameter_store = ParameterStore(self.db)
+        self.population_store = PopulationStore(self.db)
 
         # Services
         self.learning_service = LearningService(self.parameter_store)
@@ -325,7 +328,6 @@ class ProbabilisticOntologyEngine:
         summary = self.population_manager.end_cycle(domain)
 
         # Persist learned parameters so they survive a restart.
-        # save_candidate is a no-op when the engine uses :memory:.
         pop_snapshot = self.population_manager.get_population(domain)
         for candidate in pop_snapshot.candidates:
             self.parameter_store.save_candidate(

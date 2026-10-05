@@ -5,36 +5,21 @@ Schema is PostgreSQL-compatible (uses JSONB as TEXT fallback in SQLite).
 from __future__ import annotations
 
 import json
-import sqlite3
 from datetime import datetime
 from pathlib import Path
 from uuid import UUID
 
 from ..schemas import EvidenceRecord
-
-
-_CREATE_TABLE = """
-CREATE TABLE IF NOT EXISTS evidence_records (
-    evidence_id   TEXT PRIMARY KEY,
-    domain_module TEXT NOT NULL,
-    timestamp     TEXT NOT NULL,
-    source_type   TEXT NOT NULL,
-    source_ref    TEXT NOT NULL DEFAULT '',
-    confidence    REAL NOT NULL DEFAULT 1.0,
-    assignments   TEXT NOT NULL DEFAULT '[]'  -- JSON array
-)
-"""
+from .database import Database
 
 
 class EvidenceStore:
-    """Thread-safe SQLite evidence store per domain module."""
+    """Append-only evidence records per domain module."""
 
-    def __init__(self, db_path: str | Path = ":memory:"):
-        self.db_path = str(db_path)
-        self._conn = sqlite3.connect(self.db_path, check_same_thread=False)
-        self._conn.execute("PRAGMA journal_mode=WAL")
-        self._conn.execute(_CREATE_TABLE)
-        self._conn.commit()
+    def __init__(self, db: Database | str | Path = ":memory:"):
+        self._db = db if isinstance(db, Database) else Database(db)
+        self._conn = self._db.conn
+        self.db_path = self._db.path
 
     # ------------------------------------------------------------------
     def append(self, record: EvidenceRecord, domain_module_id: str) -> None:
@@ -57,7 +42,7 @@ class EvidenceStore:
                 assignments_json,
             ),
         )
-        self._conn.commit()
+        self._db.commit()
 
     # ------------------------------------------------------------------
     def append_batch(self, records: list[EvidenceRecord], domain_module_id: str) -> None:
@@ -80,7 +65,7 @@ class EvidenceStore:
             """,
             rows,
         )
-        self._conn.commit()
+        self._db.commit()
 
     # ------------------------------------------------------------------
     def load_all(self, domain_module_id: str) -> list[EvidenceRecord]:
@@ -165,7 +150,7 @@ class EvidenceStore:
             migrated_records += 1
             migrated_assignments += len(assignments)
         if migrated_records:
-            self._conn.commit()
+            self._db.commit()
         return {
             "migrated_records": migrated_records,
             "migrated_assignments": migrated_assignments,
@@ -197,7 +182,7 @@ class EvidenceStore:
             "DELETE FROM evidence_records WHERE domain_module=?",
             (domain_module_id,),
         )
-        self._conn.commit()
+        self._db.commit()
 
 
 def _row_to_record(row: tuple) -> EvidenceRecord:
