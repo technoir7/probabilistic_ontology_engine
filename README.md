@@ -113,8 +113,8 @@ Exported regime state uses BN inference posteriors, not soft priors.
 
 ```bash
 cd probabilistic_ontology_engine
-source .venv/bin/activate
-uvicorn src.engine.api.app:app --host 0.0.0.0 --port 8000 --reload
+uv sync            # creates .venv from uv.lock, including the pinned art domain package
+uv run uvicorn src.engine.api.app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 Environment (`.env`):
@@ -132,13 +132,18 @@ No key required for SF Open Data, CoinGecko public endpoints, or GDELT. SEC EDGA
 ## Tests
 
 ```bash
-# Standard suite (live tests excluded automatically):
-.venv/bin/python -m pytest tests/ -v
-# 370 passed, 6 deselected
+# Standard suite (live tests excluded automatically; real HTTP is blocked):
+uv run pytest
 
 # Live tests only (hit real external APIs):
-.venv/bin/python -m pytest tests/ -v -m live
-# 6 passed
+uv run pytest -m live
+
+# Regenerate golden snapshots after an intentional behaviour change,
+# then review the snapshot diff before committing:
+POE_UPDATE_GOLDEN=1 uv run pytest tests/golden
 ```
+
+`tests/golden/` pins engine, API, domain and calendar behaviour as committed
+JSON snapshots; see `REFACTOR_SPEC.md` §7 Phase 0.
 
 See `SNAPSHOT.md` for the full current-state handoff and `NEXT.md` for the active priority queue.
