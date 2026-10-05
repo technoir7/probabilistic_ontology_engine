@@ -1,8 +1,8 @@
 # Probabilistic Ontology Engine
 
 ## Spec
-Read `SPECM.md` in full before writing any code.
-All architecture decisions are in SPECM.md. Do not deviate without flagging it.
+Read `SPEC.md` in full before writing any code.
+All architecture decisions are in SPEC.md. Do not deviate without flagging it.
 
 ## Stack
 - Python 3.12
