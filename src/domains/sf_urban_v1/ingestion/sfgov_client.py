@@ -3,9 +3,9 @@ SFGovClient — sf-urban-v1 SF Open Data (Socrata) fetcher.
 
 Datasets used
 -------------
-Building permits: https://data.sfgov.org/resource/i98e-djp9.json
-Police incidents: https://data.sfgov.org/resource/wg3w-h783.json
-Business registrations/closures: https://data.sfgov.org/resource/g8m3-pdis.json
+Building permits: https://data.sf.gov/resource/i98e-djp9.json
+Police incidents: https://data.sf.gov/resource/wg3w-h783.json
+Business registrations/closures: https://data.sf.gov/resource/g8m3-pdis.json
 
 CRITICAL: SF Open Data API is unreliable. Every fetch is wrapped in try/except.
 On any failure, returns empty list []. The pipeline handles empty lists
@@ -25,7 +25,9 @@ import httpx
 
 logger = logging.getLogger(__name__)
 
-_BASE_URL = "https://data.sfgov.org/resource"
+# data.sfgov.org now answers every request with 301 → data.sf.gov; httpx does
+# not follow redirects, so the old host made every SFGov fetch return [].
+_BASE_URL = "https://data.sf.gov/resource"
 
 
 @dataclass(frozen=True)
