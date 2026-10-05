@@ -1675,6 +1675,25 @@
         "title": "Domain",
         "type": "string"
        }
+      },
+      {
+       "description": "Only the most recent N records; default all.",
+       "in": "query",
+       "name": "limit",
+       "required": false,
+       "schema": {
+        "anyOf": [
+         {
+          "minimum": 1,
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "Only the most recent N records; default all.",
+        "title": "Limit"
+       }
       }
      ],
      "responses": {
@@ -1714,6 +1733,25 @@
         "default": "ng",
         "title": "Domain",
         "type": "string"
+       }
+      },
+      {
+       "description": "Only the most recent N records; default all.",
+       "in": "query",
+       "name": "limit",
+       "required": false,
+       "schema": {
+        "anyOf": [
+         {
+          "minimum": 1,
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "Only the most recent N records; default all.",
+        "title": "Limit"
        }
       }
      ],

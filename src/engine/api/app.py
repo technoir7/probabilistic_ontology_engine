@@ -1109,14 +1109,17 @@ async def population_status(
 
 
 @app.get("/v1/debug/entropy", response_model=EntropyDebugOut)
-async def debug_entropy(domain: str = Query("ng")) -> EntropyDebugOut:
+async def debug_entropy(
+    domain: str = Query("ng"),
+    limit: Optional[int] = Query(None, ge=1, description="Only the most recent N records; default all."),
+) -> EntropyDebugOut:
     domain_key = domain.lower()
     engine, domain_id, display_name = _resolve_domain(domain_key, app.state)
     pop = engine.get_population(domain_id)
     candidates = pop.candidates
     variables = candidates[0].variables if candidates else []
     diagnostics = build_entropy_diagnostics(
-        records=engine.evidence_store.load_all(domain_id),
+        records=engine.evidence_store.load_latest(domain_id, limit),
         variables=variables,
     )
 
@@ -1129,14 +1132,17 @@ async def debug_entropy(domain: str = Query("ng")) -> EntropyDebugOut:
 
 
 @app.get("/v1/debug/evidence-geometry")
-async def debug_evidence_geometry(domain: str = Query("ng")) -> dict[str, Any]:
+async def debug_evidence_geometry(
+    domain: str = Query("ng"),
+    limit: Optional[int] = Query(None, ge=1, description="Only the most recent N records; default all."),
+) -> dict[str, Any]:
     domain_key = domain.lower()
     engine, domain_id, display_name = _resolve_domain(domain_key, app.state)
     pop = engine.get_population(domain_id)
     candidates = pop.candidates
     variables = candidates[0].variables if candidates else []
     diagnostics = build_evidence_geometry_diagnostics(
-        records=engine.evidence_store.load_all(domain_id),
+        records=engine.evidence_store.load_latest(domain_id, limit),
         variables=variables,
     )
 
@@ -1863,8 +1869,8 @@ async def narrative_snapshot(
     else:
         entropy_interp = "high"
 
-    shift_events = engine.population_store.load_shift_events(domain_id)
-    total_shifts = len(shift_events)
+    shift_events = engine.population_store.load_shift_events(domain_id, last=3)
+    total_shifts = engine.population_store.count_shift_events(domain_id)
     recent_shifts = [
         NarrativeRecentShiftOut(
             timestamp=ev["shift_ts"],
@@ -1872,7 +1878,7 @@ async def narrative_snapshot(
             to_name=ev["new_dominant_name"],
             generation=ev["generation"],
         )
-        for ev in shift_events[-3:]
+        for ev in shift_events
     ]
 
     ontology_out = NarrativeOntologyCompetitionOut(

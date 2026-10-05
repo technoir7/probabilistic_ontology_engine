@@ -303,9 +303,16 @@ class PopulationStore:
         )
         self._db.commit()
 
-    def load_shift_events(self, domain_module_id: str) -> list[dict]:
+    def count_shift_events(self, domain_module_id: str) -> int:
+        return self._conn.execute(
+            "SELECT COUNT(*) FROM paradigm_shifts WHERE domain_module_id = ?",
+            (domain_module_id,),
+        ).fetchone()[0]
+
+    def load_shift_events(self, domain_module_id: str, last: int | None = None) -> list[dict]:
         """
-        Return all paradigm-shift events for a domain in chronological order.
+        Paradigm-shift events for a domain in chronological order; with *last*,
+        only the most recent *last* events (still oldest first).
 
         Each dict contains:
             shift_id, domain_module_id, generation, shift_ts,
@@ -320,8 +327,9 @@ class PopulationStore:
                    evidence_count_at_shift
             FROM paradigm_shifts
             WHERE domain_module_id = ?
-            ORDER BY shift_ts ASC
+            ORDER BY shift_ts DESC
+            LIMIT ?
             """,
-            (domain_module_id,),
+            (domain_module_id, -1 if last is None else last),  # SQLite: LIMIT -1 = no limit
         )
-        return [dict(row) for row in cur.fetchall()]
+        return [dict(row) for row in reversed(cur.fetchall())]

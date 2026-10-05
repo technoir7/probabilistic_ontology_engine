@@ -69,12 +69,24 @@ class EvidenceStore:
 
     # ------------------------------------------------------------------
     def load_all(self, domain_module_id: str) -> list[EvidenceRecord]:
+        """Every record for the domain, oldest first. Unbounded; prefer load_latest on request paths."""
         cur = self._conn.execute(
             """SELECT evidence_id, timestamp, source_type, source_ref, confidence, assignments
                FROM evidence_records WHERE domain_module=? ORDER BY timestamp""",
             (domain_module_id,),
         )
         return [_row_to_record(row) for row in cur.fetchall()]
+
+    def load_latest(self, domain_module_id: str, limit: int | None) -> list[EvidenceRecord]:
+        """The most recent *limit* records (all if None), oldest first."""
+        if limit is None:
+            return self.load_all(domain_module_id)
+        cur = self._conn.execute(
+            """SELECT evidence_id, timestamp, source_type, source_ref, confidence, assignments
+               FROM evidence_records WHERE domain_module=? ORDER BY timestamp DESC LIMIT ?""",
+            (domain_module_id, limit),
+        )
+        return [_row_to_record(row) for row in reversed(cur.fetchall())]
 
     # ------------------------------------------------------------------
     def count(self, domain_module_id: str) -> int:
