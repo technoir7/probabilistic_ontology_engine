@@ -17,14 +17,14 @@ import hashlib
 import json
 import math
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Mapping
 
 
 # ---------------------------------------------------------------------------
 # Counts serialisation helpers
 # ---------------------------------------------------------------------------
 
-def _serialize_counts(counts: dict) -> str:
+def serialize_counts(counts: dict) -> str:
     """
     Serialise a CPTData counts dict to JSON.
 
@@ -43,8 +43,8 @@ def _serialize_counts(counts: dict) -> str:
     return json.dumps(entries)
 
 
-def _deserialize_counts(counts_json: str) -> dict:
-    """Inverse of _serialize_counts."""
+def deserialize_counts(counts_json: str) -> dict:
+    """Inverse of serialize_counts."""
     entries = json.loads(counts_json)
     counts: dict = {}
     for entry in entries:
@@ -66,58 +66,45 @@ class CPTData:
     counts: dict                    # {parent_config_tuple: {value: count}}
     alpha: float = 1.0              # Dirichlet prior pseudo-count per cell
 
-    def _all_parent_configs(self, parent_supports: dict[str, list[Any]]) -> list[tuple]:
-        """Generate all parent configurations as sorted tuples."""
-        if not self.parents:
-            return [()]
-        configs = [()]
-        for p in self.parents:
-            new_configs = []
-            for cfg in configs:
-                for val in parent_supports[p]:
-                    new_configs.append(cfg + ((p, val),))
-            configs = new_configs
-        return configs
+    def config_key(self, parent_assignment: Mapping[str, Any]) -> tuple:
+        """Row key for a parent assignment; only this CPT's parents are used."""
+        return tuple(sorted((p, parent_assignment[p]) for p in self.parents))
 
-    def ensure_config(self, parent_config: tuple, parent_supports: dict[str, list[Any]]) -> None:
-        """Initialize a config row with zero counts if not present."""
-        if parent_config not in self.counts:
-            self.counts[parent_config] = {v: 0 for v in self.support}
+    def ensure_row(self, parent_assignment: Mapping[str, Any]) -> None:
+        """
+        Create an all-zero row for this parent configuration if absent.
 
-    def increment(self, value: Any, parent_assignment: dict[str, Any]) -> None:
-        """Add 1 to the count for (parent_config, value)."""
-        parent_config = tuple(sorted(
-            (p, parent_assignment[p]) for p in self.parents
-        ))
-        if parent_config not in self.counts:
-            self.counts[parent_config] = {v: 0 for v in self.support}
-        if value in self.counts[parent_config]:
-            self.counts[parent_config][value] += 1
-        else:
-            self.counts[parent_config][value] = 1
+        Observed configurations count toward the BIC parameter penalty
+        (bic_score uses len(counts)), so a configuration seen with negligible
+        weight must still exist as a row.
+        """
+        key = self.config_key(parent_assignment)
+        if key not in self.counts:
+            self.counts[key] = {v: 0 for v in self.support}
+
+    def add(self, value: Any, parent_assignment: Mapping[str, Any], weight: float = 1) -> None:
+        """Add *weight* (default one whole observation) to count(value | parents)."""
+        self.ensure_row(parent_assignment)
+        row = self.counts[self.config_key(parent_assignment)]
+        row[value] = row.get(value, 0) + weight
+
+    def row(self, parent_assignment: Mapping[str, Any]) -> dict[Any, float]:
+        """Copy of the raw counts for one parent configuration ({} if never seen)."""
+        return dict(self.counts.get(self.config_key(parent_assignment), {}))
+
+    def total_count(self) -> float:
+        return sum(sum(row.values()) for row in self.counts.values())
+
+    def serialized_counts(self) -> str:
+        return serialize_counts(self.counts)
 
     def get_probability(self, value: Any, parent_assignment: dict[str, Any]) -> float:
         """Compute smoothed P(variable=value | parent_assignment)."""
-        parent_config = tuple(sorted(
-            (p, parent_assignment[p]) for p in self.parents
-        ))
         r = len(self.support)
-        row = self.counts.get(parent_config, {})
+        row = self.counts.get(self.config_key(parent_assignment), {})
         n_q = sum(row.values())
         n_qk = row.get(value, 0)
         return (n_qk + self.alpha) / (n_q + self.alpha * r)
-
-    def get_cpt_dict(self) -> dict:
-        """Return full normalized CPT as a dict for inspection."""
-        r = len(self.support)
-        result = {}
-        for parent_config, row in self.counts.items():
-            n_q = sum(row.values())
-            result[str(parent_config)] = {
-                v: (row.get(v, 0) + self.alpha) / (n_q + self.alpha * r)
-                for v in self.support
-            }
-        return result
 
     def log_prob(self, value: Any, parent_assignment: dict[str, Any]) -> float:
         p = self.get_probability(value, parent_assignment)

@@ -59,8 +59,7 @@ def _total_counts_for_sig(
         if _candidate_edge_sig(cand) == target_sig:
             total = 0.0
             for cpt in ps.get_all_for_candidate(cand.candidate_id).values():
-                for row in cpt.counts.values():
-                    total += sum(row.values())
+                total += cpt.total_count()
             return total
     return 0.0
 
@@ -98,8 +97,7 @@ def test_parameters_persist_across_restart(tmp_path):
         sig = _candidate_edge_sig(cand)
         total = 0.0
         for cpt in eng1.parameter_store.get_all_for_candidate(cand.candidate_id).values():
-            for row in cpt.counts.values():
-                total += sum(row.values())
+            total += cpt.total_count()
         sig_counts_s1[sig] = total
         sig_hashes_s1[sig] = eng1.parameter_store.parameter_hash(cand.candidate_id)
 
@@ -129,8 +127,7 @@ def test_parameters_persist_across_restart(tmp_path):
 
         total_s2 = 0.0
         for cpt in eng2.parameter_store.get_all_for_candidate(cand2.candidate_id).values():
-            for row in cpt.counts.values():
-                total_s2 += sum(row.values())
+            total_s2 += cpt.total_count()
 
         assert total_s2 == pytest.approx(counts_s1, rel=1e-9), (
             f"Counts for candidate with sig={sig[:60]}... differ after restart: "
@@ -157,8 +154,7 @@ def test_parameters_persist_across_restart(tmp_path):
 
         total_after_6 = 0.0
         for cpt in eng2.parameter_store.get_all_for_candidate(cand2.candidate_id).values():
-            for row in cpt.counts.values():
-                total_after_6 += sum(row.values())
+            total_after_6 += cpt.total_count()
 
         assert total_after_6 > sig_counts_s1[sig], (
             f"Counts did not grow for sig={sig[:60]}... after 6th record: "

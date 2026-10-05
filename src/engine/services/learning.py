@@ -10,6 +10,7 @@ Both modes write to the same CPTData count tables.
 from __future__ import annotations
 
 import math
+from itertools import product
 from typing import Any
 from uuid import UUID
 
@@ -125,7 +126,7 @@ class LearningService:
                 parent_assignment[pv.name] = observed[pv.name]
             if not all_obs:
                 continue
-            cpt_data.increment(observed[var.name], parent_assignment)
+            cpt_data.add(observed[var.name], parent_assignment)
 
     def _accumulate_mean_field(
         self,
@@ -170,26 +171,15 @@ class LearningService:
 
             if not parent_vars:
                 # Root node: use marginal from CPT
-                row = cpt_data.counts.get((), {})
-                n_q = sum(row.values())
-                r = len(var.support)
-                dist = {
-                    v: (row.get(v, 0) + cpt_data.alpha) / (n_q + cpt_data.alpha * r)
-                    for v in var.support
-                }
+                dist = {v: cpt_data.get_probability(v, {}) for v in var.support}
             else:
+                # Parents precede var in topological order, so soft_obs has them.
                 dist = {v: 0.0 for v in var.support}
-                from itertools import product as iproduct
                 parent_names = [pv.name for pv in parent_vars]
-                parent_value_lists = [
-                    list(soft_obs.get(pn, {v: 1.0 / len(pv.support) for v in pv.support}).keys())
-                    for pn, pv in zip(parent_names, parent_vars)
-                ]
-                for combo in iproduct(*parent_value_lists):
+                for combo in product(*(soft_obs[pn].keys() for pn in parent_names)):
                     weight = 1.0
-                    for pn, pv_val, pv in zip(parent_names, combo, parent_vars):
-                        pn_soft = soft_obs.get(pn, {v: 1.0 / len(pv.support) for v in pv.support})
-                        weight *= pn_soft.get(pv_val, 0.0)
+                    for pn, pv_val in zip(parent_names, combo):
+                        weight *= soft_obs[pn].get(pv_val, 0.0)
                     if weight < 1e-14:
                         continue
                     pa = dict(zip(parent_names, combo))
@@ -199,50 +189,25 @@ class LearningService:
             total = sum(dist.values()) or 1.0
             soft_obs[var.name] = {v: dist[v] / total for v in dist}
 
-        # Accumulate fractional counts
-        from itertools import product as iproduct
+        # Accumulate fractional counts. Every variable is in soft_obs after the
+        # forward pass; a root has one (empty) parent configuration.
         for var in candidate.variables:
             if not self.ps.has(candidate.candidate_id, var.name):
                 continue
-            if var.name not in soft_obs:
-                continue
             cpt_data = self.ps.get(candidate.candidate_id, var.name)
-            parent_vars = candidate.get_parents(var.variable_id)
-
-            if not parent_vars:
-                parent_config = ()
-                if parent_config not in cpt_data.counts:
-                    cpt_data.counts[parent_config] = {v: 0.0 for v in var.support}
-                for val, prob in soft_obs[var.name].items():
-                    if prob < 1e-12:
-                        continue
-                    cpt_data.counts[parent_config][val] = (
-                        cpt_data.counts[parent_config].get(val, 0.0) + prob
-                    )
-            else:
-                parent_names = [pv.name for pv in parent_vars]
-                parent_value_lists = [
-                    list(soft_obs.get(pn, {v: 1.0 / 2 for v in pv.support}).keys())
-                    for pn, pv in zip(parent_names, parent_vars)
-                ]
-                for combo in iproduct(*parent_value_lists):
-                    weight = 1.0
-                    for pn, pv_val, pv in zip(parent_names, combo, parent_vars):
-                        pn_soft = soft_obs.get(pn, {})
-                        weight *= pn_soft.get(pv_val, 0.0)
-                    if weight < 1e-12:
-                        continue
-                    pa = dict(zip(parent_names, combo))
-                    parent_config = tuple(sorted(pa.items()))
-                    if parent_config not in cpt_data.counts:
-                        cpt_data.counts[parent_config] = {v: 0.0 for v in var.support}
-                    for val, vprob in soft_obs[var.name].items():
-                        combined = weight * vprob
-                        if combined < 1e-12:
-                            continue
-                        cpt_data.counts[parent_config][val] = (
-                            cpt_data.counts[parent_config].get(val, 0.0) + combined
-                        )
+            parent_names = [pv.name for pv in candidate.get_parents(var.variable_id)]
+            for combo in product(*(soft_obs[pn].keys() for pn in parent_names)):
+                weight = 1.0
+                for pn, pv_val in zip(parent_names, combo):
+                    weight *= soft_obs[pn].get(pv_val, 0.0)
+                if weight < 1e-12:
+                    continue
+                pa = dict(zip(parent_names, combo))
+                cpt_data.ensure_row(pa)
+                for val, vprob in soft_obs[var.name].items():
+                    combined = weight * vprob
+                    if combined >= 1e-12:
+                        cpt_data.add(val, pa, combined)
 
     # ------------------------------------------------------------------
     # Proper EM with pgmpy posterior inference
@@ -364,7 +329,6 @@ class LearningService:
 
             # ---- E-step: compute new delta ----
             new_delta: dict[str, dict] = {v.name: {} for v in candidate.variables}
-            from itertools import product as iproduct
 
             for obs in partial_obs_list:
                 missing_vnames = [v.name for v in candidate.variables if v.name not in obs]
@@ -413,7 +377,7 @@ class LearningService:
                         pa_val_lists = [list(soft.get(pn, {}).keys()) for pn in pnames]
                         if any(not lst for lst in pa_val_lists):
                             continue
-                        for combo in iproduct(*pa_val_lists):
+                        for combo in product(*pa_val_lists):
                             wt = 1.0
                             for pn, pv_val in zip(pnames, combo):
                                 wt *= soft.get(pn, {}).get(pv_val, 0.0)
@@ -428,24 +392,16 @@ class LearningService:
                                 )
 
             # ---- M-step: swap delta (remove prev, add new) ----
-            for vname, config_map in prev_delta.items():
-                if not self.ps.has(candidate.candidate_id, vname):
-                    continue
-                cpt = self.ps.get(candidate.candidate_id, vname)
-                for cfg, val_map in config_map.items():
-                    if cfg in cpt.counts:
+            # Delta keys are sorted (parent, value) pairs; dict(cfg) turns
+            # one back into a parent assignment.
+            for sign, delta in ((-1.0, prev_delta), (1.0, new_delta)):
+                for vname, config_map in delta.items():
+                    if not self.ps.has(candidate.candidate_id, vname):
+                        continue
+                    cpt = self.ps.get(candidate.candidate_id, vname)
+                    for cfg, val_map in config_map.items():
                         for val, cnt in val_map.items():
-                            cpt.counts[cfg][val] = cpt.counts[cfg].get(val, 0.0) - cnt
-
-            for vname, config_map in new_delta.items():
-                if not self.ps.has(candidate.candidate_id, vname):
-                    continue
-                cpt = self.ps.get(candidate.candidate_id, vname)
-                for cfg, val_map in config_map.items():
-                    if cfg not in cpt.counts:
-                        cpt.counts[cfg] = {v: 0.0 for v in val_map}
-                    for val, cnt in val_map.items():
-                        cpt.counts[cfg][val] = cpt.counts[cfg].get(val, 0.0) + cnt
+                            cpt.add(val, dict(cfg), sign * cnt)
 
             prev_delta = new_delta
 

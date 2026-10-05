@@ -16,7 +16,7 @@ from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID
 
-from ..model.cpt import CPTData, _deserialize_counts, _serialize_counts
+from ..model.cpt import CPTData, deserialize_counts
 
 
 # ---------------------------------------------------------------------------
@@ -180,7 +180,7 @@ class ParameterStore:
                 edge_signature,
                 vname,
                 cpt.alpha,
-                _serialize_counts(cpt.counts),
+                cpt.serialized_counts(),
                 json.dumps(cpt.parents),
                 now,
             )
@@ -236,7 +236,7 @@ class ParameterStore:
                 continue  # variable not yet initialised
             existing = self._store[cid_str][vname]
             parents = json.loads(parent_ids_json)
-            counts = _deserialize_counts(counts_json)
+            counts = deserialize_counts(counts_json)
             self._store[cid_str][vname] = CPTData(
                 variable_name=vname,
                 parents=parents,
