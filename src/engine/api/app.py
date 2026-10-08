@@ -1060,10 +1060,12 @@ async def _engine_error(_request: Request, exc: EngineError) -> JSONResponse:
     return JSONResponse(status_code=500, content={"detail": f"{type(exc).__name__}: {exc}"})
 
 
+# No credentials: the monitor frontend sends no cookies, and a wildcard origin combined
+# with credentials would let any site act as a logged-in user. Narrow the origins to the
+# Vercel deploy URL once one is fixed.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],          # Tighten to Vercel deploy URL in production
-    allow_credentials=True,
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
