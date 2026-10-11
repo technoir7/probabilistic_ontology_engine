@@ -47,7 +47,7 @@ from ....engine.schemas import (
     EvidenceRecord,
 )
 from ..domain import get_variables
-from .sfgov_client import SFGovClient, SFPermitObs, SFIncidentObs, SFBusinessObs
+from .sfgov_client import MonthlyCount, SFGovClient
 from .fred_client import FREDClient, FREDObservation
 from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
 
@@ -99,35 +99,31 @@ def _soft_bool(signal: float) -> float:
     return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
 
 
-def _monthly_counts(obs_dates: list[date], lookback_months: int = 13) -> dict[str, int]:
+def _complete_months(counts: list[MonthlyCount], target_date: date, months: int = 13) -> dict[date, list[MonthlyCount]]:
     """
-    Bucket dates into 'YYYY-MM' keys, return counts for last lookback_months.
+    Rows grouped by month, for the last *months* months that ended before
+    *target_date*'s month. The month in progress is left out: a weekly run on
+    the 10th would otherwise compare ten days against whole months, which
+    biases every z-score low.
     """
-    counts: dict[str, int] = {}
-    for d in obs_dates:
-        key = f"{d.year:04d}-{d.month:02d}"
-        counts[key] = counts.get(key, 0) + 1
-    # Keep only the most recent lookback_months
-    sorted_months = sorted(counts.keys(), reverse=True)
-    return {m: counts[m] for m in sorted_months[:lookback_months]}
+    first_of_target_month = target_date.replace(day=1)
+    by_month: dict[date, list[MonthlyCount]] = {}
+    for row in counts:
+        if row.month < first_of_target_month:
+            by_month.setdefault(row.month, []).append(row)
+    return {m: by_month[m] for m in sorted(by_month)[-months:]}
 
 
-def _monthly_zscore(obs_dates: list[date]) -> Optional[float]:
+def _monthly_zscore(counts: list[MonthlyCount], target_date: date) -> Optional[float]:
     """
-    Z-score of most recent month's count vs preceding 12 months.
-    Returns None if insufficient data.
+    Z-score of the latest complete month's count vs the up to 12 before it.
+    None with fewer than 3 complete months.
     """
-    if not obs_dates:
+    by_month = _complete_months(counts, target_date)
+    if len(by_month) < 3:
         return None
-    counts = _monthly_counts(obs_dates, lookback_months=13)
-    if len(counts) < 3:
-        return None
-    sorted_months = sorted(counts.keys())
-    recent = counts[sorted_months[-1]]
-    history = [counts[m] for m in sorted_months[:-1]]
-    if len(history) < 2:
-        return None
-    return _zscore(float(recent), [float(h) for h in history])
+    totals = [float(sum(r.count for r in rows)) for rows in by_month.values()]
+    return _zscore(totals[-1], totals[:-1])
 
 
 def _fred_yoy_zscore(obs: list[FREDObservation]) -> tuple[Optional[float], float]:
@@ -169,96 +165,56 @@ def _compute_tech_hiring(info_emp_obs: list[FREDObservation]) -> tuple[Optional[
     return _fred_yoy_zscore(info_emp_obs)
 
 
-def _compute_office_vacancy_falling(permits: list[SFPermitObs]) -> tuple[Optional[float], float]:
+# Matched against a permit's proposed_use. The numeric permit_type code never
+# matched these (REFACTOR_SPEC B19), so this signal was a constant 0.5.
+_COMMERCIAL_KEYWORDS = {"commercial", "office", "tenant improvement", "tenant impr",
+                        "ti ", "t.i.", "commercial alteration"}
+
+
+def _is_commercial(proposed_use: str) -> bool:
+    use = proposed_use.lower()
+    return any(kw in use for kw in _COMMERCIAL_KEYWORDS)
+
+
+def _compute_office_vacancy_falling(permits: list[MonthlyCount], target_date: date) -> tuple[Optional[float], float]:
     """
-    SF permits commercial/office fraction, inverted z-score.
-    Rising commercial permits fraction = office vacancy falling = positive signal.
+    Share of permits whose proposed use is office/commercial, latest complete
+    month vs the months before it. Rising share = office vacancy falling.
     """
-    if len(permits) < 10:
-        return None, 0.5
-
-    _COMMERCIAL_KEYWORDS = {"commercial", "office", "tenant improvement", "tenant impr",
-                             "ti ", "t.i.", "commercial alteration"}
-
-    def _is_commercial(permit_type: str) -> bool:
-        pt_lower = permit_type.lower()
-        return any(kw in pt_lower for kw in _COMMERCIAL_KEYWORDS)
-
-    # Monthly fractions
-    monthly_total: dict[str, int] = {}
-    monthly_commercial: dict[str, int] = {}
-
-    for p in permits:
-        key = f"{p.filed_date.year:04d}-{p.filed_date.month:02d}"
-        monthly_total[key] = monthly_total.get(key, 0) + 1
-        if _is_commercial(p.permit_type):
-            monthly_commercial[key] = monthly_commercial.get(key, 0) + 1
-
-    months = sorted(monthly_total.keys(), reverse=True)
-    if len(months) < 3:
-        return None, 0.5
-
-    fractions: list[float] = []
-    for m in months:
-        total = monthly_total.get(m, 0)
-        commercial = monthly_commercial.get(m, 0)
+    by_month = _complete_months(permits, target_date)
+    fractions = []
+    for rows in by_month.values():
+        total = sum(r.count for r in rows)
         if total > 0:
-            fractions.append(commercial / total)
-
+            fractions.append(sum(r.count for r in rows if _is_commercial(r.category)) / total)
     if len(fractions) < 3:
         return None, 0.5
-
-    current_frac = fractions[0]
-    # Inverted: rising commercial fraction = vacancy falling = positive signal
-    z = _zscore(current_frac, fractions[1:])
-    return z, 0.8
+    return _zscore(fractions[-1], fractions[:-1]), 0.8
 
 
-def _compute_retail_closure(businesses: list[SFBusinessObs]) -> tuple[Optional[float], float]:
-    """SF business license expirations count z-score."""
-    closure_dates = [
-        b.end_date for b in businesses
-        if b.end_date is not None
-    ]
-    if not closure_dates:
-        return None, 0.5
-    z = _monthly_zscore(closure_dates)
-    if z is None:
-        return None, 0.5
-    return z, 0.8
+def _count_signal(counts: list[MonthlyCount], target_date: date) -> tuple[Optional[float], float]:
+    z = _monthly_zscore(counts, target_date)
+    return (None, 0.5) if z is None else (z, 0.8)
 
 
-def _compute_permit_activity(permits: list[SFPermitObs]) -> tuple[Optional[float], float]:
-    """SF total building permits monthly count z-score."""
-    if not permits:
-        return None, 0.5
-    permit_dates = [p.filed_date for p in permits]
-    z = _monthly_zscore(permit_dates)
-    if z is None:
-        return None, 0.5
-    return z, 0.8
+def _compute_retail_closure(closures: list[MonthlyCount], target_date: date) -> tuple[Optional[float], float]:
+    """Business locations ended per month, z-scored."""
+    return _count_signal(closures, target_date)
 
 
-def _compute_crime_index(incidents: list[SFIncidentObs]) -> tuple[Optional[float], float]:
-    """SF police incidents monthly count z-score."""
-    if not incidents:
-        return None, 0.5
-    incident_dates = [i.incident_date for i in incidents]
-    z = _monthly_zscore(incident_dates)
-    if z is None:
-        return None, 0.5
-    return z, 0.8
+def _compute_permit_activity(permits: list[MonthlyCount], target_date: date) -> tuple[Optional[float], float]:
+    """Building permits filed per month, z-scored."""
+    return _count_signal(permits, target_date)
 
 
-def _compute_startup_formation(businesses: list[SFBusinessObs]) -> tuple[Optional[float], float]:
-    """SF new business registrations count z-score."""
-    start_dates = [b.start_date for b in businesses]
-    if not start_dates:
-        return None, 0.5
-    z = _monthly_zscore(start_dates)
-    if z is None:
-        return None, 0.5
-    return z, 0.8
+def _compute_crime_index(incidents: list[MonthlyCount], target_date: date) -> tuple[Optional[float], float]:
+    """Police incidents per month, z-scored."""
+    return _count_signal(incidents, target_date)
+
+
+def _compute_startup_formation(openings: list[MonthlyCount], target_date: date) -> tuple[Optional[float], float]:
+    """Business locations started per month, z-scored."""
+    return _count_signal(openings, target_date)
 
 
 def _compute_foot_traffic(hosp_emp_obs: list[FREDObservation]) -> tuple[Optional[float], float]:
@@ -294,7 +250,8 @@ def compute_snapshot(
 
     permits = sfgov_data.get("permits", [])
     incidents = sfgov_data.get("incidents", [])
-    businesses = sfgov_data.get("businesses", [])
+    openings = sfgov_data.get("business_openings", [])
+    closures = sfgov_data.get("business_closures", [])
 
     info_emp = fred_data.get("SANF806INFO", [])
     hosp_emp = fred_data.get("SANF806LEIH", [])
@@ -305,23 +262,23 @@ def compute_snapshot(
     _apply("TechHiringAccelerating", sig, conf, "p_tech_hiring_accelerating", "tech_hiring_accelerating")
 
     # OfficeVacancyFalling
-    sig, conf = _compute_office_vacancy_falling(permits)
+    sig, conf = _compute_office_vacancy_falling(permits, target_date)
     _apply("OfficeVacancyFalling", sig, conf, "p_office_vacancy_falling", "office_vacancy_falling")
 
     # RetailClosureElevated
-    sig, conf = _compute_retail_closure(businesses)
+    sig, conf = _compute_retail_closure(closures, target_date)
     _apply("RetailClosureElevated", sig, conf, "p_retail_closure_elevated", "retail_closure_elevated")
 
     # PermitActivityRising
-    sig, conf = _compute_permit_activity(permits)
+    sig, conf = _compute_permit_activity(permits, target_date)
     _apply("PermitActivityRising", sig, conf, "p_permit_activity_rising", "permit_activity_rising")
 
     # CrimeIndexElevated
-    sig, conf = _compute_crime_index(incidents)
+    sig, conf = _compute_crime_index(incidents, target_date)
     _apply("CrimeIndexElevated", sig, conf, "p_crime_index_elevated", "crime_index_elevated")
 
     # StartupFormationRising
-    sig, conf = _compute_startup_formation(businesses)
+    sig, conf = _compute_startup_formation(openings, target_date)
     _apply("StartupFormationRising", sig, conf, "p_startup_formation_rising", "startup_formation_rising")
 
     # FootTrafficRecovering

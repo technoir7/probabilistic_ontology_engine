@@ -14,7 +14,7 @@ from src.engine.model.errors import EvidenceUnavailable
 from src.engine.schemas import MissingnessType
 
 TARGET = date(2026, 3, 1)
-SFGOV_EMPTY = {"permits": [], "incidents": [], "businesses": []}
+SFGOV_EMPTY = {"permits": [], "incidents": [], "business_openings": [], "business_closures": []}
 
 
 def _monthly(series_id: str) -> list[FREDObservation]:

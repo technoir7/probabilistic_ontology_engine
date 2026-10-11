@@ -1,17 +1,21 @@
 """
-SFGovClient — sf-urban-v1 SF Open Data (Socrata) fetcher.
+SFGovClient — sf-urban-v1 SF Open Data (Socrata) monthly counts.
 
-Datasets used
--------------
-Building permits: https://data.sf.gov/resource/i98e-djp9.json
-Police incidents: https://data.sf.gov/resource/wg3w-h783.json
-Business registrations/closures: https://data.sf.gov/resource/g8m3-pdis.json
+Datasets
+--------
+Building permits:  https://data.sf.gov/resource/i98e-djp9.json   (filed_date, proposed_use)
+Police incidents:  https://data.sf.gov/resource/wg3w-h783.json   (incident_date)
+Businesses:        https://data.sf.gov/resource/g8m3-pdis.json   (location_start_date / location_end_date)
 
-CRITICAL: SF Open Data API is unreliable. Every fetch is wrapped in try/except.
-On any failure, returns empty list []. The pipeline handles empty lists
-by falling back to p=0.5.
+The signals only need counts per month, so the server aggregates
+(date_trunc_ym + count, grouped by month). Fetching rows instead, capped at
+1,000-2,000 and newest first, covered weeks rather than the 13 months the
+z-scores need, and in a historical backfill returned only rows newer than the
+target date, which were then dropped (REFACTOR_SPEC B13).
 
-No API key required (free public Socrata API).
+Every query is bounded to [end_date - lookback, end_date], so a backfill sees
+only what existed on its target date. Any failure returns [] (the pipeline
+then records those variables as MISSING).
 """
 from __future__ import annotations
 
@@ -29,36 +33,16 @@ logger = logging.getLogger(__name__)
 # not follow redirects, so the old host made every SFGov fetch return [].
 _BASE_URL = "https://data.sf.gov/resource"
 
-
-@dataclass(frozen=True)
-class SFPermitObs:
-    """A single building permit observation."""
-    filed_date: date
-    permit_type: str
+# 13 complete months before the target plus the month in progress.
+_DEFAULT_LOOKBACK_DAYS = 430
 
 
 @dataclass(frozen=True)
-class SFIncidentObs:
-    """A single police incident observation."""
-    incident_date: date
-    category: str
-
-
-@dataclass(frozen=True)
-class SFBusinessObs:
-    """A single business registration/closure observation."""
-    start_date: date
-    end_date: Optional[date]  # None if still active
-
-
-def _parse_date_flexible(s: str) -> Optional[date]:
-    """Parse date from ISO string (handles datetime and date-only strings)."""
-    if not s:
-        return None
-    try:
-        return date.fromisoformat(s[:10])
-    except (ValueError, TypeError):
-        return None
+class MonthlyCount:
+    """Number of records in one calendar month (``month`` is its first day)."""
+    month: date
+    count: int
+    category: str = ""   # permits: proposed_use (e.g. "office"); otherwise ""
 
 
 class SFGovClient:
@@ -95,165 +79,80 @@ class SFGovClient:
     async def __aexit__(self, *_: object) -> None:
         await self.aclose()
 
-    async def fetch_permits(
+    async def _monthly(
         self,
-        lookback_days: int = 365,
-        end_date: Optional[date] = None,
-    ) -> list[SFPermitObs]:
-        """
-        Fetch building permit filings. Returns empty list on failure.
-        """
-        if end_date is None:
-            end_date = datetime.now(timezone.utc).date()
-        start_date = end_date - timedelta(days=lookback_days)
-
-        url = f"{self.BASE_URL}/i98e-djp9.json"
+        dataset: str,
+        date_column: str,
+        end_date: date,
+        lookback_days: int,
+        category_column: str | None = None,
+    ) -> list[MonthlyCount]:
+        """One aggregated query: count per month (and category) in the bounded window."""
+        start = end_date - timedelta(days=lookback_days)
+        group = "month" + (f", {category_column}" if category_column else "")
         params = {
-            "$select": "filed_date,permit_type",
-            "$limit": "1000",
-            "$order": "filed_date DESC",
-            "$where": f"filed_date IS NOT NULL AND filed_date >= '{start_date.isoformat()}'",
+            "$select": f"date_trunc_ym({date_column}) as month, "
+                       + (f"{category_column}, " if category_column else "")
+                       + "count(*) as n",
+            "$where": f"{date_column} between '{start.isoformat()}T00:00:00' and '{end_date.isoformat()}T23:59:59'",
+            "$group": group,
+            "$order": "month",
+            "$limit": "5000",
         }
-
         try:
-            resp = await self._client.get(url, params=params)
+            resp = await self._client.get(f"{self.BASE_URL}/{dataset}.json", params=params)
             resp.raise_for_status()
-            records = resp.json()
+            rows = resp.json()
         except Exception as exc:
-            logger.warning("SFGov fetch_permits failed: %s", exc)
+            logger.warning("SFGov %s monthly counts failed: %s", dataset, exc)
             return []
 
-        result: list[SFPermitObs] = []
-        for rec in records:
+        result: list[MonthlyCount] = []
+        for row in rows:
             try:
-                filed_date = _parse_date_flexible(rec.get("filed_date", ""))
-                if filed_date is None or filed_date > end_date:
-                    continue
-                permit_type = str(rec.get("permit_type", ""))
-                result.append(SFPermitObs(filed_date=filed_date, permit_type=permit_type))
-            except Exception:
+                month = date.fromisoformat(str(row["month"])[:10])
+                count = int(row["n"])
+            except (KeyError, ValueError, TypeError):
                 continue
-
-        logger.debug("SFGov permits: %d obs", len(result))
+            result.append(MonthlyCount(month=month, count=count, category=str(row.get(category_column, "") or "") if category_column else ""))
+        logger.debug("SFGov %s: %d month rows", dataset, len(result))
         return result
 
-    async def fetch_incidents(
-        self,
-        lookback_days: int = 365,
-        end_date: Optional[date] = None,
-    ) -> list[SFIncidentObs]:
-        """
-        Fetch police incident reports. Returns empty list on failure.
-        """
-        if end_date is None:
-            end_date = datetime.now(timezone.utc).date()
-        start_date = end_date - timedelta(days=lookback_days)
+    async def fetch_permits(self, end_date: Optional[date] = None, lookback_days: int = _DEFAULT_LOOKBACK_DAYS) -> list[MonthlyCount]:
+        """Permits filed per month and proposed use."""
+        end_date = end_date or datetime.now(timezone.utc).date()
+        return await self._monthly("i98e-djp9", "filed_date", end_date, lookback_days, "proposed_use")
 
-        url = f"{self.BASE_URL}/wg3w-h783.json"
-        params = {
-            "$select": "incident_date,incident_category",
-            "$limit": "2000",
-            "$order": "incident_date DESC",
-            "$where": f"incident_date >= '{start_date.isoformat()}'",
-        }
+    async def fetch_incidents(self, end_date: Optional[date] = None, lookback_days: int = _DEFAULT_LOOKBACK_DAYS) -> list[MonthlyCount]:
+        """Police incidents per month."""
+        end_date = end_date or datetime.now(timezone.utc).date()
+        return await self._monthly("wg3w-h783", "incident_date", end_date, lookback_days)
 
-        try:
-            resp = await self._client.get(url, params=params)
-            resp.raise_for_status()
-            records = resp.json()
-        except Exception as exc:
-            logger.warning("SFGov fetch_incidents failed: %s", exc)
-            return []
+    async def fetch_business_openings(self, end_date: Optional[date] = None, lookback_days: int = _DEFAULT_LOOKBACK_DAYS) -> list[MonthlyCount]:
+        """Business locations started per month."""
+        end_date = end_date or datetime.now(timezone.utc).date()
+        return await self._monthly("g8m3-pdis", "location_start_date", end_date, lookback_days)
 
-        result: list[SFIncidentObs] = []
-        for rec in records:
-            try:
-                incident_date = _parse_date_flexible(rec.get("incident_date", ""))
-                if incident_date is None or incident_date > end_date:
-                    continue
-                category = str(rec.get("incident_category", ""))
-                result.append(SFIncidentObs(incident_date=incident_date, category=category))
-            except Exception:
-                continue
-
-        logger.debug("SFGov incidents: %d obs", len(result))
-        return result
-
-    async def fetch_businesses(
-        self,
-        lookback_days: int = 365,
-        end_date: Optional[date] = None,
-    ) -> list[SFBusinessObs]:
-        """
-        Fetch business registration/closure data. Returns empty list on failure.
-        """
-        if end_date is None:
-            end_date = datetime.now(timezone.utc).date()
-        start_date = end_date - timedelta(days=lookback_days)
-
-        url = f"{self.BASE_URL}/g8m3-pdis.json"
-        # Actual column names confirmed 2026-05-27: location_start_date / location_end_date
-        # (dataset uses datetime values like "2012-01-01T00:00:00.000"; Socrata SoQL
-        # requires the T00:00:00 datetime suffix in comparisons against datetime columns)
-        params = {
-            "$select": "location_start_date,location_end_date",
-            "$limit": "2000",
-            "$order": "location_start_date DESC",
-            "$where": f"location_start_date >= '{start_date.isoformat()}T00:00:00'",
-        }
-
-        try:
-            resp = await self._client.get(url, params=params)
-            resp.raise_for_status()
-            records = resp.json()
-        except Exception as exc:
-            logger.warning("SFGov fetch_businesses failed: %s", exc)
-            return []
-
-        result: list[SFBusinessObs] = []
-        for rec in records:
-            try:
-                start = _parse_date_flexible(rec.get("location_start_date", ""))
-                # As of end_date: later openings did not exist yet, and a
-                # later closure means the business was still open.
-                if start is None or start > end_date:
-                    continue
-                end_raw = rec.get("location_end_date", "")
-                end = _parse_date_flexible(end_raw) if end_raw else None
-                if end is not None and end > end_date:
-                    end = None
-                result.append(SFBusinessObs(start_date=start, end_date=end))
-            except Exception:
-                continue
-
-        logger.debug("SFGov businesses: %d obs", len(result))
-        return result
+    async def fetch_business_closures(self, end_date: Optional[date] = None, lookback_days: int = _DEFAULT_LOOKBACK_DAYS) -> list[MonthlyCount]:
+        """Business locations ended per month."""
+        end_date = end_date or datetime.now(timezone.utc).date()
+        return await self._monthly("g8m3-pdis", "location_end_date", end_date, lookback_days)
 
     async def fetch_all(
         self,
         end_date: Optional[date] = None,
-    ) -> dict:
-        """
-        Fetch all SF Open Data sources concurrently.
-
-        Returns dict with keys:
-            "permits": list[SFPermitObs]
-            "incidents": list[SFIncidentObs]
-            "businesses": list[SFBusinessObs]
-        """
-        if end_date is None:
-            end_date = datetime.now(timezone.utc).date()
-
-        permits_task = asyncio.create_task(self.fetch_permits(end_date=end_date))
-        incidents_task = asyncio.create_task(self.fetch_incidents(end_date=end_date))
-        businesses_task = asyncio.create_task(self.fetch_businesses(end_date=end_date))
-
-        permits, incidents, businesses = await asyncio.gather(
-            permits_task, incidents_task, businesses_task
+    ) -> dict[str, list[MonthlyCount]]:
+        """All four monthly series concurrently (four requests)."""
+        end_date = end_date or datetime.now(timezone.utc).date()
+        permits, incidents, openings, closures = await asyncio.gather(
+            self.fetch_permits(end_date=end_date),
+            self.fetch_incidents(end_date=end_date),
+            self.fetch_business_openings(end_date=end_date),
+            self.fetch_business_closures(end_date=end_date),
         )
-
         return {
             "permits": permits,
             "incidents": incidents,
-            "businesses": businesses,
+            "business_openings": openings,
+            "business_closures": closures,
         }
