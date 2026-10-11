@@ -11,6 +11,7 @@ from pydantic import ValidationError
 from ...runtime.art import import_art_module
 from ...runtime.ingestion import backfill
 from ...runtime.registry import BY_KEY
+from ...runtime.settings import Settings
 from .. import context, presenters
 from ..dto import (
     IngestTriggerOut,
@@ -99,7 +100,14 @@ async def ingest_art_manual(
     engine, domain_id, display_name = context.resolve_domain(domain_key, request.app.state)
     lock = context.ingest_lock(request.app.state, domain_key)
     manual_ingest = import_art_module("manual_ingest")
-    input_path = Path(path) if path else context.default_art_manual_dir(manual_ingest)
+    root = Settings.from_env().art_manual_dir or context.default_art_manual_dir(manual_ingest)
+    input_path = Path(path) if path else root
+    # Unauthenticated route: never read outside the manual-ingest directory.
+    if not input_path.resolve().is_relative_to(root.resolve()):
+        raise HTTPException(
+            status_code=400,
+            detail=f"path must be inside the manual-ingest directory ({root})",
+        )
 
     async with lock:
         try:

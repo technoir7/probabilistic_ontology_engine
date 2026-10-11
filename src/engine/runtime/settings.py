@@ -51,6 +51,9 @@ class Settings:
     log_level: str
     fireworks_api_key: str
     fireworks_model: str
+    # The only directory /v1/ingest/art/manual may read from; None = the art
+    # package's own data/manual_ingest.
+    art_manual_dir: Path | None
     # The raw environment, for per-domain names (<PREFIX>_RUN_HOUR_UTC) and the
     # API keys domain sources read.
     environ: Mapping[str, str] = field(repr=False)
@@ -66,6 +69,7 @@ class Settings:
             fireworks_model=environ.get(
                 "FIREWORKS_REPORT_MODEL", "accounts/fireworks/models/deepseek-v4-pro"
             ),
+            art_manual_dir=Path(environ["POE_ART_MANUAL_DIR"]) if environ.get("POE_ART_MANUAL_DIR") else None,
             environ=environ,
         )
 

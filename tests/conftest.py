@@ -46,6 +46,8 @@ def _sealed_runtime(request, monkeypatch, tmp_path):
     httpx.MockTransport keep working. Tests marked ``live`` are exempt.
     """
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path / "poe_data"))
+    # Art manual-ingest tests write their input files into tmp_path.
+    monkeypatch.setenv("POE_ART_MANUAL_DIR", str(tmp_path))
     monkeypatch.setenv("EVIDENCE_SCHEDULER_ENABLED", "false")
     if "live" in request.keywords:
         return
