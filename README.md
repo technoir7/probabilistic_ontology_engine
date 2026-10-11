@@ -72,9 +72,25 @@ Core services:
 - `EdgeExistenceService`: BIC-style edge existence updates and pruning.
 - `PopulationManager`: candidate scoring, pruning, mutation, paradigm-shift tracking.
 - `InferenceService`: pgmpy-backed Bayesian inference.
-- `ExploreExploitService`: empirical mutual information — implemented and tested.
+- `ExploreExploitService`: empirical mutual information — implemented and tested, not yet used by the learning loop (REFACTOR_SPEC D3).
 
 Variable identity is deterministic via `stable_variable_id(domain_module_id, variable_name)`, preserving evidence continuity across restarts.
+
+Code layout (layers import downward only; enforced by `uv run lint-imports`):
+
+```
+api/        HTTP routers, response models, view logic
+runtime/    domain registry, settings, ingest/backfill/scheduler
+engine.py   the facade over services + stores
+services/   learning, edge existence, population, inference (pure)
+stores/     SQLite repositories, migrations/*.sql, one transaction per learning cycle
+model/      CPTs, the candidate score, cadence, domain contract, errors
+domains/    one package per domain + sources/ (shared FRED/yfinance clients, helpers)
+```
+
+Adding a domain: give its package a `DomainModule` (`domain.py`) and a
+`source.open_source(env)`, then add one `DomainRegistration` in
+`src/engine/runtime/registry.py`. Nothing else names domains.
 
 ## API
 
