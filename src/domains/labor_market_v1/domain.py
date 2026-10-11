@@ -80,11 +80,9 @@ from __future__ import annotations
 
 from uuid import uuid4
 
-from ...engine.variable_identity import stable_variable_id
+from ..sources.structure import boolean_variables, seed_edge
 from ...engine.schemas import (
     DependencyEdge,
-    DependencyKind,
-    DomainType,
     EdgeExistenceThresholdConfig,
     OntologyCandidate,
     Variable,
@@ -103,15 +101,7 @@ _VAR_NAMES = [
     "TightLaborMarket",
 ]
 
-_VARIABLE_DEFS: dict[str, Variable] = {
-    name: Variable(
-        variable_id=stable_variable_id(_MODULE_ID, name),
-        name=name,
-        domain_type=DomainType.BOOLEAN,
-        support=[True, False],
-    )
-    for name in _VAR_NAMES
-}
+_VARIABLE_DEFS: dict[str, Variable] = boolean_variables(_MODULE_ID, _VAR_NAMES)
 
 
 def get_variables() -> dict[str, Variable]:
@@ -127,17 +117,7 @@ def _var_list() -> list[Variable]:
 
 
 def _edge(parent: str, child: str, prior: float = 0.60, label: str = "") -> DependencyEdge:
-    return DependencyEdge(
-        edge_id=uuid4(),
-        parent_variable_id=_var(parent).variable_id,
-        child_variable_id=_var(child).variable_id,
-        dependency_kind=DependencyKind.DIRECTED_CONDITIONAL,
-        existence_prior=prior,
-        existence_probability=prior,
-        learnable=True,
-        enabled=True,
-        explanatory_label=label or f"{parent}→{child}",
-    )
+    return seed_edge(_VARIABLE_DEFS, parent, child, prior, label)
 
 
 def make_labor_tightening_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
