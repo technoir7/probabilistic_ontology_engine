@@ -52,6 +52,8 @@ class DomainRegistration:
     # Pause between backfill requests, to be polite to upstream APIs.
     backfill_pause_s: float = 2.0
     scheduled: bool = True
+    # Optional: if its package is not installed, the service runs without it.
+    optional: bool = False
     # Skip a fetched weekly state identical to the latest stored one.
     skip_unchanged_state: bool = False
 
@@ -85,7 +87,8 @@ REGISTRY: tuple[DomainRegistration, ...] = (
     DomainRegistration("sf", "sf-urban-v1", "SF Urban", "sf_urban.db", SFUrbanV1,
                        sf_source.open_source, _FRED, "SF_URBAN", skip_unchanged_state=True),
     DomainRegistration("art", "art_prestige_regime_v1", "Art Prestige Regime", "art_prestige_regime.db",
-                       art.build_art_domain, art.open_source, cadence=Daily(), scheduled=False),
+                       art.build_art_domain, art.open_source, cadence=Daily(), scheduled=False,
+                       optional=True),
 )
 
 BY_KEY: dict[str, DomainRegistration] = {r.key: r for r in REGISTRY}

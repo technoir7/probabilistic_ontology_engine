@@ -42,8 +42,6 @@ from . import report as _report
 
 logger = logging.getLogger(__name__)
 
-REQUIRED_ENV_VARS = ("EIA_API_KEY",)
-
 # Short name → (domain_module_id, display_name)
 _DOMAIN_MAP: dict[str, tuple[str, str]] = {r.key: (r.module_id, r.display_name) for r in REGISTRY}
 
@@ -635,23 +633,29 @@ async def lifespan(app: FastAPI):
     scheduler_enabled = settings.scheduler_enabled
 
     # Always build shared engines so API routes work regardless of scheduler state
-    app.state.engines: dict[str, ProbabilisticOntologyEngine] = {
-        r.key: _build_engine(r.build_domain(), data_dir / r.db_filename) for r in REGISTRY
-    }
+    app.state.engines: dict[str, ProbabilisticOntologyEngine] = {}
     for reg in REGISTRY:
-        if isinstance(reg.cadence, Weekly):
+        try:
+            domain_module = reg.build_domain()
+        except ModuleNotFoundError as exc:
+            if not reg.optional:
+                raise
+            # An optional domain's package is absent: serve the others; its
+            # routes answer 503 ("engine not initialised").
+            logger.warning("%s disabled: %s", reg.display_name, exc)
+            continue
+        app.state.engines[reg.key] = _build_engine(domain_module, data_dir / reg.db_filename)
+    for reg in REGISTRY:
+        if isinstance(reg.cadence, Weekly) and reg.key in app.state.engines:
             move_friday_weekly_records_to_sunday(app.state.engines[reg.key], reg.module_id)
     app.state.scheduler_tasks: list[asyncio.Task] = []
     app.state.scheduler_enabled = scheduler_enabled
     app.state.ingest_locks: dict[str, asyncio.Lock] = {r.key: asyncio.Lock() for r in REGISTRY}
 
     if scheduler_enabled:
-        missing = [n for n in REQUIRED_ENV_VARS if not settings.environ.get(n)]
-        if missing:
-            raise RuntimeError(f"Missing required environment variable(s): {', '.join(missing)}")
         tasks = []
         for reg in REGISTRY:
-            if not reg.scheduled:
+            if not reg.scheduled or reg.key not in app.state.engines:
                 continue
             missing = settings.missing_env(reg)
             if missing:
