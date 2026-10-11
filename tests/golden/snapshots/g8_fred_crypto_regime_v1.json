@@ -2,7 +2,7 @@
  "failures": {
   "all_missing": "OSError",
   "empty": "OSError",
-  "http_500": "OSError",
+  "http_500": "FredHTTPError",
   "not_json": "OSError"
  },
  "fetch_all_series": {
