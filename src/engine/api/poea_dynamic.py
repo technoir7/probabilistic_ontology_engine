@@ -87,7 +87,7 @@ def _time_ago(iso_ts: str | None) -> str:
         if diff < 86400:
             return f"{int(diff / 3600)}h ago"
         return f"{int(diff / 86400)}d ago"
-    except Exception:
+    except (ValueError, TypeError):
         return "unknown"
 
 
@@ -567,7 +567,7 @@ def build_recent_evidence(display_name: str, limit: int) -> dict[str, Any]:
             if dt and dt.tzinfo is None:
                 dt = dt.replace(tzinfo=timezone.utc)
             timestamp = dt.isoformat() if dt else scored.get("metadata", {}).get("scored_at", "")
-        except Exception:
+        except (ValueError, TypeError):
             timestamp = scored.get("metadata", {}).get("scored_at", "")
 
         assignments: list[dict[str, Any]] = rec.get("assignments", [])

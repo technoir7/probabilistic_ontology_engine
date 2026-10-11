@@ -78,7 +78,6 @@ def tabular_cpd(var, parent_vars, cpt_data: CPTData) -> TabularCPD:
     n_var = len(var.support)
     evidence_names = [pv.name for pv in parent_vars]
     evidence_cards = [len(pv.support) for pv in parent_vars]
-    evidence_supports = {pv.name: pv.support for pv in parent_vars}
 
     if not parent_vars:
         # Root node

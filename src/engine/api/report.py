@@ -108,7 +108,7 @@ def load_cache(path: Path) -> Optional[dict]:
         return None
     try:
         return json.loads(path.read_text(encoding="utf-8"))
-    except Exception as exc:
+    except (OSError, json.JSONDecodeError) as exc:
         logger.warning("Failed to read report cache %s: %s", path, exc)
         return None
 
@@ -116,7 +116,7 @@ def load_cache(path: Path) -> Optional[dict]:
 def save_cache(path: Path, data: dict) -> None:
     try:
         path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
-    except Exception as exc:
+    except OSError as exc:
         logger.warning("Failed to write report cache %s: %s", path, exc)
 
 

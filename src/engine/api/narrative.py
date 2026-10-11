@@ -170,7 +170,7 @@ def build_snapshot(
     )
 
     # ── frontier ──────────────────────────────────────────────────────────────
-    thresholds = engine._modules[domain_id].existence_thresholds()
+    thresholds = engine.thresholds(domain_id)
     explore_lo, explore_hi = thresholds.explore_band
     frontier_edges_out: list[NarrativeFrontierEdgeOut] = []
     if dom:
@@ -237,7 +237,7 @@ def build_snapshot(
                 hints.append("last paradigm shift was 1 day ago")
             else:
                 hints.append(f"last paradigm shift was {days_ago} days ago")
-        except Exception:
+        except (ValueError, TypeError):
             hints.append("last paradigm shift timestamp could not be parsed")
     else:
         hints.append("no paradigm shifts recorded since shift logging was enabled")

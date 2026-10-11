@@ -10,7 +10,7 @@ import json
 import logging
 from datetime import datetime, timezone
 from typing import Any
-from uuid import UUID, uuid4
+from uuid import UUID
 
 logger = logging.getLogger(__name__)
 
@@ -257,6 +257,10 @@ class ProbabilisticOntologyEngine:
         for stats in (self._learn_call_count, self._learn_last_ts, self._learn_records_total):
             stats.pop(module_id, None)
         self.register_domain(domain_module)
+
+    def thresholds(self, module_id: str) -> EdgeExistenceThresholdConfig:
+        """The domain's edge-existence thresholds (prune / accept / explore band)."""
+        return self._modules[module_id].existence_thresholds()
 
     def learning_stats(self, module_id: str) -> dict[str, Any]:
         """learn() calls, last learn time and records learned since this process started."""

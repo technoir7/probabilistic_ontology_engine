@@ -58,7 +58,7 @@ async def inference_query(request: Request, body: QueryBodyIn) -> InferenceOut:
     target_prob = presenters.p_true(dist)
 
     # Build graph
-    thresholds = engine._modules[domain_id].existence_thresholds()
+    thresholds = engine.thresholds(domain_id)
     explore_lo, explore_hi = thresholds.explore_band
 
     nodes: list[GraphNodeOut] = []

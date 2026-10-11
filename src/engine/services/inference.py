@@ -9,7 +9,6 @@ model.scoring.score_weights.
 """
 from __future__ import annotations
 
-from typing import Any
 
 from pgmpy.inference import VariableElimination
 from pgmpy.models import DiscreteBayesianNetwork as BayesianNetwork
@@ -113,8 +112,8 @@ class InferenceService:
         model = build_network(candidate, self.ps)
         try:
             model.check_model()
-        except Exception:
-            pass  # Allow slight numerical imprecision
+        except ValueError:
+            pass  # CPD columns can miss summing to 1 by float error; inference still works
         return model
 
     # ------------------------------------------------------------------

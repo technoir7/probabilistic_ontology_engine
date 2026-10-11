@@ -9,16 +9,13 @@ Both modes write to the same CPTData count tables.
 """
 from __future__ import annotations
 
-import math
 from itertools import product
 from typing import Any
-from uuid import UUID
 
 from ..schemas import EvidenceRecord, MissingnessType, OntologyCandidate
 
 _SOFT = MissingnessType.SOFT_OBSERVED
 _HARD = MissingnessType.OBSERVED
-from ..model.cpt import CPTData
 from ..stores.parameter_store import ParameterStore
 
 
@@ -227,7 +224,6 @@ class LearningService:
         Accumulates the final expected sufficient statistics into the CPT counts.
         """
         vid_to_name = {str(v.variable_id): v.name for v in candidate.variables}
-        all_names = {v.name for v in candidate.variables}
 
         # TODO: accumulate_em does not yet handle SOFT_OBSERVED evidence.
         # SOFT_OBSERVED assignments are currently treated as OBSERVED (MAP value)
@@ -296,7 +292,7 @@ class LearningService:
                 pgmpy_model.check_model()
                 ve = VariableElimination(pgmpy_model)
                 use_pgmpy = True
-            except Exception:
+            except Exception:  # noqa: BLE001 — EM falls back to a uniform E-step (REFACTOR_SPEC E3, D4)
                 pass
 
             # ---- E-step: compute new delta ----
@@ -325,7 +321,7 @@ class LearningService:
                                 mv.support[i]: float(q.values[i])
                                 for i in range(len(mv.support))
                             }
-                        except Exception:
+                        except Exception:  # noqa: BLE001 — see above (E3, D4)
                             soft[mv_name] = {v: 1.0 / len(mv.support) for v in mv.support}
                 else:
                     soft = {vname: {val: 1.0} for vname, val in obs.items()}

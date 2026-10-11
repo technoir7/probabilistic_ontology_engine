@@ -50,7 +50,7 @@ def time_ago(iso_ts: str | None) -> str:
         if diff < 86400:
             return f"{int(diff / 3600)}h ago"
         return f"{int(diff / 86400)}d ago"
-    except Exception:
+    except (ValueError, TypeError):
         return "unknown"
 
 
@@ -126,7 +126,7 @@ def build_population_status(
     summary = pop.summary()
     dom = pop.dominant()
 
-    thresholds = engine._modules[domain_id].existence_thresholds()
+    thresholds = engine.thresholds(domain_id)
     explore_lo, explore_hi = thresholds.explore_band
     frontier_count = 0
     if dom:

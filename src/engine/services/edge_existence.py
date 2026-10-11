@@ -15,7 +15,6 @@ Explore weight decays as existence_probability converges toward 0 or 1.
 from __future__ import annotations
 
 import math
-from uuid import UUID
 
 from ..schemas import DependencyEdge, EdgeExistenceThresholdConfig, OntologyCandidate
 from ..stores.parameter_store import ParameterStore

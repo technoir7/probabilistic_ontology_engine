@@ -12,13 +12,10 @@ Responsibilities:
 """
 from __future__ import annotations
 
-import copy
 import random
 from datetime import datetime
-from typing import Any
 from uuid import UUID, uuid4
 
-import networkx as nx
 
 from ..model.scoring import candidate_score
 from ..model.scoring import dominant as best_candidate
@@ -29,7 +26,6 @@ from ..schemas import (
     EdgeExistenceThresholdConfig,
     OntologyCandidate,
     OntologyPopulation,
-    Variable,
 )
 from ..stores.parameter_store import ParameterStore
 from ..stores.population_store import PopulationStore
