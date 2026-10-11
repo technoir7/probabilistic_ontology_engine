@@ -56,6 +56,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 import pytest
 
+from src.domains.sources.soft_evidence import sigmoid as _sigmoid, zscore as _zscore
 from src.domains.ai_regime_v1.domain import (
     AIRegimeV1,
     get_variables,
@@ -89,8 +90,6 @@ from src.domains.ai_regime_v1.ingestion.pipeline import (
     _last_friday,
     _weekly_backfill_dates,
     _soft_bool,
-    _sigmoid,
-    _zscore,
     compute_snapshot,
     _compute_13w_return_zscore,
     _compute_concentration_ratio_zscore,

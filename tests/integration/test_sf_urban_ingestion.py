@@ -35,6 +35,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 import pytest
 
+from src.domains.sources.soft_evidence import sigmoid as _sigmoid
 from src.domains.sf_urban_v1.domain import (
     SFUrbanV1,
     get_variables,
@@ -59,7 +60,6 @@ from src.domains.sf_urban_v1.ingestion.pipeline import (
     SFUrbanSnapshot,
     compute_snapshot,
     _soft_bool,
-    _sigmoid,
     _monthly_counts,
     _monthly_zscore,
 )

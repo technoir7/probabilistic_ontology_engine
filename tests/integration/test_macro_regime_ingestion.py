@@ -42,6 +42,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 import pytest
 
+from src.domains.sources.soft_evidence import sigmoid as _sigmoid
 from src.domains.macro_regime_v1.domain import (
     MacroRegimeV1,
     get_variables,
@@ -61,7 +62,6 @@ from src.domains.macro_regime_v1.ingestion.pipeline import (
     MacroRegimeSnapshot,
     _last_friday,
     _soft_bool,
-    _sigmoid,
     compute_snapshot,
     _compute_yield_curve_signal,
     _compute_inflation_signal,

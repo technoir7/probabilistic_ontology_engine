@@ -34,6 +34,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 import pytest
 
+from src.domains.sources.soft_evidence import sigmoid as _sigmoid
 from src.domains.crypto_regime_v1.domain import (
     CryptoRegimeV1,
     get_variables,
@@ -61,7 +62,6 @@ from src.domains.crypto_regime_v1.ingestion.pipeline import (
     CryptoRegimeSnapshot,
     compute_snapshot,
     _soft_bool,
-    _sigmoid,
 )
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import EvidenceRecord, MissingnessType

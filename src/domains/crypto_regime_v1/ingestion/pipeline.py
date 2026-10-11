@@ -39,7 +39,6 @@ from __future__ import annotations
 
 import logging
 import math
-import statistics
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta, timezone
 from typing import Optional
@@ -56,7 +55,8 @@ from ....engine.schemas import (
 from ..domain import get_variables
 from .coingecko_client import CoinGeckoClient, CGObs, CGGlobal
 from .yfinance_client import CryptoYFinanceClient, CryptoYFObs
-from .fred_client import FREDClient, FREDObservation
+from .fred_client import FREDClient
+from ...sources.soft_evidence import soft_bool, zscore as _zscore
 
 logger = logging.getLogger(__name__)
 
@@ -98,26 +98,9 @@ class CryptoRegimeSnapshot:
 # Signal helpers
 # ---------------------------------------------------------------------------
 
-def _sigmoid(x: float) -> float:
-    if x >= 0:
-        return 1.0 / (1.0 + math.exp(-x))
-    ex = math.exp(x)
-    return ex / (1.0 + ex)
-
 
 def _soft_bool(signal: float) -> float:
-    return max(_CLAMP_LO, min(_CLAMP_HI, _sigmoid(signal)))
-
-
-def _zscore(current: float, values: list[float]) -> float:
-    if len(values) < 2:
-        return 0.0
-    arr = np.array(values, dtype=float)
-    mu = float(np.mean(arr))
-    sigma = float(np.std(arr, ddof=1))
-    if sigma < 1e-9:
-        return 0.0
-    return (current - mu) / sigma
+    return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
 
 
 # ---------------------------------------------------------------------------
