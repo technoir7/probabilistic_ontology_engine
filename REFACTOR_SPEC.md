@@ -1,6 +1,6 @@
 # Refactor Spec — Probabilistic Ontology Engine
 
-Status: in progress — Phases 0–3 done except 2.3 (parked, D14) and 2.7 (waits on D3/D4); Phases 4–6 not started (branch `refactor/phase-0-safety-net`, not pushed) · Date: 2026-10-04 · Scope: `src/`, `tests/`, `scripts/`, repo hygiene
+Status: Phases 0–6 done except 2.3 (parked, D14), 2.7 (D3/D4), 4.7, the 5.5 read-model split, 5.8 auth/CORS origins (D7), and the art repo's switch to `reset_domain` (5.6) — see each phase · Branch `refactor/phase-0-safety-net`, not pushed · Date: 2026-10-04, status updated 2026-10-11 · Scope: `src/`, `tests/`, `scripts/`, repo hygiene
 
 This is the plan we follow to refactor the backend. It says what is wrong (with
 evidence), what the code should look like afterwards, and the order to get there
@@ -265,11 +265,12 @@ is moved (so the fix is easy to review) — except where noted.
 | B10 | **Look-ahead in backfills.** FRED is fetched without vintages and monthly series are dated by period start, so a backfill for 2026-09-04 sees September CPI (published in October). EDGAR filters by period end, not filing date. Worst case: `scripts/backfill_sf_urban.py:248` caches every FRED series with `end_date=today` and serves it to every historical week. | Backfilled history uses data that did not exist yet. Out of refactor scope except the script (D11). | — |
 | B11 | **`backfill_sf_urban.py` is not idempotent.** Its "already exists" check compares `'<date> 00:00:00'` against stored `isoformat()` (`…T00:00:00+00:00`), so it never matches. | Duplicates on every run. Don't run it until fixed or retired. | `scripts/backfill_sf_urban.py:260-265` |
 | B12 | `fetch_businesses` ignores `end_date` (DL4). | Future data in historical SF records. | `sfgov_client.py:213-219` |
-| B13 | **Confirmed live (2026-10-05): SF data truncated.** August 2026 had 8,330 incidents, 1,631 permits and 1,070 business starts. The queries cap at 2,000 / 1,000 / 2,000 rows `ORDER BY … DESC` with **no upper date bound**, so incidents cover ~1 week and permits < 1 month, and `_monthly_zscore` (needs 3 months) returns `None` → 0.5. Historical backfills are worse: the newest rows come back and are then dropped as after `end_date`. Fix in Phase 4 (sf_urban first): server-side monthly aggregation (`$select=date_trunc_ym(...), count(*)`, `$group`, bounded `$where`) instead of raw rows. | Crime, permits, startups signals effectively constant. | `sfgov_client.py` |
+| B13 | **Fixed (Phase 4).** **Confirmed live (2026-10-05): SF data truncated.** August 2026 had 8,330 incidents, 1,631 permits and 1,070 business starts. The queries cap at 2,000 / 1,000 / 2,000 rows `ORDER BY … DESC` with **no upper date bound**, so incidents cover ~1 week and permits < 1 month, and `_monthly_zscore` (needs 3 months) returns `None` → 0.5. Historical backfills are worse: the newest rows come back and are then dropped as after `end_date`. Fix in Phase 4 (sf_urban first): server-side monthly aggregation (`$select=date_trunc_ym(...), count(*)`, `$group`, bounded `$where`) instead of raw rows. | Crime, permits, startups signals effectively constant. | `sfgov_client.py` |
 | B14 | `credit_cycle_v1/scheduler.py:77` `asyncio.run(_main() if False else None)` raises. | Standalone entry point broken. Deleted in Phase 5 anyway. | — |
 | B16 | **Fixed (Phase 1).** SF Open Data moved: `data.sfgov.org` answers every request with 301 → `data.sf.gov`; httpx doesn't follow redirects and the client returns `[]` on error, so all SFGov signals were 0.5. The `-m live` tests caught it; they never run in CI. | All 4 SFGov-based SF signals constant. | `sfgov_client.py` |
 | B17 | **Fixed (Phase 1).** GDELT allows 1 request / 5 s and answers faster callers with HTTP 200 + a plain-text notice (not JSON → `[]`). `fetch_all` fired 4 queries concurrently. | Geopolitics GDELT signals mostly 0.5. Live re-check pending (the review's probe tripped GDELT's penalty window). | `gdelt_client.py` |
-| B15 | `_compute_refinancing_stress` pairs DGS5 and HY observations by list index, not by date. | Misaligned series whenever release calendars differ. | `credit_cycle_v1/ingestion/pipeline.py:186-192` |
+| B15 | **Fixed (Phase 1).** `_compute_refinancing_stress` pairs DGS5 and HY observations by list index, not by date. | Misaligned series whenever release calendars differ. | `credit_cycle_v1/ingestion/pipeline.py:186-192` |
+| B19 | **Fixed (Phase 4), found while fixing B13.** `OfficeVacancyFalling` classified permits by `permit_type`, a numeric code ("8", "3") that never matched the commercial keywords. Now uses `proposed_use` ("office" is ~11% of permits). Signals also compare complete months only; the month in progress biased every count z-score low. | Office-vacancy signal was a constant 0.5. | `sf_urban_v1/ingestion/pipeline.py` |
 
 ---
 
@@ -681,6 +682,33 @@ restart; an old-DB fixture (copy of a real pre-migration DB) migrates cleanly an
 
 ### Phase 4 — Domain layer
 
+**Done except 4.7.** Order changed: the shared runtime (5.1–5.3) landed
+first, so 4.9 ("delete the schedulers") came for free.
+
+Landed: 4.1 (`model/domain.py` `DomainModule`; 55 stub methods deleted, D5),
+4.2 (`model/cadence.py`; Sunday anchor, stored Friday records restamped by
+`runtime/data_migrations.py`; `agriculture_weekly.py` deleted), 4.3
+(`domains/sources/fred.py`, typed `FredHTTPError`; per-domain clients are
+now config subclasses), 4.4 (`domains/sources/yfinance.py`), 4.5
+(`soft_evidence.py`: one `build_soft_record`; `evidence_id` is a uuid5 of
+domain + timestamp + source_ref, completing B7; snapshots use `slots`, so a
+misspelled field raises), 4.6 (`domains/sources/structure.py`), 4.8 and D10
+(unavailable signals are `MISSING`; all-missing raises `EvidenceUnavailable`,
+nothing stored), 4.9 (schedulers deleted), B13 and B19 (SF, verified live:
+all five SF Open Data signals produce values for today and for 2025-06-01).
+Goldens G8 (FRED), G9 (yfinance) and G10 (evidence records) pinned each merge.
+
+Deviations: domains got `source.py` (`open_source(env)`) but not separate
+`signals.py`/`series.py` files: the signal math stayed in each
+`ingestion/pipeline.py`, which keeps diffs small; split it if a pipeline
+grows (the size budget caps ai at 778 and macro at 663 lines).
+
+Not done: 4.7 (natural-gas math still lives in its NOAA/EIA clients, and
+natural-gas still builds its own records with `uuid4` ids, so its dedup relies
+on the ingest path's timestamp check only). `scripts/backfill_sf_urban.py`
+still exists and is still unsafe (B11), waiting on D11. GDELT (B17) is still
+not re-checked live: GDELT keeps rate-limiting this machine's IP.
+
 Target shape of one domain package (no `scheduler.py`; no per-domain client
 copies):
 
@@ -737,6 +765,28 @@ must produce identical records per domain, except the `evidence_id`.
 
 ### Phase 5 — Runtime and API
 
+**Done except 5.5's read-model split, the art repo's side of 5.6, and 5.8's
+auth and CORS origins.**
+
+Landed: 5.1 (`runtime/settings.py`), 5.2 (`runtime/registry.py`, the one list
+of domains; `DomainEngine` rename not done — the facade kept its name and
+`activate_domain`/`_modules`, because the art package uses them), 5.3 (one
+ingest/backfill/scheduler in `runtime/`; ten scheduler classes and the
+runners deleted), 5.4 (`app.py` 2,610 → 155 lines: `routers/`, `dto`,
+`presenters`, `context`, `narrative`; G4 unchanged), 5.5 partly
+(`ontology_mode` validated, 422 on unknown values), 5.6 engine side
+(`reset_domain` does the art rebuild in one transaction including the 0002
+tables; `learning_stats` replaces reads of private counters), 5.7 (a missing
+key or art package disables that piece, not the app), 5.8 partly (backfill
+`days` capped at 1,825; art manual-ingest `path` restricted to
+`POE_ART_MANUAL_DIR`; CORS no longer pairs `*` with credentials).
+
+Not done: the `PopulationReadModel` split (the `dynamic` branches remain; low
+value until a third mode exists); the art package still uses its own reset
+through engine internals (`tests/test_art_compat_surface.py` guards them) —
+switching it is a change in `art-market-domain`, waiting on your go-ahead;
+POST auth and an explicit CORS origin list (D7).
+
 5.1 `runtime/settings.py` — all env parsing, same var names. (A12)
 5.2 `runtime/registry.py` + `DomainEngine` replaces `ProbabilisticOntologyEngine`
 (`active_domain`/`_modules` removed). (A2, C5)
@@ -759,6 +809,12 @@ routes; cap `days`; restrict `path` to the configured manual-ingest dir. (A14) �
 
 ### Phase 6 — Lock it in
 
+**Done.** CI (`.github/workflows/ci.yml`) runs `uv sync --locked`, ruff (F,
+SLF001, BLE001 only), import-linter (7 layer contracts in `pyproject.toml`)
+and pytest, including `tests/test_guardrails.py` (600-line file budget,
+SPEC §20.7 performance budgets, resume < 2 s). README and `CLAUDE.md`
+describe the new layout. CI has not run on GitHub yet (branch not pushed).
+
 Enable the guardrails in §6 (import contracts, ruff SLF001/BLE001, file-size
 test, perf budgets). Fix remaining violations. Update `README.md` and
 `CLAUDE.md` project-structure section to the new layout.
@@ -775,7 +831,7 @@ Status key: **Decided** (answered 2026-10-04, with the downsides we accepted) ·
 | D2 | Change `art-market-domain` at the same time (Phase 5.6)? | **Decided: yes.** Accepted downsides: (1) the backend pins an art-package commit (Phase 0.2), so art changes no longer reach production until the pin is bumped. That is intended, because deploys become reproducible. (2) The release must be coordinated: the art package first ships the new public hook *alongside* the old calls (one release of overlap), then the backend switches, then the old calls are removed. **Assumption: you have write access to `technoir7/art-market-domain`.** If you don't, fall back to a thin adapter in `runtime/` that confines the old contract to one file. |
 | D3 | `ExploreExploitService` is built and tested but never used. SPEC §10.1 puts it in the learn loop. Wire it in or delete it? | **Open.** Recommend: Delete now (git keeps it); re-add when there is a design for how proposals enter the population. |
 | D4 | `LearningService.accumulate_em` is only used by one level-1 test and ignores soft evidence. Keep or delete? | **Open.** Recommend: Delete with its test; mean-field is what production runs. |
-| D5 | Drop the never-used SPEC §8 stub methods from the `DomainModule` contract? | **Open.** Recommend: Yes, and update SPEC §8 to match. |
+| D5 | Drop the never-used SPEC §8 stub methods from the `DomainModule` contract? | **Done (recommendation followed, 4.1).** |
 | D6 | `POST /v1/inference/query` accepts `conditions` and `aggregation` but ignores them. **Checked:** the frontend sends `aggregation: 'weighted_avg'` from 3 components (never `conditions`), so rejecting would break the dashboard. Options: (a) keep ignoring; (b) implement `weighted_avg` — dashboard probabilities change to population-weighted; (c) reject after the frontend stops sending it. | **Open.** Recommend (b): the UI already asks for it, and the engine already implements it (`WEIGHTED_AVERAGE`). Behavior commit with a G4 diff. |
 | D7 | Is a shared-secret header acceptable for POST routes, and what origins should CORS allow? | **Open.** Recommend: Yes; the Vercel URL + localhost. |
 | D8 | Learn order (C9): score each batch before updating counts (prequential), or keep today's order? | **Open.** Recommend: Prequential — it is the standard fair comparison and removes the bias toward denser graphs. Behavior change; would get its own commit after Phase 3 and will move dominant-candidate history. |
