@@ -61,7 +61,8 @@ async def ingest_trigger(request: Request, domain: str = Query("ng")) -> IngestT
 async def ingest_backfill(
     request: Request,
     domain: str = Query("ng"),
-    days: int = Query(90, ge=1),
+    # Bounded: each day is one upstream request per data source.
+    days: int = Query(90, ge=1, le=1825),
 ) -> IngestBackfillOut:
     domain_key = domain.lower()
     engine, domain_id, display_name = context.resolve_domain(domain_key, request.app.state)
