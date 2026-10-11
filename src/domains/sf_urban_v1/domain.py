@@ -57,7 +57,6 @@ from uuid import uuid4
 
 from ...engine.variable_identity import stable_variable_id
 from ...engine.schemas import (
-    CandidateStatus,
     DependencyEdge,
     DependencyKind,
     DomainType,
@@ -288,9 +287,6 @@ class SFUrbanV1:
     def module_id(self) -> str:
         return self._MODULE_ID
 
-    def version(self) -> str:
-        return "1.0.0"
-
     def initial_candidates(self) -> list[OntologyCandidate]:
         return [
             make_tech_rebound_candidate(self._MODULE_ID),
@@ -306,15 +302,3 @@ class SFUrbanV1:
             accept_above=0.90,
             explore_band=(0.25, 0.75),
         )
-
-    def initial_entities(self) -> list:
-        return []
-
-    def initial_assertions(self) -> list:
-        return []
-
-    def variable_specs(self) -> list:
-        return []
-
-    def initial_parameterizations(self) -> list:
-        return []

@@ -14,6 +14,7 @@ from uuid import UUID, uuid4
 
 logger = logging.getLogger(__name__)
 
+from .model.domain import DomainModule
 from .schemas import (
     EdgeExistenceThresholdConfig,
     EvidenceRecord,
@@ -86,8 +87,8 @@ class ProbabilisticOntologyEngine:
     # Domain lifecycle
     # ------------------------------------------------------------------
 
-    def register_domain(self, domain_module: Any) -> None:
-        """Register a domain module (must implement the DomainModule interface)."""
+    def register_domain(self, domain_module: DomainModule) -> None:
+        """Register a domain module (see model/domain.py for the contract)."""
         module_id = domain_module.module_id()
         self._modules[module_id] = domain_module
 
