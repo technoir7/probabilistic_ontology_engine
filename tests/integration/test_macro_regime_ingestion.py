@@ -67,10 +67,7 @@ from src.domains.macro_regime_v1.ingestion.pipeline import (
     _compute_inflation_signal,
     _compute_liquidity_signal,
 )
-from src.domains.macro_regime_v1.scheduler import (
-    MacroRegimeScheduler,
-    _weekly_backfill_dates,
-)
+from src.engine.runtime.scheduler import WeeklySchedule
 from src.engine.services.evidence_geometry import build_evidence_geometry_diagnostics
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import EvidenceRecord, MissingnessType
@@ -550,10 +547,11 @@ def test_fred_client_skips_missing_values():
 
 def test_weekly_backfill_dates_returns_fridays():
     """
-    _weekly_backfill_dates must return only Friday dates (weekday 4).
+    Weekly startup backfill targets (the dates the macro scheduler backfills)
+    must be Fridays (weekday 4).
     """
     today = date(2024, 5, 6)  # Monday
-    dates = _weekly_backfill_dates(4, today)
+    dates = WeeklySchedule().startup_targets(today, days=0, weeks=4)
 
     assert len(dates) == 4
     for d in dates:
@@ -565,7 +563,7 @@ def test_weekly_backfill_dates_returns_fridays():
 def test_weekly_backfill_dates_are_unique():
     """Backfill dates must be unique (no duplicate weeks)."""
     today = date(2024, 5, 10)
-    dates = _weekly_backfill_dates(8, today)
+    dates = WeeklySchedule().startup_targets(today, days=0, weeks=8)
     assert len(dates) == len(set(dates)), "Backfill dates contain duplicates"
 
 

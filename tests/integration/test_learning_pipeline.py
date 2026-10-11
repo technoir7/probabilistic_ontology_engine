@@ -24,7 +24,7 @@ from unittest.mock import AsyncMock, patch
 import pytest
 
 from src.domains.natural_gas_v1.domain import NaturalGasV1, get_variables
-from src.domains.natural_gas_v1.scheduler import IngestionScheduler
+from src.engine.runtime.ingestion import ingest_and_learn
 from src.engine.api import app as api_app
 from tests.fakes import patch_evidence_fetch, running_engine
 from src.engine.engine import ProbabilisticOntologyEngine
@@ -79,7 +79,7 @@ def _build_test_engine(db_path: str = ":memory:") -> ProbabilisticOntologyEngine
     return engine
 
 
-# ── LP-01: run_once() increments evidence_count ────────────────────────────
+# ── LP-01: one scheduled ingest increments evidence_count ────────────────────────────
 
 def test_lp01_scheduler_run_once_increments_evidence_count():
     engine = _build_test_engine()
@@ -87,18 +87,8 @@ def test_lp01_scheduler_run_once_increments_evidence_count():
     target = date(2026, 5, 20)
     record = _ng_record(target)
 
-    # Simulate what the scheduler does after the fix
-    pipeline_mock = AsyncMock()
-    pipeline_mock.fetch_evidence = AsyncMock(return_value=record)
-
-    scheduler = IngestionScheduler(
-        engine=engine,
-        pipeline=pipeline_mock,
-        run_hour_utc=7,
-        backfill_days=0,
-    )
-
-    asyncio.run(scheduler.run_once(target))
+    fetch = AsyncMock(return_value=record)
+    asyncio.run(ingest_and_learn(engine, domain_id, fetch, target))
 
     pop = engine.get_population(domain_id)
     dom = pop.dominant()
@@ -108,7 +98,7 @@ def test_lp01_scheduler_run_once_increments_evidence_count():
     )
 
 
-# ── LP-02: run_once() produces non-zero log_score ─────────────────────────
+# ── LP-02: one scheduled ingest produces non-zero log_score ─────────────────────────
 
 def test_lp02_scheduler_run_once_produces_nonzero_log_score():
     engine = _build_test_engine()
@@ -116,17 +106,8 @@ def test_lp02_scheduler_run_once_produces_nonzero_log_score():
     target = date(2026, 5, 20)
     record = _ng_record(target)
 
-    pipeline_mock = AsyncMock()
-    pipeline_mock.fetch_evidence = AsyncMock(return_value=record)
-
-    scheduler = IngestionScheduler(
-        engine=engine,
-        pipeline=pipeline_mock,
-        run_hour_utc=7,
-        backfill_days=0,
-    )
-
-    asyncio.run(scheduler.run_once(target))
+    fetch = AsyncMock(return_value=record)
+    asyncio.run(ingest_and_learn(engine, domain_id, fetch, target))
 
     pop = engine.get_population(domain_id)
     dom = pop.dominant()
@@ -142,19 +123,10 @@ def test_lp03_generation_advances_after_multiple_runs():
     engine = _build_test_engine()
     domain_id = "natural-gas-v1"
 
-    pipeline_mock = AsyncMock()
-
     async def run_n_times(n: int) -> None:
-        scheduler = IngestionScheduler(
-            engine=engine,
-            pipeline=pipeline_mock,
-            run_hour_utc=7,
-            backfill_days=0,
-        )
         for i in range(n):
             target = date(2026, 5, i + 1)
-            pipeline_mock.fetch_evidence = AsyncMock(return_value=_ng_record(target))
-            await scheduler.run_once(target)
+            await ingest_and_learn(engine, domain_id, AsyncMock(return_value=_ng_record(target)), target)
 
     asyncio.run(run_n_times(5))
 

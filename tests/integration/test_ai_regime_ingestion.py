@@ -101,10 +101,7 @@ from src.domains.ai_regime_v1.ingestion.pipeline import (
     _compute_vix_signal,
     _compute_ip_investment_signal,
 )
-from src.domains.ai_regime_v1.scheduler import (
-    AIRegimeScheduler,
-    _weekly_backfill_dates as scheduler_backfill_dates,
-)
+from src.engine.runtime.scheduler import WeeklySchedule
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import EvidenceRecord, MissingnessType
 
@@ -932,9 +929,9 @@ def test_ip_investment_uses_historical_median():
 # ---------------------------------------------------------------------------
 
 def test_scheduler_backfill_dates_are_fridays():
-    """AIRegimeScheduler backfill dates must all be Fridays."""
+    """The AI scheduler's startup backfill dates must all be Fridays."""
     today = date(2024, 5, 13)  # Monday
-    dates = scheduler_backfill_dates(4, today)
+    dates = WeeklySchedule().startup_targets(today, days=0, weeks=4)
     assert len(dates) == 4
     for d in dates:
         assert d.weekday() == 4, f"Expected Friday, got weekday {d.weekday()}"
