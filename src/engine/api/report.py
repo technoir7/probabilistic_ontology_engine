@@ -160,11 +160,7 @@ _STRICT_SYSTEM = (
 )
 
 
-def _fireworks_model() -> str:
-    return os.environ.get(_FIREWORKS_MODEL_ENV, _DEFAULT_MODEL)
-
-
-def _generate_report_sync(snapshot: dict, api_key: str, strict: bool = False) -> str:
+def _generate_report_sync(snapshot: dict, api_key: str, model: str, strict: bool = False) -> str:
     """
     Synchronous Fireworks AI call.  Runs in a thread via asyncio.to_thread() so
     the async FastAPI event loop is not blocked.
@@ -190,7 +186,7 @@ def _generate_report_sync(snapshot: dict, api_key: str, strict: bool = False) ->
 
     client = OpenAI(base_url=_FIREWORKS_BASE_URL, api_key=api_key)
     response = client.chat.completions.create(
-        model=_fireworks_model(),
+        model=model,
         max_tokens=1500,
         messages=[
             {"role": "system", "content": system},
@@ -203,6 +199,7 @@ def _generate_report_sync(snapshot: dict, api_key: str, strict: bool = False) ->
 async def generate_report(
     snapshot: dict,
     api_key: str,
+    model: str,
     timeout: float = 90.0,
 ) -> str:
     """Async wrapper — runs the synchronous Fireworks call in a thread.
@@ -211,7 +208,7 @@ async def generate_report(
     stricter system prompt.  Raises ValueError if both attempts fail the check.
     """
     text = await asyncio.wait_for(
-        asyncio.to_thread(_generate_report_sync, snapshot, api_key),
+        asyncio.to_thread(_generate_report_sync, snapshot, api_key, model),
         timeout=timeout,
     )
     if contains_meta_reasoning(text):
@@ -219,7 +216,7 @@ async def generate_report(
             "Report output contains meta-reasoning scaffolding; retrying with strict prompt"
         )
         text = await asyncio.wait_for(
-            asyncio.to_thread(_generate_report_sync, snapshot, api_key, strict=True),
+            asyncio.to_thread(_generate_report_sync, snapshot, api_key, model, strict=True),
             timeout=timeout,
         )
         if contains_meta_reasoning(text):

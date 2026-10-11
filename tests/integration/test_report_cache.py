@@ -444,17 +444,9 @@ def test_refresh_still_returns_200_when_retry_matches_heuristic(tmp_path, monkey
     call_count = {"n": 0}
 
     # Both first and strict attempts return a phrase that matches the heuristic.
-    def always_meta(snapshot, api_key, strict=False):
+    def always_meta(snapshot, api_key, model, strict=False):
         call_count["n"] += 1
         return "Let me walk through this: the market is tightening."
-
-    async def _generate(snapshot, api_key, timeout=90.0):
-        import src.engine.api.report as _r
-        text = _r._generate_report_sync(snapshot, api_key)
-        if _r.contains_meta_reasoning(text):
-            text = _r._generate_report_sync(snapshot, api_key, strict=True)
-            # Even if still matching, return it — do not raise.
-        return text
 
     with patch("src.engine.api.report._generate_report_sync", new=always_meta), \
          patch("src.engine.api.app.narrative_snapshot", new=AsyncMock(return_value=mock_snap)):

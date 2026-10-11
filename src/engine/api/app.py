@@ -22,6 +22,7 @@ from ..runtime.data_migrations import move_friday_weekly_records_to_sunday
 from ..runtime.ingestion import backfill, ingest_and_learn
 from ..runtime.registry import BY_KEY, REGISTRY, DomainRegistration
 from ..runtime.scheduler import run_scheduler
+from ..runtime.settings import Settings, load_dotenv_unless_disabled
 from ..schemas import (
     EvidenceRecord,
     InferenceQuery,
@@ -590,15 +591,12 @@ def _ingest_lock(state: Any, domain_key: str) -> asyncio.Lock:
     return locks[domain_key]
 
 
-def _require_domain_env(domain_key: str) -> None:
-    _require_env(BY_KEY[domain_key].required_env)
-
-
 async def _fetch_evidence_record(domain_key: str, target_date: date) -> EvidenceRecord:
     if domain_key not in BY_KEY:
         raise ValueError(f"Unknown domain '{domain_key}'")
-    _require_domain_env(domain_key)
-    async with BY_KEY[domain_key].open_source(os.environ) as source:
+    settings = Settings.from_env()  # API keys as of this request
+    settings.require_env(BY_KEY[domain_key])
+    async with BY_KEY[domain_key].open_source(settings.environ) as source:
         return await source.fetch_evidence(target_date)
 
 
@@ -629,12 +627,12 @@ def _fetcher(domain_key: str):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    _load_env()
-    _configure_logging()
-
-    data_dir = _data_dir()
-    backfill_days = _env_int("EVIDENCE_BACKFILL_DAYS", 30)
-    scheduler_enabled = _env_bool("EVIDENCE_SCHEDULER_ENABLED", True)
+    load_dotenv_unless_disabled()
+    settings = Settings.from_env()
+    logging.basicConfig(level=settings.log_level, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+    data_dir = settings.data_dir
+    data_dir.mkdir(parents=True, exist_ok=True)
+    scheduler_enabled = settings.scheduler_enabled
 
     # Always build shared engines so API routes work regardless of scheduler state
     app.state.engines: dict[str, ProbabilisticOntologyEngine] = {
@@ -648,12 +646,14 @@ async def lifespan(app: FastAPI):
     app.state.ingest_locks: dict[str, asyncio.Lock] = {r.key: asyncio.Lock() for r in REGISTRY}
 
     if scheduler_enabled:
-        _require_env(REQUIRED_ENV_VARS)
+        missing = [n for n in REQUIRED_ENV_VARS if not settings.environ.get(n)]
+        if missing:
+            raise RuntimeError(f"Missing required environment variable(s): {', '.join(missing)}")
         tasks = []
         for reg in REGISTRY:
             if not reg.scheduled:
                 continue
-            missing = [n for n in reg.required_env if not os.environ.get(n)]
+            missing = settings.missing_env(reg)
             if missing:
                 logger.info(
                     "%s not set — %s scheduler disabled; engine initialised but "
@@ -662,7 +662,7 @@ async def lifespan(app: FastAPI):
                 )
                 continue
             tasks.append(asyncio.create_task(
-                _run_domain_scheduler(reg, app.state.engines[reg.key], app.state.ingest_locks[reg.key], backfill_days),
+                _run_domain_scheduler(reg, app.state.engines[reg.key], app.state.ingest_locks[reg.key], settings),
                 name=reg.scheduler_task_name,
             ))
         for task in tasks:
@@ -1665,7 +1665,7 @@ async def domain_report_read(
     if key not in _DOMAIN_MAP:
         raise HTTPException(status_code=404, detail=f"Unknown domain '{domain}'")
 
-    data_dir = _data_dir()
+    data_dir = Settings.from_env().data_dir
     stale_path = _report.stale_cache_path(data_dir, key, ontology_mode)
     if not stale_path:
         return DomainReportNotFound(domain=key, ontology_mode=ontology_mode)
@@ -1704,7 +1704,7 @@ async def domain_report_refresh(
     snapshot_dict = snapshot_out.model_dump()
     h = _report.snapshot_hash(snapshot_dict)
 
-    data_dir = _data_dir()
+    data_dir = Settings.from_env().data_dir
     exact_path = _report.cache_path(data_dir, key, ontology_mode, h)
 
     # Cache hit: snapshot unchanged, return immediately without calling LLM.
@@ -1714,7 +1714,8 @@ async def domain_report_refresh(
         return DomainReportOut(**exact, found=True, cached=True, regenerated=False)
 
     # Need to generate.  Fail fast with a clear message if key is absent.
-    api_key = os.environ.get(_report._FIREWORKS_API_KEY_ENV, "")
+    settings = Settings.from_env()
+    api_key = settings.fireworks_api_key
     if not api_key:
         stale_path = _report.stale_cache_path(data_dir, key, ontology_mode)
         if stale_path:
@@ -1734,6 +1735,7 @@ async def domain_report_refresh(
         report_text = await _report.generate_report(
             snapshot=snapshot_dict,
             api_key=api_key,
+            model=settings.fireworks_model,
             timeout=90.0,
         )
     except Exception as exc:
@@ -1807,22 +1809,17 @@ async def _run_domain_scheduler(
     reg: DomainRegistration,
     engine: ProbabilisticOntologyEngine,
     lock: asyncio.Lock,
-    backfill_days: int,
+    settings: Settings,
 ) -> None:
     """Open the domain's source once and run its schedule until cancelled."""
-    run_hour = _env_int(f"{reg.env_prefix}_RUN_HOUR_UTC", reg.default_run_hour_utc)
-    if isinstance(reg.cadence, Weekly):
-        window_days = 7 * _env_int(f"{reg.env_prefix}_BACKFILL_WEEKS", max(backfill_days // 7, 8))
-    else:
-        window_days = backfill_days
-    async with reg.open_source(os.environ) as source:
+    async with reg.open_source(settings.environ) as source:
         await run_scheduler(
             engine,
             reg.module_id,
             source.fetch_evidence,
             reg.cadence,
-            run_hour_utc=run_hour,
-            startup_window_days=window_days,
+            run_hour_utc=settings.run_hour_utc(reg),
+            startup_window_days=settings.startup_window_days(reg),
             pause_s=reg.backfill_pause_s,
             lock=lock,
             skip_unchanged_state=reg.skip_unchanged_state,
@@ -1836,54 +1833,6 @@ def _utcnow() -> datetime:
     # Single wall-clock read for this module so tests can pin "today"
     # (tests/fakes.py:freeze_clock). Becomes an injected clock in Phase 5.
     return datetime.now(timezone.utc)
-
-
-def _load_env() -> None:
-    # Tests set POE_LOAD_DOTENV=0 so a developer's .env (real API keys) cannot
-    # leak into the session and turn mocked tests into network calls.
-    if os.environ.get("POE_LOAD_DOTENV", "1") == "0":
-        return
-    try:
-        from dotenv import load_dotenv
-        load_dotenv()
-    except ImportError:
-        pass
-
-
-def _configure_logging() -> None:
-    logging.basicConfig(
-        level=os.environ.get("LOG_LEVEL", "INFO").upper(),
-        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
-    )
-
-
-def _require_env(names: tuple[str, ...]) -> None:
-    missing = [n for n in names if not os.environ.get(n)]
-    if missing:
-        raise RuntimeError(f"Missing required environment variable(s): {', '.join(missing)}")
-
-
-def _data_dir() -> Path:
-    d = Path(os.environ.get("POE_DATA_DIR", "."))
-    d.mkdir(parents=True, exist_ok=True)
-    return d
-
-
-def _env_bool(name: str, default: bool) -> bool:
-    raw = os.environ.get(name)
-    if raw is None:
-        return default
-    return raw.strip().lower() in {"1", "true", "yes", "on"}
-
-
-def _env_int(name: str, default: int) -> int:
-    raw = os.environ.get(name)
-    if raw is None:
-        return default
-    try:
-        return int(raw)
-    except ValueError as exc:
-        raise RuntimeError(f"{name} must be an integer, got {raw!r}") from exc
 
 
 def _log_scheduler_exit(task: asyncio.Task) -> None:
