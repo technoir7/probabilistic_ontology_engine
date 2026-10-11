@@ -67,7 +67,8 @@ _MIN_OBS: dict[str, int] = {
 }
 
 
-@dataclass
+# slots: a misspelled field name raises instead of silently adding a field.
+@dataclass(slots=True)
 class LaborMarketSnapshot:
     p_unemployment_rising: float = 0.5
     p_wage_inflation_persistent: float = 0.5

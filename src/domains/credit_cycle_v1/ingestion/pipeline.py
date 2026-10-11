@@ -64,7 +64,8 @@ _MIN_OBS: dict[str, int] = {
 }
 
 
-@dataclass
+# slots: a misspelled field name raises instead of silently adding a field.
+@dataclass(slots=True)
 class CreditCycleSnapshot:
     p_hy_spread_elevated: float = 0.5
     p_leveraged_loan_stress: float = 0.5

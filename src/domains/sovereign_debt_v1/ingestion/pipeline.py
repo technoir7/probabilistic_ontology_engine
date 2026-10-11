@@ -71,7 +71,8 @@ _MIN_OBS: dict[str, int] = {
 }
 
 
-@dataclass
+# slots: a misspelled field name raises instead of silently adding a field.
+@dataclass(slots=True)
 class SovereignDebtSnapshot:
     """Derived signals and soft probabilities for one evidence week."""
 

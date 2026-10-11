@@ -61,7 +61,8 @@ _CLAMP_LO: float = 0.05
 _CLAMP_HI: float = 0.95
 
 
-@dataclass
+# slots: a misspelled field name raises instead of silently adding a field.
+@dataclass(slots=True)
 class GeopoliticsSnapshot:
     """Derived signals and soft probabilities for one evidence week."""
 

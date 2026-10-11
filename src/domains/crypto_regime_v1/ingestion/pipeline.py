@@ -60,7 +60,8 @@ _CLAMP_LO: float = 0.01
 _CLAMP_HI: float = 0.99
 
 
-@dataclass
+# slots: a misspelled field name raises instead of silently adding a field.
+@dataclass(slots=True)
 class CryptoRegimeSnapshot:
     """Derived signals and soft probabilities for one evidence week."""
 

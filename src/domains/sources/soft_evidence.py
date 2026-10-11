@@ -8,7 +8,7 @@ from __future__ import annotations
 import math
 from datetime import date, datetime, timezone
 from typing import Iterable, Mapping
-from uuid import uuid4
+from uuid import NAMESPACE_URL, UUID, uuid5
 
 import numpy as np
 
@@ -44,6 +44,14 @@ def zscore(current: float, values: list[float]) -> float:
     return (current - mu) / sigma
 
 
+def evidence_id_for(module_id: str, timestamp: datetime, source_ref: str) -> UUID:
+    """
+    Deterministic id: the same domain, date and source give the same id, so
+    the store's ON CONFLICT (evidence_id) DO NOTHING drops a re-fetched day.
+    """
+    return uuid5(NAMESPACE_URL, f"probabilistic-ontology-engine:evidence:{module_id}:{timestamp.isoformat()}:{source_ref}")
+
+
 def build_soft_record(
     *,
     module_id: str,
@@ -71,7 +79,7 @@ def build_soft_record(
     ]
     timestamp = datetime(target_date.year, target_date.month, target_date.day, tzinfo=timezone.utc)
     return EvidenceRecord(
-        evidence_id=uuid4(),
+        evidence_id=evidence_id_for(module_id, timestamp, source_ref),
         timestamp=timestamp,
         observed_assignments=assignments,
         source_type=SourceType.API,

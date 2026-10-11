@@ -126,7 +126,8 @@ _MIN_OBS: dict[str, int] = {
 # Snapshot dataclass — carries all derived signals
 # ---------------------------------------------------------------------------
 
-@dataclass
+# slots: a misspelled field name raises instead of silently adding a field.
+@dataclass(slots=True)
 class MacroRegimeSnapshot:
     """
     Derived signals and soft-probability calibrations for one evidence week.

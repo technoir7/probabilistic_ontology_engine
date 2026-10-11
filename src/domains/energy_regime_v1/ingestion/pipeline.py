@@ -58,7 +58,8 @@ _CLAMP_LO: float = 0.01
 _CLAMP_HI: float = 0.99
 
 
-@dataclass
+# slots: a misspelled field name raises instead of silently adding a field.
+@dataclass(slots=True)
 class EnergyRegimeSnapshot:
     p_oil_price_surge: float = 0.5
     p_nat_gas_price_surge: float = 0.5
