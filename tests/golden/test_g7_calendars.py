@@ -8,9 +8,9 @@ Records which target dates each entry point asks for, on each day of one week:
 * ``startup_backfill`` the app's backfill-if-empty functions (2 weeks / 14 days)
 * ``scheduler``       the date a weekly scheduler targets when it runs that day
 
-Today these disagree (B8: Sunday via the API, Friday via schedulers, daily for
-mr/ai via the API). Phase 4.2 replaces them with one Cadence (Sunday, D12);
-that commit regenerates this snapshot and the diff is the behaviour change.
+They used to disagree (B8: Sunday via the API, Friday via schedulers, daily for
+mr/ai via the API). Every entry point now reads the domain's one Cadence
+(model/cadence.py; weekly = Sunday, D12).
 """
 from __future__ import annotations
 
@@ -69,11 +69,10 @@ def test_g7_startup_and_scheduler_calendars_match_golden():
         per_day = out.setdefault(f"{day.isoformat()} {day.strftime('%a')}", {})
         for key in domain_keys():
             reg = BY_KEY[key]
-            startup = (
-                reg.schedule.startup_targets(day, days=14, weeks=2) if reg.scheduled else []
-            )
+            # Startup windows as in production: 14 days (daily) or 2 weeks (weekly).
+            startup = reg.cadence.window_targets(14, day) if reg.scheduled else []
             entry = {"startup_backfill": _iso(startup)}
             if reg.scheduled and key != "ng":
-                entry["scheduler"] = reg.schedule.target(_noon(day)).isoformat()
+                entry["scheduler"] = reg.cadence.default_target(day).isoformat()
             per_day[key] = entry
     assert_matches_snapshot("g7_calendars_startup_scheduler", out)

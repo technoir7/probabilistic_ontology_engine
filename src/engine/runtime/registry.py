@@ -31,7 +31,7 @@ from ...domains.sf_urban_v1.domain import SFUrbanV1
 from ...domains.sovereign_debt_v1 import source as sd_source
 from ...domains.sovereign_debt_v1.domain import SovereignDebtV1
 from . import art
-from .scheduler import DailySchedule, Schedule, WeeklySchedule
+from ..model.cadence import Cadence, Daily, Weekly
 
 OpenSource = Callable[[Mapping[str, str]], AbstractAsyncContextManager[Any]]
 
@@ -48,7 +48,9 @@ class DomainRegistration:
     # Env var prefix for <PREFIX>_RUN_HOUR_UTC / <PREFIX>_BACKFILL_WEEKS (existing names).
     env_prefix: str = ""
     default_run_hour_utc: int = 9
-    schedule: Schedule = WeeklySchedule()
+    cadence: Cadence = Weekly()
+    # Pause between backfill requests, to be polite to upstream APIs.
+    backfill_pause_s: float = 2.0
     scheduled: bool = True
     # Skip a fetched weekly state identical to the latest stored one.
     skip_unchanged_state: bool = False
@@ -63,7 +65,7 @@ _FRED = ("FRED_API_KEY",)
 REGISTRY: tuple[DomainRegistration, ...] = (
     DomainRegistration("ng", "natural-gas-v1", "Natural Gas", "natural_gas.db", NaturalGasV1,
                        ng_source.open_source, ("EIA_API_KEY",), "NATURAL_GAS", default_run_hour_utc=7,
-                       schedule=DailySchedule()),
+                       cadence=Daily(), backfill_pause_s=1.0),
     DomainRegistration("mr", "macro-regime-v1", "Macro Regime", "macro_regime.db", MacroRegimeV1,
                        mr_source.open_source, _FRED, "MACRO_REGIME"),
     DomainRegistration("ai", "ai-regime-v1", "AI Regime", "ai_regime.db", AIRegimeV1,
@@ -83,7 +85,7 @@ REGISTRY: tuple[DomainRegistration, ...] = (
     DomainRegistration("sf", "sf-urban-v1", "SF Urban", "sf_urban.db", SFUrbanV1,
                        sf_source.open_source, _FRED, "SF_URBAN", skip_unchanged_state=True),
     DomainRegistration("art", "art_prestige_regime_v1", "Art Prestige Regime", "art_prestige_regime.db",
-                       art.build_art_domain, art.open_source, scheduled=False),
+                       art.build_art_domain, art.open_source, cadence=Daily(), scheduled=False),
 )
 
 BY_KEY: dict[str, DomainRegistration] = {r.key: r for r in REGISTRY}

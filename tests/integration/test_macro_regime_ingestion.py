@@ -67,7 +67,7 @@ from src.domains.macro_regime_v1.ingestion.pipeline import (
     _compute_inflation_signal,
     _compute_liquidity_signal,
 )
-from src.engine.runtime.scheduler import WeeklySchedule
+from src.engine.model.cadence import Weekly
 from src.engine.services.evidence_geometry import build_evidence_geometry_diagnostics
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import EvidenceRecord, MissingnessType
@@ -548,14 +548,14 @@ def test_fred_client_skips_missing_values():
 def test_weekly_backfill_dates_returns_fridays():
     """
     Weekly startup backfill targets (the dates the macro scheduler backfills)
-    must be Fridays (weekday 4).
+    are the Sundays ending each week in the window (decision D12).
     """
     today = date(2024, 5, 6)  # Monday
-    dates = WeeklySchedule().startup_targets(today, days=0, weeks=4)
+    dates = Weekly().window_targets(4 * 7, today)
 
-    assert len(dates) == 4
+    assert len(dates) in (4, 5)  # the week containing the window's first day counts
     for d in dates:
-        assert d.weekday() == 4, f"Expected Friday, got {d} (weekday {d.weekday()})"
+        assert d.weekday() == 6, f"Expected Sunday, got {d} (weekday {d.weekday()})"
     # Should be oldest-first
     assert dates == sorted(dates)
 
@@ -563,7 +563,7 @@ def test_weekly_backfill_dates_returns_fridays():
 def test_weekly_backfill_dates_are_unique():
     """Backfill dates must be unique (no duplicate weeks)."""
     today = date(2024, 5, 10)
-    dates = WeeklySchedule().startup_targets(today, days=0, weeks=8)
+    dates = Weekly().window_targets(8 * 7, today)
     assert len(dates) == len(set(dates)), "Backfill dates contain duplicates"
 
 

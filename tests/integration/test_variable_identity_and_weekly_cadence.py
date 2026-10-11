@@ -7,10 +7,7 @@ from uuid import uuid4
 
 from fastapi.testclient import TestClient
 
-from src.domains.agriculture_weekly import (
-    latest_week_ending_on_or_before,
-    weekly_backfill_dates,
-)
+from src.engine.model.cadence import Weekly
 from src.domains.sovereign_debt_v1.domain import SovereignDebtV1, get_variables as sd_variables
 from src.domains.natural_gas_v1.domain import NaturalGasV1
 from src.domains.test_domain_v1.domain import TestDomainV1, get_variables as _test_variables
@@ -70,7 +67,7 @@ def test_legacy_persisted_evidence_remains_readable_by_position(tmp_path):
 
 
 def test_weekly_backfill_dates_step_by_iso_week():
-    dates = weekly_backfill_dates(15, today=date(2026, 5, 26))
+    dates = Weekly().window_targets(15, date(2026, 5, 26))
 
     assert dates == [date(2026, 5, 10), date(2026, 5, 17), date(2026, 5, 24)]
     assert all(day.weekday() == 6 for day in dates)

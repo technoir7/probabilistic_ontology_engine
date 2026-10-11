@@ -179,6 +179,39 @@ class EvidenceStore:
         return cur.fetchone() is not None
 
     # ------------------------------------------------------------------
+    def restamp(self, domain_module_id: str, new_timestamp) -> tuple[int, int]:
+        """
+        Re-date records: *new_timestamp(ts)* returns the new datetime, or None
+        to leave the record alone. A record whose new timestamp is already
+        taken is deleted instead (that period is already represented).
+        Returns (moved, deleted). One read of all timestamps, then one write
+        per changed record; the caller decides the transaction.
+        """
+        rows = self._conn.execute(
+            "SELECT evidence_id, timestamp FROM evidence_records WHERE domain_module=?",
+            (domain_module_id,),
+        ).fetchall()
+        taken = {row[1] for row in rows}
+        moved = deleted = 0
+        for evidence_id, ts in rows:
+            new = new_timestamp(datetime.fromisoformat(ts))
+            if new is None:
+                continue
+            new_ts = new.isoformat()
+            if new_ts in taken:
+                self._conn.execute("DELETE FROM evidence_records WHERE evidence_id=?", (evidence_id,))
+                deleted += 1
+            else:
+                self._conn.execute(
+                    "UPDATE evidence_records SET timestamp=? WHERE evidence_id=?", (new_ts, evidence_id)
+                )
+                taken.discard(ts)
+                taken.add(new_ts)
+                moved += 1
+        self._db.commit()
+        return moved, deleted
+
+    # ------------------------------------------------------------------
     def latest_timestamp(self, domain_module_id: str) -> str | None:
         """Return the ISO timestamp of the most recent record, or None."""
         cur = self._conn.execute(

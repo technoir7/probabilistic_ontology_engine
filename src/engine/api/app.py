@@ -16,14 +16,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ValidationError
 
-from ...domains.agriculture_weekly import (
-    is_agriculture_domain,
-    latest_complete_week_ending,
-    latest_week_ending_on_or_before,
-    weekly_backfill_dates,
-)
 from ..engine import ProbabilisticOntologyEngine
 from ..runtime.art import import_art_module
+from ..runtime.data_migrations import move_friday_weekly_records_to_sunday
 from ..runtime.ingestion import backfill, ingest_and_learn
 from ..runtime.registry import BY_KEY, REGISTRY, DomainRegistration
 from ..runtime.scheduler import run_scheduler
@@ -35,6 +30,7 @@ from ..schemas import (
     QueryType,
 )
 from ..config import get_structure_mode_config
+from ..model.cadence import Weekly
 from ..model.errors import EngineError, UnknownValue
 from ..model.scoring import candidate_score
 from ..services.evidence_diagnostics import build_entropy_diagnostics
@@ -613,13 +609,8 @@ async def _ingest_domain_evidence(
     domain_id: str,
     target_date: date | None = None,
 ) -> int:
-    if target_date is None:
-        if is_agriculture_domain(domain_id):
-            target_date = latest_complete_week_ending(_utcnow().date())
-        else:
-            target_date = (_utcnow() - timedelta(days=1)).date()
-    elif is_agriculture_domain(domain_id):
-        target_date = latest_week_ending_on_or_before(target_date)
+    cadence = BY_KEY[domain_key].cadence
+    target_date = cadence.default_target(_utcnow().date()) if target_date is None else cadence.align(target_date)
     return await ingest_and_learn(
         engine,
         domain_id,
@@ -649,6 +640,9 @@ async def lifespan(app: FastAPI):
     app.state.engines: dict[str, ProbabilisticOntologyEngine] = {
         r.key: _build_engine(r.build_domain(), data_dir / r.db_filename) for r in REGISTRY
     }
+    for reg in REGISTRY:
+        if isinstance(reg.cadence, Weekly):
+            move_friday_weekly_records_to_sunday(app.state.engines[reg.key], reg.module_id)
     app.state.scheduler_tasks: list[asyncio.Task] = []
     app.state.scheduler_enabled = scheduler_enabled
     app.state.ingest_locks: dict[str, asyncio.Lock] = {r.key: asyncio.Lock() for r in REGISTRY}
@@ -960,11 +954,7 @@ async def ingest_backfill(
     engine, domain_id, display_name = _resolve_domain(domain_key, app.state)
     lock = _ingest_lock(app.state, domain_key)
 
-    today = _utcnow().date()
-    if is_agriculture_domain(domain_id):
-        targets = weekly_backfill_dates(days, today)
-    else:
-        targets = [today - timedelta(days=delta) for delta in range(days, 0, -1)]
+    targets = BY_KEY[domain_key].cadence.window_targets(days, _utcnow().date())
     async with lock:
         try:
             successes = await backfill(
@@ -1821,16 +1811,19 @@ async def _run_domain_scheduler(
 ) -> None:
     """Open the domain's source once and run its schedule until cancelled."""
     run_hour = _env_int(f"{reg.env_prefix}_RUN_HOUR_UTC", reg.default_run_hour_utc)
-    backfill_weeks = _env_int(f"{reg.env_prefix}_BACKFILL_WEEKS", max(backfill_days // 7, 8))
+    if isinstance(reg.cadence, Weekly):
+        window_days = 7 * _env_int(f"{reg.env_prefix}_BACKFILL_WEEKS", max(backfill_days // 7, 8))
+    else:
+        window_days = backfill_days
     async with reg.open_source(os.environ) as source:
         await run_scheduler(
             engine,
             reg.module_id,
             source.fetch_evidence,
-            reg.schedule,
+            reg.cadence,
             run_hour_utc=run_hour,
-            startup_days=backfill_days,
-            startup_weeks=backfill_weeks,
+            startup_window_days=window_days,
+            pause_s=reg.backfill_pause_s,
             lock=lock,
             skip_unchanged_state=reg.skip_unchanged_state,
             clock=_utcnow,

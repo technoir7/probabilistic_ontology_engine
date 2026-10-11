@@ -8,9 +8,8 @@ from __future__ import annotations
 import asyncio
 import logging
 from datetime import date
-from typing import Awaitable, Callable, Iterable
+from typing import Any, Awaitable, Callable, Iterable
 
-from ...domains.agriculture_weekly import is_duplicate_recent_state
 from ..engine import ProbabilisticOntologyEngine
 from ..schemas import EvidenceRecord
 
@@ -42,9 +41,7 @@ async def ingest_and_learn(
     if engine.has_evidence_at(record.timestamp, domain_id):
         logger.info("Skipping %s: evidence for %s already stored", domain_id, record.timestamp.date())
         return 0
-    if skip_unchanged_state and is_duplicate_recent_state(
-        record, engine.evidence_store.load_recent(domain_id, limit=1)
-    ):
+    if skip_unchanged_state and _same_state_as_latest(engine, domain_id, record):
         logger.info("Skipping duplicate %s state for %s", domain_id, target)
         return 0
     with engine.db.transaction():
@@ -82,3 +79,25 @@ async def backfill(
             logger.error("%s backfill failed for %s: %s", domain_id, target, exc, exc_info=True)
         await sleep(pause_s)
     return learned
+
+
+# Unchanged-state check: was the latest stored record the same observations?
+# Compares parsed records, not stored JSON, so it does not depend on how the
+# store encodes probabilities (that encoding changed in REFACTOR_SPEC 3.4).
+
+def _state_signature(record: EvidenceRecord) -> tuple[Any, ...]:
+    """Observations only: ignores record id, source and timestamp."""
+    return tuple(
+        (
+            str(a.variable_id),
+            a.observed_value,
+            a.missingness.value,
+            tuple(sorted(a.probabilities.items(), key=lambda kv: str(kv[0]))) if a.probabilities else None,
+        )
+        for a in record.observed_assignments
+    )
+
+
+def _same_state_as_latest(engine: ProbabilisticOntologyEngine, domain_id: str, record: EvidenceRecord) -> bool:
+    latest = engine.evidence_store.load_latest(domain_id, 1)
+    return bool(latest) and _state_signature(latest[0]) == _state_signature(record)
