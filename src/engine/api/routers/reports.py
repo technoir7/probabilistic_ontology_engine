@@ -8,8 +8,8 @@ from fastapi import APIRouter, HTTPException, Query, Request
 
 from ...runtime.settings import Settings
 from .. import context
+from .. import narrative
 from .. import report as _report
-from . import export
 from ..dto import (
     DomainReportOut,
     DomainReportNotFound,
@@ -79,7 +79,7 @@ async def domain_report_refresh(
         raise HTTPException(status_code=404, detail=f"Unknown domain '{domain}'")
 
     # Build snapshot once — only here in the POST path, never in GET.
-    snapshot_out = await export.narrative_snapshot(request, domain=key, ontology_mode=ontology_mode)
+    snapshot_out = narrative.snapshot_for(request.app.state, key, ontology_mode)
     snapshot_dict = snapshot_out.model_dump()
     h = _report.snapshot_hash(snapshot_dict)
 

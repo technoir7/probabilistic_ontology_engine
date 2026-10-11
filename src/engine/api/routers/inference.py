@@ -55,7 +55,7 @@ async def inference_query(request: Request, body: QueryBodyIn) -> InferenceOut:
     posteriors = raw.get("posteriors", {})
     dist = posteriors.get(target_var.name, {})
     # P(True) for BOOLEAN variables; first value otherwise
-    target_prob = dist.get("True", dist.get("true", next(iter(dist.values()), 0.5)))
+    target_prob = presenters.p_true(dist)
 
     # Build graph
     thresholds = engine._modules[domain_id].existence_thresholds()

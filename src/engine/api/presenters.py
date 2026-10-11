@@ -9,6 +9,7 @@ from typing import Callable, Literal
 from uuid import UUID
 
 from ..engine import ProbabilisticOntologyEngine
+from ..model.scoring import candidate_score
 from ..schemas import OntologyCandidate
 from . import context
 from .dto import (
@@ -155,3 +156,39 @@ def build_population_status(
         last_evidence_cycle_ago=time_ago(last_ts),
         engine_status="online",
     )
+
+
+CandidateLabel = Literal["dominant", "rising", "falling", "neutral"]
+
+
+def ranked_candidates(
+    candidates: list[OntologyCandidate], dominant_id: UUID | None
+) -> list[tuple[OntologyCandidate, CandidateLabel]]:
+    """
+    Best first by candidate_score, each labelled for the dashboard: the top
+    third "rising", the bottom third "falling" (candidates with evidence only).
+    """
+    ranked = sorted(candidates, key=candidate_score, reverse=True)
+    n = len(ranked)
+    out: list[tuple[OntologyCandidate, CandidateLabel]] = []
+    for i, c in enumerate(ranked):
+        label: CandidateLabel
+        if c.candidate_id == dominant_id:
+            label = "dominant"
+        elif i < max(1, n // 3) and c.evidence_count > 0:
+            label = "rising"
+        elif i >= max(1, 2 * n // 3) and c.evidence_count > 0:
+            label = "falling"
+        else:
+            label = "neutral"
+        out.append((c, label))
+    return out
+
+
+def candidate_name(c: OntologyCandidate) -> str:
+    return c.description or f"Candidate {str(c.candidate_id)[:8]}"
+
+
+def p_true(dist: dict) -> float:
+    """P(True) from a posterior keyed by str(value); the first value for non-boolean variables."""
+    return float(dist.get("True", dist.get("true", next(iter(dist.values()), 0.5))))

@@ -57,24 +57,11 @@ async def population_candidates(
     avg_fn = candidate_score
     score_map = presenters.normalize_scores(active, avg_fn)
 
-    # Sort best-first
-    sorted_cands = sorted(active, key=avg_fn, reverse=True)
-    n = len(sorted_cands)
-
     out: list[CandidateOut] = []
-    for i, c in enumerate(sorted_cands):
-        if c.candidate_id == dom_id:
-            status: Literal["dominant", "rising", "falling", "neutral"] = "dominant"
-        elif i < max(1, n // 3) and c.evidence_count > 0:
-            status = "rising"
-        elif i >= max(1, 2 * n // 3) and c.evidence_count > 0:
-            status = "falling"
-        else:
-            status = "neutral"
-
+    for c, status in presenters.ranked_candidates(active, dom_id):
         out.append(CandidateOut(
             id=str(c.candidate_id),
-            name=c.description or f"Candidate {str(c.candidate_id)[:8]}",
+            name=presenters.candidate_name(c),
             log_score=c.log_score,
             evidence_count=c.evidence_count,
             generation_introduced=c.generation,
