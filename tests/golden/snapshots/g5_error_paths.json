@@ -304,22 +304,22 @@
  },
  "status ontology_mode=bogus": {
   "body": {
-   "active_candidates": 3,
-   "current_generation": 0,
-   "domain": "Natural Gas",
-   "dominant_hypothesis": {
-    "candidate_id": "<id1>",
-    "generations_dominant": 0,
-    "name": "T*: demand-chain"
-   },
-   "engine_status": "online",
-   "frontier_edge_count": 3,
-   "last_evidence_cycle_ago": "never",
-   "max_candidates": 10,
-   "paradigm_shifts_this_window": 0,
-   "structure_entropy": 0.0
+   "detail": [
+    {
+     "ctx": {
+      "expected": "'apriori' or 'dynamic'"
+     },
+     "input": "bogus",
+     "loc": [
+      "query",
+      "ontology_mode"
+     ],
+     "msg": "Input should be 'apriori' or 'dynamic'",
+     "type": "literal_error"
+    }
+   ]
   },
-  "status": 200
+  "status": 422
  },
  "status ontology_mode=dynamic non-art": {
   "body": {

@@ -11,6 +11,7 @@ from .. import context
 from .. import narrative
 from .. import report as _report
 from ..dto import (
+    OntologyMode,
     DomainReportOut,
     DomainReportNotFound,
 )
@@ -31,7 +32,7 @@ router = APIRouter()
 async def domain_report_read(
     request: Request,
     domain: str,
-    ontology_mode: str = Query("apriori"),
+    ontology_mode: OntologyMode = Query("apriori"),
 ) -> Any:
     """
     Read-only: return the latest cached report for this domain/mode without
@@ -59,7 +60,7 @@ async def domain_report_read(
 async def domain_report_refresh(
     request: Request,
     domain: str,
-    ontology_mode: str = Query("apriori"),
+    ontology_mode: OntologyMode = Query("apriori"),
 ) -> Any:
     """
     Build the current snapshot, compute its hash, and return a report.

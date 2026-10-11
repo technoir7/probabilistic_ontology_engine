@@ -7,6 +7,7 @@ from fastapi import APIRouter, Query, Request
 
 from .. import narrative
 from ..dto import (
+    OntologyMode,
     NarrativeSnapshotOut,
 )
 
@@ -18,7 +19,7 @@ router = APIRouter()
 async def narrative_snapshot(
     request: Request,
     domain: str = Query("ng"),
-    ontology_mode: str = Query("apriori"),
+    ontology_mode: OntologyMode = Query("apriori"),
 ) -> NarrativeSnapshotOut:
     """
     Structured epistemic-state snapshot designed to be passed to an LLM for

@@ -5,6 +5,9 @@ from typing import Any, Literal, Optional
 
 from pydantic import BaseModel
 
+# Validated: the report routes build cache file names from it.
+OntologyMode = Literal["apriori", "dynamic"]
+
 
 
 class DominantHypothesis(BaseModel):
@@ -82,7 +85,7 @@ class QueryBodyIn(BaseModel):
     candidate_id: Optional[str] = None
     conditions: Optional[dict[str, Any]] = None
     aggregation: Optional[Literal["weighted_avg", "map", "marginal"]] = None
-    ontology_mode: Optional[Literal["apriori", "dynamic"]] = None
+    ontology_mode: Optional[OntologyMode] = None
 
 
 class LineageEventOut(BaseModel):

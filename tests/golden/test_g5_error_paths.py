@@ -69,7 +69,7 @@ def test_g5_error_paths_match_golden(client):
         {**q, "conditions": {"HeatingDem": True}, "aggregation": "weighted_avg"},
     )
 
-    # A8: ontology_mode is not validated; unknown values fall back to apriori.
+    # A8: ontology_mode is validated (it names report cache files); unknown → 422.
     out["status ontology_mode=bogus"] = _call(client, "GET", "/v1/population/status?domain=ng&ontology_mode=bogus")
     out["status ontology_mode=dynamic non-art"] = _call(client, "GET", "/v1/population/status?domain=ng&ontology_mode=dynamic")
 

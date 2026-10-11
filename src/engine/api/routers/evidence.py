@@ -8,6 +8,7 @@ from fastapi import APIRouter, Query, Request
 
 from .. import context, poea_dynamic
 from ..dto import (
+    OntologyMode,
     EvidenceRecordOut,
     EvidenceOut,
 )
@@ -21,7 +22,7 @@ async def evidence_recent(
     request: Request,
     domain: str = Query("ng"),
     limit: int = Query(20, ge=1, le=100),
-    ontology_mode: str = Query("apriori"),
+    ontology_mode: OntologyMode = Query("apriori"),
 ) -> EvidenceOut:
     engine, domain_id, display_name = context.resolve_domain(domain, request.app.state)
     if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(domain.lower()):

@@ -11,6 +11,7 @@ from ...model.scoring import candidate_score
 from ...schemas import OntologyCandidate
 from .. import context, poea_dynamic, presenters
 from ..dto import (
+    OntologyMode,
     PopStatusOut,
     CandidateOut,
     CandidatesOut,
@@ -28,7 +29,7 @@ router = APIRouter()
 async def population_status(
     request: Request,
     domain: str = Query("ng"),
-    ontology_mode: str = Query("apriori"),
+    ontology_mode: OntologyMode = Query("apriori"),
 ) -> PopStatusOut:
     engine, domain_id, display_name = context.resolve_domain(domain, request.app.state)
     if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(domain.lower()):
@@ -42,7 +43,7 @@ async def population_status(
 async def population_candidates(
     request: Request,
     domain: str = Query("ng"),
-    ontology_mode: str = Query("apriori"),
+    ontology_mode: OntologyMode = Query("apriori"),
 ) -> CandidatesOut:
     engine, domain_id, display_name = context.resolve_domain(domain, request.app.state)
     if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(domain.lower()):
@@ -82,7 +83,7 @@ async def population_lineage(
     request: Request,
     candidate_id: str,
     domain: str = Query("ng"),
-    ontology_mode: str = Query("apriori"),
+    ontology_mode: OntologyMode = Query("apriori"),
 ) -> LineageOut:
     if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(domain.lower()):
         _, _, display_name = context.resolve_domain(domain, request.app.state)
@@ -187,7 +188,7 @@ async def population_lineage(
 async def population_shifts(
     request: Request,
     domain: str = Query("ng"),
-    ontology_mode: str = Query("apriori"),
+    ontology_mode: OntologyMode = Query("apriori"),
 ) -> ParadigmShiftsOut:
     if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(domain.lower()):
         engine, domain_id, display_name = context.resolve_domain(domain, request.app.state)
