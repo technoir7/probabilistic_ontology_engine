@@ -5,6 +5,7 @@ import json
 from fastapi.testclient import TestClient
 
 from src.engine.api import app as api_app
+from src.engine.runtime.art import import_art_module
 from tests.fakes import running_engine
 
 
@@ -98,7 +99,7 @@ def test_duplicate_only_manual_art_endpoint_learns_existing_uninitialized_rows(
     _write_manual_file(manual_path)
 
     with TestClient(api_app.app) as client:
-        manual_ingest = api_app._import_art_module("manual_ingest")
+        manual_ingest = import_art_module("manual_ingest")
         engine = running_engine("art")
         records = manual_ingest.ingest_manual_path(manual_path)
         engine.ingest_batch(records)

@@ -6,6 +6,7 @@ from datetime import date
 from fastapi.testclient import TestClient
 
 from src.engine.api import app as api_app
+from src.engine.runtime.art import import_art_module
 from tests.fakes import patch_evidence_fetch, running_engine
 
 
@@ -13,8 +14,8 @@ def test_art_domain_registered_and_manual_evidence_reaches_store(monkeypatch, tm
     monkeypatch.setenv("EVIDENCE_SCHEDULER_ENABLED", "false")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
 
-    manual_ingest = api_app._import_art_module("manual_ingest")
-    domain_module = api_app._import_art_module("domain")
+    manual_ingest = import_art_module("manual_ingest")
+    domain_module = import_art_module("domain")
 
     manual_path = tmp_path / "manual_art_signal.json"
     manual_path.write_text(

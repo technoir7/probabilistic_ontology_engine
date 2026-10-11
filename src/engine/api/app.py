@@ -2,11 +2,9 @@
 from __future__ import annotations
 
 import asyncio
-import importlib
 import logging
 import math
 import os
-import sys
 from contextlib import asynccontextmanager
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -74,6 +72,8 @@ from ...domains.agriculture_weekly import (
     weekly_backfill_dates,
 )
 from ..engine import ProbabilisticOntologyEngine
+from ..runtime.art import import_art_module
+from ..runtime.registry import BY_KEY, REGISTRY
 from ..schemas import (
     EvidenceRecord,
     InferenceQuery,
@@ -95,19 +95,7 @@ logger = logging.getLogger(__name__)
 REQUIRED_ENV_VARS = ("EIA_API_KEY",)
 
 # Short name → (domain_module_id, display_name)
-_DOMAIN_MAP: dict[str, tuple[str, str]] = {
-    "ng": ("natural-gas-v1",   "Natural Gas"),
-    "mr": ("macro-regime-v1",  "Macro Regime"),
-    "ai": ("ai-regime-v1",     "AI Regime"),
-    "sd": ("sovereign-debt-v1", "Sovereign Debt"),
-    "cc": ("credit-cycle-v1",  "Credit Cycle"),
-    "er": ("energy-regime-v1", "Energy Regime"),
-    "lm": ("labor-market-v1",  "Labor Market"),
-    "cr": ("crypto-regime-v1", "Crypto Regime"),
-    "gp": ("geopolitics-v1",   "Geopolitics"),
-    "sf": ("sf-urban-v1",      "SF Urban"),
-    "art": ("art_prestige_regime_v1", "Art Prestige Regime"),
-}
+_DOMAIN_MAP: dict[str, tuple[str, str]] = {r.key: (r.module_id, r.display_name) for r in REGISTRY}
 
 
 # ── Response models ───────────────────────────────────────────────────────────
@@ -567,28 +555,6 @@ def _build_engine(domain_module: Any, db_path: Path) -> ProbabilisticOntologyEng
     return engine
 
 
-_ART_PACKAGE = "art_prestige_regime_v1"
-
-
-def _import_art_module(submodule: str = "") -> Any:
-    module_name = f"{_ART_PACKAGE}.{submodule}" if submodule else _ART_PACKAGE
-    try:
-        return importlib.import_module(module_name)
-    except ModuleNotFoundError as exc:
-        if exc.name != _ART_PACKAGE:
-            raise
-        sibling_src = Path(__file__).resolve().parents[4] / "art-market-domain" / "src"
-        if sibling_src.exists():
-            sys.path.insert(0, str(sibling_src))
-            return importlib.import_module(module_name)
-        raise
-
-
-def _build_art_domain() -> Any:
-    module = _import_art_module()
-    return module.ArtPrestigeRegimeV1()
-
-
 def _default_art_manual_dir(manual_ingest_module: Any) -> Path:
     return Path(manual_ingest_module.__file__).resolve().parents[2] / "data" / "manual_ingest"
 
@@ -676,87 +642,15 @@ def _ingest_lock(state: Any, domain_key: str) -> asyncio.Lock:
 
 
 def _require_domain_env(domain_key: str) -> None:
-    if domain_key == "ng":
-        _require_env(("EIA_API_KEY",))
-    if domain_key in ("mr", "ai", "sd", "cc", "er", "lm", "cr", "gp", "sf"):
-        _require_env(("FRED_API_KEY",))
+    _require_env(BY_KEY[domain_key].required_env)
 
 
 async def _fetch_evidence_record(domain_key: str, target_date: date) -> EvidenceRecord:
+    if domain_key not in BY_KEY:
+        raise ValueError(f"Unknown domain '{domain_key}'")
     _require_domain_env(domain_key)
-
-    if domain_key == "ng":
-        noaa = NOAAClient()
-        eia = EIAClient(api_key=os.environ["EIA_API_KEY"])
-        async with noaa, eia:
-            return await NaturalGasPipeline(noaa, eia).fetch_evidence(target_date)
-
-    if domain_key == "mr":
-        fred = FREDClient(api_key=os.environ["FRED_API_KEY"])
-        async with fred:
-            return await MacroRegimePipeline(fred).fetch_evidence(target_date)
-
-    if domain_key == "ai":
-        fred = AIFredClient(api_key=os.environ["FRED_API_KEY"])
-        yf_client = AIYFinanceClient()
-        edgar = AIEdgarClient()
-        async with fred, edgar, yf_client:
-            return await AIRegimePipeline(yf_client, fred, edgar).fetch_evidence(target_date)
-
-    if domain_key == "sd":
-        fred = SDFredClient(api_key=os.environ["FRED_API_KEY"])
-        async with fred:
-            return await SovereignDebtPipeline(fred).fetch_evidence(target_date)
-
-    if domain_key == "cc":
-        fred = CCFredClient(api_key=os.environ["FRED_API_KEY"])
-        async with fred:
-            return await CreditCyclePipeline(fred).fetch_evidence(target_date)
-
-    if domain_key == "er":
-        fred = ERFredClient(api_key=os.environ["FRED_API_KEY"])
-        yf_client = EnergyYFinanceClient()
-        async with fred, yf_client:
-            return await EnergyRegimePipeline(fred, yf_client).fetch_evidence(target_date)
-
-    if domain_key == "lm":
-        fred = LMFredClient(api_key=os.environ["FRED_API_KEY"])
-        async with fred:
-            return await LaborMarketPipeline(fred).fetch_evidence(target_date)
-
-    if domain_key == "cr":
-        cg = CoinGeckoClient()
-        yf_client = CryptoYFinanceClient()
-        fred = CRFredClient(api_key=os.environ["FRED_API_KEY"])
-        async with cg, fred:
-            return await CryptoRegimePipeline(cg, yf_client, fred).fetch_evidence(target_date)
-
-    if domain_key == "gp":
-        gdelt = GDELTClient()
-        fred = GPFredClient(api_key=os.environ["FRED_API_KEY"])
-        async with gdelt, fred:
-            return await GeopoliticsPipeline(gdelt, fred).fetch_evidence(target_date)
-
-    if domain_key == "sf":
-        sfgov = SFGovClient()
-        fred = SFFredClient(api_key=os.environ["FRED_API_KEY"])
-        async with sfgov, fred:
-            return await SFUrbanPipeline(sfgov, fred).fetch_evidence(target_date)
-
-    if domain_key == "art":
-        ingest_module = _import_art_module("ingest")
-        domain_module = _import_art_module("domain")
-        observations = await ingest_module.fetch_observations(target_date)
-        record = domain_module.build_evidence_record(observations)
-        record.timestamp = datetime(
-            target_date.year,
-            target_date.month,
-            target_date.day,
-            tzinfo=timezone.utc,
-        )
-        return record
-
-    raise ValueError(f"Unknown domain '{domain_key}'")
+    async with BY_KEY[domain_key].open_source(os.environ) as source:
+        return await source.fetch_evidence(target_date)
 
 
 async def _ingest_domain_evidence(
@@ -866,46 +760,16 @@ async def lifespan(app: FastAPI):
     scheduler_enabled = _env_bool("EVIDENCE_SCHEDULER_ENABLED", True)
 
     # Always build shared engines so API routes work regardless of scheduler state
-    ng_engine = _build_engine(NaturalGasV1(), data_dir / "natural_gas.db")
-    mr_engine = _build_engine(MacroRegimeV1(), data_dir / "macro_regime.db")
-    ai_engine = _build_engine(AIRegimeV1(), data_dir / "ai_regime.db")
-    sd_engine = _build_engine(SovereignDebtV1(), data_dir / "sovereign_debt.db")
-    cc_engine = _build_engine(CreditCycleV1(), data_dir / "credit_cycle.db")
-    er_engine = _build_engine(EnergyRegimeV1(), data_dir / "energy_regime.db")
-    lm_engine = _build_engine(LaborMarketV1(), data_dir / "labor_market.db")
-    cr_engine = _build_engine(CryptoRegimeV1(), data_dir / "crypto_regime.db")
-    gp_engine = _build_engine(GeopoliticsV1(), data_dir / "geopolitics.db")
-    sf_engine = _build_engine(SFUrbanV1(), data_dir / "sf_urban.db")
-    art_engine = _build_engine(_build_art_domain(), data_dir / "art_prestige_regime.db")
-
     app.state.engines: dict[str, ProbabilisticOntologyEngine] = {
-        "ng": ng_engine,
-        "mr": mr_engine,
-        "ai": ai_engine,
-        "sd": sd_engine,
-        "cc": cc_engine,
-        "er": er_engine,
-        "lm": lm_engine,
-        "cr": cr_engine,
-        "gp": gp_engine,
-        "sf": sf_engine,
-        "art": art_engine,
+        r.key: _build_engine(r.build_domain(), data_dir / r.db_filename) for r in REGISTRY
     }
+    engines = app.state.engines
+    ng_engine, mr_engine, ai_engine = engines["ng"], engines["mr"], engines["ai"]
+    sd_engine, cc_engine, er_engine = engines["sd"], engines["cc"], engines["er"]
+    lm_engine, cr_engine, gp_engine, sf_engine = engines["lm"], engines["cr"], engines["gp"], engines["sf"]
     app.state.scheduler_tasks: list[asyncio.Task] = []
     app.state.scheduler_enabled = scheduler_enabled
-    app.state.ingest_locks: dict[str, asyncio.Lock] = {
-        "ng": asyncio.Lock(),
-        "mr": asyncio.Lock(),
-        "ai": asyncio.Lock(),
-        "sd": asyncio.Lock(),
-        "cc": asyncio.Lock(),
-        "er": asyncio.Lock(),
-        "lm": asyncio.Lock(),
-        "cr": asyncio.Lock(),
-        "gp": asyncio.Lock(),
-        "sf": asyncio.Lock(),
-        "art": asyncio.Lock(),
-    }
+    app.state.ingest_locks: dict[str, asyncio.Lock] = {r.key: asyncio.Lock() for r in REGISTRY}
 
     if scheduler_enabled:
         _require_env(REQUIRED_ENV_VARS)
@@ -1359,7 +1223,7 @@ async def ingest_art_manual(
     domain_key = "art"
     engine, domain_id, display_name = _resolve_domain(domain_key, app.state)
     lock = _ingest_lock(app.state, domain_key)
-    manual_ingest = _import_art_module("manual_ingest")
+    manual_ingest = import_art_module("manual_ingest")
     input_path = Path(path) if path else _default_art_manual_dir(manual_ingest)
 
     async with lock:
