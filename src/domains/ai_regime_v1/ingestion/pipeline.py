@@ -642,7 +642,7 @@ class AIRegimePipeline:
 
     async def fetch_evidence(
         self,
-        target_date: Optional[date] = None,
+        target_date: date,
     ) -> EvidenceRecord:
         """
         Fetch all data sources for the given week and return an EvidenceRecord.
@@ -658,8 +658,6 @@ class AIRegimePipeline:
         EvidenceRecord
             Fully-populated record with 8 soft BOOLEAN assignments.
         """
-        if target_date is None:
-            target_date = _last_friday()
 
         # Fetch yfinance and FRED concurrently; EDGAR uses its own cache
         yf_task = asyncio.create_task(self._yf.fetch_all(end_date=target_date))
@@ -804,26 +802,6 @@ class AIRegimePipeline:
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
-
-def _last_friday(as_of: Optional[date] = None) -> date:
-    """Return the most recent Friday on or before `as_of` (default: today)."""
-    today = as_of or datetime.now(timezone.utc).date()
-    days_since_friday = (today.weekday() - 4) % 7  # Monday=0, Friday=4
-    return today - timedelta(days=days_since_friday)
-
-
-def _weekly_backfill_dates(backfill_weeks: int, today: date) -> list[date]:
-    """
-    Return list of unique week-ending Fridays for the past backfill_weeks.
-
-    Each date is the Friday of a past week, oldest first.
-    """
-    fridays: set[date] = set()
-    for delta in range(backfill_weeks * 7, 0, -1):
-        d = today - timedelta(days=delta)
-        if d.weekday() == 4:  # Friday
-            fridays.add(d)
-    return sorted(fridays)
 
 
 def _log_snapshot(snapshot: AIRegimeSnapshot, target_date: date) -> None:

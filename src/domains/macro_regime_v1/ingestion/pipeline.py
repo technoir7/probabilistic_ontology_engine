@@ -553,7 +553,7 @@ class MacroRegimePipeline:
 
     async def fetch_evidence(
         self,
-        target_date: Optional[date] = None,
+        target_date: date,
     ) -> EvidenceRecord:
         """
         Fetch FRED data for the given week and return an EvidenceRecord.
@@ -574,8 +574,6 @@ class MacroRegimePipeline:
         IOError
             If all FRED series fail to return data.
         """
-        if target_date is None:
-            target_date = _last_friday()
 
         observations = await self._fred.fetch_all_series(end_date=target_date)
         snapshot = compute_snapshot(observations, target_date)
@@ -690,12 +688,6 @@ class MacroRegimePipeline:
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
-
-def _last_friday(as_of: Optional[date] = None) -> date:
-    """Return the most recent Friday on or before `as_of` (default: today)."""
-    today = as_of or datetime.now(timezone.utc).date()
-    days_since_friday = (today.weekday() - 4) % 7  # Monday=0, Friday=4
-    return today - timedelta(days=days_since_friday)
 
 
 def _log_snapshot(snapshot: MacroRegimeSnapshot, target_date: date) -> None:

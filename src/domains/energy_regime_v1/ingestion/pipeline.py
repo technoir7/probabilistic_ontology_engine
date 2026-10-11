@@ -39,7 +39,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timezone
 from typing import Optional
 from uuid import uuid4
 
@@ -320,9 +320,7 @@ class EnergyRegimePipeline:
         self._fred = fred
         self._yf = yf_client
 
-    async def fetch_evidence(self, target_date: Optional[date] = None) -> EvidenceRecord:
-        if target_date is None:
-            target_date = _last_friday()
+    async def fetch_evidence(self, target_date: date) -> EvidenceRecord:
 
         import asyncio
         fred_obs, yf_obs = await asyncio.gather(
@@ -376,16 +374,3 @@ class EnergyRegimePipeline:
         )
 
 
-def _last_friday(as_of: Optional[date] = None) -> date:
-    today = as_of or datetime.now(timezone.utc).date()
-    days_since_friday = (today.weekday() - 4) % 7
-    return today - timedelta(days=days_since_friday)
-
-
-def _weekly_backfill_dates(backfill_weeks: int, today: date) -> list[date]:
-    fridays: set[date] = set()
-    for delta in range(backfill_weeks * 7, 0, -1):
-        d = today - timedelta(days=delta)
-        if d.weekday() == 4:
-            fridays.add(d)
-    return sorted(fridays)

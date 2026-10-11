@@ -60,7 +60,6 @@ from src.domains.macro_regime_v1.ingestion.fred_client import (
 from src.domains.macro_regime_v1.ingestion.pipeline import (
     MacroRegimePipeline,
     MacroRegimeSnapshot,
-    _last_friday,
     _soft_bool,
     compute_snapshot,
     _compute_yield_curve_signal,
@@ -545,7 +544,7 @@ def test_fred_client_skips_missing_values():
 # TEST-MR-15 — Weekly backfill date computation
 # ---------------------------------------------------------------------------
 
-def test_weekly_backfill_dates_returns_fridays():
+def test_weekly_backfill_dates_returns_sundays():
     """
     Weekly startup backfill targets (the dates the macro scheduler backfills)
     are the Sundays ending each week in the window (decision D12).
@@ -799,24 +798,6 @@ def test_candidates_have_distinct_edge_structures():
         f"Some candidates share the same edge structure. "
         f"Got {len(unique_signatures)} unique structures for {len(candidates)} candidates."
     )
-
-
-# ---------------------------------------------------------------------------
-# TEST-MR-23 — _last_friday returns correct day
-# ---------------------------------------------------------------------------
-
-@pytest.mark.parametrize("as_of,expected", [
-    (date(2024, 5, 6), date(2024, 5, 3)),   # Monday → previous Friday
-    (date(2024, 5, 3), date(2024, 5, 3)),   # Friday → same day
-    (date(2024, 5, 4), date(2024, 5, 3)),   # Saturday → last Friday
-    (date(2024, 5, 5), date(2024, 5, 3)),   # Sunday → last Friday
-    (date(2024, 5, 7), date(2024, 5, 3)),   # Tuesday → last Friday
-])
-def test_last_friday(as_of: date, expected: date):
-    """_last_friday must return the most recent Friday on or before the given date."""
-    result = _last_friday(as_of)
-    assert result == expected, f"_last_friday({as_of}) = {result}, expected {expected}"
-    assert result.weekday() == 4, f"Result {result} is not a Friday"
 
 
 # ---------------------------------------------------------------------------
