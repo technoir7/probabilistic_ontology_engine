@@ -24,7 +24,11 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["pytest>=7.0"]
+dev = [
+    "import-linter>=2.15",
+    "pytest>=7.0",
+    "ruff>=0.17.0",
+]
 # The art domain lives in its own repo and is registered unconditionally at
 # startup, so the app cannot start without it. It is a group rather than a
 # project dependency because the Railway build runs `pip install .`, which
@@ -48,3 +52,79 @@ addopts = "-m 'not live'"
 markers = [
     "live: hit real external APIs — skip in CI, run manually with -m live",
 ]
+
+# ── Guardrails (REFACTOR_SPEC §6): not style rules ─────────────────────────────
+[tool.ruff]
+target-version = "py312"
+
+[tool.ruff.lint]
+# Undefined/unused names, reaching into another object's private members, and
+# catch-all excepts outside the places that are meant to have them.
+select = ["F", "SLF001", "BLE001"]
+
+[tool.ruff.lint.per-file-ignores]
+# External-data boundary: a failed fetch becomes [] and the variable is then
+# recorded as MISSING; these clients must not raise on a bad upstream day.
+"src/domains/**/ingestion/*_client.py" = ["BLE001"]
+"src/domains/sources/yfinance.py" = ["BLE001"]
+# Tests may inspect internals and use broad pytest.raises-style handling.
+"tests/**" = ["SLF001", "BLE001", "F401", "F811", "F841"]
+
+[tool.importlinter]
+root_package = "src"
+
+[[tool.importlinter.contracts]]
+name = "Domains define data and fetching; they never use the engine's machinery"
+type = "forbidden"
+# Direct imports only: reaching a lower layer through the one in between is the point.
+allow_indirect_imports = true
+source_modules = ["src.domains"]
+forbidden_modules = ["src.engine.engine", "src.engine.services", "src.engine.stores", "src.engine.runtime", "src.engine.api"]
+
+[[tool.importlinter.contracts]]
+name = "The model layer is the bottom"
+type = "forbidden"
+# Direct imports only: reaching a lower layer through the one in between is the point.
+allow_indirect_imports = true
+source_modules = ["src.engine.model", "src.engine.schemas", "src.engine.variable_identity"]
+forbidden_modules = ["src.engine.engine", "src.engine.services", "src.engine.stores", "src.engine.runtime", "src.engine.api", "src.domains"]
+
+[[tool.importlinter.contracts]]
+name = "Stores know only the model"
+type = "forbidden"
+# Direct imports only: reaching a lower layer through the one in between is the point.
+allow_indirect_imports = true
+source_modules = ["src.engine.stores"]
+forbidden_modules = ["src.engine.engine", "src.engine.services", "src.engine.runtime", "src.engine.api", "src.domains"]
+
+[[tool.importlinter.contracts]]
+name = "Services do not reach outward"
+type = "forbidden"
+# Direct imports only: reaching a lower layer through the one in between is the point.
+allow_indirect_imports = true
+source_modules = ["src.engine.services"]
+forbidden_modules = ["src.engine.engine", "src.engine.runtime", "src.engine.api", "src.domains"]
+
+[[tool.importlinter.contracts]]
+name = "The engine facade does not know runtime, API or domains"
+type = "forbidden"
+# Direct imports only: reaching a lower layer through the one in between is the point.
+allow_indirect_imports = true
+source_modules = ["src.engine.engine"]
+forbidden_modules = ["src.engine.runtime", "src.engine.api", "src.domains"]
+
+[[tool.importlinter.contracts]]
+name = "Runtime does not depend on the API"
+type = "forbidden"
+# Direct imports only: reaching a lower layer through the one in between is the point.
+allow_indirect_imports = true
+source_modules = ["src.engine.runtime"]
+forbidden_modules = ["src.engine.api"]
+
+[[tool.importlinter.contracts]]
+name = "The API reaches stores and domains only through the engine and runtime"
+type = "forbidden"
+# Direct imports only: reaching a lower layer through the one in between is the point.
+allow_indirect_imports = true
+source_modules = ["src.engine.api"]
+forbidden_modules = ["src.engine.stores", "src.domains"]
