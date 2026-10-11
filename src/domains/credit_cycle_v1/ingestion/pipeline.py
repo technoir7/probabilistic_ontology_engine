@@ -39,20 +39,16 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from datetime import date, datetime, timezone
+from datetime import date
 from typing import Optional
-from uuid import uuid4
 
 
 from ....engine.schemas import (
     EvidenceRecord,
-    MissingnessType,
-    ObservedAssignment,
-    SourceType,
 )
 from ..domain import get_variables
 from .fred_client import FREDClient, FREDObservation
-from ...sources.soft_evidence import soft_bool, zscore as _zscore
+from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
 
 logger = logging.getLogger(__name__)
 
@@ -246,44 +242,24 @@ class CreditCyclePipeline:
 
     @staticmethod
     def build_evidence_record(snapshot: CreditCycleSnapshot) -> EvidenceRecord:
-        variables = get_variables()
-        conf = snapshot.confidence
-
-        def _assignment(var_name: str, observed_value: bool, p_true: float) -> ObservedAssignment:
-            c = conf.get(var_name, 1.0)
-            return ObservedAssignment(
-                variable_id=variables[var_name].variable_id,
-                observed_value=observed_value,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=c,
-                probabilities={True: p_true, False: 1.0 - p_true},
-            )
-
-        assignments = [
-            _assignment("HYSpreadElevated",         snapshot.hy_spread_elevated,          snapshot.p_hy_spread_elevated),
-            _assignment("LeveragedLoanStress",       snapshot.leveraged_loan_stress,       snapshot.p_leveraged_loan_stress),
-            _assignment("CorporateDefaultRisk",      snapshot.corporate_default_risk,      snapshot.p_corporate_default_risk),
-            _assignment("CreditImpulseNegative",     snapshot.credit_impulse_negative,     snapshot.p_credit_impulse_negative),
-            _assignment("BankLendingTightening",     snapshot.bank_lending_tightening,     snapshot.p_bank_lending_tightening),
-            _assignment("InvestmentGradeSpread",     snapshot.investment_grade_spread,     snapshot.p_investment_grade_spread),
-            _assignment("HighYieldIssuanceFalling",  snapshot.high_yield_issuance_falling, snapshot.p_high_yield_issuance_falling),
-            _assignment("RefinancingStress",         snapshot.refinancing_stress,          snapshot.p_refinancing_stress),
-        ]
-
-        target_date = snapshot.target_date or datetime.now(timezone.utc).date()
-        ts = datetime(target_date.year, target_date.month, target_date.day, tzinfo=timezone.utc)
-        overall_conf = float(sum(conf.values()) / len(conf)) if conf else 1.0
-
-        return EvidenceRecord(
-            evidence_id=uuid4(),
-            timestamp=ts,
-            observed_assignments=assignments,
-            source_type=SourceType.API,
-            source_ref=(
-                "FRED:BAMLH0A0HYM2+DRTSCILM+TOTCI+BAMLC0A0CM+DGS5"
-                f"@week-ending-{target_date}"
-            ),
-            confidence=overall_conf,
+        target_date = snapshot.target_date
+        return build_soft_record(
+            module_id="credit-cycle-v1",
+            variables=get_variables(),
+            states=[
+                ("HYSpreadElevated", snapshot.hy_spread_elevated, snapshot.p_hy_spread_elevated),
+                ("LeveragedLoanStress", snapshot.leveraged_loan_stress, snapshot.p_leveraged_loan_stress),
+                ("CorporateDefaultRisk", snapshot.corporate_default_risk, snapshot.p_corporate_default_risk),
+                ("CreditImpulseNegative", snapshot.credit_impulse_negative, snapshot.p_credit_impulse_negative),
+                ("BankLendingTightening", snapshot.bank_lending_tightening, snapshot.p_bank_lending_tightening),
+                ("InvestmentGradeSpread", snapshot.investment_grade_spread, snapshot.p_investment_grade_spread),
+                ("HighYieldIssuanceFalling", snapshot.high_yield_issuance_falling, snapshot.p_high_yield_issuance_falling),
+                ("RefinancingStress", snapshot.refinancing_stress, snapshot.p_refinancing_stress),
+            ],
+            confidence=snapshot.confidence,
+            target_date=target_date,
+            source_ref="FRED:BAMLH0A0HYM2+DRTSCILM+TOTCI+BAMLC0A0CM+DGS5"
+            f"@week-ending-{target_date}",
         )
 
 

@@ -94,17 +94,13 @@ from __future__ import annotations
 import asyncio
 import logging
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, timedelta
 from typing import Optional
-from uuid import uuid4
 
 import numpy as np
 
 from ....engine.schemas import (
     EvidenceRecord,
-    MissingnessType,
-    ObservedAssignment,
-    SourceType,
 )
 from ..domain import get_variables
 from .edgar_client import EDGARClient, HyperscalerCapexSnapshot
@@ -115,7 +111,7 @@ from .fred_client import (
     FREDObservation,
 )
 from .yfinance_client import AIYFinanceClient, YFObservation
-from ...sources.soft_evidence import soft_bool, zscore as _zscore
+from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
 
 logger = logging.getLogger(__name__)
 
@@ -712,90 +708,26 @@ class AIRegimePipeline:
         Produces SOFT_OBSERVED assignments with sigmoid-calibrated
         probability distributions.  Synchronous; no external dependencies.
         """
-        variables = get_variables()
-        conf = snapshot.confidence
-
-        def _assignment(
-            var_name: str,
-            observed_value: bool,
-            p_true: float,
-        ) -> ObservedAssignment:
-            c = conf.get(var_name, 1.0)
-            return ObservedAssignment(
-                variable_id=variables[var_name].variable_id,
-                observed_value=observed_value,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=c,
-                probabilities={True: p_true, False: 1.0 - p_true},
-            )
-
-        assignments = [
-            _assignment(
-                "SemiconductorMomentum",
-                snapshot.semiconductor_momentum,
-                snapshot.p_semiconductor_momentum,
-            ),
-            _assignment(
-                "MarketConcentrationExtreme",
-                snapshot.market_concentration_extreme,
-                snapshot.p_market_concentration_extreme,
-            ),
-            _assignment(
-                "HyperscalerCapexAccelerating",
-                snapshot.hyperscaler_capex_accelerating,
-                snapshot.p_hyperscaler_capex_accelerating,
-            ),
-            _assignment(
-                "TechValuationDetached",
-                snapshot.tech_valuation_detached,
-                snapshot.p_tech_valuation_detached,
-            ),
-            _assignment(
-                "IPInvestmentRising",
-                snapshot.ip_investment_rising,
-                snapshot.p_ip_investment_rising,
-            ),
-            _assignment(
-                "LaborProductivityImproving",
-                snapshot.labor_productivity_improving,
-                snapshot.p_labor_productivity_improving,
-            ),
-            _assignment(
-                "BroadEconomicLift",
-                snapshot.broad_economic_lift,
-                snapshot.p_broad_economic_lift,
-            ),
-            _assignment(
-                "AIRiskPremiumCompressed",
-                snapshot.ai_risk_premium_compressed,
-                snapshot.p_ai_risk_premium_compressed,
-            ),
-        ]
-
-        target_date = snapshot.target_date or datetime.now(timezone.utc).date()
-        ts = datetime(
-            target_date.year,
-            target_date.month,
-            target_date.day,
-            tzinfo=timezone.utc,
-        )
-
-        overall_confidence = (
-            float(sum(conf.values()) / len(conf)) if conf else 1.0
-        )
-
-        return EvidenceRecord(
-            evidence_id=uuid4(),
-            timestamp=ts,
-            observed_assignments=assignments,
-            source_type=SourceType.API,
-            source_ref=(
-                "AI-REGIME:yfinance(^SOX,QQQ,RSP,^VIX)"
-                "+EDGAR(MSFT,GOOGL,AMZN,META)"
-                "+FRED(Y033RC1Q027SBEA,PRS85006092,A191RL1Q225SBEA)"
-                f"@week-ending-{target_date}"
-            ),
-            confidence=overall_confidence,
+        target_date = snapshot.target_date
+        return build_soft_record(
+            module_id="ai-regime-v1",
+            variables=get_variables(),
+            states=[
+                ("SemiconductorMomentum", snapshot.semiconductor_momentum, snapshot.p_semiconductor_momentum),
+                ("MarketConcentrationExtreme", snapshot.market_concentration_extreme, snapshot.p_market_concentration_extreme),
+                ("HyperscalerCapexAccelerating", snapshot.hyperscaler_capex_accelerating, snapshot.p_hyperscaler_capex_accelerating),
+                ("TechValuationDetached", snapshot.tech_valuation_detached, snapshot.p_tech_valuation_detached),
+                ("IPInvestmentRising", snapshot.ip_investment_rising, snapshot.p_ip_investment_rising),
+                ("LaborProductivityImproving", snapshot.labor_productivity_improving, snapshot.p_labor_productivity_improving),
+                ("BroadEconomicLift", snapshot.broad_economic_lift, snapshot.p_broad_economic_lift),
+                ("AIRiskPremiumCompressed", snapshot.ai_risk_premium_compressed, snapshot.p_ai_risk_premium_compressed),
+            ],
+            confidence=snapshot.confidence,
+            target_date=target_date,
+            source_ref="AI-REGIME:yfinance(^SOX,QQQ,RSP,^VIX)"
+            "+EDGAR(MSFT,GOOGL,AMZN,META)"
+            "+FRED(Y033RC1Q027SBEA,PRS85006092,A191RL1Q225SBEA)"
+            f"@week-ending-{target_date}",
         )
 
 

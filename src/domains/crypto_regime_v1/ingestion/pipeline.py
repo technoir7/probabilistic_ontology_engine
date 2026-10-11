@@ -40,23 +40,19 @@ from __future__ import annotations
 import logging
 import math
 from dataclasses import dataclass, field
-from datetime import date, datetime, timezone
+from datetime import date
 from typing import Optional
-from uuid import uuid4
 
 import numpy as np
 
 from ....engine.schemas import (
     EvidenceRecord,
-    MissingnessType,
-    ObservedAssignment,
-    SourceType,
 )
 from ..domain import get_variables
 from .coingecko_client import CoinGeckoClient, CGObs, CGGlobal
 from .yfinance_client import CryptoYFinanceClient, CryptoYFObs
 from .fred_client import FREDClient
-from ...sources.soft_evidence import soft_bool, zscore as _zscore
+from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
 
 logger = logging.getLogger(__name__)
 
@@ -484,45 +480,25 @@ class CryptoRegimePipeline:
 
     @staticmethod
     def build_evidence_record(snapshot: CryptoRegimeSnapshot) -> EvidenceRecord:
-        variables = get_variables()
-        conf = snapshot.confidence
-
-        def _assignment(var_name: str, observed_value: bool, p_true: float) -> ObservedAssignment:
-            c = conf.get(var_name, 1.0)
-            return ObservedAssignment(
-                variable_id=variables[var_name].variable_id,
-                observed_value=observed_value,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=c,
-                probabilities={True: p_true, False: 1.0 - p_true},
-            )
-
-        assignments = [
-            _assignment("BTCMomentumPositive",      snapshot.btc_momentum_positive,      snapshot.p_btc_momentum_positive),
-            _assignment("AltcoinSeasonActive",       snapshot.altcoin_season_active,       snapshot.p_altcoin_season_active),
-            _assignment("OnChainActivityElevated",   snapshot.onchain_activity_elevated,   snapshot.p_onchain_activity_elevated),
-            _assignment("StablecoinFlowPositive",    snapshot.stablecoin_flow_positive,    snapshot.p_stablecoin_flow_positive),
-            _assignment("CryptoVolatilityShock",     snapshot.crypto_volatility_shock,     snapshot.p_crypto_volatility_shock),
-            _assignment("RiskAssetCorrelation",      snapshot.risk_asset_correlation,      snapshot.p_risk_asset_correlation),
-            _assignment("NarrativeMomentum",         snapshot.narrative_momentum,          snapshot.p_narrative_momentum),
-            _assignment("DollarDebasementNarrative", snapshot.dollar_debasement_narrative, snapshot.p_dollar_debasement_narrative),
-        ]
-
-        target_date = snapshot.target_date or datetime.now(timezone.utc).date()
-        ts = datetime(target_date.year, target_date.month, target_date.day, tzinfo=timezone.utc)
-        overall_conf = float(sum(conf.values()) / len(conf)) if conf else 1.0
-
-        return EvidenceRecord(
-            evidence_id=uuid4(),
-            timestamp=ts,
-            observed_assignments=assignments,
-            source_type=SourceType.API,
-            source_ref=(
-                "CoinGecko:BTC+ETH+USDT+USDC"
-                "|yfinance:BTC-USD+QQQ+GLD"
-                f"|FRED:DEXUSEU@week-ending-{target_date}"
-            ),
-            confidence=overall_conf,
+        target_date = snapshot.target_date
+        return build_soft_record(
+            module_id="crypto-regime-v1",
+            variables=get_variables(),
+            states=[
+                ("BTCMomentumPositive", snapshot.btc_momentum_positive, snapshot.p_btc_momentum_positive),
+                ("AltcoinSeasonActive", snapshot.altcoin_season_active, snapshot.p_altcoin_season_active),
+                ("OnChainActivityElevated", snapshot.onchain_activity_elevated, snapshot.p_onchain_activity_elevated),
+                ("StablecoinFlowPositive", snapshot.stablecoin_flow_positive, snapshot.p_stablecoin_flow_positive),
+                ("CryptoVolatilityShock", snapshot.crypto_volatility_shock, snapshot.p_crypto_volatility_shock),
+                ("RiskAssetCorrelation", snapshot.risk_asset_correlation, snapshot.p_risk_asset_correlation),
+                ("NarrativeMomentum", snapshot.narrative_momentum, snapshot.p_narrative_momentum),
+                ("DollarDebasementNarrative", snapshot.dollar_debasement_narrative, snapshot.p_dollar_debasement_narrative),
+            ],
+            confidence=snapshot.confidence,
+            target_date=target_date,
+            source_ref="CoinGecko:BTC+ETH+USDT+USDC"
+            "|yfinance:BTC-USD+QQQ+GLD"
+            f"|FRED:DEXUSEU@week-ending-{target_date}",
         )
 
 

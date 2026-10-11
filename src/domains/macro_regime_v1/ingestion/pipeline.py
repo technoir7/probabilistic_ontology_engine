@@ -86,21 +86,17 @@ from __future__ import annotations
 import logging
 import statistics
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, timedelta
 from typing import Optional
-from uuid import uuid4
 
 import numpy as np
 
 from ....engine.schemas import (
     EvidenceRecord,
-    MissingnessType,
-    ObservedAssignment,
-    SourceType,
 )
 from ..domain import get_variables
 from .fred_client import FREDClient, FREDObservation
-from ...sources.soft_evidence import soft_bool, zscore as _zscore
+from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
 
 logger = logging.getLogger(__name__)
 
@@ -598,90 +594,25 @@ class MacroRegimePipeline:
 
         This method is synchronous and has no external dependencies.
         """
-        variables = get_variables()
-        conf = snapshot.confidence
-
-        def _assignment(
-            var_name: str,
-            observed_value: bool,
-            p_true: float,
-        ) -> ObservedAssignment:
-            c = conf.get(var_name, 1.0)
-            return ObservedAssignment(
-                variable_id=variables[var_name].variable_id,
-                observed_value=observed_value,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=c,
-                probabilities={True: p_true, False: 1.0 - p_true},
-            )
-
-        assignments = [
-            _assignment(
-                "YieldCurveInverted",
-                snapshot.yield_curve_inverted,
-                snapshot.p_yield_curve_inverted,
-            ),
-            _assignment(
-                "InflationShock",
-                snapshot.inflation_shock,
-                snapshot.p_inflation_shock,
-            ),
-            _assignment(
-                "LiquidityStress",
-                snapshot.liquidity_stress,
-                snapshot.p_liquidity_stress,
-            ),
-            _assignment(
-                "CreditSpreadStress",
-                snapshot.credit_spread_stress,
-                snapshot.p_credit_spread_stress,
-            ),
-            _assignment(
-                "VolatilityShock",
-                snapshot.volatility_shock,
-                snapshot.p_volatility_shock,
-            ),
-            _assignment(
-                "DollarStrength",
-                snapshot.dollar_strength,
-                snapshot.p_dollar_strength,
-            ),
-            _assignment(
-                "EquityRiskOn",
-                snapshot.equity_risk_on,
-                snapshot.p_equity_risk_on,
-            ),
-            _assignment(
-                "AIRiskOn",
-                snapshot.ai_risk_on,
-                snapshot.p_ai_risk_on,
-            ),
-        ]
-
-        target_date = snapshot.target_date or datetime.now(timezone.utc).date()
-        ts = datetime(
-            target_date.year,
-            target_date.month,
-            target_date.day,
-            tzinfo=timezone.utc,
-        )
-
-        # Overall record confidence: mean of per-variable confidences
-        overall_confidence = float(
-            sum(conf.values()) / len(conf)
-        ) if conf else 1.0
-
-        return EvidenceRecord(
-            evidence_id=uuid4(),
-            timestamp=ts,
-            observed_assignments=assignments,
-            source_type=SourceType.API,
-            source_ref=(
-                "FRED:T10Y2Y+CPIAUCSL+WALCL+BAMLH0A0HYM2"
-                "+VIXCLS+DEXUSEU+UNRATE+NASDAQCOM"
-                f"@week-ending-{target_date}"
-            ),
-            confidence=overall_confidence,
+        target_date = snapshot.target_date
+        return build_soft_record(
+            module_id="macro-regime-v1",
+            variables=get_variables(),
+            states=[
+                ("YieldCurveInverted", snapshot.yield_curve_inverted, snapshot.p_yield_curve_inverted),
+                ("InflationShock", snapshot.inflation_shock, snapshot.p_inflation_shock),
+                ("LiquidityStress", snapshot.liquidity_stress, snapshot.p_liquidity_stress),
+                ("CreditSpreadStress", snapshot.credit_spread_stress, snapshot.p_credit_spread_stress),
+                ("VolatilityShock", snapshot.volatility_shock, snapshot.p_volatility_shock),
+                ("DollarStrength", snapshot.dollar_strength, snapshot.p_dollar_strength),
+                ("EquityRiskOn", snapshot.equity_risk_on, snapshot.p_equity_risk_on),
+                ("AIRiskOn", snapshot.ai_risk_on, snapshot.p_ai_risk_on),
+            ],
+            confidence=snapshot.confidence,
+            target_date=target_date,
+            source_ref="FRED:T10Y2Y+CPIAUCSL+WALCL+BAMLH0A0HYM2"
+            "+VIXCLS+DEXUSEU+UNRATE+NASDAQCOM"
+            f"@week-ending-{target_date}",
         )
 
 

@@ -39,21 +39,17 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from datetime import date, datetime, timezone
+from datetime import date
 from typing import Optional
-from uuid import uuid4
 
 import numpy as np
 
 from ....engine.schemas import (
     EvidenceRecord,
-    MissingnessType,
-    ObservedAssignment,
-    SourceType,
 )
 from ..domain import get_variables
 from .fred_client import FREDClient, FREDObservation
-from ...sources.soft_evidence import soft_bool, zscore as _zscore
+from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
 
 logger = logging.getLogger(__name__)
 
@@ -317,44 +313,24 @@ class LaborMarketPipeline:
 
     @staticmethod
     def build_evidence_record(snapshot: LaborMarketSnapshot) -> EvidenceRecord:
-        variables = get_variables()
-        conf = snapshot.confidence
-
-        def _assignment(var_name: str, observed_value: bool, p_true: float) -> ObservedAssignment:
-            c = conf.get(var_name, 1.0)
-            return ObservedAssignment(
-                variable_id=variables[var_name].variable_id,
-                observed_value=observed_value,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=c,
-                probabilities={True: p_true, False: 1.0 - p_true},
-            )
-
-        assignments = [
-            _assignment("UnemploymentRising",       snapshot.unemployment_rising,       snapshot.p_unemployment_rising),
-            _assignment("WageInflationPersistent",   snapshot.wage_inflation_persistent, snapshot.p_wage_inflation_persistent),
-            _assignment("JobOpeningsFalling",        snapshot.job_openings_falling,      snapshot.p_job_openings_falling),
-            _assignment("LayoffCycleBeginning",      snapshot.layoff_cycle_beginning,    snapshot.p_layoff_cycle_beginning),
-            _assignment("LaborProductivityWeak",     snapshot.labor_productivity_weak,   snapshot.p_labor_productivity_weak),
-            _assignment("ParticipationRateFalling",  snapshot.participation_rate_falling, snapshot.p_participation_rate_falling),
-            _assignment("RealWageGrowthPositive",    snapshot.real_wage_growth_positive, snapshot.p_real_wage_growth_positive),
-            _assignment("TightLaborMarket",          snapshot.tight_labor_market,        snapshot.p_tight_labor_market),
-        ]
-
-        target_date = snapshot.target_date or datetime.now(timezone.utc).date()
-        ts = datetime(target_date.year, target_date.month, target_date.day, tzinfo=timezone.utc)
-        overall_conf = float(sum(conf.values()) / len(conf)) if conf else 1.0
-
-        return EvidenceRecord(
-            evidence_id=uuid4(),
-            timestamp=ts,
-            observed_assignments=assignments,
-            source_type=SourceType.API,
-            source_ref=(
-                "FRED:UNRATE+CES0500000003+JTSJOL+ICSA+PRS85006092+CIVPART+CPIAUCSL"
-                f"@week-ending-{target_date}"
-            ),
-            confidence=overall_conf,
+        target_date = snapshot.target_date
+        return build_soft_record(
+            module_id="labor-market-v1",
+            variables=get_variables(),
+            states=[
+                ("UnemploymentRising", snapshot.unemployment_rising, snapshot.p_unemployment_rising),
+                ("WageInflationPersistent", snapshot.wage_inflation_persistent, snapshot.p_wage_inflation_persistent),
+                ("JobOpeningsFalling", snapshot.job_openings_falling, snapshot.p_job_openings_falling),
+                ("LayoffCycleBeginning", snapshot.layoff_cycle_beginning, snapshot.p_layoff_cycle_beginning),
+                ("LaborProductivityWeak", snapshot.labor_productivity_weak, snapshot.p_labor_productivity_weak),
+                ("ParticipationRateFalling", snapshot.participation_rate_falling, snapshot.p_participation_rate_falling),
+                ("RealWageGrowthPositive", snapshot.real_wage_growth_positive, snapshot.p_real_wage_growth_positive),
+                ("TightLaborMarket", snapshot.tight_labor_market, snapshot.p_tight_labor_market),
+            ],
+            confidence=snapshot.confidence,
+            target_date=target_date,
+            source_ref="FRED:UNRATE+CES0500000003+JTSJOL+ICSA+PRS85006092+CIVPART+CPIAUCSL"
+            f"@week-ending-{target_date}",
         )
 
 

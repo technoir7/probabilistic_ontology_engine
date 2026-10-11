@@ -6,8 +6,13 @@ were copied identically ten times.
 from __future__ import annotations
 
 import math
+from datetime import date, datetime, timezone
+from typing import Iterable, Mapping
+from uuid import uuid4
 
 import numpy as np
+
+from ...engine.schemas import EvidenceRecord, MissingnessType, ObservedAssignment, SourceType, Variable
 
 
 def sigmoid(x: float) -> float:
@@ -37,3 +42,39 @@ def zscore(current: float, values: list[float]) -> float:
     if sigma < 1e-9:
         return 0.0
     return (current - mu) / sigma
+
+
+def build_soft_record(
+    *,
+    module_id: str,
+    variables: Mapping[str, Variable],
+    states: Iterable[tuple[str, bool, float]],
+    confidence: Mapping[str, float],
+    target_date: date,
+    source_ref: str,
+) -> EvidenceRecord:
+    """
+    One SOFT_OBSERVED record dated midnight UTC of *target_date*.
+
+    *states* gives, per variable name in order, the MAP value and P(True).
+    A variable's confidence defaults to 1.0; the record's is their mean.
+    """
+    assignments = [
+        ObservedAssignment(
+            variable_id=variables[name].variable_id,
+            observed_value=observed,
+            missingness=MissingnessType.SOFT_OBSERVED,
+            confidence=confidence.get(name, 1.0),
+            probabilities={True: p_true, False: 1.0 - p_true},
+        )
+        for name, observed, p_true in states
+    ]
+    timestamp = datetime(target_date.year, target_date.month, target_date.day, tzinfo=timezone.utc)
+    return EvidenceRecord(
+        evidence_id=uuid4(),
+        timestamp=timestamp,
+        observed_assignments=assignments,
+        source_type=SourceType.API,
+        source_ref=source_ref,
+        confidence=float(sum(confidence.values()) / len(confidence)) if confidence else 1.0,
+    )

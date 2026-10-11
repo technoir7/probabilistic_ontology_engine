@@ -39,22 +39,18 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from datetime import date, datetime, timezone
+from datetime import date
 from typing import Optional
-from uuid import uuid4
 
 import numpy as np
 
 from ....engine.schemas import (
     EvidenceRecord,
-    MissingnessType,
-    ObservedAssignment,
-    SourceType,
 )
 from ..domain import get_variables
 from .fred_client import FREDClient, FREDObservation
 from .yfinance_client import EnergyYFinanceClient, YFObservation
-from ...sources.soft_evidence import soft_bool, zscore as _zscore
+from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
 
 logger = logging.getLogger(__name__)
 
@@ -333,44 +329,24 @@ class EnergyRegimePipeline:
 
     @staticmethod
     def build_evidence_record(snapshot: EnergyRegimeSnapshot) -> EvidenceRecord:
-        variables = get_variables()
-        conf = snapshot.confidence
-
-        def _assignment(var_name: str, observed_value: bool, p_true: float) -> ObservedAssignment:
-            c = conf.get(var_name, 1.0)
-            return ObservedAssignment(
-                variable_id=variables[var_name].variable_id,
-                observed_value=observed_value,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=c,
-                probabilities={True: p_true, False: 1.0 - p_true},
-            )
-
-        assignments = [
-            _assignment("OilPriceSurge",            snapshot.oil_price_surge,            snapshot.p_oil_price_surge),
-            _assignment("NatGasPriceSurge",          snapshot.nat_gas_price_surge,        snapshot.p_nat_gas_price_surge),
-            _assignment("EnergyEquityMomentum",      snapshot.energy_equity_momentum,     snapshot.p_energy_equity_momentum),
-            _assignment("OPECSupplyConstraint",       snapshot.opec_supply_constraint,     snapshot.p_opec_supply_constraint),
-            _assignment("RenewablesDisplacement",     snapshot.renewables_displacement,    snapshot.p_renewables_displacement),
-            _assignment("EnergyInflationPersistent",  snapshot.energy_inflation_persistent, snapshot.p_energy_inflation_persistent),
-            _assignment("GeopoliticalRiskElevated",   snapshot.geopolitical_risk_elevated, snapshot.p_geopolitical_risk_elevated),
-            _assignment("DemandDestructionRisk",      snapshot.demand_destruction_risk,    snapshot.p_demand_destruction_risk),
-        ]
-
-        target_date = snapshot.target_date or datetime.now(timezone.utc).date()
-        ts = datetime(target_date.year, target_date.month, target_date.day, tzinfo=timezone.utc)
-        overall_conf = float(sum(conf.values()) / len(conf)) if conf else 1.0
-
-        return EvidenceRecord(
-            evidence_id=uuid4(),
-            timestamp=ts,
-            observed_assignments=assignments,
-            source_type=SourceType.API,
-            source_ref=(
-                "yfinance:CL=F+NG=F+XLE+ICLN|FRED:DCOILWTICO+CPIENGSL+INDPRO+UNRATE"
-                f"@week-ending-{target_date}"
-            ),
-            confidence=overall_conf,
+        target_date = snapshot.target_date
+        return build_soft_record(
+            module_id="energy-regime-v1",
+            variables=get_variables(),
+            states=[
+                ("OilPriceSurge", snapshot.oil_price_surge, snapshot.p_oil_price_surge),
+                ("NatGasPriceSurge", snapshot.nat_gas_price_surge, snapshot.p_nat_gas_price_surge),
+                ("EnergyEquityMomentum", snapshot.energy_equity_momentum, snapshot.p_energy_equity_momentum),
+                ("OPECSupplyConstraint", snapshot.opec_supply_constraint, snapshot.p_opec_supply_constraint),
+                ("RenewablesDisplacement", snapshot.renewables_displacement, snapshot.p_renewables_displacement),
+                ("EnergyInflationPersistent", snapshot.energy_inflation_persistent, snapshot.p_energy_inflation_persistent),
+                ("GeopoliticalRiskElevated", snapshot.geopolitical_risk_elevated, snapshot.p_geopolitical_risk_elevated),
+                ("DemandDestructionRisk", snapshot.demand_destruction_risk, snapshot.p_demand_destruction_risk),
+            ],
+            confidence=snapshot.confidence,
+            target_date=target_date,
+            source_ref="yfinance:CL=F+NG=F+XLE+ICLN|FRED:DCOILWTICO+CPIENGSL+INDPRO+UNRATE"
+            f"@week-ending-{target_date}",
         )
 
 

@@ -39,21 +39,17 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from datetime import date, datetime, timezone
+from datetime import date
 from typing import Optional
-from uuid import uuid4
 
 
 from ....engine.schemas import (
     EvidenceRecord,
-    MissingnessType,
-    ObservedAssignment,
-    SourceType,
 )
 from ..domain import get_variables
 from .sfgov_client import SFGovClient, SFPermitObs, SFIncidentObs, SFBusinessObs
 from .fred_client import FREDClient, FREDObservation
-from ...sources.soft_evidence import soft_bool, zscore as _zscore
+from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
 
 logger = logging.getLogger(__name__)
 
@@ -362,45 +358,25 @@ class SFUrbanPipeline:
 
     @staticmethod
     def build_evidence_record(snapshot: SFUrbanSnapshot) -> EvidenceRecord:
-        variables = get_variables()
-        conf = snapshot.confidence
-
-        def _assignment(var_name: str, observed_value: bool, p_true: float) -> ObservedAssignment:
-            c = conf.get(var_name, 1.0)
-            return ObservedAssignment(
-                variable_id=variables[var_name].variable_id,
-                observed_value=observed_value,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=c,
-                probabilities={True: p_true, False: 1.0 - p_true},
-            )
-
-        assignments = [
-            _assignment("TechHiringAccelerating",  snapshot.tech_hiring_accelerating,  snapshot.p_tech_hiring_accelerating),
-            _assignment("OfficeVacancyFalling",     snapshot.office_vacancy_falling,     snapshot.p_office_vacancy_falling),
-            _assignment("RetailClosureElevated",    snapshot.retail_closure_elevated,    snapshot.p_retail_closure_elevated),
-            _assignment("PermitActivityRising",     snapshot.permit_activity_rising,     snapshot.p_permit_activity_rising),
-            _assignment("CrimeIndexElevated",       snapshot.crime_index_elevated,       snapshot.p_crime_index_elevated),
-            _assignment("StartupFormationRising",   snapshot.startup_formation_rising,   snapshot.p_startup_formation_rising),
-            _assignment("FootTrafficRecovering",    snapshot.foot_traffic_recovering,    snapshot.p_foot_traffic_recovering),
-            _assignment("PopulationFlowPositive",   snapshot.population_flow_positive,   snapshot.p_population_flow_positive),
-        ]
-
-        target_date = snapshot.target_date or datetime.now(timezone.utc).date()
-        ts = datetime(target_date.year, target_date.month, target_date.day, tzinfo=timezone.utc)
-        overall_conf = float(sum(conf.values()) / len(conf)) if conf else 1.0
-
-        return EvidenceRecord(
-            evidence_id=uuid4(),
-            timestamp=ts,
-            observed_assignments=assignments,
-            source_type=SourceType.API,
-            source_ref=(
-                "SFGov:permits+incidents+businesses"
-                "|FRED:SANF806INFO+SANF806LEIH+SANF806NA"
-                f"@week-ending-{target_date}"
-            ),
-            confidence=overall_conf,
+        target_date = snapshot.target_date
+        return build_soft_record(
+            module_id="sf-urban-v1",
+            variables=get_variables(),
+            states=[
+                ("TechHiringAccelerating", snapshot.tech_hiring_accelerating, snapshot.p_tech_hiring_accelerating),
+                ("OfficeVacancyFalling", snapshot.office_vacancy_falling, snapshot.p_office_vacancy_falling),
+                ("RetailClosureElevated", snapshot.retail_closure_elevated, snapshot.p_retail_closure_elevated),
+                ("PermitActivityRising", snapshot.permit_activity_rising, snapshot.p_permit_activity_rising),
+                ("CrimeIndexElevated", snapshot.crime_index_elevated, snapshot.p_crime_index_elevated),
+                ("StartupFormationRising", snapshot.startup_formation_rising, snapshot.p_startup_formation_rising),
+                ("FootTrafficRecovering", snapshot.foot_traffic_recovering, snapshot.p_foot_traffic_recovering),
+                ("PopulationFlowPositive", snapshot.population_flow_positive, snapshot.p_population_flow_positive),
+            ],
+            confidence=snapshot.confidence,
+            target_date=target_date,
+            source_ref="SFGov:permits+incidents+businesses"
+            "|FRED:SANF806INFO+SANF806LEIH+SANF806NA"
+            f"@week-ending-{target_date}",
         )
 
 

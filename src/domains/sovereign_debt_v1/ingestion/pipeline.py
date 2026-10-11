@@ -44,20 +44,16 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from datetime import date, datetime, timezone
+from datetime import date
 from typing import Optional
-from uuid import uuid4
 
 
 from ....engine.schemas import (
     EvidenceRecord,
-    MissingnessType,
-    ObservedAssignment,
-    SourceType,
 )
 from ..domain import get_variables
 from .fred_client import FREDClient, FREDObservation
-from ...sources.soft_evidence import soft_bool, zscore as _zscore
+from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
 
 logger = logging.getLogger(__name__)
 
@@ -325,44 +321,24 @@ class SovereignDebtPipeline:
 
     @staticmethod
     def build_evidence_record(snapshot: SovereignDebtSnapshot) -> EvidenceRecord:
-        variables = get_variables()
-        conf = snapshot.confidence
-
-        def _assignment(var_name: str, observed_value: bool, p_true: float) -> ObservedAssignment:
-            c = conf.get(var_name, 1.0)
-            return ObservedAssignment(
-                variable_id=variables[var_name].variable_id,
-                observed_value=observed_value,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=c,
-                probabilities={True: p_true, False: 1.0 - p_true},
-            )
-
-        assignments = [
-            _assignment("USYieldSpiking",            snapshot.us_yield_spiking,            snapshot.p_us_yield_spiking),
-            _assignment("SpreadWidening",             snapshot.spread_widening,             snapshot.p_spread_widening),
-            _assignment("DollarStrengthening",        snapshot.dollar_strengthening,        snapshot.p_dollar_strengthening),
-            _assignment("FedBalanceSheetShrinking",   snapshot.fed_balance_sheet_shrinking, snapshot.p_fed_balance_sheet_shrinking),
-            _assignment("EMStressElevated",           snapshot.em_stress_elevated,          snapshot.p_em_stress_elevated),
-            _assignment("FiscalDominanceRisk",        snapshot.fiscal_dominance_risk,       snapshot.p_fiscal_dominance_risk),
-            _assignment("CreditDefaultRisk",          snapshot.credit_default_risk,         snapshot.p_credit_default_risk),
-            _assignment("GlobalLiquidityContracting", snapshot.global_liquidity_contracting, snapshot.p_global_liquidity_contracting),
-        ]
-
-        target_date = snapshot.target_date or datetime.now(timezone.utc).date()
-        ts = datetime(target_date.year, target_date.month, target_date.day, tzinfo=timezone.utc)
-        overall_conf = float(sum(conf.values()) / len(conf)) if conf else 1.0
-
-        return EvidenceRecord(
-            evidence_id=uuid4(),
-            timestamp=ts,
-            observed_assignments=assignments,
-            source_type=SourceType.API,
-            source_ref=(
-                "FRED:DGS10+BAMLH0A0HYM2+DEXUSEU+WALCL+DTWEXBGS+GFDEBTN+M2SL"
-                f"@week-ending-{target_date}"
-            ),
-            confidence=overall_conf,
+        target_date = snapshot.target_date
+        return build_soft_record(
+            module_id="sovereign-debt-v1",
+            variables=get_variables(),
+            states=[
+                ("USYieldSpiking", snapshot.us_yield_spiking, snapshot.p_us_yield_spiking),
+                ("SpreadWidening", snapshot.spread_widening, snapshot.p_spread_widening),
+                ("DollarStrengthening", snapshot.dollar_strengthening, snapshot.p_dollar_strengthening),
+                ("FedBalanceSheetShrinking", snapshot.fed_balance_sheet_shrinking, snapshot.p_fed_balance_sheet_shrinking),
+                ("EMStressElevated", snapshot.em_stress_elevated, snapshot.p_em_stress_elevated),
+                ("FiscalDominanceRisk", snapshot.fiscal_dominance_risk, snapshot.p_fiscal_dominance_risk),
+                ("CreditDefaultRisk", snapshot.credit_default_risk, snapshot.p_credit_default_risk),
+                ("GlobalLiquidityContracting", snapshot.global_liquidity_contracting, snapshot.p_global_liquidity_contracting),
+            ],
+            confidence=snapshot.confidence,
+            target_date=target_date,
+            source_ref="FRED:DGS10+BAMLH0A0HYM2+DEXUSEU+WALCL+DTWEXBGS+GFDEBTN+M2SL"
+            f"@week-ending-{target_date}",
         )
 
 
