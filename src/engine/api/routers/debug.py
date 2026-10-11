@@ -95,6 +95,7 @@ async def debug_learning(request: Request, domain: str = Query("ng")) -> Learnin
     dom = pop.dominant()
     active = pop.active_candidates()
     mutation_stats = engine.population_manager.last_mutation_stats(domain_id)
+    stats = engine.learning_stats(domain_id)
 
     return LearningDebugOut(
         domain=display_name,
@@ -103,9 +104,9 @@ async def debug_learning(request: Request, domain: str = Query("ng")) -> Learnin
         active_candidates=len(active),
         dominant_evidence_count=dom.evidence_count if dom else 0,
         dominant_log_score=dom.log_score if dom else 0.0,
-        learn_calls_this_session=engine._learn_call_count.get(domain_id, 0),
-        last_learn_timestamp=engine._learn_last_ts.get(domain_id),
-        records_scored_this_session=engine._learn_records_total.get(domain_id, 0),
+        learn_calls_this_session=stats["learn_calls"],
+        last_learn_timestamp=stats["last_learn_at"],
+        records_scored_this_session=stats["records_learned"],
         last_mutation_total_attempts=mutation_stats.get("total_attempts", 0),
         last_mutation_introduced=mutation_stats.get("introduced", 0),
         current_generation=pop.generation,

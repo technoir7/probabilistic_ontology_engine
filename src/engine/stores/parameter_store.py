@@ -217,6 +217,14 @@ class ParameterStore:
                 alpha=alpha,
             )
 
+    def delete_domain(self, domain_module_id: str, candidate_ids: list[UUID]) -> None:
+        """Forget the domain's CPTs, in memory and in both parameter tables."""
+        for cid in candidate_ids:
+            self.remove_candidate(cid)
+        for table in ("parameters", "candidate_parameters"):
+            self._conn.execute(f"DELETE FROM {table} WHERE domain_module_id=?", (domain_module_id,))
+        self._db.commit()
+
     # ------------------------------------------------------------------
     def remove_candidate(self, candidate_id: UUID) -> None:
         self._store.pop(str(candidate_id), None)

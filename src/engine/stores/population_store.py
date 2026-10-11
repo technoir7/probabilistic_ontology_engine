@@ -158,6 +158,20 @@ class PopulationStore:
         )
         return pop, state
 
+    def delete_domain(self, domain_module_id: str) -> None:
+        """Delete the domain's population, candidates, their scores and edges, and its shift log."""
+        ids = [
+            r[0] for r in self._conn.execute(
+                "SELECT candidate_id FROM ontology_candidates WHERE domain_module_id=?", (domain_module_id,)
+            )
+        ]
+        for cid in ids:
+            self._conn.execute("DELETE FROM candidate_scores WHERE candidate_id=?", (cid,))
+            self._conn.execute("DELETE FROM candidate_edges WHERE candidate_id=?", (cid,))
+        for table in ("ontology_candidates", "paradigm_shifts", "ontology_populations"):
+            self._conn.execute(f"DELETE FROM {table} WHERE domain_module_id=?", (domain_module_id,))
+        self._db.commit()
+
     def _save_edges(self, cand: OntologyCandidate) -> None:
         cid = str(cand.candidate_id)
         self._conn.execute("DELETE FROM candidate_edges WHERE candidate_id=?", (cid,))

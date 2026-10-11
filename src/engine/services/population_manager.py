@@ -103,6 +103,12 @@ class PopulationManager:
         version, internal, gauss_next = state["rng_state"]
         self.rng.setstate((version, tuple(internal), gauss_next))
 
+    def forget(self, domain_module_id: str) -> None:
+        """Drop the domain's in-memory population (for a reset; storage is separate)."""
+        self._populations.pop(domain_module_id, None)
+        self._admissible_edges.pop(domain_module_id, None)
+        self._last_mutation_stats.pop(domain_module_id, None)
+
     def export_state(self, domain_module_id: str) -> dict:
         """What adopt() needs besides the population itself (JSON-serializable)."""
         version, internal, gauss_next = self.rng.getstate()

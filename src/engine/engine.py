@@ -241,6 +241,31 @@ class ProbabilisticOntologyEngine:
             str(dom.candidate_id)[:8] if dom else "none",
         )
 
+    def reset_domain(self, module_id: str) -> None:
+        """
+        Forget everything learned for a domain — evidence, population, CPTs,
+        scores, shift log — and start again from its seed candidates.
+        One transaction for the deletes.
+        """
+        domain_module = self._modules[module_id]
+        candidate_ids = [c.candidate_id for c in self.population_manager.get_population(module_id).candidates]
+        with self.db.transaction():
+            self.evidence_store.clear(module_id)
+            self.population_store.delete_domain(module_id)
+            self.parameter_store.delete_domain(module_id, candidate_ids)
+        self.population_manager.forget(module_id)
+        for stats in (self._learn_call_count, self._learn_last_ts, self._learn_records_total):
+            stats.pop(module_id, None)
+        self.register_domain(domain_module)
+
+    def learning_stats(self, module_id: str) -> dict[str, Any]:
+        """learn() calls, last learn time and records learned since this process started."""
+        return {
+            "learn_calls": self._learn_call_count.get(module_id, 0),
+            "last_learn_at": self._learn_last_ts.get(module_id),
+            "records_learned": self._learn_records_total.get(module_id, 0),
+        }
+
     def activate_domain(self, module_id: str) -> None:
         """Set the active domain for ingestion and learning."""
         if module_id not in self._modules:
