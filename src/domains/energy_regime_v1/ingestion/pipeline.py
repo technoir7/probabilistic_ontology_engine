@@ -79,6 +79,8 @@ class EnergyRegimeSnapshot:
     geopolitical_risk_elevated: bool = False
     demand_destruction_risk: bool = False
 
+    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
+    missing: set[str] = field(default_factory=set)
     confidence: dict[str, float] = field(default_factory=dict)
     target_date: Optional[date] = None
 
@@ -268,6 +270,8 @@ def compute_snapshot(
     confidence: dict[str, float] = {}
 
     def _apply(var_name: str, sig: Optional[float], conf: float, p_attr: str, bool_attr: str) -> None:
+        if sig is None:
+            snap.missing.add(var_name)
         s = sig if sig is not None else 0.0
         p = _soft_bool(s)
         setattr(snap, p_attr, p)
@@ -345,6 +349,7 @@ class EnergyRegimePipeline:
                 ("DemandDestructionRisk", snapshot.demand_destruction_risk, snapshot.p_demand_destruction_risk),
             ],
             confidence=snapshot.confidence,
+            missing=snapshot.missing,
             target_date=target_date,
             source_ref="yfinance:CL=F+NG=F+XLE+ICLN|FRED:DCOILWTICO+CPIENGSL+INDPRO+UNRATE"
             f"@week-ending-{target_date}",

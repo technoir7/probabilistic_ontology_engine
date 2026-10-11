@@ -12,6 +12,7 @@ from uuid import NAMESPACE_URL, UUID, uuid5
 
 import numpy as np
 
+from ...engine.model.errors import EvidenceUnavailable
 from ...engine.schemas import EvidenceRecord, MissingnessType, ObservedAssignment, SourceType, Variable
 
 
@@ -60,15 +61,32 @@ def build_soft_record(
     confidence: Mapping[str, float],
     target_date: date,
     source_ref: str,
+    missing: Iterable[str] = (),
 ) -> EvidenceRecord:
     """
-    One SOFT_OBSERVED record dated midnight UTC of *target_date*.
+    One record dated midnight UTC of *target_date*.
 
     *states* gives, per variable name in order, the MAP value and P(True).
+    Variables in *missing* had no usable input: they are recorded as MISSING
+    (decision D10) rather than as a 50/50 observation, which learning would
+    count as real evidence that pulls every CPT toward independence.
+    Raises EvidenceUnavailable when every variable is missing.
+
     A variable's confidence defaults to 1.0; the record's is their mean.
     """
+    states = list(states)
+    missing = set(missing)
+    if states and all(name in missing for name, _, _ in states):
+        raise EvidenceUnavailable(f"{module_id}: no input for any variable on {target_date}")
     assignments = [
         ObservedAssignment(
+            variable_id=variables[name].variable_id,
+            observed_value=None,
+            missingness=MissingnessType.MISSING,
+            confidence=confidence.get(name, 1.0),
+        )
+        if name in missing
+        else ObservedAssignment(
             variable_id=variables[name].variable_id,
             observed_value=observed,
             missingness=MissingnessType.SOFT_OBSERVED,

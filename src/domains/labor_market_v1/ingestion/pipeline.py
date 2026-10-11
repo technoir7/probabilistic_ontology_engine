@@ -88,6 +88,8 @@ class LaborMarketSnapshot:
     real_wage_growth_positive: bool = False
     tight_labor_market: bool = False
 
+    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
+    missing: set[str] = field(default_factory=set)
     confidence: dict[str, float] = field(default_factory=dict)
     target_date: Optional[date] = None
 
@@ -262,6 +264,8 @@ def compute_snapshot(
     confidence: dict[str, float] = {}
 
     def _apply(var_name: str, sig: Optional[float], conf: float, p_attr: str, bool_attr: str) -> None:
+        if sig is None:
+            snap.missing.add(var_name)
         s = sig if sig is not None else 0.0
         p = _soft_bool(s)
         setattr(snap, p_attr, p)
@@ -329,6 +333,7 @@ class LaborMarketPipeline:
                 ("TightLaborMarket", snapshot.tight_labor_market, snapshot.p_tight_labor_market),
             ],
             confidence=snapshot.confidence,
+            missing=snapshot.missing,
             target_date=target_date,
             source_ref="FRED:UNRATE+CES0500000003+JTSJOL+ICSA+PRS85006092+CIVPART+CPIAUCSL"
             f"@week-ending-{target_date}",

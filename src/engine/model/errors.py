@@ -12,3 +12,7 @@ class UnknownValue(EngineError, ValueError):
 
 class InferenceFailed(EngineError):
     """pgmpy could not answer a query for a candidate."""
+
+
+class EvidenceUnavailable(EngineError):
+    """No input for any variable of a domain on a date: there is nothing to record."""

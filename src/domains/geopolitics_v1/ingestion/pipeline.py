@@ -87,6 +87,8 @@ class GeopoliticsSnapshot:
     global_trade_volume_weak: bool = False
 
     # Data confidence per variable
+    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
+    missing: set[str] = field(default_factory=set)
     confidence: dict[str, float] = field(default_factory=dict)
 
     target_date: Optional[date] = None
@@ -297,6 +299,8 @@ def compute_snapshot(
     confidence: dict[str, float] = {}
 
     def _apply(var_name: str, sig: Optional[float], conf: float, p_attr: str, bool_attr: str) -> None:
+        if sig is None:
+            snap.missing.add(var_name)
         s = sig if sig is not None else 0.0
         p = _soft_bool(s)
         setattr(snap, p_attr, p)
@@ -391,6 +395,7 @@ class GeopoliticsPipeline:
                 ("GlobalTradeVolumeWeak", snapshot.global_trade_volume_weak, snapshot.p_global_trade_volume_weak),
             ],
             confidence=snapshot.confidence,
+            missing=snapshot.missing,
             target_date=target_date,
             source_ref="GDELT:conflict+sanctions+diplomatic+energy"
             "|FRED:DCOILWTICO+PPIACO+DTWEXBGS+INDPRO"

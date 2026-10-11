@@ -122,10 +122,14 @@ def _make_stable_obs(coin_id: str, num_days: int = 90, base_mcap: float = 80e9) 
 
 
 def _make_yf_obs(ticker: str, num_days: int = 730, base_price: float = 100.0) -> list[CryptoYFObs]:
+    # Prices must move: with constant prices the BTC/QQQ return correlation is
+    # undefined and RiskAssetCorrelation is (correctly) recorded as MISSING.
+    phase = sum(map(ord, ticker)) % 13
     obs = []
     for i in range(num_days):
         d = _TARGET_DATE - timedelta(days=i)
-        obs.append(CryptoYFObs(obs_date=d, close_price=base_price, ticker=ticker))
+        price = base_price * (1.0 + 0.02 * math.sin((i + phase) / 5.0) + 0.01 * math.cos(i / 3.0))
+        obs.append(CryptoYFObs(obs_date=d, close_price=price, ticker=ticker))
     return obs
 
 

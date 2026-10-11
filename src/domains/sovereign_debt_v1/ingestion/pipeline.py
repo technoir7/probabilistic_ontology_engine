@@ -97,6 +97,8 @@ class SovereignDebtSnapshot:
     global_liquidity_contracting: bool = False
 
     # Data confidence per variable
+    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
+    missing: set[str] = field(default_factory=set)
     confidence: dict[str, float] = field(default_factory=dict)
 
     target_date: Optional[date] = None
@@ -257,6 +259,8 @@ def compute_snapshot(
     confidence: dict[str, float] = {}
 
     def _apply(var_name: str, sig: Optional[float], conf: float, p_attr: str, bool_attr: str) -> None:
+        if sig is None:
+            snap.missing.add(var_name)
         s = sig if sig is not None else 0.0
         p = _soft_bool(s)
         setattr(snap, p_attr, p)
@@ -337,6 +341,7 @@ class SovereignDebtPipeline:
                 ("GlobalLiquidityContracting", snapshot.global_liquidity_contracting, snapshot.p_global_liquidity_contracting),
             ],
             confidence=snapshot.confidence,
+            missing=snapshot.missing,
             target_date=target_date,
             source_ref="FRED:DGS10+BAMLH0A0HYM2+DEXUSEU+WALCL+DTWEXBGS+GFDEBTN+M2SL"
             f"@week-ending-{target_date}",

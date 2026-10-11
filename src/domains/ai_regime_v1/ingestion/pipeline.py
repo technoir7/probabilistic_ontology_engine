@@ -170,6 +170,8 @@ class AIRegimeSnapshot:
     ai_risk_premium_compressed: bool = False
 
     # Data confidence per variable (1.0 = full data, 0.5 = degraded/fallback)
+    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
+    missing: set[str] = field(default_factory=set)
     confidence: dict[str, float] = field(default_factory=dict)
 
     # Target date for this evidence record
@@ -515,6 +517,7 @@ def compute_snapshot(
     sox_sig, sox_conf = _compute_13w_return_zscore(sox_obs, "^SOX")
     snap.sox_return_zscore = sox_sig
     if sox_sig is None:
+        snap.missing.add("SemiconductorMomentum")
         # No data → maximum uncertainty
         snap.p_semiconductor_momentum = 0.5
     else:
@@ -529,6 +532,7 @@ def compute_snapshot(
     conc_sig, conc_conf = _compute_concentration_ratio_zscore(qqq_obs, rsp_obs)
     snap.concentration_ratio_zscore = conc_sig
     if conc_sig is None:
+        snap.missing.add("MarketConcentrationExtreme")
         # No data → maximum uncertainty
         snap.p_market_concentration_extreme = 0.5
     else:
@@ -540,6 +544,7 @@ def compute_snapshot(
     # ---- HyperscalerCapexAccelerating (EDGAR) ----------------------------
     capex_sig, capex_conf = _compute_capex_signal(capex)
     if capex_sig is None:
+        snap.missing.add("HyperscalerCapexAccelerating")
         capex_sig = 0.0
     snap.capex_avg_yoy_pct = capex.avg_yoy_growth_pct
     snap.p_hyperscaler_capex_accelerating = _soft_bool(capex_sig)
@@ -551,6 +556,7 @@ def compute_snapshot(
     # val_sig is already (raw_z - 1.0); restore raw z for diagnostics
     snap.qqq_valuation_zscore = (val_sig + 1.0) if val_sig is not None else None
     if val_sig is None:
+        snap.missing.add("TechValuationDetached")
         # No data → maximum uncertainty
         snap.p_tech_valuation_detached = 0.5
     else:
@@ -562,6 +568,7 @@ def compute_snapshot(
     ip_obs = fred_data.get("Y033RC1Q027SBEA", [])
     ip_sig, ip_conf = _compute_ip_investment_signal(ip_obs)
     if ip_sig is None:
+        snap.missing.add("IPInvestmentRising")
         ip_sig = 0.0
     snap.ip_investment_signal = ip_sig
     snap.p_ip_investment_rising = _soft_bool(ip_sig)
@@ -572,6 +579,7 @@ def compute_snapshot(
     prod_obs = fred_data.get("PRS85006092", [])
     prod_sig, prod_conf = _compute_labor_productivity_signal(prod_obs)
     if prod_sig is None:
+        snap.missing.add("LaborProductivityImproving")
         prod_sig = 0.0
     snap.labor_prod_yoy_pct = (
         (prod_sig * 0.5 + 2.0) if prod_sig is not None else None
@@ -584,6 +592,7 @@ def compute_snapshot(
     gdp_obs = fred_data.get("A191RL1Q225SBEA", [])
     gdp_sig, gdp_conf = _compute_gdp_signal(gdp_obs)
     if gdp_sig is None:
+        snap.missing.add("BroadEconomicLift")
         gdp_sig = 0.0
     snap.gdp_growth_pct = (gdp_sig * 0.5 + 2.5) if gdp_sig is not None else None
     snap.p_broad_economic_lift = _soft_bool(gdp_sig)
@@ -594,6 +603,7 @@ def compute_snapshot(
     vix_obs = yf_data.get("^VIX", [])
     vix_sig, vix_conf = _compute_vix_signal(vix_obs)
     if vix_sig is None:
+        snap.missing.add("AIRiskPremiumCompressed")
         vix_sig = 0.0
     snap.vix_zscore = -vix_sig  # store raw z (un-inverted) for diagnostics
     snap.p_ai_risk_premium_compressed = _soft_bool(vix_sig)
@@ -724,6 +734,7 @@ class AIRegimePipeline:
                 ("AIRiskPremiumCompressed", snapshot.ai_risk_premium_compressed, snapshot.p_ai_risk_premium_compressed),
             ],
             confidence=snapshot.confidence,
+            missing=snapshot.missing,
             target_date=target_date,
             source_ref="AI-REGIME:yfinance(^SOX,QQQ,RSP,^VIX)"
             "+EDGAR(MSFT,GOOGL,AMZN,META)"
