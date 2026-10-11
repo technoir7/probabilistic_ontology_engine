@@ -26,6 +26,7 @@ from src.domains.sf_urban_v1.domain import SFUrbanV1
 from src.domains.sovereign_debt_v1.domain import SovereignDebtV1
 from src.domains.test_domain_v1.domain import TestDomainV1
 from src.engine.api import app as api_app
+from src.engine.api import context as api_context
 from src.engine.schemas import DomainType
 from src.engine.variable_identity import stable_variable_id
 
@@ -40,7 +41,7 @@ DOMAINS = [
 
 
 def test_every_served_domain_is_covered():
-    served = {module_id for module_id, _ in api_app._DOMAIN_MAP.values()}
+    served = {module_id for module_id, _ in api_context.DOMAIN_MAP.values()}
     covered = {cls().module_id() for cls in DOMAINS} - {"test-domain-v1"}
     assert served == covered, "a domain was added or removed; update DOMAINS above"
 

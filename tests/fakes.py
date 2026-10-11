@@ -2,8 +2,8 @@
 Test doubles and the seams tests use to reach into the running app.
 
 Tests replace the evidence fetch, freeze the clock, and look up a domain's
-engine only through these helpers. Today they patch ``app._fetch_evidence_record``
-/ ``app._utcnow`` and read ``app.state.engines``; when the refactor moves those
+engine only through these helpers. They patch ``api.context.fetch_evidence_record``
+/ ``api.context.utcnow`` and read ``app.state.engines``; when the refactor moves those
 (REFACTOR_SPEC Phase 5), only this module changes, not every test.
 """
 from __future__ import annotations
@@ -13,6 +13,7 @@ from datetime import date, datetime, timezone
 from typing import Awaitable, Callable, Iterable
 
 from src.engine.api import app as api_app
+from src.engine.api import context as api_context
 from src.engine.schemas import (
     EvidenceRecord,
     MissingnessType,
@@ -45,7 +46,7 @@ def soft_record(variables: Iterable[Variable], target_date: date, *, seed: int |
 
 
 def patch_evidence_fetch(monkeypatch, fetch: FetchFn) -> None:
-    monkeypatch.setattr(api_app, "_fetch_evidence_record", fetch)
+    monkeypatch.setattr(api_context, "fetch_evidence_record", fetch)
 
 
 def patch_soft_evidence_for_all_domains(monkeypatch) -> list[tuple[str, date]]:
@@ -65,7 +66,7 @@ def patch_soft_evidence_for_all_domains(monkeypatch) -> list[tuple[str, date]]:
 
 
 def domain_keys() -> list[str]:
-    return list(api_app._DOMAIN_MAP)
+    return list(api_context.DOMAIN_MAP)
 
 
 def running_engine(domain_key: str):
@@ -78,4 +79,4 @@ def domain_variables(domain_key: str) -> list[Variable]:
 
 
 def freeze_clock(monkeypatch, now: datetime) -> None:
-    monkeypatch.setattr(api_app, "_utcnow", lambda: now)
+    monkeypatch.setattr(api_context, "utcnow", lambda: now)
