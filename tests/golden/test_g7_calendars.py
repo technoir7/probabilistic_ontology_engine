@@ -15,15 +15,14 @@ that commit regenerates this snapshot and the diff is the behaviour change.
 """
 from __future__ import annotations
 
-import asyncio
 import importlib
 from datetime import date, datetime, timedelta, timezone
-from types import SimpleNamespace
 
 import pytest
 from fastapi.testclient import TestClient
 
 from src.engine.api import app as api_app
+from src.engine.runtime.registry import BY_KEY
 from tests.fakes import domain_keys, freeze_clock, patch_evidence_fetch
 
 from .snapshot import assert_matches_snapshot
@@ -81,56 +80,23 @@ def test_g7_api_calendars_match_golden(monkeypatch):
     assert_matches_snapshot("g7_calendars_api", out)
 
 
-def test_g7_startup_and_scheduler_calendars_match_golden(monkeypatch):
-    async def no_sleep(_seconds):
-        return None
-
-    monkeypatch.setattr(asyncio, "sleep", no_sleep)
-
-    recorded: list[date] = []
-
-    class RecordingPipeline:
-        async def fetch_evidence(self, target_date: date):
-            recorded.append(target_date)
-            raise _Recorded
-
-    async def recording_fetch(domain_key: str, target_date: date):
-        recorded.append(target_date)
-        raise _Recorded
-
-    patch_evidence_fetch(monkeypatch, recording_fetch)
-    empty_engine = SimpleNamespace(evidence_store=SimpleNamespace(count=lambda _domain_id: 0))
-
-    async def startup_targets(key: str) -> list[date]:
-        recorded.clear()
-        lock = asyncio.Lock()
-        domain_id, display = api_app._DOMAIN_MAP[key]
-        common = dict(engine=empty_engine, domain_id=domain_id, display_name=display, lock=lock)
-        if key == "ng":
-            await api_app._backfill_if_empty(domain_key=key, backfill_days=14, **common)
-        elif key == "mr":
-            await api_app._backfill_macro_if_empty(pipeline=RecordingPipeline(), backfill_weeks=2, **common)
-        elif key == "ai":
-            await api_app._backfill_ai_if_empty(pipeline=RecordingPipeline(), backfill_weeks=2, **common)
-        elif key == "art":
-            return []  # art has no startup backfill
-        else:
-            await api_app._backfill_fred_domain_if_empty(pipeline=RecordingPipeline(), backfill_weeks=2, **common)
-        return list(recorded)
-
+def test_g7_startup_and_scheduler_calendars_match_golden():
     out: dict = {}
     for day in WEEK:
-        freeze_clock(monkeypatch, _noon(day))
         per_day = out.setdefault(f"{day.isoformat()} {day.strftime('%a')}", {})
         for key in domain_keys():
-            entry = {"startup_backfill": _iso(asyncio.run(startup_targets(key)))}
+            reg = BY_KEY[key]
+            startup = (
+                reg.schedule.startup_targets(day, days=14, weeks=2) if reg.scheduled else []
+            )
+            entry = {"startup_backfill": _iso(startup)}
             if key in PIPELINE_MODULES:
                 module = importlib.import_module(PIPELINE_MODULES[key])
                 backfill_module = (
                     importlib.import_module("src.domains.macro_regime_v1.scheduler")
                     if key == "mr" else module
                 )
-                entry["scheduler"] = module._last_friday(day).isoformat()
+                entry["scheduler"] = reg.schedule.target(_noon(day)).isoformat()
                 entry["scheduler_backfill"] = _iso(backfill_module._weekly_backfill_dates(2, day))
             per_day[key] = entry
     assert_matches_snapshot("g7_calendars_startup_scheduler", out)

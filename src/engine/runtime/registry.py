@@ -31,6 +31,7 @@ from ...domains.sf_urban_v1.domain import SFUrbanV1
 from ...domains.sovereign_debt_v1 import source as sd_source
 from ...domains.sovereign_debt_v1.domain import SovereignDebtV1
 from . import art
+from .scheduler import DailySchedule, Schedule, WeeklySchedule
 
 OpenSource = Callable[[Mapping[str, str]], AbstractAsyncContextManager[Any]]
 
@@ -47,32 +48,40 @@ class DomainRegistration:
     # Env var prefix for <PREFIX>_RUN_HOUR_UTC / <PREFIX>_BACKFILL_WEEKS (existing names).
     env_prefix: str = ""
     default_run_hour_utc: int = 9
+    schedule: Schedule = WeeklySchedule()
     scheduled: bool = True
+    # Skip a fetched weekly state identical to the latest stored one.
+    skip_unchanged_state: bool = False
+
+    @property
+    def scheduler_task_name(self) -> str:
+        return f"{self.module_id.removesuffix('-v1')}-evidence-scheduler"
 
 
 _FRED = ("FRED_API_KEY",)
 
 REGISTRY: tuple[DomainRegistration, ...] = (
     DomainRegistration("ng", "natural-gas-v1", "Natural Gas", "natural_gas.db", NaturalGasV1,
-                       ng_source.open_source, ("EIA_API_KEY",), "NATURAL_GAS", default_run_hour_utc=7),
+                       ng_source.open_source, ("EIA_API_KEY",), "NATURAL_GAS", default_run_hour_utc=7,
+                       schedule=DailySchedule()),
     DomainRegistration("mr", "macro-regime-v1", "Macro Regime", "macro_regime.db", MacroRegimeV1,
                        mr_source.open_source, _FRED, "MACRO_REGIME"),
     DomainRegistration("ai", "ai-regime-v1", "AI Regime", "ai_regime.db", AIRegimeV1,
                        ai_source.open_source, _FRED, "AI_REGIME"),
     DomainRegistration("sd", "sovereign-debt-v1", "Sovereign Debt", "sovereign_debt.db", SovereignDebtV1,
-                       sd_source.open_source, _FRED, "SOVEREIGN_DEBT"),
+                       sd_source.open_source, _FRED, "SOVEREIGN_DEBT", skip_unchanged_state=True),
     DomainRegistration("cc", "credit-cycle-v1", "Credit Cycle", "credit_cycle.db", CreditCycleV1,
-                       cc_source.open_source, _FRED, "CREDIT_CYCLE"),
+                       cc_source.open_source, _FRED, "CREDIT_CYCLE", skip_unchanged_state=True),
     DomainRegistration("er", "energy-regime-v1", "Energy Regime", "energy_regime.db", EnergyRegimeV1,
-                       er_source.open_source, _FRED, "ENERGY_REGIME"),
+                       er_source.open_source, _FRED, "ENERGY_REGIME", skip_unchanged_state=True),
     DomainRegistration("lm", "labor-market-v1", "Labor Market", "labor_market.db", LaborMarketV1,
-                       lm_source.open_source, _FRED, "LABOR_MARKET"),
+                       lm_source.open_source, _FRED, "LABOR_MARKET", skip_unchanged_state=True),
     DomainRegistration("cr", "crypto-regime-v1", "Crypto Regime", "crypto_regime.db", CryptoRegimeV1,
-                       cr_source.open_source, _FRED, "CRYPTO_REGIME"),
+                       cr_source.open_source, _FRED, "CRYPTO_REGIME", skip_unchanged_state=True),
     DomainRegistration("gp", "geopolitics-v1", "Geopolitics", "geopolitics.db", GeopoliticsV1,
-                       gp_source.open_source, _FRED, "GEOPOLITICS"),
+                       gp_source.open_source, _FRED, "GEOPOLITICS", skip_unchanged_state=True),
     DomainRegistration("sf", "sf-urban-v1", "SF Urban", "sf_urban.db", SFUrbanV1,
-                       sf_source.open_source, _FRED, "SF_URBAN"),
+                       sf_source.open_source, _FRED, "SF_URBAN", skip_unchanged_state=True),
     DomainRegistration("art", "art_prestige_regime_v1", "Art Prestige Regime", "art_prestige_regime.db",
                        art.build_art_domain, art.open_source, scheduled=False),
 )

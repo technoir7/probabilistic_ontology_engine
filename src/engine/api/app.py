@@ -16,64 +16,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ValidationError
 
-from ...domains.crypto_regime_v1.domain import CryptoRegimeV1
-from ...domains.crypto_regime_v1.ingestion.coingecko_client import CoinGeckoClient
-from ...domains.crypto_regime_v1.ingestion.yfinance_client import CryptoYFinanceClient
-from ...domains.crypto_regime_v1.ingestion.fred_client import FREDClient as CRFredClient
-from ...domains.crypto_regime_v1.ingestion.pipeline import CryptoRegimePipeline
-from ...domains.crypto_regime_v1.scheduler import CryptoRegimeScheduler
-from ...domains.geopolitics_v1.domain import GeopoliticsV1
-from ...domains.geopolitics_v1.ingestion.gdelt_client import GDELTClient
-from ...domains.geopolitics_v1.ingestion.fred_client import FREDClient as GPFredClient
-from ...domains.geopolitics_v1.ingestion.pipeline import GeopoliticsPipeline
-from ...domains.geopolitics_v1.scheduler import GeopoliticsScheduler
-from ...domains.sf_urban_v1.domain import SFUrbanV1
-from ...domains.sf_urban_v1.ingestion.sfgov_client import SFGovClient
-from ...domains.sf_urban_v1.ingestion.fred_client import FREDClient as SFFredClient
-from ...domains.sf_urban_v1.ingestion.pipeline import SFUrbanPipeline
-from ...domains.sf_urban_v1.scheduler import SFUrbanScheduler
-from ...domains.ai_regime_v1.domain import AIRegimeV1
-from ...domains.ai_regime_v1.ingestion.edgar_client import EDGARClient as AIEdgarClient
-from ...domains.ai_regime_v1.ingestion.fred_client import FREDClient as AIFredClient
-from ...domains.ai_regime_v1.ingestion.pipeline import AIRegimePipeline
-from ...domains.ai_regime_v1.ingestion.yfinance_client import AIYFinanceClient
-from ...domains.ai_regime_v1.scheduler import AIRegimeScheduler
-from ...domains.macro_regime_v1.domain import MacroRegimeV1
-from ...domains.macro_regime_v1.ingestion.fred_client import FREDClient
-from ...domains.macro_regime_v1.ingestion.pipeline import MacroRegimePipeline
-from ...domains.macro_regime_v1.scheduler import MacroRegimeScheduler
-from ...domains.natural_gas_v1.domain import NaturalGasV1
-from ...domains.natural_gas_v1.ingestion.eia_client import EIAClient
-from ...domains.natural_gas_v1.ingestion.noaa_client import NOAAClient
-from ...domains.natural_gas_v1.ingestion.pipeline import NaturalGasPipeline
-from ...domains.natural_gas_v1.scheduler import IngestionScheduler as NaturalGasScheduler
-from ...domains.sovereign_debt_v1.domain import SovereignDebtV1
-from ...domains.sovereign_debt_v1.ingestion.fred_client import FREDClient as SDFredClient
-from ...domains.sovereign_debt_v1.ingestion.pipeline import SovereignDebtPipeline
-from ...domains.sovereign_debt_v1.scheduler import SovereignDebtScheduler
-from ...domains.credit_cycle_v1.domain import CreditCycleV1
-from ...domains.credit_cycle_v1.ingestion.fred_client import FREDClient as CCFredClient
-from ...domains.credit_cycle_v1.ingestion.pipeline import CreditCyclePipeline
-from ...domains.credit_cycle_v1.scheduler import CreditCycleScheduler
-from ...domains.energy_regime_v1.domain import EnergyRegimeV1
-from ...domains.energy_regime_v1.ingestion.fred_client import FREDClient as ERFredClient
-from ...domains.energy_regime_v1.ingestion.yfinance_client import EnergyYFinanceClient
-from ...domains.energy_regime_v1.ingestion.pipeline import EnergyRegimePipeline
-from ...domains.energy_regime_v1.scheduler import EnergyRegimeScheduler
-from ...domains.labor_market_v1.domain import LaborMarketV1
-from ...domains.labor_market_v1.ingestion.fred_client import FREDClient as LMFredClient
-from ...domains.labor_market_v1.ingestion.pipeline import LaborMarketPipeline
-from ...domains.labor_market_v1.scheduler import LaborMarketScheduler
 from ...domains.agriculture_weekly import (
     is_agriculture_domain,
-    is_duplicate_recent_state,
     latest_complete_week_ending,
     latest_week_ending_on_or_before,
     weekly_backfill_dates,
 )
 from ..engine import ProbabilisticOntologyEngine
 from ..runtime.art import import_art_module
-from ..runtime.registry import BY_KEY, REGISTRY
+from ..runtime.ingestion import backfill, ingest_and_learn
+from ..runtime.registry import BY_KEY, REGISTRY, DomainRegistration
+from ..runtime.scheduler import run_scheduler
 from ..schemas import (
     EvidenceRecord,
     InferenceQuery,
@@ -667,85 +620,18 @@ async def _ingest_domain_evidence(
             target_date = (_utcnow() - timedelta(days=1)).date()
     elif is_agriculture_domain(domain_id):
         target_date = latest_week_ending_on_or_before(target_date)
-
-    record = await _fetch_evidence_record(domain_key, target_date)
-    # evidence_id is a fresh uuid4 per fetch, so the store's evidence_id dedup
-    # never dedups; re-running a trigger or an overlapping backfill would store
-    # and learn the same day twice.
-    if engine.has_evidence_at(record.timestamp, domain_id):
-        logger.info("Skipping %s: evidence for %s already stored", domain_id, record.timestamp.date())
-        return 0
-    if is_agriculture_domain(domain_id):
-        recent = engine.evidence_store.load_recent(domain_id, limit=1)
-        if is_duplicate_recent_state(record, recent):
-            logger.info(
-                "Skipping duplicate %s state for week ending %s",
-                domain_id,
-                target_date,
-            )
-            return 0
-    before = engine.evidence_store.count(domain_id)
-    engine.ingest(record)
-    after = engine.evidence_store.count(domain_id)
-    ingested = after - before
-    if ingested > 0:
-        engine.learn([record], domain_id)
-    return ingested
+    return await ingest_and_learn(
+        engine,
+        domain_id,
+        _fetcher(domain_key),
+        target_date,
+        skip_unchanged_state=BY_KEY[domain_key].skip_unchanged_state,
+    )
 
 
-async def _backfill_if_empty(
-    *,
-    domain_key: str,
-    engine: ProbabilisticOntologyEngine,
-    domain_id: str,
-    display_name: str,
-    backfill_days: int,
-    lock: asyncio.Lock,
-) -> int:
-    if backfill_days <= 0:
-        return 0
-
-    today = _utcnow().date()
-    successes = 0
-    async with lock:
-        existing = engine.evidence_store.count(domain_id)
-        if existing > 0:
-            logger.info(
-                "Skipping %s startup backfill; evidence_count=%d",
-                display_name,
-                existing,
-            )
-            return 0
-
-        logger.info(
-            "Running %d-day %s startup backfill; evidence_count=0",
-            backfill_days,
-            display_name,
-        )
-        if is_agriculture_domain(domain_id):
-            targets = weekly_backfill_dates(backfill_days, today)
-        else:
-            targets = [today - timedelta(days=delta) for delta in range(backfill_days, 0, -1)]
-        for target in targets:
-            try:
-                successes += await _ingest_domain_evidence(
-                    domain_key=domain_key,
-                    engine=engine,
-                    domain_id=domain_id,
-                    target_date=target,
-                )
-            except Exception as exc:
-                logger.error(
-                    "%s startup backfill failed for %s: %s",
-                    display_name,
-                    target,
-                    exc,
-                    exc_info=True,
-                )
-            await asyncio.sleep(1.0)
-
-    logger.info("%s startup backfill complete: %d days ingested", display_name, successes)
-    return successes
+def _fetcher(domain_key: str):
+    # Looks _fetch_evidence_record up at call time: tests replace it (tests/fakes.py).
+    return lambda target: _fetch_evidence_record(domain_key, target)
 
 
 # ── Lifespan ──────────────────────────────────────────────────────────────────
@@ -763,135 +649,28 @@ async def lifespan(app: FastAPI):
     app.state.engines: dict[str, ProbabilisticOntologyEngine] = {
         r.key: _build_engine(r.build_domain(), data_dir / r.db_filename) for r in REGISTRY
     }
-    engines = app.state.engines
-    ng_engine, mr_engine, ai_engine = engines["ng"], engines["mr"], engines["ai"]
-    sd_engine, cc_engine, er_engine = engines["sd"], engines["cc"], engines["er"]
-    lm_engine, cr_engine, gp_engine, sf_engine = engines["lm"], engines["cr"], engines["gp"], engines["sf"]
     app.state.scheduler_tasks: list[asyncio.Task] = []
     app.state.scheduler_enabled = scheduler_enabled
     app.state.ingest_locks: dict[str, asyncio.Lock] = {r.key: asyncio.Lock() for r in REGISTRY}
 
     if scheduler_enabled:
         _require_env(REQUIRED_ENV_VARS)
-        tasks = [
-            asyncio.create_task(
-                _run_natural_gas_scheduler(
-                    engine=ng_engine,
-                    api_key=os.environ["EIA_API_KEY"],
-                    run_hour_utc=_env_int("NATURAL_GAS_RUN_HOUR_UTC", 7),
-                    backfill_days=backfill_days,
-                    lock=app.state.ingest_locks["ng"],
-                ),
-                name="natural-gas-evidence-scheduler",
-            ),
-        ]
-        # FRED-dependent schedulers are optional (FRED_API_KEY may not be set)
-        fred_api_key = os.environ.get("FRED_API_KEY", "")
-        if fred_api_key:
-            backfill_weeks = _env_int("MACRO_REGIME_BACKFILL_WEEKS", max(backfill_days // 7, 8))
+        tasks = []
+        for reg in REGISTRY:
+            if not reg.scheduled:
+                continue
+            missing = [n for n in reg.required_env if not os.environ.get(n)]
+            if missing:
+                logger.info(
+                    "%s not set — %s scheduler disabled; engine initialised but "
+                    "no data will be fetched automatically.",
+                    ", ".join(missing), reg.display_name,
+                )
+                continue
             tasks.append(asyncio.create_task(
-                _run_macro_regime_scheduler(
-                    engine=mr_engine,
-                    fred_api_key=fred_api_key,
-                    run_hour_utc=_env_int("MACRO_REGIME_RUN_HOUR_UTC", 9),
-                    backfill_weeks=backfill_weeks,
-                    lock=app.state.ingest_locks["mr"],
-                ),
-                name="macro-regime-evidence-scheduler",
+                _run_domain_scheduler(reg, app.state.engines[reg.key], app.state.ingest_locks[reg.key], backfill_days),
+                name=reg.scheduler_task_name,
             ))
-            ai_backfill_weeks = _env_int("AI_REGIME_BACKFILL_WEEKS", max(backfill_days // 7, 8))
-            tasks.append(asyncio.create_task(
-                _run_ai_regime_scheduler(
-                    engine=ai_engine,
-                    fred_api_key=fred_api_key,
-                    run_hour_utc=_env_int("AI_REGIME_RUN_HOUR_UTC", 9),
-                    backfill_weeks=ai_backfill_weeks,
-                    lock=app.state.ingest_locks["ai"],
-                ),
-                name="ai-regime-evidence-scheduler",
-            ))
-            sd_backfill_weeks = _env_int("SOVEREIGN_DEBT_BACKFILL_WEEKS", max(backfill_days // 7, 8))
-            tasks.append(asyncio.create_task(
-                _run_sovereign_debt_scheduler(
-                    engine=sd_engine,
-                    fred_api_key=fred_api_key,
-                    run_hour_utc=_env_int("SOVEREIGN_DEBT_RUN_HOUR_UTC", 9),
-                    backfill_weeks=sd_backfill_weeks,
-                    lock=app.state.ingest_locks["sd"],
-                ),
-                name="sovereign-debt-evidence-scheduler",
-            ))
-            cc_backfill_weeks = _env_int("CREDIT_CYCLE_BACKFILL_WEEKS", max(backfill_days // 7, 8))
-            tasks.append(asyncio.create_task(
-                _run_credit_cycle_scheduler(
-                    engine=cc_engine,
-                    fred_api_key=fred_api_key,
-                    run_hour_utc=_env_int("CREDIT_CYCLE_RUN_HOUR_UTC", 9),
-                    backfill_weeks=cc_backfill_weeks,
-                    lock=app.state.ingest_locks["cc"],
-                ),
-                name="credit-cycle-evidence-scheduler",
-            ))
-            er_backfill_weeks = _env_int("ENERGY_REGIME_BACKFILL_WEEKS", max(backfill_days // 7, 8))
-            tasks.append(asyncio.create_task(
-                _run_energy_regime_scheduler(
-                    engine=er_engine,
-                    fred_api_key=fred_api_key,
-                    run_hour_utc=_env_int("ENERGY_REGIME_RUN_HOUR_UTC", 9),
-                    backfill_weeks=er_backfill_weeks,
-                    lock=app.state.ingest_locks["er"],
-                ),
-                name="energy-regime-evidence-scheduler",
-            ))
-            lm_backfill_weeks = _env_int("LABOR_MARKET_BACKFILL_WEEKS", max(backfill_days // 7, 8))
-            tasks.append(asyncio.create_task(
-                _run_labor_market_scheduler(
-                    engine=lm_engine,
-                    fred_api_key=fred_api_key,
-                    run_hour_utc=_env_int("LABOR_MARKET_RUN_HOUR_UTC", 9),
-                    backfill_weeks=lm_backfill_weeks,
-                    lock=app.state.ingest_locks["lm"],
-                ),
-                name="labor-market-evidence-scheduler",
-            ))
-            cr_backfill_weeks = _env_int("CRYPTO_REGIME_BACKFILL_WEEKS", max(backfill_days // 7, 8))
-            tasks.append(asyncio.create_task(
-                _run_crypto_regime_scheduler(
-                    engine=cr_engine,
-                    fred_api_key=fred_api_key,
-                    run_hour_utc=_env_int("CRYPTO_REGIME_RUN_HOUR_UTC", 9),
-                    backfill_weeks=cr_backfill_weeks,
-                    lock=app.state.ingest_locks["cr"],
-                ),
-                name="crypto-regime-evidence-scheduler",
-            ))
-            gp_backfill_weeks = _env_int("GEOPOLITICS_BACKFILL_WEEKS", max(backfill_days // 7, 8))
-            tasks.append(asyncio.create_task(
-                _run_geopolitics_scheduler(
-                    engine=gp_engine,
-                    fred_api_key=fred_api_key,
-                    run_hour_utc=_env_int("GEOPOLITICS_RUN_HOUR_UTC", 9),
-                    backfill_weeks=gp_backfill_weeks,
-                    lock=app.state.ingest_locks["gp"],
-                ),
-                name="geopolitics-evidence-scheduler",
-            ))
-            sf_backfill_weeks = _env_int("SF_URBAN_BACKFILL_WEEKS", max(backfill_days // 7, 8))
-            tasks.append(asyncio.create_task(
-                _run_sf_urban_scheduler(
-                    engine=sf_engine,
-                    fred_api_key=fred_api_key,
-                    run_hour_utc=_env_int("SF_URBAN_RUN_HOUR_UTC", 9),
-                    backfill_weeks=sf_backfill_weeks,
-                    lock=app.state.ingest_locks["sf"],
-                ),
-                name="sf-urban-evidence-scheduler",
-            ))
-        else:
-            logger.info(
-                "FRED_API_KEY not set — FRED-based domain schedulers disabled; "
-                "engines initialised but no data will be fetched automatically."
-            )
         for task in tasks:
             task.add_done_callback(_log_scheduler_exit)
         app.state.scheduler_tasks = tasks
@@ -1060,7 +839,7 @@ async def debug_learning(domain: str = Query("ng")) -> LearningDebugOut:
         pipeline_status=LearningPipelineStatusOut(
             # All three scheduler run_once() methods now call engine.learn()
             scheduler_calls_learn=True,
-            # _backfill_if_empty() uses _ingest_domain_evidence() which calls learn()
+            # startup backfill goes through runtime.ingestion, which calls learn()
             backfill_calls_learn=True,
             # /v1/ingest/trigger uses _ingest_domain_evidence() which calls learn()
             trigger_calls_learn=True,
@@ -1182,30 +961,23 @@ async def ingest_backfill(
     lock = _ingest_lock(app.state, domain_key)
 
     today = _utcnow().date()
-    successes = 0
     if is_agriculture_domain(domain_id):
         targets = weekly_backfill_dates(days, today)
     else:
         targets = [today - timedelta(days=delta) for delta in range(days, 0, -1)]
     async with lock:
-        for target in targets:
-            try:
-                successes += await _ingest_domain_evidence(
-                    domain_key=domain_key,
-                    engine=engine,
-                    domain_id=domain_id,
-                    target_date=target,
-                )
-            except RuntimeError as exc:
-                raise HTTPException(status_code=503, detail=str(exc)) from exc
-            except Exception as exc:
-                logger.error(
-                    "Manual %s backfill failed for %s: %s",
-                    display_name,
-                    target,
-                    exc,
-                    exc_info=True,
-                )
+        try:
+            successes = await backfill(
+                engine,
+                domain_id,
+                _fetcher(domain_key),
+                targets,
+                pause_s=0.0,
+                skip_unchanged_state=BY_KEY[domain_key].skip_unchanged_state,
+                abort_on=(RuntimeError,),  # missing API key: every target would fail
+            )
+        except RuntimeError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
 
     return IngestBackfillOut(
         domain=display_name,
@@ -2039,407 +1811,30 @@ async def evidence_recent(
     return EvidenceOut(domain=display_name, records=records)
 
 
-# ── Scheduler coroutines ──────────────────────────────────────────────────────
+# ── Scheduler ─────────────────────────────────────────────────────────────────
 
-async def _run_macro_regime_scheduler(
-    *,
+async def _run_domain_scheduler(
+    reg: DomainRegistration,
     engine: ProbabilisticOntologyEngine,
-    fred_api_key: str,
-    run_hour_utc: int,
-    backfill_weeks: int,
     lock: asyncio.Lock,
-) -> None:
-    """
-    Weekly macro regime ingestion scheduler.
-
-    Runs on Mondays at run_hour_utc UTC.  On startup, backfills the last
-    backfill_weeks weeks if the engine has no evidence yet.
-
-    Cadence rationale: weekly because WALCL (Fed balance sheet) publishes
-    weekly (Thursday), and macro regime variables evolve on a weekly-to-monthly
-    timescale.  Daily cadence would be noisy and epistemically wasteful.
-    """
-    from ...domains.macro_regime_v1.ingestion.pipeline import _last_friday
-    fred = FREDClient(api_key=fred_api_key)
-    pipeline = MacroRegimePipeline(fred)
-    scheduler = MacroRegimeScheduler(
-        engine=engine,
-        pipeline=pipeline,
-        run_hour_utc=run_hour_utc,
-        backfill_weeks=0,
-    )
-    await _backfill_macro_if_empty(
-        engine=engine,
-        pipeline=pipeline,
-        domain_id="macro-regime-v1",
-        display_name="Macro Regime",
-        backfill_weeks=backfill_weeks,
-        lock=lock,
-    )
-    async with fred:
-        await scheduler.run_forever()
-
-
-async def _backfill_macro_if_empty(
-    *,
-    engine: ProbabilisticOntologyEngine,
-    pipeline: MacroRegimePipeline,
-    domain_id: str,
-    display_name: str,
-    backfill_weeks: int,
-    lock: asyncio.Lock,
-) -> int:
-    """Backfill macro regime if the engine has no evidence records."""
-    if backfill_weeks <= 0:
-        return 0
-
-    from datetime import timedelta
-    from ...domains.macro_regime_v1.scheduler import _weekly_backfill_dates
-
-    today = _utcnow().date()
-    successes = 0
-    async with lock:
-        existing = engine.evidence_store.count(domain_id)
-        if existing > 0:
-            logger.info(
-                "Skipping %s startup backfill; evidence_count=%d",
-                display_name,
-                existing,
-            )
-            return 0
-
-        logger.info(
-            "Running %d-week %s startup backfill; evidence_count=0",
-            backfill_weeks,
-            display_name,
-        )
-        targets = _weekly_backfill_dates(backfill_weeks, today)
-        for target in targets:
-            try:
-                record = await pipeline.fetch_evidence(target)
-                before = engine.evidence_store.count(domain_id)
-                engine.ingest(record)
-                after = engine.evidence_store.count(domain_id)
-                if after > before:
-                    engine.learn([record], domain_id)
-                    successes += 1
-            except Exception as exc:
-                logger.error(
-                    "%s backfill failed for %s: %s",
-                    display_name, target, exc, exc_info=True,
-                )
-            await asyncio.sleep(2.0)
-
-    logger.info("%s startup backfill complete: %d weeks ingested", display_name, successes)
-    return successes
-
-
-async def _run_ai_regime_scheduler(
-    *,
-    engine: ProbabilisticOntologyEngine,
-    fred_api_key: str,
-    run_hour_utc: int,
-    backfill_weeks: int,
-    lock: asyncio.Lock,
-) -> None:
-    """
-    Weekly AI regime ingestion scheduler.
-
-    Runs on Mondays at run_hour_utc UTC.  On startup, backfills the last
-    backfill_weeks weeks if the engine has no evidence yet.
-
-    Cadence rationale: weekly because AI regime variables evolve on a
-    weekly-to-quarterly timescale.  yfinance prices are aggregated weekly.
-    EDGAR data is cached.  FRED quarterly series are read at their latest
-    published value.
-    """
-    from ...domains.ai_regime_v1.ingestion.pipeline import _last_friday as _ai_last_friday
-
-    yf_client = AIYFinanceClient()
-    fred = AIFredClient(api_key=fred_api_key)
-    edgar = AIEdgarClient()
-    pipeline = AIRegimePipeline(yf_client, fred, edgar)
-    scheduler = AIRegimeScheduler(
-        engine=engine,
-        pipeline=pipeline,
-        run_hour_utc=run_hour_utc,
-        backfill_weeks=0,
-    )
-    await _backfill_ai_if_empty(
-        engine=engine,
-        pipeline=pipeline,
-        domain_id="ai-regime-v1",
-        display_name="AI Regime",
-        backfill_weeks=backfill_weeks,
-        lock=lock,
-    )
-    async with fred, edgar, yf_client:
-        await scheduler.run_forever()
-
-
-async def _backfill_ai_if_empty(
-    *,
-    engine: ProbabilisticOntologyEngine,
-    pipeline: AIRegimePipeline,
-    domain_id: str,
-    display_name: str,
-    backfill_weeks: int,
-    lock: asyncio.Lock,
-) -> int:
-    """Backfill AI regime if the engine has no evidence records."""
-    if backfill_weeks <= 0:
-        return 0
-
-    from ...domains.ai_regime_v1.ingestion.pipeline import _weekly_backfill_dates as _ai_backfill_dates
-
-    today = _utcnow().date()
-    successes = 0
-    async with lock:
-        existing = engine.evidence_store.count(domain_id)
-        if existing > 0:
-            logger.info(
-                "Skipping %s startup backfill; evidence_count=%d",
-                display_name,
-                existing,
-            )
-            return 0
-
-        logger.info(
-            "Running %d-week %s startup backfill; evidence_count=0",
-            backfill_weeks,
-            display_name,
-        )
-        targets = _ai_backfill_dates(backfill_weeks, today)
-        for target in targets:
-            try:
-                record = await pipeline.fetch_evidence(target)
-                before = engine.evidence_store.count(domain_id)
-                engine.ingest(record)
-                after = engine.evidence_store.count(domain_id)
-                if after > before:
-                    engine.learn([record], domain_id)
-                    successes += 1
-            except Exception as exc:
-                logger.error(
-                    "%s backfill failed for %s: %s",
-                    display_name, target, exc, exc_info=True,
-                )
-            await asyncio.sleep(2.0)
-
-    logger.info("%s startup backfill complete: %d weeks ingested", display_name, successes)
-    return successes
-
-
-async def _run_natural_gas_scheduler(
-    *,
-    engine: ProbabilisticOntologyEngine,
-    api_key: str,
-    run_hour_utc: int,
     backfill_days: int,
-    lock: asyncio.Lock,
 ) -> None:
-    noaa = NOAAClient()
-    eia = EIAClient(api_key=api_key)
-    pipeline = NaturalGasPipeline(noaa, eia)
-    scheduler = NaturalGasScheduler(
-        engine=engine,
-        pipeline=pipeline,
-        run_hour_utc=run_hour_utc,
-        backfill_days=0,
-    )
-    await _backfill_if_empty(
-        domain_key="ng",
-        engine=engine,
-        domain_id="natural-gas-v1",
-        display_name="Natural Gas",
-        backfill_days=backfill_days,
-        lock=lock,
-    )
-    async with noaa, eia:
-        await scheduler.run_forever()
-
-
-async def _run_sovereign_debt_scheduler(
-    *,
-    engine: ProbabilisticOntologyEngine,
-    fred_api_key: str,
-    run_hour_utc: int,
-    backfill_weeks: int,
-    lock: asyncio.Lock,
-) -> None:
-    fred = SDFredClient(api_key=fred_api_key)
-    pipeline = SovereignDebtPipeline(fred)
-    scheduler = SovereignDebtScheduler(engine=engine, pipeline=pipeline,
-                                       run_hour_utc=run_hour_utc, backfill_weeks=0)
-    await _backfill_fred_domain_if_empty(
-        engine=engine, pipeline=pipeline, domain_id="sovereign-debt-v1",
-        display_name="Sovereign Debt", backfill_weeks=backfill_weeks, lock=lock,
-    )
-    async with fred:
-        await scheduler.run_forever()
-
-
-async def _run_credit_cycle_scheduler(
-    *,
-    engine: ProbabilisticOntologyEngine,
-    fred_api_key: str,
-    run_hour_utc: int,
-    backfill_weeks: int,
-    lock: asyncio.Lock,
-) -> None:
-    fred = CCFredClient(api_key=fred_api_key)
-    pipeline = CreditCyclePipeline(fred)
-    scheduler = CreditCycleScheduler(engine=engine, pipeline=pipeline,
-                                     run_hour_utc=run_hour_utc, backfill_weeks=0)
-    await _backfill_fred_domain_if_empty(
-        engine=engine, pipeline=pipeline, domain_id="credit-cycle-v1",
-        display_name="Credit Cycle", backfill_weeks=backfill_weeks, lock=lock,
-    )
-    async with fred:
-        await scheduler.run_forever()
-
-
-async def _run_energy_regime_scheduler(
-    *,
-    engine: ProbabilisticOntologyEngine,
-    fred_api_key: str,
-    run_hour_utc: int,
-    backfill_weeks: int,
-    lock: asyncio.Lock,
-) -> None:
-    fred = ERFredClient(api_key=fred_api_key)
-    yf_client = EnergyYFinanceClient()
-    pipeline = EnergyRegimePipeline(fred, yf_client)
-    scheduler = EnergyRegimeScheduler(engine=engine, pipeline=pipeline,
-                                      run_hour_utc=run_hour_utc, backfill_weeks=0)
-    await _backfill_fred_domain_if_empty(
-        engine=engine, pipeline=pipeline, domain_id="energy-regime-v1",
-        display_name="Energy Regime", backfill_weeks=backfill_weeks, lock=lock,
-    )
-    async with fred, yf_client:
-        await scheduler.run_forever()
-
-
-async def _run_labor_market_scheduler(
-    *,
-    engine: ProbabilisticOntologyEngine,
-    fred_api_key: str,
-    run_hour_utc: int,
-    backfill_weeks: int,
-    lock: asyncio.Lock,
-) -> None:
-    fred = LMFredClient(api_key=fred_api_key)
-    pipeline = LaborMarketPipeline(fred)
-    scheduler = LaborMarketScheduler(engine=engine, pipeline=pipeline,
-                                     run_hour_utc=run_hour_utc, backfill_weeks=0)
-    await _backfill_fred_domain_if_empty(
-        engine=engine, pipeline=pipeline, domain_id="labor-market-v1",
-        display_name="Labor Market", backfill_weeks=backfill_weeks, lock=lock,
-    )
-    async with fred:
-        await scheduler.run_forever()
-
-
-async def _run_crypto_regime_scheduler(
-    *,
-    engine: ProbabilisticOntologyEngine,
-    fred_api_key: str,
-    run_hour_utc: int,
-    backfill_weeks: int,
-    lock: asyncio.Lock,
-) -> None:
-    cg = CoinGeckoClient()
-    yf_client = CryptoYFinanceClient()
-    fred = CRFredClient(api_key=fred_api_key)
-    pipeline = CryptoRegimePipeline(cg, yf_client, fred)
-    scheduler = CryptoRegimeScheduler(engine=engine, pipeline=pipeline,
-                                      run_hour_utc=run_hour_utc, backfill_weeks=0)
-    await _backfill_fred_domain_if_empty(
-        engine=engine, pipeline=pipeline, domain_id="crypto-regime-v1",
-        display_name="Crypto Regime", backfill_weeks=backfill_weeks, lock=lock,
-    )
-    async with cg, fred:
-        await scheduler.run_forever()
-
-
-async def _run_geopolitics_scheduler(
-    *,
-    engine: ProbabilisticOntologyEngine,
-    fred_api_key: str,
-    run_hour_utc: int,
-    backfill_weeks: int,
-    lock: asyncio.Lock,
-) -> None:
-    gdelt = GDELTClient()
-    fred = GPFredClient(api_key=fred_api_key)
-    pipeline = GeopoliticsPipeline(gdelt, fred)
-    scheduler = GeopoliticsScheduler(engine=engine, pipeline=pipeline,
-                                     run_hour_utc=run_hour_utc, backfill_weeks=0)
-    await _backfill_fred_domain_if_empty(
-        engine=engine, pipeline=pipeline, domain_id="geopolitics-v1",
-        display_name="Geopolitics", backfill_weeks=backfill_weeks, lock=lock,
-    )
-    async with gdelt, fred:
-        await scheduler.run_forever()
-
-
-async def _run_sf_urban_scheduler(
-    *,
-    engine: ProbabilisticOntologyEngine,
-    fred_api_key: str,
-    run_hour_utc: int,
-    backfill_weeks: int,
-    lock: asyncio.Lock,
-) -> None:
-    sfgov = SFGovClient()
-    fred = SFFredClient(api_key=fred_api_key)
-    pipeline = SFUrbanPipeline(sfgov, fred)
-    scheduler = SFUrbanScheduler(engine=engine, pipeline=pipeline,
-                                 run_hour_utc=run_hour_utc, backfill_weeks=0)
-    await _backfill_fred_domain_if_empty(
-        engine=engine, pipeline=pipeline, domain_id="sf-urban-v1",
-        display_name="SF Urban", backfill_weeks=backfill_weeks, lock=lock,
-    )
-    async with sfgov, fred:
-        await scheduler.run_forever()
-
-
-async def _backfill_fred_domain_if_empty(
-    *,
-    engine: ProbabilisticOntologyEngine,
-    pipeline: Any,
-    domain_id: str,
-    display_name: str,
-    backfill_weeks: int,
-    lock: asyncio.Lock,
-) -> int:
-    """Generic FRED-domain backfill using weekly targets if engine has no evidence."""
-    if backfill_weeks <= 0:
-        return 0
-    from ...domains.macro_regime_v1.scheduler import _weekly_backfill_dates
-    today = _utcnow().date()
-    successes = 0
-    async with lock:
-        existing = engine.evidence_store.count(domain_id)
-        if existing > 0:
-            logger.info("Skipping %s startup backfill; evidence_count=%d", display_name, existing)
-            return 0
-        logger.info("Running %d-week %s startup backfill; evidence_count=0", backfill_weeks, display_name)
-        targets = _weekly_backfill_dates(backfill_weeks, today)
-        for target in targets:
-            try:
-                record = await pipeline.fetch_evidence(target)
-                before = engine.evidence_store.count(domain_id)
-                engine.ingest(record)
-                after = engine.evidence_store.count(domain_id)
-                if after > before:
-                    engine.learn([record], domain_id)
-                    successes += 1
-            except Exception as exc:
-                logger.error("%s backfill failed for %s: %s", display_name, target, exc, exc_info=True)
-            await asyncio.sleep(2.0)
-    logger.info("%s startup backfill complete: %d weeks ingested", display_name, successes)
-    return successes
+    """Open the domain's source once and run its schedule until cancelled."""
+    run_hour = _env_int(f"{reg.env_prefix}_RUN_HOUR_UTC", reg.default_run_hour_utc)
+    backfill_weeks = _env_int(f"{reg.env_prefix}_BACKFILL_WEEKS", max(backfill_days // 7, 8))
+    async with reg.open_source(os.environ) as source:
+        await run_scheduler(
+            engine,
+            reg.module_id,
+            source.fetch_evidence,
+            reg.schedule,
+            run_hour_utc=run_hour,
+            startup_days=backfill_days,
+            startup_weeks=backfill_weeks,
+            lock=lock,
+            skip_unchanged_state=reg.skip_unchanged_state,
+            clock=_utcnow,
+        )
 
 
 # ── Utilities ─────────────────────────────────────────────────────────────────
