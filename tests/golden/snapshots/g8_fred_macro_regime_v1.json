@@ -1,0 +1,253 @@
+{
+ "failures": {
+  "all_missing": "OSError",
+  "empty": "OSError",
+  "http_500": "OSError",
+  "not_json": "OSError"
+ },
+ "fetch_all_series": {
+  "BAMLH0A0HYM2": [
+   [
+    "2026-03-01",
+    3.65,
+    "BAMLH0A0HYM2"
+   ],
+   [
+    "2026-02-01",
+    3.4,
+    "BAMLH0A0HYM2"
+   ],
+   [
+    "2026-01-01",
+    3.15,
+    "BAMLH0A0HYM2"
+   ]
+  ],
+  "CPIAUCSL": [
+   [
+    "2026-03-01",
+    2.15,
+    "CPIAUCSL"
+   ],
+   [
+    "2026-02-01",
+    1.9,
+    "CPIAUCSL"
+   ],
+   [
+    "2026-01-01",
+    1.65,
+    "CPIAUCSL"
+   ]
+  ],
+  "DEXUSEU": [
+   [
+    "2026-03-01",
+    6.95,
+    "DEXUSEU"
+   ],
+   [
+    "2026-02-01",
+    6.7,
+    "DEXUSEU"
+   ],
+   [
+    "2026-01-01",
+    6.45,
+    "DEXUSEU"
+   ]
+  ],
+  "NASDAQCOM": [
+   [
+    "2026-03-01",
+    8.85,
+    "NASDAQCOM"
+   ],
+   [
+    "2026-02-01",
+    8.6,
+    "NASDAQCOM"
+   ],
+   [
+    "2026-01-01",
+    8.35,
+    "NASDAQCOM"
+   ]
+  ],
+  "T10Y2Y": [
+   [
+    "2026-03-01",
+    2.85,
+    "T10Y2Y"
+   ],
+   [
+    "2026-02-01",
+    2.6,
+    "T10Y2Y"
+   ],
+   [
+    "2026-01-01",
+    2.35,
+    "T10Y2Y"
+   ]
+  ],
+  "UNRATE": [
+   [
+    "2026-03-01",
+    8.25,
+    "UNRATE"
+   ],
+   [
+    "2026-02-01",
+    8.0,
+    "UNRATE"
+   ],
+   [
+    "2026-01-01",
+    7.75,
+    "UNRATE"
+   ]
+  ],
+  "VIXCLS": [
+   [
+    "2026-03-01",
+    9.25,
+    "VIXCLS"
+   ],
+   [
+    "2026-02-01",
+    9.0,
+    "VIXCLS"
+   ],
+   [
+    "2026-01-01",
+    8.75,
+    "VIXCLS"
+   ]
+  ],
+  "WALCL": [
+   [
+    "2026-03-01",
+    8.75,
+    "WALCL"
+   ],
+   [
+    "2026-02-01",
+    8.5,
+    "WALCL"
+   ],
+   [
+    "2026-01-01",
+    8.25,
+    "WALCL"
+   ]
+  ]
+ },
+ "fetch_all_series_when_every_series_fails": {
+  "BAMLH0A0HYM2": 0,
+  "CPIAUCSL": 0,
+  "DEXUSEU": 0,
+  "NASDAQCOM": 0,
+  "T10Y2Y": 0,
+  "UNRATE": 0,
+  "VIXCLS": 0,
+  "WALCL": 0
+ },
+ "fetch_series_explicit_window": [
+  [
+   "2026-03-01",
+   3.65
+  ],
+  [
+   "2026-02-01",
+   3.4
+  ],
+  [
+   "2026-01-01",
+   3.15
+  ]
+ ],
+ "requests": [
+  {
+   "file_type": "json",
+   "limit": "12",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-01",
+   "path": "/fred/series/observations",
+   "series_id": "BAMLH0A0HYM2",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-30",
+   "path": "/fred/series/observations",
+   "series_id": "BAMLH0A0HYM2",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2024-12-31",
+   "path": "/fred/series/observations",
+   "series_id": "CPIAUCSL",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-30",
+   "path": "/fred/series/observations",
+   "series_id": "DEXUSEU",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2024-03-06",
+   "path": "/fred/series/observations",
+   "series_id": "NASDAQCOM",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2026-01-30",
+   "path": "/fred/series/observations",
+   "series_id": "T10Y2Y",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2024-12-11",
+   "path": "/fred/series/observations",
+   "series_id": "UNRATE",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-11-06",
+   "path": "/fred/series/observations",
+   "series_id": "VIXCLS",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-10-17",
+   "path": "/fred/series/observations",
+   "series_id": "WALCL",
+   "sort_order": "desc"
+  }
+ ]
+}

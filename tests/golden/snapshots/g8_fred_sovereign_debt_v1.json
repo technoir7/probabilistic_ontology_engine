@@ -1,0 +1,226 @@
+{
+ "failures": {
+  "all_missing": "OSError",
+  "empty": "OSError",
+  "http_500": "OSError",
+  "not_json": "OSError"
+ },
+ "fetch_all_series": {
+  "BAMLH0A0HYM2": [
+   [
+    "2026-03-01",
+    3.65,
+    "BAMLH0A0HYM2"
+   ],
+   [
+    "2026-02-01",
+    3.4,
+    "BAMLH0A0HYM2"
+   ],
+   [
+    "2026-01-01",
+    3.15,
+    "BAMLH0A0HYM2"
+   ]
+  ],
+  "DEXUSEU": [
+   [
+    "2026-03-01",
+    6.95,
+    "DEXUSEU"
+   ],
+   [
+    "2026-02-01",
+    6.7,
+    "DEXUSEU"
+   ],
+   [
+    "2026-01-01",
+    6.45,
+    "DEXUSEU"
+   ]
+  ],
+  "DGS10": [
+   [
+    "2026-03-01",
+    3.55,
+    "DGS10"
+   ],
+   [
+    "2026-02-01",
+    3.3,
+    "DGS10"
+   ],
+   [
+    "2026-01-01",
+    3.05,
+    "DGS10"
+   ]
+  ],
+  "DTWEXBGS": [
+   [
+    "2026-03-01",
+    4.15,
+    "DTWEXBGS"
+   ],
+   [
+    "2026-02-01",
+    3.9,
+    "DTWEXBGS"
+   ],
+   [
+    "2026-01-01",
+    3.65,
+    "DTWEXBGS"
+   ]
+  ],
+  "GFDEBTN": [
+   [
+    "2026-03-01",
+    2.85,
+    "GFDEBTN"
+   ],
+   [
+    "2026-02-01",
+    2.6,
+    "GFDEBTN"
+   ],
+   [
+    "2026-01-01",
+    2.35,
+    "GFDEBTN"
+   ]
+  ],
+  "M2SL": [
+   [
+    "2026-03-01",
+    9.95,
+    "M2SL"
+   ],
+   [
+    "2026-02-01",
+    9.7,
+    "M2SL"
+   ],
+   [
+    "2026-01-01",
+    9.45,
+    "M2SL"
+   ]
+  ],
+  "WALCL": [
+   [
+    "2026-03-01",
+    8.75,
+    "WALCL"
+   ],
+   [
+    "2026-02-01",
+    8.5,
+    "WALCL"
+   ],
+   [
+    "2026-01-01",
+    8.25,
+    "WALCL"
+   ]
+  ]
+ },
+ "fetch_all_series_when_every_series_fails": {
+  "BAMLH0A0HYM2": 0,
+  "DEXUSEU": 0,
+  "DGS10": 0,
+  "DTWEXBGS": 0,
+  "GFDEBTN": 0,
+  "M2SL": 0,
+  "WALCL": 0
+ },
+ "fetch_series_explicit_window": [
+  [
+   "2026-03-01",
+   3.65
+  ],
+  [
+   "2026-02-01",
+   3.4
+  ],
+  [
+   "2026-01-01",
+   3.15
+  ]
+ ],
+ "requests": [
+  {
+   "file_type": "json",
+   "limit": "12",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-01",
+   "path": "/fred/series/observations",
+   "series_id": "BAMLH0A0HYM2",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-30",
+   "path": "/fred/series/observations",
+   "series_id": "BAMLH0A0HYM2",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-30",
+   "path": "/fred/series/observations",
+   "series_id": "DEXUSEU",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-30",
+   "path": "/fred/series/observations",
+   "series_id": "DGS10",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-30",
+   "path": "/fred/series/observations",
+   "series_id": "DTWEXBGS",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2022-01-26",
+   "path": "/fred/series/observations",
+   "series_id": "GFDEBTN",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-09-07",
+   "path": "/fred/series/observations",
+   "series_id": "M2SL",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-10-17",
+   "path": "/fred/series/observations",
+   "series_id": "WALCL",
+   "sort_order": "desc"
+  }
+ ]
+}

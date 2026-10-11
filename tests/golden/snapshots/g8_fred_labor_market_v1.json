@@ -1,0 +1,226 @@
+{
+ "failures": {
+  "all_missing": "OSError",
+  "empty": "OSError",
+  "http_500": "OSError",
+  "not_json": "OSError"
+ },
+ "fetch_all_series": {
+  "CES0500000003": [
+   [
+    "2026-03-01",
+    3.55,
+    "CES0500000003"
+   ],
+   [
+    "2026-02-01",
+    3.3,
+    "CES0500000003"
+   ],
+   [
+    "2026-01-01",
+    3.05,
+    "CES0500000003"
+   ]
+  ],
+  "CIVPART": [
+   [
+    "2026-03-01",
+    5.95,
+    "CIVPART"
+   ],
+   [
+    "2026-02-01",
+    5.7,
+    "CIVPART"
+   ],
+   [
+    "2026-01-01",
+    5.45,
+    "CIVPART"
+   ]
+  ],
+  "CPIAUCSL": [
+   [
+    "2026-03-01",
+    2.15,
+    "CPIAUCSL"
+   ],
+   [
+    "2026-02-01",
+    1.9,
+    "CPIAUCSL"
+   ],
+   [
+    "2026-01-01",
+    1.65,
+    "CPIAUCSL"
+   ]
+  ],
+  "ICSA": [
+   [
+    "2026-03-01",
+    10.15,
+    "ICSA"
+   ],
+   [
+    "2026-02-01",
+    9.9,
+    "ICSA"
+   ],
+   [
+    "2026-01-01",
+    9.65,
+    "ICSA"
+   ]
+  ],
+  "JTSJOL": [
+   [
+    "2026-03-01",
+    8.95,
+    "JTSJOL"
+   ],
+   [
+    "2026-02-01",
+    8.7,
+    "JTSJOL"
+   ],
+   [
+    "2026-01-01",
+    8.45,
+    "JTSJOL"
+   ]
+  ],
+  "PRS85006092": [
+   [
+    "2026-03-01",
+    8.45,
+    "PRS85006092"
+   ],
+   [
+    "2026-02-01",
+    8.2,
+    "PRS85006092"
+   ],
+   [
+    "2026-01-01",
+    7.95,
+    "PRS85006092"
+   ]
+  ],
+  "UNRATE": [
+   [
+    "2026-03-01",
+    8.25,
+    "UNRATE"
+   ],
+   [
+    "2026-02-01",
+    8.0,
+    "UNRATE"
+   ],
+   [
+    "2026-01-01",
+    7.75,
+    "UNRATE"
+   ]
+  ]
+ },
+ "fetch_all_series_when_every_series_fails": {
+  "CES0500000003": 0,
+  "CIVPART": 0,
+  "CPIAUCSL": 0,
+  "ICSA": 0,
+  "JTSJOL": 0,
+  "PRS85006092": 0,
+  "UNRATE": 0
+ },
+ "fetch_series_explicit_window": [
+  [
+   "2026-03-01",
+   3.55
+  ],
+  [
+   "2026-02-01",
+   3.3
+  ],
+  [
+   "2026-01-01",
+   3.05
+  ]
+ ],
+ "requests": [
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2024-12-31",
+   "path": "/fred/series/observations",
+   "series_id": "CES0500000003",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "12",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-01",
+   "path": "/fred/series/observations",
+   "series_id": "CES0500000003",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2024-12-31",
+   "path": "/fred/series/observations",
+   "series_id": "CIVPART",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2024-12-31",
+   "path": "/fred/series/observations",
+   "series_id": "CPIAUCSL",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-30",
+   "path": "/fred/series/observations",
+   "series_id": "ICSA",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2024-12-31",
+   "path": "/fred/series/observations",
+   "series_id": "JTSJOL",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2022-01-26",
+   "path": "/fred/series/observations",
+   "series_id": "PRS85006092",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2024-12-11",
+   "path": "/fred/series/observations",
+   "series_id": "UNRATE",
+   "sort_order": "desc"
+  }
+ ]
+}

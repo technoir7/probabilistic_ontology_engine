@@ -1,0 +1,172 @@
+{
+ "failures": {
+  "all_missing": "OSError",
+  "empty": "OSError",
+  "http_500": "OSError",
+  "not_json": "OSError"
+ },
+ "fetch_all_series": {
+  "BAMLC0A0CM": [
+   [
+    "2026-03-01",
+    8.15,
+    "BAMLC0A0CM"
+   ],
+   [
+    "2026-02-01",
+    7.9,
+    "BAMLC0A0CM"
+   ],
+   [
+    "2026-01-01",
+    7.65,
+    "BAMLC0A0CM"
+   ]
+  ],
+  "BAMLH0A0HYM2": [
+   [
+    "2026-03-01",
+    3.65,
+    "BAMLH0A0HYM2"
+   ],
+   [
+    "2026-02-01",
+    3.4,
+    "BAMLH0A0HYM2"
+   ],
+   [
+    "2026-01-01",
+    3.15,
+    "BAMLH0A0HYM2"
+   ]
+  ],
+  "DGS5": [
+   [
+    "2026-03-01",
+    8.85,
+    "DGS5"
+   ],
+   [
+    "2026-02-01",
+    8.6,
+    "DGS5"
+   ],
+   [
+    "2026-01-01",
+    8.35,
+    "DGS5"
+   ]
+  ],
+  "DRTSCILM": [
+   [
+    "2026-03-01",
+    3.55,
+    "DRTSCILM"
+   ],
+   [
+    "2026-02-01",
+    3.3,
+    "DRTSCILM"
+   ],
+   [
+    "2026-01-01",
+    3.05,
+    "DRTSCILM"
+   ]
+  ],
+  "TOTCI": [
+   [
+    "2026-03-01",
+    10.35,
+    "TOTCI"
+   ],
+   [
+    "2026-02-01",
+    10.1,
+    "TOTCI"
+   ],
+   [
+    "2026-01-01",
+    9.85,
+    "TOTCI"
+   ]
+  ]
+ },
+ "fetch_all_series_when_every_series_fails": {
+  "BAMLC0A0CM": 0,
+  "BAMLH0A0HYM2": 0,
+  "DGS5": 0,
+  "DRTSCILM": 0,
+  "TOTCI": 0
+ },
+ "fetch_series_explicit_window": [
+  [
+   "2026-03-01",
+   8.15
+  ],
+  [
+   "2026-02-01",
+   7.9
+  ],
+  [
+   "2026-01-01",
+   7.65
+  ]
+ ],
+ "requests": [
+  {
+   "file_type": "json",
+   "limit": "12",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-01",
+   "path": "/fred/series/observations",
+   "series_id": "BAMLC0A0CM",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-30",
+   "path": "/fred/series/observations",
+   "series_id": "BAMLC0A0CM",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-30",
+   "path": "/fred/series/observations",
+   "series_id": "BAMLH0A0HYM2",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-30",
+   "path": "/fred/series/observations",
+   "series_id": "DGS5",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2022-01-26",
+   "path": "/fred/series/observations",
+   "series_id": "DRTSCILM",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-09-07",
+   "path": "/fred/series/observations",
+   "series_id": "TOTCI",
+   "sort_order": "desc"
+  }
+ ]
+}
