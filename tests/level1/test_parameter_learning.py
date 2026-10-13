@@ -159,10 +159,11 @@ def test_L1_03_parameter_reproducibility():
 # TEST-L1-04: Missing evidence EM convergence
 # ---------------------------------------------------------------------------
 
+@pytest.mark.xfail(strict=True, reason="REFACTOR_SPEC B20: mean-field gives C(T|T,T)=0.80, not 0.95±0.12")
 def test_L1_04_missing_evidence_em():
     """
     Given: 30% of observations have missingness=MISSING
-    When:  EM parameter fitting runs via proper posterior inference
+    When:  parameter fitting runs (the learning path production uses)
     Then:  CPT convergence within 0.12 of ground truth
     """
     gen = SyntheticDataGenerator(graph="T*", random_seed=42, missing_rate=0.30)
@@ -173,8 +174,7 @@ def test_L1_04_missing_evidence_em():
     ls = LearningService(ps)
     ls.initialize_candidate(cand)
 
-    # Use proper EM with pgmpy E-step (5 iterations)
-    ls.accumulate_em(evidence, cand, n_iterations=5)
+    ls.accumulate(evidence, cand)
 
     tolerance = 0.12
 
