@@ -11,6 +11,8 @@ from dataclasses import dataclass
 from typing import Any, Callable, Mapping
 
 from ...domains.ai_regime_v1 import source as ai_source
+from ...domains.art_prestige_regime_v1 import source as art_source
+from ...domains.art_prestige_regime_v1.domain import ArtPrestigeRegimeV1
 from ...domains.ai_regime_v1.domain import AIRegimeV1
 from ...domains.credit_cycle_v1 import source as cc_source
 from ...domains.credit_cycle_v1.domain import CreditCycleV1
@@ -30,8 +32,7 @@ from ...domains.sf_urban_v1 import source as sf_source
 from ...domains.sf_urban_v1.domain import SFUrbanV1
 from ...domains.sovereign_debt_v1 import source as sd_source
 from ...domains.sovereign_debt_v1.domain import SovereignDebtV1
-from . import art
-from ..model.cadence import Cadence, Daily, Weekly
+from ..model.cadence import Cadence, Daily, Monthly, Weekly
 
 OpenSource = Callable[[Mapping[str, str]], AbstractAsyncContextManager[Any]]
 
@@ -45,15 +46,12 @@ class DomainRegistration:
     build_domain: Callable[[], Any]
     open_source: OpenSource
     required_env: tuple[str, ...] = ()
-    # Env var prefix for <PREFIX>_RUN_HOUR_UTC / <PREFIX>_BACKFILL_WEEKS (existing names).
+    # Env var prefix for <PREFIX>_RUN_HOUR_UTC / _BACKFILL_WEEKS / _BACKFILL_MONTHS.
     env_prefix: str = ""
     default_run_hour_utc: int = 9
     cadence: Cadence = Weekly()
     # Pause between backfill requests, to be polite to upstream APIs.
     backfill_pause_s: float = 2.0
-    scheduled: bool = True
-    # Optional: if its package is not installed, the service runs without it.
-    optional: bool = False
     # Skip a fetched weekly state identical to the latest stored one.
     skip_unchanged_state: bool = False
 
@@ -87,8 +85,8 @@ REGISTRY: tuple[DomainRegistration, ...] = (
     DomainRegistration("sf", "sf-urban-v1", "SF Urban", "sf_urban.db", SFUrbanV1,
                        sf_source.open_source, _FRED, "SF_URBAN", skip_unchanged_state=True),
     DomainRegistration("art", "art_prestige_regime_v1", "Art Prestige Regime", "art_prestige_regime.db",
-                       art.build_art_domain, art.open_source, cadence=Daily(), scheduled=False,
-                       optional=True),
+                       ArtPrestigeRegimeV1, art_source.open_source, (), "ART", cadence=Monthly(),
+                       backfill_pause_s=1.0),
 )
 
 BY_KEY: dict[str, DomainRegistration] = {r.key: r for r in REGISTRY}

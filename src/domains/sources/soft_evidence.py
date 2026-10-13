@@ -62,6 +62,7 @@ def build_soft_record(
     target_date: date,
     source_ref: str,
     missing: Iterable[str] = (),
+    source_type: SourceType = SourceType.API,
 ) -> EvidenceRecord:
     """
     One record dated midnight UTC of *target_date*.
@@ -100,7 +101,7 @@ def build_soft_record(
         evidence_id=evidence_id_for(module_id, timestamp, source_ref),
         timestamp=timestamp,
         observed_assignments=assignments,
-        source_type=SourceType.API,
+        source_type=source_type,
         source_ref=source_ref,
         confidence=float(sum(confidence.values()) / len(confidence)) if confidence else 1.0,
     )

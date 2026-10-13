@@ -8,6 +8,93 @@
  "openapi": {
   "components": {
    "schemas": {
+    "ArtRebuildOut": {
+     "properties": {
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "failed_reports": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Failed Reports",
+       "type": "array"
+      },
+      "months_requested": {
+       "title": "Months Requested",
+       "type": "integer"
+      },
+      "records_learned": {
+       "title": "Records Learned",
+       "type": "integer"
+      },
+      "reports_found": {
+       "title": "Reports Found",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "domain",
+      "months_requested",
+      "reports_found",
+      "records_learned",
+      "failed_reports"
+     ],
+     "title": "ArtRebuildOut",
+     "type": "object"
+    },
+    "ArtReportIngestOut": {
+     "properties": {
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "failed": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Failed",
+       "type": "array"
+      },
+      "files_scanned": {
+       "title": "Files Scanned",
+       "type": "integer"
+      },
+      "input_path": {
+       "title": "Input Path",
+       "type": "string"
+      },
+      "items_found": {
+       "title": "Items Found",
+       "type": "integer"
+      },
+      "records_found": {
+       "title": "Records Found",
+       "type": "integer"
+      },
+      "records_learned": {
+       "title": "Records Learned",
+       "type": "integer"
+      },
+      "records_skipped_duplicates": {
+       "title": "Records Skipped Duplicates",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "domain",
+      "input_path",
+      "files_scanned",
+      "items_found",
+      "records_found",
+      "records_learned",
+      "records_skipped_duplicates",
+      "failed"
+     ],
+     "title": "ArtReportIngestOut",
+     "type": "object"
+    },
     "CandidateDiagOut": {
      "properties": {
       "active_edge_count": {
@@ -724,129 +811,6 @@
       "events"
      ],
      "title": "LineageOut",
-     "type": "object"
-    },
-    "ManualArtIngestOut": {
-     "properties": {
-      "causal_prior_candidates_scored": {
-       "default": 0,
-       "title": "Causal Prior Candidates Scored",
-       "type": "integer"
-      },
-      "causal_prior_dominant_changed": {
-       "default": false,
-       "title": "Causal Prior Dominant Changed",
-       "type": "boolean"
-      },
-      "causal_prior_total_applied": {
-       "default": 0.0,
-       "title": "Causal Prior Total Applied",
-       "type": "number"
-      },
-      "causal_prior_weight": {
-       "default": 0.0,
-       "title": "Causal Prior Weight",
-       "type": "number"
-      },
-      "db_path": {
-       "title": "Db Path",
-       "type": "string"
-      },
-      "domain": {
-       "title": "Domain",
-       "type": "string"
-      },
-      "domain_key": {
-       "title": "Domain Key",
-       "type": "string"
-      },
-      "domain_module_id": {
-       "title": "Domain Module Id",
-       "type": "string"
-      },
-      "evidence_count_after": {
-       "title": "Evidence Count After",
-       "type": "integer"
-      },
-      "evidence_count_before": {
-       "title": "Evidence Count Before",
-       "type": "integer"
-      },
-      "files_scanned": {
-       "title": "Files Scanned",
-       "type": "integer"
-      },
-      "input_path": {
-       "title": "Input Path",
-       "type": "string"
-      },
-      "objects_found": {
-       "title": "Objects Found",
-       "type": "integer"
-      },
-      "rebuild_mode": {
-       "title": "Rebuild Mode",
-       "type": "boolean"
-      },
-      "records_failed": {
-       "title": "Records Failed",
-       "type": "integer"
-      },
-      "records_found": {
-       "title": "Records Found",
-       "type": "integer"
-      },
-      "records_ingested": {
-       "title": "Records Ingested",
-       "type": "integer"
-      },
-      "records_learned": {
-       "title": "Records Learned",
-       "type": "integer"
-      },
-      "records_loaded_from_files": {
-       "title": "Records Loaded From Files",
-       "type": "integer"
-      },
-      "records_removed_stale": {
-       "title": "Records Removed Stale",
-       "type": "integer"
-      },
-      "records_replaced": {
-       "title": "Records Replaced",
-       "type": "integer"
-      },
-      "records_skipped_duplicates": {
-       "title": "Records Skipped Duplicates",
-       "type": "integer"
-      },
-      "verification_endpoint": {
-       "title": "Verification Endpoint",
-       "type": "string"
-      }
-     },
-     "required": [
-      "domain",
-      "domain_key",
-      "domain_module_id",
-      "input_path",
-      "db_path",
-      "rebuild_mode",
-      "files_scanned",
-      "objects_found",
-      "records_loaded_from_files",
-      "records_replaced",
-      "records_removed_stale",
-      "records_found",
-      "records_ingested",
-      "records_skipped_duplicates",
-      "records_failed",
-      "records_learned",
-      "evidence_count_before",
-      "evidence_count_after",
-      "verification_endpoint"
-     ],
-     "title": "ManualArtIngestOut",
      "type": "object"
     },
     "MutationCycleDiagOut": {
@@ -2025,7 +1989,8 @@
    },
    "/v1/ingest/art/manual": {
     "post": {
-     "operationId": "ingest_art_manual_v1_ingest_art_manual_post",
+     "description": "Learn the report files under *path* (default: the reports directory) not yet stored.",
+     "operationId": "ingest_art_reports_v1_ingest_art_manual_post",
      "parameters": [
       {
        "in": "query",
@@ -2041,26 +2006,6 @@
          }
         ],
         "title": "Path"
-       }
-      },
-      {
-       "in": "query",
-       "name": "force",
-       "required": false,
-       "schema": {
-        "default": false,
-        "title": "Force",
-        "type": "boolean"
-       }
-      },
-      {
-       "in": "query",
-       "name": "append",
-       "required": false,
-       "schema": {
-        "default": false,
-        "title": "Append",
-        "type": "boolean"
        }
       },
       {
@@ -2085,7 +2030,7 @@
        "content": {
         "application/json": {
          "schema": {
-          "$ref": "#/components/schemas/ManualArtIngestOut"
+          "$ref": "#/components/schemas/ArtReportIngestOut"
          }
         }
        },
@@ -2102,7 +2047,66 @@
        "description": "Validation Error"
       }
      },
-     "summary": "Ingest Art Manual"
+     "summary": "Ingest Art Reports"
+    }
+   },
+   "/v1/ingest/art/rebuild": {
+    "post": {
+     "description": "Forget everything learned for art and relearn it from *months* of fetched\nevidence plus every report in the reports directory, oldest first. Slow:\none fetch per month, with the domain's backfill pause between them.",
+     "operationId": "rebuild_art_v1_ingest_art_rebuild_post",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "months",
+       "required": false,
+       "schema": {
+        "default": 60,
+        "maximum": 240,
+        "minimum": 1,
+        "title": "Months",
+        "type": "integer"
+       }
+      },
+      {
+       "in": "header",
+       "name": "authorization",
+       "required": false,
+       "schema": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Authorization"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/ArtRebuildOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Rebuild Art"
     }
    },
    "/v1/ingest/backfill": {

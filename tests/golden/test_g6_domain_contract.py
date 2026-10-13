@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import pytest
 
-from art_prestige_regime_v1 import ArtPrestigeRegimeV1
+from src.domains.art_prestige_regime_v1.domain import ArtPrestigeRegimeV1
 from src.domains.ai_regime_v1.domain import AIRegimeV1
 from src.domains.credit_cycle_v1.domain import CreditCycleV1
 from src.domains.crypto_regime_v1.domain import CryptoRegimeV1

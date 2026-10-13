@@ -9,7 +9,8 @@ import pytest
 
 from src.domains.sovereign_debt_v1.domain import SovereignDebtV1, get_variables
 from src.engine.engine import ProbabilisticOntologyEngine
-from src.engine.runtime.ingestion import ingest_and_learn, learn_new_records
+from src.engine.model.errors import EvidenceUnavailable
+from src.engine.runtime.ingestion import ingest_and_learn, learn_new_records, rebuild
 from tests.fakes import soft_record
 
 DOMAIN_ID = "sovereign-debt-v1"
@@ -85,3 +86,30 @@ def test_learn_new_records_learns_unseen_records_oldest_first(monkeypatch):
     assert learn_new_records(engine, DOMAIN_ID, records) == 1  # only the 8th is new
     assert learned_order == [1, 15, 8]
     assert engine.evidence_store.count(DOMAIN_ID) == 3
+
+
+def test_rebuild_relearns_fetched_and_supplied_evidence_in_date_order():
+    engine = _engine()
+    stale = soft_record(get_variables().values(), date(2025, 1, 5), seed="stale")
+    engine.ingest(stale)
+    engine.learn([stale], DOMAIN_ID)
+    supplied = [soft_record(get_variables().values(), date(2026, 3, 10), seed="report").model_copy(
+        update={"evidence_id": uuid4(), "source_ref": "report:x"})]
+    failing_day = date(2026, 3, 15)
+
+    async def fetch(day):
+        if day == failing_day:
+            raise EvidenceUnavailable("no input")
+        return soft_record(get_variables().values(), day, seed="fetched")
+
+    targets = [date(2026, 3, 1), date(2026, 3, 8), failing_day]
+    learned = asyncio.run(rebuild(engine, DOMAIN_ID, fetch, targets, supplied, pause_s=0, sleep=_no_sleep))
+
+    assert learned == 3  # two fetched days and the report; the failing day is skipped
+    stored = engine.evidence_store.load_all(DOMAIN_ID)
+    assert [r.timestamp.day for r in stored] == [1, 8, 10]  # the stale record is gone
+    assert engine.get_population(DOMAIN_ID).dominant().evidence_count == 3
+
+
+async def _no_sleep(_s):
+    return None

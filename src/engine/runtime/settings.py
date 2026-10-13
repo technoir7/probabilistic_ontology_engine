@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Mapping
 
-from ..model.cadence import Weekly
+from ..model.cadence import Monthly, Weekly
 from .registry import DomainRegistration
 
 
@@ -99,4 +99,8 @@ class Settings:
         if isinstance(reg.cadence, Weekly):
             weeks = _int(self.environ, f"{reg.env_prefix}_BACKFILL_WEEKS", max(self.backfill_days // 7, 8))
             return 7 * weeks
+        if isinstance(reg.cadence, Monthly):
+            # A month of daily-domain history would be a single record.
+            months = _int(self.environ, f"{reg.env_prefix}_BACKFILL_MONTHS", 36)
+            return round(months * 30.44)
         return self.backfill_days

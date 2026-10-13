@@ -70,9 +70,9 @@ def test_g7_startup_and_scheduler_calendars_match_golden():
         for key in domain_keys():
             reg = BY_KEY[key]
             # Startup windows as in production: 14 days (daily) or 2 weeks (weekly).
-            startup = reg.cadence.window_targets(14, day) if reg.scheduled else []
+            startup = reg.cadence.window_targets(14, day)
             entry = {"startup_backfill": _iso(startup)}
-            if reg.scheduled and key != "ng":
+            if key != "ng":
                 entry["scheduler"] = reg.cadence.default_target(day).isoformat()
             per_day[key] = entry
     assert_matches_snapshot("g7_calendars_startup_scheduler", out)

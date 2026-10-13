@@ -36,18 +36,9 @@ async def lifespan(app: FastAPI):
     # Always build shared engines so API routes work regardless of scheduler state
     app.state.engines: dict[str, ProbabilisticOntologyEngine] = {}
     for reg in REGISTRY:
-        try:
-            domain_module = reg.build_domain()
-        except ModuleNotFoundError as exc:
-            if not reg.optional:
-                raise
-            # An optional domain's package is absent: serve the others; its
-            # routes answer 503 ("engine not initialised").
-            logger.warning("%s disabled: %s", reg.display_name, exc)
-            continue
-        app.state.engines[reg.key] = context.build_engine(domain_module, data_dir / reg.db_filename)
+        app.state.engines[reg.key] = context.build_engine(reg.build_domain(), data_dir / reg.db_filename)
     for reg in REGISTRY:
-        if isinstance(reg.cadence, Weekly) and reg.key in app.state.engines:
+        if isinstance(reg.cadence, Weekly):
             move_friday_weekly_records_to_sunday(app.state.engines[reg.key], reg.module_id)
     app.state.scheduler_tasks: list[asyncio.Task] = []
     app.state.scheduler_enabled = scheduler_enabled
@@ -56,8 +47,6 @@ async def lifespan(app: FastAPI):
     if scheduler_enabled:
         tasks = []
         for reg in REGISTRY:
-            if not reg.scheduled or reg.key not in app.state.engines:
-                continue
             missing = settings.missing_env(reg)
             if missing:
                 logger.info(

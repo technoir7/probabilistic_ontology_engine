@@ -50,7 +50,7 @@ def test_monthly_dates_are_month_ends_and_runs_the_day_after():
 def test_every_entry_point_reads_one_cadence_per_domain():
     cadences = {r.key: type(r.cadence).__name__ for r in REGISTRY}
     assert cadences == {
-        "ng": "Daily", "art": "Daily",
+        "ng": "Daily", "art": "Monthly",
         **{k: "Weekly" for k in ("mr", "ai", "sd", "cc", "er", "lm", "cr", "gp", "sf")},
     }
 

@@ -120,3 +120,35 @@ def _state_signature(record: EvidenceRecord) -> tuple[Any, ...]:
 def _same_state_as_latest(engine: ProbabilisticOntologyEngine, domain_id: str, record: EvidenceRecord) -> bool:
     latest = engine.evidence_store.load_latest(domain_id, 1)
     return bool(latest) and _state_signature(latest[0]) == _state_signature(record)
+
+
+async def rebuild(
+    engine: ProbabilisticOntologyEngine,
+    domain_id: str,
+    fetch: Fetch,
+    targets: Iterable[date],
+    supplied: Iterable[EvidenceRecord],
+    *,
+    pause_s: float,
+    sleep: Callable[[float], Awaitable[None]] = asyncio.sleep,
+) -> int:
+    """
+    Forget the domain and relearn it from scratch: fetch every target, add the
+    supplied records, and learn them all oldest first. Order matters, since
+    scores weight recent evidence (REFACTOR_SPEC D14), so fetched and supplied
+    records are merged before learning rather than learned source by source.
+
+    Everything is fetched before the reset, so the domain keeps its state
+    until there is something to replace it with. A target that fails is
+    logged and skipped. The caller holds the lock.
+    """
+    fetched: list[EvidenceRecord] = []
+    for target in targets:
+        try:
+            fetched.append(await fetch(target))
+        except Exception as exc:  # noqa: BLE001 — one bad period must not stop a rebuild
+            logger.error("%s rebuild: fetch failed for %s: %s", domain_id, target, exc, exc_info=True)
+        await sleep(pause_s)
+    engine.reset_domain(domain_id)
+    return learn_new_records(engine, domain_id, [*fetched, *supplied])
+

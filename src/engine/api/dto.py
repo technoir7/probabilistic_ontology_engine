@@ -226,30 +226,23 @@ class IngestBackfillOut(BaseModel):
     days_successfully_ingested: int
 
 
-class ManualArtIngestOut(BaseModel):
+class ArtReportIngestOut(BaseModel):
     domain: str
-    domain_key: str
-    domain_module_id: str
     input_path: str
-    db_path: str
-    rebuild_mode: bool
     files_scanned: int
-    objects_found: int
-    records_loaded_from_files: int
-    records_replaced: int
-    records_removed_stale: int
-    records_found: int
-    records_ingested: int
-    records_skipped_duplicates: int
-    records_failed: int
+    items_found: int
+    records_found: int              # one per report document
     records_learned: int
-    causal_prior_weight: float = 0.0
-    causal_prior_candidates_scored: int = 0
-    causal_prior_total_applied: float = 0.0
-    causal_prior_dominant_changed: bool = False
-    evidence_count_before: int
-    evidence_count_after: int
-    verification_endpoint: str
+    records_skipped_duplicates: int
+    failed: list[str]               # unreadable files and invalid items, with the reason
+
+
+class ArtRebuildOut(BaseModel):
+    domain: str
+    months_requested: int
+    reports_found: int
+    records_learned: int            # fetched months plus reports
+    failed_reports: list[str]
 
 
 class VariableEntropyDebugOut(BaseModel):

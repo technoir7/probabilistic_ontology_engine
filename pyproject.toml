@@ -29,18 +29,9 @@ dev = [
     "pytest>=7.0",
     "ruff>=0.17.0",
 ]
-# The art domain lives in its own repo and is registered unconditionally at
-# startup, so the app cannot start without it. It is a group rather than a
-# project dependency because the Railway build runs `pip install .`, which
-# cannot resolve the uv git source; nixpacks.toml installs it separately.
-art = ["art_prestige_regime_v1"]
 
 [tool.uv]
-default-groups = ["dev", "art"]
-
-[tool.uv.sources]
-# Same commit as the tarball in nixpacks.toml; bump both together.
-art_prestige_regime_v1 = { git = "https://github.com/technoir7/art-market-domain", rev = "f6327080fd864688697319b15e77d0285ce013c6" }
+default-groups = ["dev"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]

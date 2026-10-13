@@ -54,10 +54,6 @@ def build_engine(domain_module: Any, db_path: Path) -> ProbabilisticOntologyEngi
     return engine
 
 
-def default_art_manual_dir(manual_ingest_module: Any) -> Path:
-    return Path(manual_ingest_module.__file__).resolve().parents[2] / "data" / "manual_ingest"
-
-
 def resolve_query_candidate(
     pop: Any,
     raw_candidate_id: str | None,
