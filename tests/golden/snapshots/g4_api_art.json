@@ -7440,7 +7440,7 @@
     ]
    },
    "interpretation_hints": [
-    "structure_entropy is high (2.302): engine has not converged; multiple causal stories remain plausible",
+    "structure_entropy is high (1.998): engine has not converged; multiple causal stories remain plausible",
     "dominant hypothesis has held for 43 generations",
     "last paradigm shift was <ago>",
     "evidence base: 21 records ingested",
@@ -7477,7 +7477,7 @@
       "to_name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum"
      }
     ],
-    "structure_entropy": 2.301724109
+    "structure_entropy": 1.998408882
    }
   },
   "status": 200
@@ -7567,7 +7567,7 @@
    "last_evidence_cycle_ago": "<ago>",
    "max_candidates": 10,
    "paradigm_shifts_this_window": 6,
-   "structure_entropy": 2.301724109
+   "structure_entropy": 1.998408882
   },
   "status": 200
  }

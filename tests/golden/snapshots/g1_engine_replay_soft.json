@@ -96,7 +96,7 @@
     "total_attempts": 71
    },
    "paradigm_shift_count": 0,
-   "structure_entropy": 2.298426652
+   "structure_entropy": 1.245411309
   },
   {
    "active_candidates": 10,
@@ -208,7 +208,7 @@
     "total_attempts": 15
    },
    "paradigm_shift_count": 1,
-   "structure_entropy": 2.297440215
+   "structure_entropy": 0.237960815
   },
   {
    "active_candidates": 10,
@@ -334,7 +334,7 @@
     "total_attempts": 3
    },
    "paradigm_shift_count": 1,
-   "structure_entropy": 2.300099752
+   "structure_entropy": 0.049119202
   },
   {
    "active_candidates": 10,
@@ -474,7 +474,7 @@
     "total_attempts": 8
    },
    "paradigm_shift_count": 1,
-   "structure_entropy": 2.301073212
+   "structure_entropy": 0.021585253
   },
   {
    "active_candidates": 10,
@@ -628,7 +628,7 @@
     "total_attempts": 4
    },
    "paradigm_shift_count": 1,
-   "structure_entropy": 2.301641568
+   "structure_entropy": 0.429338095
   },
   {
    "active_candidates": 10,
@@ -796,7 +796,7 @@
     "total_attempts": 7
    },
    "paradigm_shift_count": 1,
-   "structure_entropy": 2.301510815
+   "structure_entropy": 0.478147722
   },
   {
    "active_candidates": 10,
@@ -978,7 +978,7 @@
     "total_attempts": 6
    },
    "paradigm_shift_count": 2,
-   "structure_entropy": 2.301759828
+   "structure_entropy": 0.693150093
   },
   {
    "active_candidates": 10,
@@ -1174,7 +1174,7 @@
     "total_attempts": 5
    },
    "paradigm_shift_count": 2,
-   "structure_entropy": 2.301591465
+   "structure_entropy": 0.531925392
   },
   {
    "active_candidates": 10,
@@ -1384,7 +1384,7 @@
     "total_attempts": 14
    },
    "paradigm_shift_count": 2,
-   "structure_entropy": 2.301722912
+   "structure_entropy": 0.561640878
   },
   {
    "active_candidates": 10,
@@ -1608,7 +1608,7 @@
     "total_attempts": 13
    },
    "paradigm_shift_count": 3,
-   "structure_entropy": 2.301770691
+   "structure_entropy": 0.672821199
   },
   {
    "active_candidates": 10,
@@ -1846,7 +1846,7 @@
     "total_attempts": 6
    },
    "paradigm_shift_count": 3,
-   "structure_entropy": 2.302028816
+   "structure_entropy": 0.271829829
   },
   {
    "active_candidates": 10,
@@ -2098,7 +2098,7 @@
     "total_attempts": 9
    },
    "paradigm_shift_count": 3,
-   "structure_entropy": 2.302183268
+   "structure_entropy": 0.007146399
   }
  ],
  "phase_end": {
@@ -2156,24 +2156,24 @@
      "error": null,
      "posteriors": {
       "A": {
-       "False": 0.491952581,
-       "True": 0.508047419
+       "False": 0.492698878,
+       "True": 0.507301122
       },
       "B": {
-       "False": 0.506037301,
-       "True": 0.493962699
+       "False": 0.506783457,
+       "True": 0.493216543
       },
       "C": {
-       "False": 0.444076751,
-       "True": 0.555923249
+       "False": 0.436985752,
+       "True": 0.563014248
       },
       "D": {
-       "False": 0.544588907,
-       "True": 0.455411093
+       "False": 0.544683614,
+       "True": 0.455316386
       },
       "E": {
-       "False": 0.458675187,
-       "True": 0.541324813
+       "False": 0.457758296,
+       "True": 0.542241704
       }
      }
     },
@@ -2181,24 +2181,24 @@
      "error": null,
      "posteriors": {
       "A": {
-       "False": 0.49130981,
-       "True": 0.50869019
+       "False": 0.492698851,
+       "True": 0.507301149
       },
       "B": {
-       "False": 0.505392193,
-       "True": 0.494607807
+       "False": 0.506783435,
+       "True": 0.493216565
       },
       "C": {
-       "False": 0.441276407,
-       "True": 0.558723593
+       "False": 0.436985749,
+       "True": 0.563014251
       },
       "D": {
-       "False": 0.534663734,
-       "True": 0.465336266
+       "False": 0.544683611,
+       "True": 0.455316389
       },
       "E": {
-       "False": 0.4593281,
-       "True": 0.5406719
+       "False": 0.457758536,
+       "True": 0.542241464
       }
      }
     }
@@ -3324,7 +3324,7 @@
      "total_attempts": 7
     },
     "paradigm_shift_count": 1,
-    "structure_entropy": 2.301510815
+    "structure_entropy": 0.478147722
    }
   },
   "T_alt": {
@@ -3381,24 +3381,24 @@
      "error": null,
      "posteriors": {
       "A": {
-       "False": 0.511305323,
-       "True": 0.488694677
+       "False": 0.512718576,
+       "True": 0.487281424
       },
       "B": {
-       "False": 0.504769266,
-       "True": 0.495230734
+       "False": 0.505753659,
+       "True": 0.494246341
       },
       "C": {
-       "False": 0.474867197,
-       "True": 0.525132803
+       "False": 0.469606019,
+       "True": 0.530393981
       },
       "D": {
-       "False": 0.547126969,
-       "True": 0.452873031
+       "False": 0.54719884,
+       "True": 0.45280116
       },
       "E": {
-       "False": 0.476021177,
-       "True": 0.523978823
+       "False": 0.475392888,
+       "True": 0.524607112
       }
      }
     },
@@ -3406,24 +3406,24 @@
      "error": null,
      "posteriors": {
       "A": {
-       "False": 0.509775479,
-       "True": 0.490224521
+       "False": 0.512718576,
+       "True": 0.487281424
       },
       "B": {
-       "False": 0.504946125,
-       "True": 0.495053875
+       "False": 0.505753659,
+       "True": 0.494246341
       },
       "C": {
-       "False": 0.474059859,
-       "True": 0.525940141
+       "False": 0.469606253,
+       "True": 0.530393747
       },
       "D": {
-       "False": 0.537949396,
-       "True": 0.462050604
+       "False": 0.54719884,
+       "True": 0.45280116
       },
       "E": {
-       "False": 0.477110165,
-       "True": 0.522889835
+       "False": 0.475392929,
+       "True": 0.524607071
       }
      }
     }
@@ -5242,7 +5242,7 @@
      "total_attempts": 9
     },
     "paradigm_shift_count": 3,
-    "structure_entropy": 2.302183268
+    "structure_entropy": 0.007146399
    }
   }
  }

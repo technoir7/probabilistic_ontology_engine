@@ -2498,7 +2498,7 @@
     "frontier_edges": []
    },
    "interpretation_hints": [
-    "structure_entropy is high (2.302): engine has not converged; multiple causal stories remain plausible",
+    "structure_entropy is high (2.037): engine has not converged; multiple causal stories remain plausible",
     "dominant hypothesis has held for 45 generations",
     "last paradigm shift was <ago>",
     "evidence base: 21 records ingested",
@@ -2523,7 +2523,7 @@
       "to_name": "null: storage-only"
      }
     ],
-    "structure_entropy": 2.302044299
+    "structure_entropy": 2.037339969
    }
   },
   "status": 200
@@ -2563,7 +2563,7 @@
    "last_evidence_cycle_ago": "<ago>",
    "max_candidates": 10,
    "paradigm_shifts_this_window": 1,
-   "structure_entropy": 2.302044299
+   "structure_entropy": 2.037339969
   },
   "status": 200
  }

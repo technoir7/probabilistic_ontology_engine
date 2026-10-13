@@ -1684,7 +1684,7 @@
     ]
    },
    "interpretation_hints": [
-    "structure_entropy is high (2.291): engine has not converged; multiple causal stories remain plausible",
+    "structure_entropy is high (2.111): engine has not converged; multiple causal stories remain plausible",
     "dominant hypothesis has held for 9 generations",
     "last paradigm shift was <ago>",
     "evidence base is small (4 records); scores may not yet be reliable",
@@ -1709,7 +1709,7 @@
       "to_name": "T_null: tech-foottraffic baseline"
      }
     ],
-    "structure_entropy": 2.290619038
+    "structure_entropy": 2.111141357
    }
   },
   "status": 200
@@ -1749,7 +1749,7 @@
    "last_evidence_cycle_ago": "<ago>",
    "max_candidates": 10,
    "paradigm_shifts_this_window": 1,
-   "structure_entropy": 2.290619038
+   "structure_entropy": 2.111141357
   },
   "status": 200
  }

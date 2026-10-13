@@ -56,13 +56,22 @@ def dominant(candidates: Sequence[OntologyCandidate]) -> Optional[OntologyCandid
 
 
 def score_weights(candidates: Sequence[OntologyCandidate]) -> list[float]:
-    """Softmax of candidate scores (relative to the best, so no overflow)."""
+    """
+    Posterior weight of each structure under the BIC approximation.
+
+    log P(data | structure) ≈ n · candidate_score (total log-likelihood minus
+    the BIC penalty). Softmaxing the per-record averages instead gives near
+    equal weights, because averages differ by hundredths of a nat (B21).
+    Unscored candidates get no weight; if none is scored, all share it.
+    """
     if not candidates:
         return []
-    scores = [candidate_score(c) for c in candidates]
-    best = max(scores)
-    weights = [math.exp(min(s - best, 0)) for s in scores]
-    total = sum(weights) or 1.0
+    log_w = [c.evidence_count * candidate_score(c) if c.evidence_count else -math.inf for c in candidates]
+    best = max(log_w)
+    if best == -math.inf:
+        return [1.0 / len(candidates)] * len(candidates)
+    weights = [math.exp(lw - best) for lw in log_w]
+    total = sum(weights)
     return [w / total for w in weights]
 
 

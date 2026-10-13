@@ -1722,7 +1722,7 @@
     ]
    },
    "interpretation_hints": [
-    "structure_entropy is high (2.294): engine has not converged; multiple causal stories remain plausible",
+    "structure_entropy is high (2.196): engine has not converged; multiple causal stories remain plausible",
     "dominant hypothesis has held for 9 generations",
     "last paradigm shift was <ago>",
     "evidence base is small (4 records); scores may not yet be reliable",
@@ -1747,7 +1747,7 @@
       "to_name": "H4: credit_normalization"
      }
     ],
-    "structure_entropy": 2.294484217
+    "structure_entropy": 2.195651701
    }
   },
   "status": 200
@@ -1787,7 +1787,7 @@
    "last_evidence_cycle_ago": "<ago>",
    "max_candidates": 10,
    "paradigm_shifts_this_window": 1,
-   "structure_entropy": 2.294484217
+   "structure_entropy": 2.195651701
   },
   "status": 200
  }
