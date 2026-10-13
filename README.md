@@ -18,7 +18,7 @@ Eleven domains are live and registered in the API:
 | `cr` | `crypto-regime-v1` | Weekly | CoinGecko + yfinance + FRED |
 | `gp` | `geopolitics-v1` | Weekly | GDELT + FRED |
 | `sf` | `sf-urban-v1` | Weekly | SF Open Data + FRED |
-| `art` | `art_prestige_regime_v1` | Monthly | art-market-domain manual/live ingestion |
+| `art` | `art_prestige_regime_v1` | Monthly | GDELT news coverage, Art Institute of Chicago acquisitions, hand-labelled reports |
 
 Most domains track eight Boolean variables across five seed candidate DAGs. The art domain tracks 25 Boolean variables across five seed candidate DAGs.
 
@@ -54,8 +54,8 @@ Most domains track eight Boolean variables across five seed candidate DAGs. The 
 **`sf-urban-v1`**: `TechHiringAccelerating`, `OfficeVacancyFalling`, `RetailClosureElevated`, `PermitActivityRising`, `CrimeIndexElevated`, `StartupFormationRising`, `FootTrafficRecovering`, `PopulationFlowPositive`
 — SF Open Data: permits (`i98e-djp9`), crime (`wg3w-h783`), businesses (`g8m3-pdis`); FRED: `SANF806INFO`, `SANF806LEIH`, `SANF806NA` (SF-Oakland-Fremont MSA, monthly SA)
 
-**`art_prestige_regime_v1`**: 25 art prestige regime variables supplied by the external `art-market-domain` package; backend registers `ArtPrestigeRegimeV1` under key `art`.
-— Manual JSON ingestion via `art_prestige_regime_v1.manual_ingest`; live ingestion is owned by the art domain package.
+**`art_prestige_regime_v1`**: 25 art prestige regime variables (institutional, market, cultural) and five seed hypotheses, in `src/domains/art_prestige_regime_v1`.
+— Fetched monthly where a series measures the variable (see `ingestion/pipeline.py` `MEASURES`); hand-labelled reports in `report_files/` cover the rest under the rules in `reports.py`. Unmeasured variables are MISSING.
 
 ## Architecture
 
@@ -105,7 +105,8 @@ GET  /v1/population/shifts
 GET  /v1/evidence/recent
 POST /v1/ingest/trigger
 POST /v1/ingest/backfill?days=N             # needs Authorization: Bearer $POE_ADMIN_TOKEN
-POST /v1/ingest/art/manual?path=...          # needs Authorization: Bearer $POE_ADMIN_TOKEN
+POST /v1/ingest/art/manual?path=...          # learn new report files; needs Authorization: Bearer $POE_ADMIN_TOKEN
+POST /v1/ingest/art/rebuild?months=60        # forget art, relearn fetched months + reports; admin token
 GET  /v1/export/narrative-snapshot
 GET  /v1/report/{domain}                     # read cached report (no LLM call)
 POST /v1/report/{domain}/refresh             # regenerate if snapshot changed (Fireworks)
@@ -130,7 +131,7 @@ Exported regime state uses BN inference posteriors, not soft priors.
 
 ```bash
 cd probabilistic_ontology_engine
-uv sync            # creates .venv from uv.lock, including the pinned art domain package
+uv sync            # creates .venv from uv.lock
 uv run uvicorn src.engine.api.app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
@@ -142,7 +143,7 @@ EIA_API_KEY=...                     # required for NG
 FIREWORKS_API_KEY=...               # required for POST /v1/report/{domain}/refresh
 EVIDENCE_SCHEDULER_ENABLED=true
 POE_DATA_DIR=/data                  # Railway: persistent volume mount; default "." loses reports on redeploy
-POE_ADMIN_TOKEN=...                 # enables backfill and art manual ingest; unset = those routes return 503
+POE_ADMIN_TOKEN=...                 # enables backfill and the art routes; unset = those routes return 503
 POE_CORS_ORIGINS=https://x.vercel.app,http://localhost:3000   # default "*"; read before .env loads, so set it in the real environment
 ```
 
