@@ -43,17 +43,21 @@ async def inference_query(request: Request, body: QueryBodyIn) -> InferenceOut:
             detail=f"Variable '{body.target_variable}' not found in domain '{body.domain}'",
         )
 
-    # Query the resolved candidate itself; population-level ACTIVE_ONLY always
-    # answers for the dominant one, whatever candidate the caller asked about.
+    weighted = body.aggregation == "weighted_avg"
     iq = InferenceQuery(
         domain_module_id=domain_id,
         target_variables=[target_var.name],
         query_type=QueryType.MARGINAL,
-        population_aggregation=PopulationAggregation.ACTIVE_ONLY,
+        population_aggregation=(
+            PopulationAggregation.WEIGHTED_AVERAGE if weighted else PopulationAggregation.ACTIVE_ONLY
+        ),
     )
-    raw = engine.inference_service.query_candidate(cand, iq)
-    posteriors = raw.get("posteriors", {})
-    dist = posteriors.get(target_var.name, {})
+    # weighted_avg is the population's answer, weighted by structure posterior
+    # (one inference per candidate with non-negligible weight). Otherwise query
+    # the resolved candidate itself: population-level ACTIVE_ONLY answers for
+    # the dominant one, whatever was asked. The graph is the candidate's either way.
+    raw = engine.query(iq) if weighted else engine.inference_service.query_candidate(cand, iq)
+    dist = raw.get("posteriors", {}).get(target_var.name, {})
     # P(True) for BOOLEAN variables; first value otherwise
     target_prob = presenters.p_true(dist)
 

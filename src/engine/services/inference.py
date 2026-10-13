@@ -24,6 +24,8 @@ from ..model.scoring import candidate_score, score_weights
 from ..stores.parameter_store import ParameterStore
 from .bn_model import build_network, encode_value
 
+_NEGLIGIBLE_WEIGHT = 1e-9
+
 
 class InferenceService:
 
@@ -48,11 +50,15 @@ class InferenceService:
             return result
 
         elif agg == PopulationAggregation.WEIGHTED_AVERAGE:
-            active = population.active_candidates()
-            weights = population.score_weights()
-            all_results = [
-                self.query_candidate(c, inference_query) for c in active
+            # Skip structures the data has all but ruled out: with posterior
+            # weights most candidates are ~0, and each query is a full VE run.
+            weighted = [
+                (c, w) for c, w in zip(population.active_candidates(), population.score_weights())
+                if w > _NEGLIGIBLE_WEIGHT
             ]
+            total = sum(w for _, w in weighted)
+            weights = [w / total for _, w in weighted]
+            all_results = [self.query_candidate(c, inference_query) for c, _ in weighted]
             merged = self._weighted_merge(all_results, weights, inference_query.target_variables)
             merged["population_summary"] = population.summary()
             return merged
