@@ -4,7 +4,8 @@ calendar rules: the scheduler, the startup backfill and both API ingest routes
 all ask the domain's Cadence, so they can no longer disagree (REFACTOR_SPEC B8).
 
 Weekly evidence is dated by the Sunday that ends its week (decision D12) and
-fetched on the Monday after.
+fetched on the Monday after. Monthly evidence is dated by the month's last
+day and fetched on the 1st after.
 """
 from __future__ import annotations
 
@@ -61,4 +62,30 @@ class Weekly:
         return nxt if nxt > now else nxt + timedelta(days=7)
 
 
-Cadence = Daily | Weekly
+@dataclass(frozen=True)
+class Monthly:
+    """One record per calendar month, dated by its last day."""
+
+    def align(self, day: date) -> date:
+        """The month end on or before *day*."""
+        next_month_first = (day.replace(day=1) + timedelta(days=32)).replace(day=1)
+        month_end = next_month_first - timedelta(days=1)
+        return month_end if day == month_end else day.replace(day=1) - timedelta(days=1)
+
+    def default_target(self, today: date) -> date:
+        """The latest month that has fully ended before *today*."""
+        return self.align(today - timedelta(days=1))
+
+    def window_targets(self, days: int, today: date) -> list[date]:
+        """Each month end touched by the *days* before *today*, oldest first."""
+        return sorted({self.align(today - timedelta(days=delta)) for delta in range(days, 0, -1)})
+
+    def next_run(self, now: datetime, run_hour_utc: int) -> datetime:
+        """The run hour on the 1st of a month."""
+        first = now.replace(day=1, hour=run_hour_utc, minute=0, second=0, microsecond=0)
+        if first > now:
+            return first
+        return (first + timedelta(days=32)).replace(day=1)
+
+
+Cadence = Daily | Weekly | Monthly

@@ -5,7 +5,7 @@ from datetime import date, datetime, timedelta, timezone
 
 from src.domains.sovereign_debt_v1.domain import SovereignDebtV1, get_variables
 from src.engine.engine import ProbabilisticOntologyEngine
-from src.engine.model.cadence import Daily, Weekly
+from src.engine.model.cadence import Daily, Monthly, Weekly
 from src.engine.runtime.data_migrations import move_friday_weekly_records_to_sunday
 from src.engine.runtime.registry import REGISTRY
 from tests.fakes import soft_record
@@ -29,6 +29,22 @@ def test_daily_dates():
     daily = Daily()
     assert daily.default_target(WED) == date(2026, 3, 3)
     assert daily.window_targets(3, WED) == [date(2026, 3, 1), date(2026, 3, 2), date(2026, 3, 3)]
+
+
+def test_monthly_dates_are_month_ends_and_runs_the_day_after():
+    monthly = Monthly()
+    assert monthly.default_target(WED) == date(2026, 2, 28)
+    assert monthly.default_target(date(2026, 3, 1)) == date(2026, 2, 28)  # run on the 1st → last month
+    assert monthly.default_target(date(2026, 3, 31)) == date(2026, 2, 28)  # March not over yet
+    assert monthly.align(date(2026, 2, 10)) == date(2026, 1, 31)
+    assert monthly.align(date(2026, 1, 31)) == date(2026, 1, 31)
+    assert monthly.window_targets(60, WED) == [date(2025, 12, 31), date(2026, 1, 31), date(2026, 2, 28)]
+    noon = datetime(2026, 3, 4, 12, tzinfo=timezone.utc)
+    assert monthly.next_run(noon, 9) == datetime(2026, 4, 1, 9, tzinfo=timezone.utc)
+    first_early = datetime(2026, 4, 1, 8, tzinfo=timezone.utc)
+    assert monthly.next_run(first_early, 9) == datetime(2026, 4, 1, 9, tzinfo=timezone.utc)
+    dec = datetime(2026, 12, 5, tzinfo=timezone.utc)
+    assert monthly.next_run(dec, 9) == datetime(2027, 1, 1, 9, tzinfo=timezone.utc)
 
 
 def test_every_entry_point_reads_one_cadence_per_domain():
