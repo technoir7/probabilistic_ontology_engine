@@ -11,6 +11,7 @@ from datetime import date
 import httpx
 
 from src.domains.geopolitics_v1.ingestion.gdelt_client import GDELT_QUERIES, GDELTClient
+from src.domains.sources.gdelt import RateLimiter
 
 
 class FakeClock:
@@ -25,7 +26,7 @@ class FakeClock:
 
 
 def _timeline_response(_request: httpx.Request) -> httpx.Response:
-    return httpx.Response(200, json={"timeline": [{"series": [{"date": "20260301T000000Z", "value": 1.5}]}]})
+    return httpx.Response(200, json={"timeline": [{"series": "Volume Intensity", "data": [{"date": "20260301T000000Z", "value": 1.5}]}]})
 
 
 def test_requests_are_spaced_at_least_five_seconds_apart_across_calls():
@@ -37,7 +38,7 @@ def test_requests_are_spaced_at_least_five_seconds_apart_across_calls():
         return _timeline_response(request)
 
     http = httpx.AsyncClient(transport=httpx.MockTransport(handler))
-    client = GDELTClient(client=http, clock=clock.monotonic, sleep=clock.sleep)
+    client = GDELTClient(client=http, rate_limit=RateLimiter(5.0, clock=clock.monotonic, sleep=clock.sleep))
 
     async def run():
         first = await client.fetch_all(end_date=date(2026, 3, 2))

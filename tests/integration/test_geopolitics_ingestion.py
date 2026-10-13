@@ -323,12 +323,12 @@ def test_gdelt_client_parses_mocked_response():
     mock_body = {
         "timeline": [
             {
-                "series": [
-                    {"date": "20240503120000", "value": 3.45},
-                    {"date": "20240502120000", "value": 2.10},
-                    {"date": "20240501120000", "value": 1.89},
+                "series": "Volume Intensity",
+                "data": [
+                    {"date": "20240503T000000Z", "value": 3.45},
+                    {"date": "20240502T000000Z", "value": 2.10},
+                    {"date": "20240501T000000Z", "value": 1.89},
                 ],
-                "id": "conflict war"
             }
         ]
     }
