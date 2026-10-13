@@ -24,11 +24,11 @@ DOMAIN_ID = "test-domain-v1"
 
 def _population(seed: int):
     best = make_tstar_candidate(DOMAIN_ID)       # many records, best average
-    best.log_score, best.evidence_count = -300.0, 300
+    best.log_score, best.evidence_count = best.window_log_score, best.window_evidence = -300.0, 300
     middle = make_talt_candidate(DOMAIN_ID)      # few records, worse average
-    middle.log_score, middle.evidence_count = -40.0, 10
+    middle.log_score, middle.evidence_count = middle.window_log_score, middle.window_evidence = -40.0, 10
     worst = make_null_candidate(DOMAIN_ID)
-    worst.log_score, worst.evidence_count = -60.0, 10
+    worst.log_score, worst.evidence_count = worst.window_log_score, worst.window_evidence = -60.0, 10
     # Raw log_score ranks middle > worst > best; the score ranks best first.
     assert candidate_score(best) > candidate_score(middle) > candidate_score(worst)
 

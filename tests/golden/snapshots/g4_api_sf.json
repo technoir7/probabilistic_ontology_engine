@@ -15,7 +15,7 @@
      "evidence_count": 4,
      "generation_introduced": 0,
      "id": "<id0>",
-     "log_score": -21.058464138,
+     "log_score": -22.625422197,
      "name": "T_null: tech-foottraffic baseline",
      "score_normalized": 0.95,
      "status": "dominant"
@@ -25,9 +25,9 @@
      "evidence_count": 4,
      "generation_introduced": 1,
      "id": "<id1>",
-     "log_score": -21.006144215,
+     "log_score": -22.54932486,
      "name": "variant_add_CrimeIndexElevated->OfficeVacancyFalling",
-     "score_normalized": 0.669329465,
+     "score_normalized": 0.696387397,
      "status": "rising"
     },
     {
@@ -35,19 +35,19 @@
      "evidence_count": 4,
      "generation_introduced": 1,
      "id": "<id2>",
-     "log_score": -21.058464138,
-     "name": "variant_add_StartupFormationRising->PermitActivityRising",
-     "score_normalized": 0.646414302,
+     "log_score": -22.737225917,
+     "name": "variant_add_RetailClosureElevated->CrimeIndexElevated",
+     "score_normalized": 0.61916744,
      "status": "rising"
     },
     {
-     "edge_count": 2,
+     "edge_count": 3,
      "evidence_count": 4,
-     "generation_introduced": 1,
+     "generation_introduced": 0,
      "id": "<id3>",
-     "log_score": -21.080586063,
-     "name": "variant_add_OfficeVacancyFalling->CrimeIndexElevated",
-     "score_normalized": 0.636725306,
+     "log_score": -22.476283143,
+     "name": "H1: tech_rebound",
+     "score_normalized": 0.441955423,
      "status": "neutral"
     },
     {
@@ -55,9 +55,9 @@
      "evidence_count": 4,
      "generation_introduced": 0,
      "id": "<id4>",
-     "log_score": -21.020175096,
-     "name": "H1: tech_rebound",
-     "score_normalized": 0.3595985,
+     "log_score": -22.531446375,
+     "name": "H3: bifurcated_recovery",
+     "score_normalized": 0.419603814,
      "status": "neutral"
     },
     {
@@ -65,19 +65,19 @@
      "evidence_count": 4,
      "generation_introduced": 0,
      "id": "<id5>",
-     "log_score": -21.033903531,
-     "name": "H3: bifurcated_recovery",
-     "score_normalized": 0.353585698,
+     "log_score": -22.582731509,
+     "name": "H4: bottom_formation",
+     "score_normalized": 0.398256695,
      "status": "neutral"
     },
     {
      "edge_count": 3,
      "evidence_count": 4,
-     "generation_introduced": 0,
+     "generation_introduced": 2,
      "id": "<id6>",
-     "log_score": -21.057566835,
-     "name": "H4: bottom_formation",
-     "score_normalized": 0.343221606,
+     "log_score": -22.619273634,
+     "name": "variant_add_StartupFormationRising->PopulationFlowPositive",
+     "score_normalized": 0.382868596,
      "status": "falling"
     },
     {
@@ -85,28 +85,28 @@
      "evidence_count": 4,
      "generation_introduced": 0,
      "id": "<id7>",
-     "log_score": -21.120821211,
+     "log_score": -22.649852275,
      "name": "H2: structural_decline",
-     "score_normalized": 0.315517355,
-     "status": "falling"
-    },
-    {
-     "edge_count": 3,
-     "evidence_count": 4,
-     "generation_introduced": 2,
-     "id": "<id8>",
-     "log_score": -20.980521739,
-     "name": "variant_add_RetailClosureElevated->FootTrafficRecovering",
-     "score_normalized": 0.073380242,
+     "score_normalized": 0.370666748,
      "status": "falling"
     },
     {
      "edge_count": 4,
      "evidence_count": 4,
      "generation_introduced": 1,
-     "id": "<id9>",
-     "log_score": -21.033903531,
+     "id": "<id8>",
+     "log_score": -22.476283143,
      "name": "variant_add_StartupFormationRising->PopulationFlowPositive",
+     "score_normalized": 0.157371703,
+     "status": "falling"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 2,
+     "id": "<id9>",
+     "log_score": -22.737225917,
+     "name": "variant_add_TechHiringAccelerating->CrimeIndexElevated",
      "score_normalized": 0.05,
      "status": "falling"
     }
@@ -829,10 +829,10 @@
    "domain": "SF Urban",
    "domain_module_id": "sf-urban-v1",
    "dominant_evidence_count": 4,
-   "dominant_log_score": -21.058464138,
+   "dominant_log_score": -22.625422197,
    "last_learn_timestamp": "<ts>",
    "last_mutation_introduced": 2,
-   "last_mutation_total_attempts": 5,
+   "last_mutation_total_attempts": 4,
    "learn_calls_this_session": 4,
    "pipeline_status": {
     "backfill_calls_learn": true,
@@ -849,10 +849,10 @@
    "candidates": [
     {
      "active_edge_count": 1,
-     "avg_ll": -5.264616034,
-     "bic_penalty_raw": 1.559581156,
-     "bic_score_explore": -5.654511324,
-     "bic_score_strict": -6.824197191,
+     "avg_ll": -5.656265039,
+     "bic_penalty_raw": 1.564049096,
+     "bic_score_explore": -6.047277313,
+     "bic_score_strict": -7.220314135,
      "candidate_id": "<id0>",
      "description": "T_null: tech-foottraffic baseline",
      "edge_structure": [
@@ -864,16 +864,16 @@
      "evidence_count": 4,
      "generation": 0,
      "is_dominant": true,
-     "log_score": -21.058464138,
+     "log_score": -22.625422197,
      "status": "ACTIVE",
      "total_edge_count": 1
     },
     {
      "active_edge_count": 2,
-     "avg_ll": -5.251536054,
-     "bic_penalty_raw": 1.732867951,
-     "bic_score_explore": -5.684753042,
-     "bic_score_strict": -6.984404005,
+     "avg_ll": -5.637352289,
+     "bic_penalty_raw": 1.737832329,
+     "bic_score_explore": -6.071810371,
+     "bic_score_strict": -7.375184617,
      "candidate_id": "<id1>",
      "description": "variant_add_CrimeIndexElevated->OfficeVacancyFalling",
      "edge_structure": [
@@ -889,46 +889,21 @@
      "evidence_count": 4,
      "generation": 1,
      "is_dominant": false,
-     "log_score": -21.006144215,
+     "log_score": -22.54932486,
      "status": "ACTIVE",
      "total_edge_count": 2
     },
     {
      "active_edge_count": 2,
-     "avg_ll": -5.264616034,
-     "bic_penalty_raw": 1.732867951,
-     "bic_score_explore": -5.697833022,
-     "bic_score_strict": -6.997483986,
+     "avg_ll": -5.684507248,
+     "bic_penalty_raw": 1.737832329,
+     "bic_score_explore": -6.11896533,
+     "bic_score_strict": -7.422339577,
      "candidate_id": "<id2>",
-     "description": "variant_add_StartupFormationRising->PermitActivityRising",
+     "description": "variant_add_RetailClosureElevated->CrimeIndexElevated",
      "edge_structure": [
       [
-       "StartupFormationRising",
-       "PermitActivityRising"
-      ],
-      [
-       "TechHiringAccelerating",
-       "FootTrafficRecovering"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -21.058464138,
-     "status": "ACTIVE",
-     "total_edge_count": 2
-    },
-    {
-     "active_edge_count": 2,
-     "avg_ll": -5.270146516,
-     "bic_penalty_raw": 1.732867951,
-     "bic_score_explore": -5.703363504,
-     "bic_score_strict": -7.003014467,
-     "candidate_id": "<id3>",
-     "description": "variant_add_OfficeVacancyFalling->CrimeIndexElevated",
-     "edge_structure": [
-      [
-       "OfficeVacancyFalling",
+       "RetailClosureElevated",
        "CrimeIndexElevated"
       ],
       [
@@ -939,17 +914,17 @@
      "evidence_count": 4,
      "generation": 1,
      "is_dominant": false,
-     "log_score": -21.080586063,
+     "log_score": -22.737225917,
      "status": "ACTIVE",
      "total_edge_count": 2
     },
     {
      "active_edge_count": 3,
-     "avg_ll": -5.255043774,
-     "bic_penalty_raw": 1.906154747,
-     "bic_score_explore": -5.731582461,
-     "bic_score_strict": -7.161198521,
-     "candidate_id": "<id4>",
+     "avg_ll": -5.618939894,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.096843784,
+     "bic_score_strict": -7.530555455,
+     "candidate_id": "<id3>",
      "description": "H1: tech_rebound",
      "edge_structure": [
       [
@@ -968,17 +943,17 @@
      "evidence_count": 4,
      "generation": 0,
      "is_dominant": false,
-     "log_score": -21.020175096,
+     "log_score": -22.476283143,
      "status": "ACTIVE",
      "total_edge_count": 3
     },
     {
      "active_edge_count": 3,
-     "avg_ll": -5.258475883,
-     "bic_penalty_raw": 1.906154747,
-     "bic_score_explore": -5.735014569,
-     "bic_score_strict": -7.164630629,
-     "candidate_id": "<id5>",
+     "avg_ll": -5.632589075,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.110492965,
+     "bic_score_strict": -7.544204637,
+     "candidate_id": "<id4>",
      "description": "H3: bifurcated_recovery",
      "edge_structure": [
       [
@@ -997,17 +972,17 @@
      "evidence_count": 4,
      "generation": 0,
      "is_dominant": false,
-     "log_score": -21.033903531,
+     "log_score": -22.531446375,
      "status": "ACTIVE",
      "total_edge_count": 3
     },
     {
      "active_edge_count": 3,
-     "avg_ll": -5.264391709,
-     "bic_penalty_raw": 1.906154747,
-     "bic_score_explore": -5.740930395,
-     "bic_score_strict": -7.170546455,
-     "candidate_id": "<id6>",
+     "avg_ll": -5.645624857,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.123528748,
+     "bic_score_strict": -7.557240419,
+     "candidate_id": "<id5>",
      "description": "H4: bottom_formation",
      "edge_structure": [
       [
@@ -1026,16 +1001,45 @@
      "evidence_count": 4,
      "generation": 0,
      "is_dominant": false,
-     "log_score": -21.057566835,
+     "log_score": -22.582731509,
      "status": "ACTIVE",
      "total_edge_count": 3
     },
     {
      "active_edge_count": 3,
-     "avg_ll": -5.280205303,
-     "bic_penalty_raw": 1.906154747,
-     "bic_score_explore": -5.75674399,
-     "bic_score_strict": -7.186360049,
+     "avg_ll": -5.655021718,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.132925608,
+     "bic_score_strict": -7.56663728,
+     "candidate_id": "<id6>",
+     "description": "variant_add_StartupFormationRising->PopulationFlowPositive",
+     "edge_structure": [
+      [
+       "CrimeIndexElevated",
+       "OfficeVacancyFalling"
+      ],
+      [
+       "StartupFormationRising",
+       "PopulationFlowPositive"
+      ],
+      [
+       "TechHiringAccelerating",
+       "FootTrafficRecovering"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -22.619273634,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.66247287,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.14037676,
+     "bic_score_strict": -7.574088432,
      "candidate_id": "<id7>",
      "description": "H2: structural_decline",
      "edge_structure": [
@@ -1055,26 +1059,59 @@
      "evidence_count": 4,
      "generation": 0,
      "is_dominant": false,
-     "log_score": -21.120821211,
+     "log_score": -22.649852275,
      "status": "ACTIVE",
      "total_edge_count": 3
     },
     {
-     "active_edge_count": 3,
-     "avg_ll": -5.245130435,
-     "bic_penalty_raw": 2.079441542,
-     "bic_score_explore": -5.76499082,
-     "bic_score_strict": -7.324571976,
+     "active_edge_count": 4,
+     "avg_ll": -5.618939894,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.140289592,
+     "bic_score_strict": -7.704338688,
      "candidate_id": "<id8>",
-     "description": "variant_add_RetailClosureElevated->FootTrafficRecovering",
+     "description": "variant_add_StartupFormationRising->PopulationFlowPositive",
      "edge_structure": [
       [
-       "CrimeIndexElevated",
-       "OfficeVacancyFalling"
+       "FootTrafficRecovering",
+       "TechHiringAccelerating"
       ],
       [
+       "StartupFormationRising",
+       "PermitActivityRising"
+      ],
+      [
+       "StartupFormationRising",
+       "PopulationFlowPositive"
+      ],
+      [
+       "TechHiringAccelerating",
+       "StartupFormationRising"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -22.476283143,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.684507248,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.205856947,
+     "bic_score_strict": -7.769906043,
+     "candidate_id": "<id9>",
+     "description": "variant_add_TechHiringAccelerating->CrimeIndexElevated",
+     "edge_structure": [
+      [
        "RetailClosureElevated",
-       "FootTrafficRecovering"
+       "CrimeIndexElevated"
+      ],
+      [
+       "TechHiringAccelerating",
+       "CrimeIndexElevated"
       ],
       [
        "TechHiringAccelerating",
@@ -1084,154 +1121,26 @@
      "evidence_count": 4,
      "generation": 2,
      "is_dominant": false,
-     "log_score": -20.980521739,
+     "log_score": -22.737225917,
      "status": "ACTIVE",
      "total_edge_count": 3
     },
     {
      "active_edge_count": 4,
-     "avg_ll": -5.258475883,
-     "bic_penalty_raw": 2.079441542,
-     "bic_score_explore": -5.778336268,
-     "bic_score_strict": -7.337917425,
-     "candidate_id": "<id9>",
-     "description": "variant_add_StartupFormationRising->PopulationFlowPositive",
-     "edge_structure": [
-      [
-       "FootTrafficRecovering",
-       "StartupFormationRising"
-      ],
-      [
-       "PermitActivityRising",
-       "TechHiringAccelerating"
-      ],
-      [
-       "StartupFormationRising",
-       "PopulationFlowPositive"
-      ],
-      [
-       "TechHiringAccelerating",
-       "FootTrafficRecovering"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -21.033903531,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.248352373,
-     "bic_penalty_raw": 2.079441542,
-     "bic_score_explore": -5.768212759,
-     "bic_score_strict": -7.327793915,
+     "avg_ll": -5.631877725,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.153227424,
+     "bic_score_strict": -7.71727652,
      "candidate_id": "<id15>",
-     "description": "variant_add_FootTrafficRecovering->OfficeVacancyFalling",
-     "edge_structure": [
-      [
-       "FootTrafficRecovering",
-       "OfficeVacancyFalling"
-      ],
-      [
-       "FootTrafficRecovering",
-       "StartupFormationRising"
-      ],
-      [
-       "PermitActivityRising",
-       "TechHiringAccelerating"
-      ],
-      [
-       "TechHiringAccelerating",
-       "FootTrafficRecovering"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -20.993409492,
-     "status": "PRUNED",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.254988439,
-     "bic_penalty_raw": 2.079441542,
-     "bic_score_explore": -5.774848825,
-     "bic_score_strict": -7.334429981,
-     "candidate_id": "<id16>",
-     "description": "variant_add_CrimeIndexElevated->StartupFormationRising",
-     "edge_structure": [
-      [
-       "CrimeIndexElevated",
-       "StartupFormationRising"
-      ],
-      [
-       "FootTrafficRecovering",
-       "RetailClosureElevated"
-      ],
-      [
-       "PermitActivityRising",
-       "FootTrafficRecovering"
-      ],
-      [
-       "StartupFormationRising",
-       "PermitActivityRising"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -21.019953757,
-     "status": "PRUNED",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.223877084,
-     "bic_penalty_raw": 2.380326625,
-     "bic_score_explore": -5.81895874,
-     "bic_score_strict": -7.604203709,
-     "candidate_id": "<id17>",
-     "description": "variant_add_RetailClosureElevated->PermitActivityRising",
-     "edge_structure": [
-      [
-       "FootTrafficRecovering",
-       "TechHiringAccelerating"
-      ],
-      [
-       "RetailClosureElevated",
-       "PermitActivityRising"
-      ],
-      [
-       "StartupFormationRising",
-       "PermitActivityRising"
-      ],
-      [
-       "TechHiringAccelerating",
-       "StartupFormationRising"
-      ]
-     ],
-     "evidence_count": 3,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -15.671631251,
-     "status": "PRUNED",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.279173206,
-     "bic_penalty_raw": 2.380326625,
-     "bic_score_explore": -5.874254863,
-     "bic_score_strict": -7.659499832,
-     "candidate_id": "<id18>",
-     "description": "variant_add_StartupFormationRising->PopulationFlowPositive",
+     "description": "variant_add_FootTrafficRecovering->PermitActivityRising",
      "edge_structure": [
       [
        "CrimeIndexElevated",
        "RetailClosureElevated"
+      ],
+      [
+       "FootTrafficRecovering",
+       "PermitActivityRising"
       ],
       [
        "OfficeVacancyFalling",
@@ -1240,16 +1149,111 @@
       [
        "RetailClosureElevated",
        "OfficeVacancyFalling"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -22.526989374,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.653653646,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.175003345,
+     "bic_score_strict": -7.739052441,
+     "candidate_id": "<id16>",
+     "description": "variant_add_OfficeVacancyFalling->FootTrafficRecovering",
+     "edge_structure": [
+      [
+       "CrimeIndexElevated",
+       "RetailClosureElevated"
+      ],
+      [
+       "OfficeVacancyFalling",
+       "FootTrafficRecovering"
+      ],
+      [
+       "OfficeVacancyFalling",
+       "PopulationFlowPositive"
+      ],
+      [
+       "RetailClosureElevated",
+       "OfficeVacancyFalling"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -22.614933789,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.720495158,
+     "bic_penalty_raw": 2.198545158,
+     "bic_score_explore": -6.270131448,
+     "bic_score_strict": -7.919040316,
+     "candidate_id": "<id17>",
+     "description": "variant_add_RetailClosureElevated->PopulationFlowPositive",
+     "edge_structure": [
+      [
+       "FootTrafficRecovering",
+       "RetailClosureElevated"
+      ],
+      [
+       "PermitActivityRising",
+       "FootTrafficRecovering"
+      ],
+      [
+       "RetailClosureElevated",
+       "PopulationFlowPositive"
       ],
       [
        "StartupFormationRising",
-       "PopulationFlowPositive"
+       "PermitActivityRising"
       ]
      ],
      "evidence_count": 3,
      "generation": 1,
      "is_dominant": false,
-     "log_score": -15.837519619,
+     "log_score": -17.159027647,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.661266222,
+     "bic_penalty_raw": 2.381757254,
+     "bic_score_explore": -6.256705535,
+     "bic_score_strict": -8.043023476,
+     "candidate_id": "<id18>",
+     "description": "variant_add_CrimeIndexElevated->StartupFormationRising",
+     "edge_structure": [
+      [
+       "CrimeIndexElevated",
+       "StartupFormationRising"
+      ],
+      [
+       "FootTrafficRecovering",
+       "TechHiringAccelerating"
+      ],
+      [
+       "StartupFormationRising",
+       "PermitActivityRising"
+      ],
+      [
+       "TechHiringAccelerating",
+       "StartupFormationRising"
+      ]
+     ],
+     "evidence_count": 3,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -16.983093571,
      "status": "PRUNED",
      "total_edge_count": 4
     }
@@ -1259,10 +1263,10 @@
    "env_bic_multiplier": 1.0,
    "env_mode": "strict",
    "last_mutation_cycle": {
-    "dag_violations": 1,
+    "dag_violations": 0,
     "duplicate_rejections": 2,
     "introduced": 2,
-    "total_attempts": 5
+    "total_attempts": 4
    },
    "total_evidence_records": 4
   },
@@ -1397,62 +1401,48 @@
    "candidate_id": "<id9>",
    "edges": [
     {
-     "probability": 0.430350745,
+     "probability": 0.381021513,
      "source": "TechHiringAccelerating",
      "status": "explore",
      "target": "FootTrafficRecovering"
     },
     {
-     "probability": 0.432255019,
-     "source": "FootTrafficRecovering",
+     "probability": 0.5,
+     "source": "RetailClosureElevated",
      "status": "explore",
-     "target": "StartupFormationRising"
-    },
-    {
-     "probability": 0.431247774,
-     "source": "PermitActivityRising",
-     "status": "explore",
-     "target": "TechHiringAccelerating"
+     "target": "CrimeIndexElevated"
     },
     {
      "probability": 0.5,
-     "source": "StartupFormationRising",
+     "source": "TechHiringAccelerating",
      "status": "explore",
-     "target": "PopulationFlowPositive"
+     "target": "CrimeIndexElevated"
     }
    ],
    "frontier_edges": [
     {
      "explore_weight": 1.21550625,
-     "note": "existence_probability=0.430 in explore band [0.25, 0.75]",
-     "probability": 0.430350745,
-     "relation": "tech hiring \u2192 worker return \u2192 foot traffic",
+     "note": "existence_probability=0.381 in explore band [0.25, 0.75]",
+     "probability": 0.381021513,
+     "relation": "tech hiring \u2192 foot traffic (baseline)",
      "source": "TechHiringAccelerating",
      "target": "FootTrafficRecovering"
     },
     {
-     "explore_weight": 1.21550625,
-     "note": "existence_probability=0.432 in explore band [0.25, 0.75]",
-     "probability": 0.432255019,
-     "relation": "foot traffic \u2192 viable market \u2192 startup formation",
-     "source": "FootTrafficRecovering",
-     "target": "StartupFormationRising"
-    },
-    {
-     "explore_weight": 1.21550625,
-     "note": "existence_probability=0.431 in explore band [0.25, 0.75]",
-     "probability": 0.431247774,
-     "relation": "permit activity \u2192 new office space \u2192 tech office demand",
-     "source": "PermitActivityRising",
-     "target": "TechHiringAccelerating"
+     "explore_weight": 1.05,
+     "note": "existence_probability=0.500 in explore band [0.25, 0.75]",
+     "probability": 0.5,
+     "relation": "RetailClosureElevated\u2192CrimeIndexElevated",
+     "source": "RetailClosureElevated",
+     "target": "CrimeIndexElevated"
     },
     {
      "explore_weight": 1.0,
      "note": "existence_probability=0.500 in explore band [0.25, 0.75]",
      "probability": 0.5,
-     "relation": "StartupFormationRising\u2192PopulationFlowPositive",
-     "source": "StartupFormationRising",
-     "target": "PopulationFlowPositive"
+     "relation": "TechHiringAccelerating\u2192CrimeIndexElevated",
+     "source": "TechHiringAccelerating",
+     "target": "CrimeIndexElevated"
     }
    ],
    "nodes": [
@@ -1460,7 +1450,7 @@
      "id": "TechHiringAccelerating",
      "label": "TechHiringAccelerating",
      "observation": null,
-     "probability": 0.475562275,
+     "probability": 0.4671,
      "status": "target"
     },
     {
@@ -1475,28 +1465,28 @@
      "label": "RetailClosureElevated",
      "observation": null,
      "probability": null,
-     "status": "weak"
+     "status": "exploring"
     },
     {
      "id": "PermitActivityRising",
      "label": "PermitActivityRising",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
      "id": "CrimeIndexElevated",
      "label": "CrimeIndexElevated",
      "observation": null,
      "probability": null,
-     "status": "weak"
+     "status": "exploring"
     },
     {
      "id": "StartupFormationRising",
      "label": "StartupFormationRising",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
      "id": "FootTrafficRecovering",
@@ -1510,10 +1500,10 @@
      "label": "PopulationFlowPositive",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     }
    ],
-   "target_probability": 0.475562275,
+   "target_probability": 0.4671,
    "target_variable": "TechHiringAccelerating"
   },
   "status": 200
@@ -1545,76 +1535,76 @@
     "candidates": [
      {
       "edge_count": 1,
-      "log_score": -21.058464138,
+      "log_score": -22.625422197,
       "name": "T_null: tech-foottraffic baseline",
       "score_normalized": 0.95,
       "status": "dominant"
      },
      {
       "edge_count": 2,
-      "log_score": -21.006144215,
+      "log_score": -22.54932486,
       "name": "variant_add_CrimeIndexElevated->OfficeVacancyFalling",
-      "score_normalized": 0.669329465,
+      "score_normalized": 0.696387397,
       "status": "rising"
      },
      {
       "edge_count": 2,
-      "log_score": -21.058464138,
-      "name": "variant_add_StartupFormationRising->PermitActivityRising",
-      "score_normalized": 0.646414302,
+      "log_score": -22.737225917,
+      "name": "variant_add_RetailClosureElevated->CrimeIndexElevated",
+      "score_normalized": 0.61916744,
       "status": "rising"
-     },
-     {
-      "edge_count": 2,
-      "log_score": -21.080586063,
-      "name": "variant_add_OfficeVacancyFalling->CrimeIndexElevated",
-      "score_normalized": 0.636725306,
-      "status": "neutral"
      },
      {
       "edge_count": 3,
-      "log_score": -21.020175096,
+      "log_score": -22.476283143,
       "name": "H1: tech_rebound",
-      "score_normalized": 0.3595985,
+      "score_normalized": 0.441955423,
       "status": "neutral"
      },
      {
       "edge_count": 3,
-      "log_score": -21.033903531,
+      "log_score": -22.531446375,
       "name": "H3: bifurcated_recovery",
-      "score_normalized": 0.353585698,
+      "score_normalized": 0.419603814,
       "status": "neutral"
      },
      {
       "edge_count": 3,
-      "log_score": -21.057566835,
+      "log_score": -22.582731509,
       "name": "H4: bottom_formation",
-      "score_normalized": 0.343221606,
+      "score_normalized": 0.398256695,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -22.619273634,
+      "name": "variant_add_StartupFormationRising->PopulationFlowPositive",
+      "score_normalized": 0.382868596,
       "status": "falling"
      },
      {
       "edge_count": 3,
-      "log_score": -21.120821211,
+      "log_score": -22.649852275,
       "name": "H2: structural_decline",
-      "score_normalized": 0.315517355,
-      "status": "falling"
-     },
-     {
-      "edge_count": 3,
-      "log_score": -20.980521739,
-      "name": "variant_add_RetailClosureElevated->FootTrafficRecovering",
-      "score_normalized": 0.073380242,
+      "score_normalized": 0.370666748,
       "status": "falling"
      },
      {
       "edge_count": 4,
-      "log_score": -21.033903531,
+      "log_score": -22.476283143,
       "name": "variant_add_StartupFormationRising->PopulationFlowPositive",
+      "score_normalized": 0.157371703,
+      "status": "falling"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -22.737225917,
+      "name": "variant_add_TechHiringAccelerating->CrimeIndexElevated",
       "score_normalized": 0.05,
       "status": "falling"
      }
     ],
-    "score_gap_to_dominant": 0.160206814
+    "score_gap_to_dominant": 0.154870483
    },
    "current_regime_state": [
     {
@@ -1669,7 +1659,7 @@
      }
     ],
     "generations_dominant": 9,
-    "log_score": -21.058464138,
+    "log_score": -22.625422197,
     "name": "T_null: tech-foottraffic baseline"
    },
    "frontier": {
@@ -1684,7 +1674,7 @@
     ]
    },
    "interpretation_hints": [
-    "structure_entropy is high (2.111): engine has not converged; multiple causal stories remain plausible",
+    "structure_entropy is high (2.108): engine has not converged; multiple causal stories remain plausible",
     "dominant hypothesis has held for 9 generations",
     "last paradigm shift was <ago>",
     "evidence base is small (4 records); scores may not yet be reliable",
@@ -1709,7 +1699,7 @@
       "to_name": "T_null: tech-foottraffic baseline"
      }
     ],
-    "structure_entropy": 2.111141357
+    "structure_entropy": 2.108193426
    }
   },
   "status": 200
@@ -1724,7 +1714,7 @@
      "generation": 5,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "T_null: tech-foottraffic baseline",
-     "previous_dominant_id": "<id4>",
+     "previous_dominant_id": "<id3>",
      "previous_dominant_name": "H1: tech_rebound",
      "shift_id": "<id10>",
      "timestamp": "<ts>"
@@ -1749,7 +1739,7 @@
    "last_evidence_cycle_ago": "<ago>",
    "max_candidates": 10,
    "paradigm_shifts_this_window": 1,
-   "structure_entropy": 2.111141357
+   "structure_entropy": 2.108193426
   },
   "status": 200
  }

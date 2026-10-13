@@ -140,6 +140,8 @@ class PopulationStore:
                 edges=edges[cid],
                 log_score=c["log_score"],
                 evidence_count=c["evidence_count"],
+                window_log_score=c["window_log_score"],
+                window_evidence=c["window_evidence"],
                 status=CandidateStatus(c["status"]),
                 introduced_at=datetime.fromisoformat(c["introduced_at"]),
                 pruned_at=datetime.fromisoformat(c["pruned_at"]) if c["pruned_at"] else None,
@@ -204,15 +206,17 @@ class PopulationStore:
             """
             INSERT INTO ontology_candidates
               (candidate_id, domain_module_id, generation, parent_candidate_id,
-               log_score, evidence_count, status, introduced_at, pruned_at,
-               pruning_reason, description, metadata)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+               log_score, evidence_count, window_log_score, window_evidence,
+               status, introduced_at, pruned_at, pruning_reason, description, metadata)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT (candidate_id) DO UPDATE SET
               domain_module_id = excluded.domain_module_id,
               generation = excluded.generation,
               parent_candidate_id = excluded.parent_candidate_id,
               log_score = excluded.log_score,
               evidence_count = excluded.evidence_count,
+              window_log_score = excluded.window_log_score,
+              window_evidence = excluded.window_evidence,
               status = excluded.status,
               introduced_at = excluded.introduced_at,
               pruned_at = excluded.pruned_at,
@@ -227,6 +231,8 @@ class PopulationStore:
                 str(cand.parent_candidate_id) if cand.parent_candidate_id else None,
                 cand.log_score,
                 cand.evidence_count,
+                cand.window_log_score,
+                cand.window_evidence,
                 cand.status.value,
                 cand.introduced_at.isoformat(),
                 cand.pruned_at.isoformat() if cand.pruned_at else None,
@@ -237,11 +243,26 @@ class PopulationStore:
         )
         self._db.commit()
 
-    def update_score(self, candidate_id: UUID, log_score: float, evidence_count: int) -> None:
-        self._conn.execute(
-            "UPDATE ontology_candidates SET log_score=?, evidence_count=? WHERE candidate_id=?",
-            (log_score, evidence_count, str(candidate_id)),
-        )
+    def update_score(
+        self,
+        candidate_id: UUID,
+        log_score: float,
+        evidence_count: int,
+        *,
+        window: tuple[float, float] | None = None,
+    ) -> None:
+        """Cumulative score, and the score window when given (the art package passes none)."""
+        if window is None:
+            self._conn.execute(
+                "UPDATE ontology_candidates SET log_score=?, evidence_count=? WHERE candidate_id=?",
+                (log_score, evidence_count, str(candidate_id)),
+            )
+        else:
+            self._conn.execute(
+                "UPDATE ontology_candidates SET log_score=?, evidence_count=?,"
+                " window_log_score=?, window_evidence=? WHERE candidate_id=?",
+                (log_score, evidence_count, window[0], window[1], str(candidate_id)),
+            )
         self._db.commit()
 
     def mark_pruned(self, candidate_id: UUID, reason: str) -> None:

@@ -8,6 +8,7 @@ from src.domains.test_domain_v1.domain import TestDomainV1
 from src.domains.test_domain_v1.synthetic_generator import SyntheticDataGenerator
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import EdgeExistenceThresholdConfig
+from src.engine.services.edge_existence import MIN_RECORDS_FOR_EDGE_PRUNING
 
 
 class StrictPruningDomain(TestDomainV1):
@@ -24,10 +25,15 @@ def test_engine_prunes_edges_with_the_domain_threshold():
     engine.register_domain(StrictPruningDomain())
     engine.activate_domain("test-domain-v1")
     gen = SyntheticDataGenerator(graph="T*", random_seed=42)
-    for _ in range(5):
+    for _ in range(10):
         engine.learn(gen.sample(30))
 
-    edges = [e for c in engine.get_population().candidates for e in c.edges if e.existence_update_count]
+    def prunable(c, e) -> bool:
+        # Edges whose child CPT is still below the pruning minimum are kept by design.
+        child = c.get_variable_by_id(e.child_variable_id).name
+        return engine.parameter_store.get(c.candidate_id, child).total_count() >= MIN_RECORDS_FOR_EDGE_PRUNING
+
+    edges = [e for c in engine.get_population().candidates for e in c.edges if e.existence_update_count and prunable(c, e)]
     assert edges, "some edges should have been updated"
     for e in edges:
         if e.enabled:

@@ -23,8 +23,8 @@ from src.engine.model.scoring import candidate_score, score_weights, structure_e
 
 def _scored(make, avg_ll: float, n: int):
     cand = make()
-    cand.evidence_count = n
-    cand.log_score = avg_ll * n
+    cand.evidence_count = cand.window_evidence = n
+    cand.log_score = cand.window_log_score = avg_ll * n
     return cand
 
 

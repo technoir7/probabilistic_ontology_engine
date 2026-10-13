@@ -90,10 +90,10 @@ def run_learning_cycle(ps, ls, ees, pm, batch, batch_idx=0):
     """Run one full learning cycle on a batch."""
     pop = pm.get_population(DOMAIN_ID)
     for candidate in pop.active_candidates():
+        log_lik = ls.compute_log_likelihood(batch, candidate)  # before learning it, as the engine does
         ls.accumulate(batch, candidate)
         ees.update(candidate)
         ees.prune_below_threshold(candidate, ps)
-        log_lik = ls.compute_log_likelihood(batch, candidate)
         pm.update_score(DOMAIN_ID, candidate.candidate_id, log_lik, batch_idx, batch_size=len(batch))
 
     pm.prune_low_scorers(DOMAIN_ID)
@@ -183,72 +183,38 @@ def test_L3_02_low_scorers_pruned():
 # TEST-L3-03: PARADIGM SHIFT — regime switch detection (MILESTONE)
 # ---------------------------------------------------------------------------
 
+def _l3_03_succeeds(seed: int) -> bool:
+    """SPEC §20.6 on one seed: T* dominates after 300 T* records, then within
+    200 records of the switch an A->D structure takes over and a shift is logged."""
+    gen = SyntheticDataGenerator(graph="T*", random_seed=seed)
+    cands = [make_tstar_candidate(DOMAIN_ID), make_talt_candidate(DOMAIN_ID), make_null_candidate(DOMAIN_ID)]
+    ps, ls, ees, pm = make_engine_components(cands, max_pop=10)
+
+    for i, batch in enumerate(chunk(gen.sample(n=300), 30)):
+        run_learning_cycle(ps, ls, ees, pm, batch, i)
+    if not pm.dominant_matches_structure(DOMAIN_ID, T_STAR_EDGES):
+        return False
+    shifts_before = pm.summary(DOMAIN_ID)["paradigm_shift_count"]
+
+    gen.switch_regime("T_alt")
+    for i, batch in enumerate(chunk(gen.sample(n=180), 30)):
+        run_learning_cycle(ps, ls, ees, pm, batch, 10 + i)
+        dom = pm.dominant(DOMAIN_ID).edge_structure_signature()
+        if dom != T_STAR_EDGES and ("A", "D") in dom:
+            return pm.summary(DOMAIN_ID)["paradigm_shift_count"] > shifts_before
+    return False
+
+
 def test_L3_03_paradigm_shift_on_regime_switch():
     """
     This is the most important Level 3 test — the build milestone.
 
-    Phase 1: 300 records from T* → T* candidate dominates
-    Phase 2: switch to T_alt → within 300 records, T_alt rises to dominance
-             paradigm_shift_count increments
+    Run on 20 seeds and required on at least 16: one seed passing measured the
+    seed, not the engine (REFACTOR_SPEC D14). Seeds 0-19 passed 18 when the
+    rate was introduced.
     """
-    gen = SyntheticDataGenerator(graph="T*", random_seed=42)
-
-    # Seed with both T* and T_alt candidates plus some variants
-    cand_tstar = make_tstar_candidate(DOMAIN_ID)
-    cand_talt = make_talt_candidate(DOMAIN_ID)
-    cand_null = make_null_candidate(DOMAIN_ID)
-
-    candidates = [cand_tstar, cand_talt, cand_null]
-    ps, ls, ees, pm = make_engine_components(candidates, max_pop=10)
-
-    # --- Phase 1: T* data (300 records) ---
-    evidence_phase1 = gen.sample(n=300)
-    for i, batch in enumerate(chunk(evidence_phase1, 30)):
-        run_learning_cycle(ps, ls, ees, pm, batch, i)
-
-    # After phase 1, T* should dominate
-    dom1 = pm.dominant(DOMAIN_ID)
-    assert dom1 is not None
-    assert dom1.edge_structure_signature() == T_STAR_EDGES, (
-        f"After phase 1, T* should dominate. Got: {dom1.description}, "
-        f"signature: {dom1.edge_structure_signature()}"
-    )
-    t_star_dominates_at_switch = pm.dominant_matches_structure(DOMAIN_ID, T_STAR_EDGES)
-    assert t_star_dominates_at_switch, "T* must dominate at the end of phase 1"
-
-    # Record paradigm shift count before phase 2
-    summary_before = pm.summary(DOMAIN_ID)
-    shifts_before = summary_before["paradigm_shift_count"]
-
-    # --- Phase 2: Switch to T_alt regime ---
-    gen.switch_regime("T_alt")
-    evidence_phase2 = gen.sample(n=300)
-
-    for i, batch in enumerate(chunk(evidence_phase2, 30)):
-        run_learning_cycle(ps, ls, ees, pm, batch, i + 10)
-
-    # After phase 2: T_alt should dominate, paradigm_shift_count should increase
-    summary_after = pm.summary(DOMAIN_ID)
-
-    assert summary_after["paradigm_shift_count"] > shifts_before, (
-        f"paradigm_shift_count should increase. Before: {shifts_before}, "
-        f"After: {summary_after['paradigm_shift_count']}"
-    )
-    # T* should NO LONGER dominate
-    assert not pm.dominant_matches_structure(DOMAIN_ID, T_STAR_EDGES), (
-        "T* should no longer dominate after regime switch to T_alt"
-    )
-
-    # (Bonus) The dominant candidate should match T_alt or be closer to T_alt
-    dom2 = pm.dominant(DOMAIN_ID)
-    assert dom2 is not None
-    # The T_alt candidate or a variant of it should dominate
-    # We check: T_alt has edge A→D; T* has B→D. Dominant should have A→D.
-    dom2_sig = dom2.edge_structure_signature()
-    assert ("A", "D") in dom2_sig or dom2.log_score > cand_tstar.log_score, (
-        f"After regime switch, dominant should prefer A→D structure. "
-        f"Got signature: {dom2_sig}"
-    )
+    successes = sum(_l3_03_succeeds(seed) for seed in range(20))
+    assert successes >= 16, f"paradigm shift detected on {successes}/20 seeds, need 16"
 
 
 # ---------------------------------------------------------------------------

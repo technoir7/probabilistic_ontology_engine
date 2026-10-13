@@ -39,6 +39,8 @@ def candidate_state(cand: OntologyCandidate) -> dict[str, Any]:
         "pruning_reason": cand.pruning_reason,
         "log_score": cand.log_score,
         "evidence_count": cand.evidence_count,
+        "window_log_score": cand.window_log_score,
+        "window_evidence": cand.window_evidence,
         "active_signature": signature(cand),
         "edges": {
             edge_label(cand, e): {

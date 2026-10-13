@@ -15,7 +15,7 @@
      "evidence_count": 4,
      "generation_introduced": 0,
      "id": "<id0>",
-     "log_score": -20.622430205,
+     "log_score": -23.090518456,
      "name": "T_null: volatility-only baseline",
      "score_normalized": 0.95,
      "status": "dominant"
@@ -25,9 +25,9 @@
      "evidence_count": 4,
      "generation_introduced": 1,
      "id": "<id1>",
-     "log_score": -20.467403007,
+     "log_score": -22.889489403,
      "name": "variant_add_AIRiskOn->DollarStrength",
-     "score_normalized": 0.808406477,
+     "score_normalized": 0.821059338,
      "status": "rising"
     },
     {
@@ -35,9 +35,9 @@
      "evidence_count": 4,
      "generation_introduced": 0,
      "id": "<id2>",
-     "log_score": -20.631400017,
+     "log_score": -22.967764372,
      "name": "T_ai_boom: AI productivity narrative dominant",
-     "score_normalized": 0.76525455,
+     "score_normalized": 0.800121036,
      "status": "rising"
     },
     {
@@ -45,19 +45,19 @@
      "evidence_count": 4,
      "generation_introduced": 1,
      "id": "<id3>",
-     "log_score": -20.640897115,
+     "log_score": -23.194840543,
      "name": "variant_add_LiquidityStress->AIRiskOn",
-     "score_normalized": 0.762755613,
+     "score_normalized": 0.739697858,
      "status": "neutral"
     },
     {
      "edge_count": 4,
      "evidence_count": 4,
-     "generation_introduced": 2,
+     "generation_introduced": 1,
      "id": "<id4>",
-     "log_score": -20.437360106,
+     "log_score": -22.965153151,
      "name": "variant_add_VolatilityShock->YieldCurveInverted",
-     "score_normalized": 0.633926297,
+     "score_normalized": 0.618202978,
      "status": "neutral"
     },
     {
@@ -65,9 +65,9 @@
      "evidence_count": 4,
      "generation_introduced": 1,
      "id": "<id5>",
-     "log_score": -20.581423449,
+     "log_score": -22.984041019,
      "name": "variant_add_CreditSpreadStress->AIRiskOn",
-     "score_normalized": 0.596019442,
+     "score_normalized": 0.613109752,
      "status": "neutral"
     },
     {
@@ -75,9 +75,9 @@
      "evidence_count": 4,
      "generation_introduced": 2,
      "id": "<id6>",
-     "log_score": -20.640897115,
+     "log_score": -23.194840543,
      "name": "variant_add_VolatilityShock->LiquidityStress",
-     "score_normalized": 0.580370356,
+     "score_normalized": 0.557086686,
      "status": "falling"
     },
     {
@@ -85,19 +85,19 @@
      "evidence_count": 4,
      "generation_introduced": 0,
      "id": "<id7>",
-     "log_score": -20.577104881,
+     "log_score": -23.040906689,
      "name": "T_credit: credit-market-led regime",
-     "score_normalized": 0.414770514,
+     "score_normalized": 0.415222345,
      "status": "falling"
     },
     {
-     "edge_count": 5,
+     "edge_count": 6,
      "evidence_count": 4,
-     "generation_introduced": 1,
+     "generation_introduced": 0,
      "id": "<id8>",
-     "log_score": -20.552977182,
-     "name": "variant_add_DollarStrength->InflationShock",
-     "score_normalized": 0.238733889,
+     "log_score": -22.847734124,
+     "name": "T_recession: recessionary tightening cascade",
+     "score_normalized": 0.28330919,
      "status": "falling"
     },
     {
@@ -105,7 +105,7 @@
      "evidence_count": 4,
      "generation_introduced": 1,
      "id": "<id9>",
-     "log_score": -20.577104881,
+     "log_score": -23.040906689,
      "name": "variant_add_YieldCurveInverted->EquityRiskOn",
      "score_normalized": 0.05,
      "status": "falling"
@@ -830,7 +830,7 @@
    "domain": "Macro Regime",
    "domain_module_id": "macro-regime-v1",
    "dominant_evidence_count": 4,
-   "dominant_log_score": -20.622430205,
+   "dominant_log_score": -23.090518456,
    "last_learn_timestamp": "<ts>",
    "last_mutation_introduced": 2,
    "last_mutation_total_attempts": 7,
@@ -850,10 +850,10 @@
    "candidates": [
     {
      "active_edge_count": 2,
-     "avg_ll": -5.155607551,
-     "bic_penalty_raw": 1.732867951,
-     "bic_score_explore": -5.588824539,
-     "bic_score_strict": -6.888475503,
+     "avg_ll": -5.773492744,
+     "bic_penalty_raw": 1.737832329,
+     "bic_score_explore": -6.207950826,
+     "bic_score_strict": -7.511325072,
      "candidate_id": "<id0>",
      "description": "T_null: volatility-only baseline",
      "edge_structure": [
@@ -869,16 +869,16 @@
      "evidence_count": 4,
      "generation": 0,
      "is_dominant": true,
-     "log_score": -20.622430205,
+     "log_score": -23.090518456,
      "status": "ACTIVE",
      "total_edge_count": 2
     },
     {
      "active_edge_count": 3,
-     "avg_ll": -5.116850752,
-     "bic_penalty_raw": 1.906154747,
-     "bic_score_explore": -5.593389438,
-     "bic_score_strict": -7.023005498,
+     "avg_ll": -5.722416817,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.200320707,
+     "bic_score_strict": -7.634032379,
      "candidate_id": "<id1>",
      "description": "variant_add_AIRiskOn->DollarStrength",
      "edge_structure": [
@@ -898,16 +898,16 @@
      "evidence_count": 4,
      "generation": 1,
      "is_dominant": false,
-     "log_score": -20.467403007,
+     "log_score": -22.889489403,
      "status": "ACTIVE",
      "total_edge_count": 3
     },
     {
      "active_edge_count": 3,
-     "avg_ll": -5.157850004,
-     "bic_penalty_raw": 1.906154747,
-     "bic_score_explore": -5.634388691,
-     "bic_score_strict": -7.064004751,
+     "avg_ll": -5.742342903,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.220246793,
+     "bic_score_strict": -7.653958465,
      "candidate_id": "<id2>",
      "description": "T_ai_boom: AI productivity narrative dominant",
      "edge_structure": [
@@ -927,16 +927,16 @@
      "evidence_count": 4,
      "generation": 0,
      "is_dominant": false,
-     "log_score": -20.631400017,
+     "log_score": -22.967764372,
      "status": "ACTIVE",
      "total_edge_count": 3
     },
     {
      "active_edge_count": 3,
-     "avg_ll": -5.160224279,
-     "bic_penalty_raw": 1.906154747,
-     "bic_score_explore": -5.636762965,
-     "bic_score_strict": -7.066379025,
+     "avg_ll": -5.799845053,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.277748944,
+     "bic_score_strict": -7.711460615,
      "candidate_id": "<id3>",
      "description": "variant_add_LiquidityStress->AIRiskOn",
      "edge_structure": [
@@ -956,16 +956,16 @@
      "evidence_count": 4,
      "generation": 1,
      "is_dominant": false,
-     "log_score": -20.640897115,
+     "log_score": -23.194840543,
      "status": "ACTIVE",
      "total_edge_count": 3
     },
     {
      "active_edge_count": 4,
-     "avg_ll": -5.109340027,
-     "bic_penalty_raw": 2.079441542,
-     "bic_score_explore": -5.629200412,
-     "bic_score_strict": -7.188781568,
+     "avg_ll": -5.741683295,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.263032994,
+     "bic_score_strict": -7.82708209,
      "candidate_id": "<id4>",
      "description": "variant_add_VolatilityShock->YieldCurveInverted",
      "edge_structure": [
@@ -974,12 +974,12 @@
        "DollarStrength"
       ],
       [
-       "VolatilityShock",
-       "CreditSpreadStress"
+       "AIRiskOn",
+       "EquityRiskOn"
       ],
       [
-       "VolatilityShock",
-       "EquityRiskOn"
+       "EquityRiskOn",
+       "VolatilityShock"
       ],
       [
        "VolatilityShock",
@@ -987,18 +987,18 @@
       ]
      ],
      "evidence_count": 4,
-     "generation": 2,
+     "generation": 1,
      "is_dominant": false,
-     "log_score": -20.437360106,
+     "log_score": -22.965153151,
      "status": "ACTIVE",
      "total_edge_count": 4
     },
     {
      "active_edge_count": 4,
-     "avg_ll": -5.145355862,
-     "bic_penalty_raw": 2.079441542,
-     "bic_score_explore": -5.665216248,
-     "bic_score_strict": -7.224797404,
+     "avg_ll": -5.746530301,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.26788,
+     "bic_score_strict": -7.831929096,
      "candidate_id": "<id5>",
      "description": "variant_add_CreditSpreadStress->AIRiskOn",
      "edge_structure": [
@@ -1022,16 +1022,16 @@
      "evidence_count": 4,
      "generation": 1,
      "is_dominant": false,
-     "log_score": -20.581423449,
+     "log_score": -22.984041019,
      "status": "ACTIVE",
      "total_edge_count": 4
     },
     {
      "active_edge_count": 4,
-     "avg_ll": -5.160224279,
-     "bic_penalty_raw": 2.079441542,
-     "bic_score_explore": -5.680084664,
-     "bic_score_strict": -7.23966582,
+     "avg_ll": -5.799845053,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.321194752,
+     "bic_score_strict": -7.885243848,
      "candidate_id": "<id6>",
      "description": "variant_add_VolatilityShock->LiquidityStress",
      "edge_structure": [
@@ -1055,16 +1055,16 @@
      "evidence_count": 4,
      "generation": 2,
      "is_dominant": false,
-     "log_score": -20.640897115,
+     "log_score": -23.194840543,
      "status": "ACTIVE",
      "total_edge_count": 4
     },
     {
      "active_edge_count": 4,
-     "avg_ll": -5.14427622,
-     "bic_penalty_raw": 2.252728337,
-     "bic_score_explore": -5.707458304,
-     "bic_score_strict": -7.397004557,
+     "avg_ll": -5.761068039,
+     "bic_penalty_raw": 2.259182028,
+     "bic_score_explore": -6.325863546,
+     "bic_score_strict": -8.020250067,
      "candidate_id": "<id7>",
      "description": "T_credit: credit-market-led regime",
      "edge_structure": [
@@ -1088,91 +1088,17 @@
      "evidence_count": 4,
      "generation": 0,
      "is_dominant": false,
-     "log_score": -20.577104881,
+     "log_score": -23.040906689,
      "status": "ACTIVE",
      "total_edge_count": 4
     },
     {
-     "active_edge_count": 5,
-     "avg_ll": -5.138244295,
-     "bic_penalty_raw": 2.426015132,
-     "bic_score_explore": -5.744748078,
-     "bic_score_strict": -7.564259427,
-     "candidate_id": "<id8>",
-     "description": "variant_add_DollarStrength->InflationShock",
-     "edge_structure": [
-      [
-       "CreditSpreadStress",
-       "EquityRiskOn"
-      ],
-      [
-       "CreditSpreadStress",
-       "VolatilityShock"
-      ],
-      [
-       "DollarStrength",
-       "CreditSpreadStress"
-      ],
-      [
-       "DollarStrength",
-       "InflationShock"
-      ],
-      [
-       "LiquidityStress",
-       "CreditSpreadStress"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -20.552977182,
-     "status": "ACTIVE",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -5.14427622,
-     "bic_penalty_raw": 2.599301927,
-     "bic_score_explore": -5.794101702,
-     "bic_score_strict": -7.743578147,
-     "candidate_id": "<id9>",
-     "description": "variant_add_YieldCurveInverted->EquityRiskOn",
-     "edge_structure": [
-      [
-       "CreditSpreadStress",
-       "EquityRiskOn"
-      ],
-      [
-       "CreditSpreadStress",
-       "VolatilityShock"
-      ],
-      [
-       "DollarStrength",
-       "CreditSpreadStress"
-      ],
-      [
-       "LiquidityStress",
-       "CreditSpreadStress"
-      ],
-      [
-       "YieldCurveInverted",
-       "EquityRiskOn"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -20.577104881,
-     "status": "ACTIVE",
-     "total_edge_count": 5
-    },
-    {
      "active_edge_count": 6,
-     "avg_ll": -5.149754202,
-     "bic_penalty_raw": 2.426015132,
-     "bic_score_explore": -5.756257985,
-     "bic_score_strict": -7.575769334,
-     "candidate_id": "<id16>",
+     "avg_ll": -5.712820907,
+     "bic_penalty_raw": 2.432965261,
+     "bic_score_explore": -6.321062222,
+     "bic_score_strict": -8.145786167,
+     "candidate_id": "<id8>",
      "description": "T_recession: recessionary tightening cascade",
      "edge_structure": [
       [
@@ -1203,16 +1129,53 @@
      "evidence_count": 4,
      "generation": 0,
      "is_dominant": false,
-     "log_score": -20.599016807,
-     "status": "PRUNED",
+     "log_score": -22.847734124,
+     "status": "ACTIVE",
      "total_edge_count": 6
     },
     {
      "active_edge_count": 5,
-     "avg_ll": -5.165106658,
-     "bic_penalty_raw": 2.426015132,
-     "bic_score_explore": -5.771610441,
-     "bic_score_strict": -7.59112179,
+     "avg_ll": -5.761068039,
+     "bic_penalty_raw": 2.606748493,
+     "bic_score_explore": -6.412755163,
+     "bic_score_strict": -8.367816533,
+     "candidate_id": "<id9>",
+     "description": "variant_add_YieldCurveInverted->EquityRiskOn",
+     "edge_structure": [
+      [
+       "CreditSpreadStress",
+       "EquityRiskOn"
+      ],
+      [
+       "CreditSpreadStress",
+       "VolatilityShock"
+      ],
+      [
+       "DollarStrength",
+       "CreditSpreadStress"
+      ],
+      [
+       "LiquidityStress",
+       "CreditSpreadStress"
+      ],
+      [
+       "YieldCurveInverted",
+       "EquityRiskOn"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -23.040906689,
+     "status": "ACTIVE",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.724648982,
+     "bic_penalty_raw": 2.432965261,
+     "bic_score_explore": -6.332890297,
+     "bic_score_strict": -8.157614242,
      "candidate_id": "<id11>",
      "description": "T_monetary: inflation-driven tightening chain",
      "edge_structure": [
@@ -1240,16 +1203,53 @@
      "evidence_count": 4,
      "generation": 0,
      "is_dominant": false,
-     "log_score": -20.660426631,
+     "log_score": -22.894628414,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.756943625,
+     "bic_penalty_raw": 2.432965261,
+     "bic_score_explore": -6.36518494,
+     "bic_score_strict": -8.189908885,
+     "candidate_id": "<id16>",
+     "description": "variant_add_DollarStrength->InflationShock",
+     "edge_structure": [
+      [
+       "CreditSpreadStress",
+       "EquityRiskOn"
+      ],
+      [
+       "CreditSpreadStress",
+       "VolatilityShock"
+      ],
+      [
+       "DollarStrength",
+       "CreditSpreadStress"
+      ],
+      [
+       "DollarStrength",
+       "InflationShock"
+      ],
+      [
+       "LiquidityStress",
+       "CreditSpreadStress"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -23.024151938,
      "status": "PRUNED",
      "total_edge_count": 5
     },
     {
      "active_edge_count": 7,
-     "avg_ll": -5.148361175,
-     "bic_penalty_raw": 2.746530722,
-     "bic_score_explore": -5.834993856,
-     "bic_score_strict": -7.894891897,
+     "avg_ll": -5.682842995,
+     "bic_penalty_raw": 2.748181447,
+     "bic_score_explore": -6.369888357,
+     "bic_score_strict": -8.431024442,
      "candidate_id": "<id17>",
      "description": "variant_add_VolatilityShock->AIRiskOn",
      "edge_structure": [
@@ -1285,16 +1285,16 @@
      "evidence_count": 3,
      "generation": 1,
      "is_dominant": false,
-     "log_score": -15.445083526,
+     "log_score": -17.04577878,
      "status": "PRUNED",
      "total_edge_count": 7
     },
     {
      "active_edge_count": 6,
-     "avg_ll": -5.174453108,
-     "bic_penalty_raw": 2.92963277,
-     "bic_score_explore": -5.906861301,
-     "bic_score_strict": -8.104085878,
+     "avg_ll": -5.707590404,
+     "bic_penalty_raw": 2.931393544,
+     "bic_score_explore": -6.440438789,
+     "bic_score_strict": -8.638983947,
      "candidate_id": "<id18>",
      "description": "variant_add_VolatilityShock->LiquidityStress",
      "edge_structure": [
@@ -1326,7 +1326,7 @@
      "evidence_count": 3,
      "generation": 1,
      "is_dominant": false,
-     "log_score": -15.523359325,
+     "log_score": -17.119216402,
      "status": "PRUNED",
      "total_edge_count": 6
     }
@@ -1650,76 +1650,76 @@
     "candidates": [
      {
       "edge_count": 2,
-      "log_score": -20.622430205,
+      "log_score": -23.090518456,
       "name": "T_null: volatility-only baseline",
       "score_normalized": 0.95,
       "status": "dominant"
      },
      {
       "edge_count": 3,
-      "log_score": -20.467403007,
+      "log_score": -22.889489403,
       "name": "variant_add_AIRiskOn->DollarStrength",
-      "score_normalized": 0.808406477,
+      "score_normalized": 0.821059338,
       "status": "rising"
      },
      {
       "edge_count": 3,
-      "log_score": -20.631400017,
+      "log_score": -22.967764372,
       "name": "T_ai_boom: AI productivity narrative dominant",
-      "score_normalized": 0.76525455,
+      "score_normalized": 0.800121036,
       "status": "rising"
      },
      {
       "edge_count": 3,
-      "log_score": -20.640897115,
+      "log_score": -23.194840543,
       "name": "variant_add_LiquidityStress->AIRiskOn",
-      "score_normalized": 0.762755613,
+      "score_normalized": 0.739697858,
       "status": "neutral"
      },
      {
       "edge_count": 4,
-      "log_score": -20.437360106,
+      "log_score": -22.965153151,
       "name": "variant_add_VolatilityShock->YieldCurveInverted",
-      "score_normalized": 0.633926297,
+      "score_normalized": 0.618202978,
       "status": "neutral"
      },
      {
       "edge_count": 4,
-      "log_score": -20.581423449,
+      "log_score": -22.984041019,
       "name": "variant_add_CreditSpreadStress->AIRiskOn",
-      "score_normalized": 0.596019442,
+      "score_normalized": 0.613109752,
       "status": "neutral"
      },
      {
       "edge_count": 4,
-      "log_score": -20.640897115,
+      "log_score": -23.194840543,
       "name": "variant_add_VolatilityShock->LiquidityStress",
-      "score_normalized": 0.580370356,
+      "score_normalized": 0.557086686,
       "status": "falling"
      },
      {
       "edge_count": 4,
-      "log_score": -20.577104881,
+      "log_score": -23.040906689,
       "name": "T_credit: credit-market-led regime",
-      "score_normalized": 0.414770514,
+      "score_normalized": 0.415222345,
+      "status": "falling"
+     },
+     {
+      "edge_count": 6,
+      "log_score": -22.847734124,
+      "name": "T_recession: recessionary tightening cascade",
+      "score_normalized": 0.28330919,
       "status": "falling"
      },
      {
       "edge_count": 5,
-      "log_score": -20.552977182,
-      "name": "variant_add_DollarStrength->InflationShock",
-      "score_normalized": 0.238733889,
-      "status": "falling"
-     },
-     {
-      "edge_count": 5,
-      "log_score": -20.577104881,
+      "log_score": -23.040906689,
       "name": "variant_add_YieldCurveInverted->EquityRiskOn",
       "score_normalized": 0.05,
       "status": "falling"
      }
     ],
-    "score_gap_to_dominant": 0.134529996
+    "score_gap_to_dominant": 0.122707306
    },
    "current_regime_state": [
     {
@@ -1779,7 +1779,7 @@
      }
     ],
     "generations_dominant": 9,
-    "log_score": -20.622430205,
+    "log_score": -23.090518456,
     "name": "T_null: volatility-only baseline"
    },
    "frontier": {
@@ -1800,7 +1800,7 @@
     ]
    },
    "interpretation_hints": [
-    "structure_entropy is high (2.011): engine has not converged; multiple causal stories remain plausible",
+    "structure_entropy is high (2.014): engine has not converged; multiple causal stories remain plausible",
     "dominant hypothesis has held for 9 generations",
     "last paradigm shift was <ago>",
     "evidence base is small (4 records); scores may not yet be reliable",
@@ -1825,7 +1825,7 @@
       "to_name": "T_null: volatility-only baseline"
      }
     ],
-    "structure_entropy": 2.011192632
+    "structure_entropy": 2.014061741
    }
   },
   "status": 200
@@ -1865,7 +1865,7 @@
    "last_evidence_cycle_ago": "<ago>",
    "max_candidates": 10,
    "paradigm_shifts_this_window": 1,
-   "structure_entropy": 2.011192632
+   "structure_entropy": 2.014061741
   },
   "status": 200
  }

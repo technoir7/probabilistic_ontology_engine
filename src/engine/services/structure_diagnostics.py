@@ -5,7 +5,7 @@ Provides ``build_structure_diagnostics()`` — a pure, synchronous function that
 produces a per-candidate breakdown of:
 
   * edge structure
-  * raw average log-likelihood (avg_ll = log_score / evidence_count)
+  * average log-likelihood over the score window (avg_ll)
   * strict BIC score   (avg_ll − penalty × 1.00)
   * explore BIC score  (avg_ll − penalty × 0.25)
   * mutation-cycle diagnostics from the most recent introduce_variants() call
@@ -27,7 +27,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-from ..model.scoring import bic_penalty, candidate_score
+from ..model.scoring import average_log_likelihood, bic_penalty, candidate_score
 from ..schemas import OntologyCandidate, OntologyPopulation
 
 
@@ -48,8 +48,8 @@ class CandidateDiagnostic:
     log_score: float
 
     # Score decomposition
-    avg_ll: float                        # log_score / evidence_count (or -inf)
-    bic_penalty_raw: float               # 0.5 * k * log(N) / N  (before multiplier)
+    avg_ll: float                        # window average log-likelihood (or -1e300)
+    bic_penalty_raw: float               # 0.5 * k * log(N) / N, N = window evidence
     bic_score_strict: float              # avg_ll - bic_penalty_raw * 1.00
     bic_score_explore: float             # avg_ll - bic_penalty_raw * 0.25
 
@@ -157,13 +157,11 @@ def _candidate_diagnostic(
     _NO_DATA_LL    = -1e300
     _NO_DATA_PEN   =  1e300
 
-    # Raw average log-likelihood
-    if n == 0:
-        avg_ll = _NO_DATA_LL
-    else:
-        avg_ll = c.log_score / n
+    # Average log-likelihood over the score window, the one the scores use
+    scored = c.window_evidence > 0
+    avg_ll = average_log_likelihood(c) if scored else _NO_DATA_LL
 
-    if n > 0:
+    if scored:
         bic_penalty_raw = bic_penalty(c)
         bic_score_strict = candidate_score(c, bic_multiplier=1.0)
         bic_score_explore = candidate_score(c, bic_multiplier=0.25)

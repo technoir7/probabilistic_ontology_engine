@@ -1,5 +1,6 @@
 """
-The one candidate score: BIC-corrected average log-likelihood.
+The one candidate score: BIC-corrected average log-likelihood over the score
+window, where older evidence counts for less (half-life SCORE_HALF_LIFE_RECORDS).
 
 Population ranking, pruning, dominance, structure diagnostics and the API all
 compare candidates with this. It lives in the model layer (not services/)
@@ -30,24 +31,42 @@ def free_parameter_count(candidate: OntologyCandidate) -> int:
     return k
 
 
+# A structure is judged mostly on its last few hundred records, so one that fits
+# a new regime can overtake one that fitted the old (TEST-L3-03). Over seeds
+# 0-39: 100 detects the shift within 200 records in 35/40 runs with ~2% of
+# stationary batches flipping the dominant; 150-200 flip less but detect
+# less; no window detects 6/20 (REFACTOR_SPEC D14).
+SCORE_HALF_LIFE_RECORDS = 100
+
+
+def add_to_window(window_ll: float, window_n: float, batch_ll: float, batch_n: int) -> tuple[float, float]:
+    """Discount the window by the batch's length, then add the batch."""
+    decay = 0.5 ** (batch_n / SCORE_HALF_LIFE_RECORDS)
+    return window_ll * decay + batch_ll, window_n * decay + batch_n
+
+
+def average_log_likelihood(candidate: OntologyCandidate) -> float:
+    """Per-record log-likelihood over the score window. Requires window_evidence > 0."""
+    return candidate.window_log_score / candidate.window_evidence
+
+
 def bic_penalty(candidate: OntologyCandidate) -> float:
-    """Per-record BIC penalty 0.5·k·log(N)/N. Requires evidence_count > 0."""
-    n = candidate.evidence_count
+    """Per-record BIC penalty 0.5·k·log(N)/N, N = window evidence (> 0)."""
+    n = candidate.window_evidence
     return 0.5 * free_parameter_count(candidate) * math.log(max(n, 2)) / n
 
 
 def candidate_score(candidate: OntologyCandidate, *, bic_multiplier: float = 1.0) -> float:
     """
-    Average log-likelihood minus the BIC penalty; -inf with no evidence.
+    Window average log-likelihood minus the BIC penalty; -inf with no evidence.
 
     Averaging makes candidates introduced late comparable with old ones.
     ``bic_multiplier`` is 1.0 everywhere in production; the structure
     diagnostics also report 0.25 ("explore") side by side.
     """
-    n = candidate.evidence_count
-    if n == 0:
+    if candidate.window_evidence <= 0:
         return float("-inf")
-    return candidate.log_score / n - bic_penalty(candidate) * bic_multiplier
+    return average_log_likelihood(candidate) - bic_penalty(candidate) * bic_multiplier
 
 
 def dominant(candidates: Sequence[OntologyCandidate]) -> Optional[OntologyCandidate]:
@@ -60,13 +79,14 @@ def score_weights(candidates: Sequence[OntologyCandidate]) -> list[float]:
     Posterior weight of each structure under the BIC approximation.
 
     log P(data | structure) ≈ n · candidate_score (total log-likelihood minus
-    the BIC penalty). Softmaxing the per-record averages instead gives near
-    equal weights, because averages differ by hundredths of a nat (B21).
+    the BIC penalty), with n and the total taken over the score window.
+    Softmaxing the per-record averages instead gives near equal weights,
+    because averages differ by hundredths of a nat (B21).
     Unscored candidates get no weight; if none is scored, all share it.
     """
     if not candidates:
         return []
-    log_w = [c.evidence_count * candidate_score(c) if c.evidence_count else -math.inf for c in candidates]
+    log_w = [c.window_evidence * candidate_score(c) if c.window_evidence > 0 else -math.inf for c in candidates]
     best = max(log_w)
     if best == -math.inf:
         return [1.0 / len(candidates)] * len(candidates)

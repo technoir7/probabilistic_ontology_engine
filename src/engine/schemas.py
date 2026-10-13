@@ -172,8 +172,12 @@ class OntologyCandidate(BaseModel):
     variables: list[Variable]
     edges: list[DependencyEdge]
 
-    log_score: float = 0.0
+    log_score: float = 0.0                       # cumulative, all evidence ever scored
     evidence_count: int = 0
+    # The score window (SPEC score_window): the same sums with evidence
+    # discounted by model.scoring.SCORE_HALF_LIFE_RECORDS. Ranking uses these.
+    window_log_score: float = 0.0
+    window_evidence: float = 0.0
     status: CandidateStatus = CandidateStatus.ACTIVE
     introduced_at: datetime = Field(default_factory=datetime.utcnow)
     pruned_at: Optional[datetime] = None

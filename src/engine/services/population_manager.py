@@ -17,7 +17,7 @@ from datetime import datetime
 from uuid import UUID, uuid4
 
 
-from ..model.scoring import candidate_score
+from ..model.scoring import add_to_window, candidate_score
 from ..model.scoring import dominant as best_candidate
 from ..schemas import (
     CandidateStatus,
@@ -152,7 +152,13 @@ class PopulationManager:
             if c.candidate_id == candidate_id:
                 c.log_score += log_likelihood
                 c.evidence_count += batch_size   # count actual records
-                self.pop_store.update_score(c.candidate_id, c.log_score, c.evidence_count)
+                c.window_log_score, c.window_evidence = add_to_window(
+                    c.window_log_score, c.window_evidence, log_likelihood, batch_size
+                )
+                self.pop_store.update_score(
+                    c.candidate_id, c.log_score, c.evidence_count,
+                    window=(c.window_log_score, c.window_evidence),
+                )
                 self.pop_store.append_score_record(c.candidate_id, log_likelihood, batch_index)
                 break
 
@@ -362,6 +368,8 @@ class PopulationManager:
             edges=variant_edges,
             log_score=parent.log_score,
             evidence_count=parent.evidence_count,
+            window_log_score=parent.window_log_score,
+            window_evidence=parent.window_evidence,
             status=CandidateStatus.ACTIVE,
             description=description,
         )

@@ -220,8 +220,12 @@ class ProbabilisticOntologyEngine:
             log_lik = self.learning_service.compute_log_likelihood(records, candidate)
             candidate.log_score = log_lik
             candidate.evidence_count = len(records)
+            # Undiscounted: one-time approximation for pre-0002 databases; the
+            # window decays toward the true one as new evidence arrives.
+            candidate.window_log_score, candidate.window_evidence = log_lik, float(len(records))
             self.population_store.update_score(
-                candidate.candidate_id, log_lik, len(records)
+                candidate.candidate_id, log_lik, len(records),
+                window=(candidate.window_log_score, candidate.window_evidence),
             )
             logger.debug(
                 "Restored scores: domain=%s candidate=%s evidence_count=%d log_score=%.4f",
@@ -317,10 +321,10 @@ class ProbabilisticOntologyEngine:
         """
         Steps:
           1. For each active candidate:
-             a. Level 1: update CPT parameters (sufficient statistics)
-             b. Level 2: update edge existence probabilities
-             c. Compute log-likelihood; update candidate score
-             d. Prune edges below threshold
+             a. Compute the batch log-likelihood under the current CPTs
+             b. Level 1: update CPT parameters (sufficient statistics)
+             c. Level 2: update edge existence probabilities; prune edges below threshold
+             d. Add (a) to the candidate's score and score window
           2. Level 3: prune low-scoring candidates
           3. Introduce variants of top survivors
           4. Return a model snapshot
@@ -344,6 +348,11 @@ class ProbabilisticOntologyEngine:
             prev_ec = candidate.evidence_count
             prev_ls = candidate.log_score
 
+            # Score before learning from the batch (prequential). Scoring after
+            # rewards extra edges by about the BIC penalty, so spurious edges
+            # beat the true graph (REFACTOR_SPEC D8, D14).
+            log_lik = self.learning_service.compute_log_likelihood(batch, candidate)
+
             # Level 1 — parameter update
             logger.debug(
                 "accumulate(): domain=%s candidate=%s",
@@ -355,8 +364,7 @@ class ProbabilisticOntologyEngine:
             edge_existence.update(candidate)
             edge_existence.prune_below_threshold(candidate, self.parameter_store)
 
-            # Score candidate
-            log_lik = self.learning_service.compute_log_likelihood(batch, candidate)
+            # Record the score computed before learning
             self.population_manager.update_score(
                 domain, candidate.candidate_id, log_lik, idx, batch_size=n_records
             )
