@@ -170,12 +170,17 @@ class EvidenceStore:
         }
 
     # ------------------------------------------------------------------
-    def has_record_at(self, domain_module_id: str, timestamp: datetime) -> bool:
-        """True if a record with exactly this timestamp is stored. One query; unindexed until Phase 3."""
+    def has_record_at(self, domain_module_id: str, timestamp: datetime, source_ref: str) -> bool:
+        """True if a record from this source with exactly this timestamp is stored. One indexed query."""
         cur = self._conn.execute(
-            "SELECT 1 FROM evidence_records WHERE domain_module=? AND timestamp=? LIMIT 1",
-            (domain_module_id, timestamp.isoformat()),
+            "SELECT 1 FROM evidence_records WHERE domain_module=? AND timestamp=? AND source_ref=? LIMIT 1",
+            (domain_module_id, timestamp.isoformat(), source_ref),
         )
+        return cur.fetchone() is not None
+
+    def has_record(self, evidence_id: UUID) -> bool:
+        """True if a record with this id is stored. One primary-key lookup."""
+        cur = self._conn.execute("SELECT 1 FROM evidence_records WHERE evidence_id=?", (str(evidence_id),))
         return cur.fetchone() is not None
 
     # ------------------------------------------------------------------

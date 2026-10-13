@@ -36,9 +36,10 @@ async def ingest_and_learn(
     The caller holds the domain's lock.
     """
     record = await fetch(target)
-    # evidence_id is a fresh uuid4 per fetch, so the store's evidence_id dedup
-    # never fires; re-running a day would store and learn it twice.
-    if engine.has_evidence_at(record.timestamp, domain_id):
+    # By date and source, not evidence_id: natural-gas still issues a fresh
+    # uuid4 per fetch, and records stored before ids became deterministic
+    # have random ones. Re-running a day must not store and learn it twice.
+    if engine.has_evidence_at(record.timestamp, record.source_ref, domain_id):
         logger.info("Skipping %s: evidence for %s already stored", domain_id, record.timestamp.date())
         return 0
     if skip_unchanged_state and _same_state_as_latest(engine, domain_id, record):
@@ -48,6 +49,24 @@ async def ingest_and_learn(
         engine.ingest(record)
         engine.learn([record], domain_id)
     return 1
+
+
+def learn_new_records(engine: ProbabilisticOntologyEngine, domain_id: str, records: Iterable[EvidenceRecord]) -> int:
+    """
+    Store and learn each record not already stored (by evidence_id), oldest
+    first, one transaction per record as ingest_and_learn does. For evidence
+    that is supplied rather than fetched (art reports). Returns how many were new.
+    The caller holds the domain's lock.
+    """
+    learned = 0
+    for record in sorted(records, key=lambda r: r.timestamp):
+        if engine.has_evidence(record.evidence_id):
+            continue
+        with engine.db.transaction():
+            engine.ingest(record)
+            engine.learn([record], domain_id)
+        learned += 1
+    return learned
 
 
 async def backfill(
