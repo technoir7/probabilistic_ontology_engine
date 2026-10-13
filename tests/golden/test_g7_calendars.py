@@ -21,7 +21,7 @@ from fastapi.testclient import TestClient
 
 from src.engine.api import app as api_app
 from src.engine.runtime.registry import BY_KEY
-from tests.fakes import domain_keys, freeze_clock, patch_evidence_fetch
+from tests.fakes import ADMIN, domain_keys, freeze_clock, patch_evidence_fetch
 
 from .snapshot import assert_matches_snapshot
 
@@ -48,7 +48,7 @@ def test_g7_api_calendars_match_golden(monkeypatch):
 
     patch_evidence_fetch(monkeypatch, recording_fetch)
     out: dict = {}
-    with TestClient(api_app.app) as client:
+    with TestClient(api_app.app, headers=ADMIN) as client:
         for day in WEEK:
             freeze_clock(monkeypatch, _noon(day))
             per_day = out.setdefault(f"{day.isoformat()} {day.strftime('%a')}", {})

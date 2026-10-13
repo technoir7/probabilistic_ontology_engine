@@ -24,6 +24,7 @@ from src.domains.test_domain_v1.domain import (
 from src.domains.test_domain_v1.synthetic_generator import SyntheticDataGenerator
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import OntologyCandidate, OntologyPopulation
+from tests.fakes import ADMIN_TOKEN
 
 
 def pytest_configure(config):
@@ -49,6 +50,7 @@ def _sealed_runtime(request, monkeypatch, tmp_path):
     # Art manual-ingest tests write their input files into tmp_path.
     monkeypatch.setenv("POE_ART_MANUAL_DIR", str(tmp_path))
     monkeypatch.setenv("EVIDENCE_SCHEDULER_ENABLED", "false")
+    monkeypatch.setenv("POE_ADMIN_TOKEN", ADMIN_TOKEN)
     if "live" in request.keywords:
         return
 

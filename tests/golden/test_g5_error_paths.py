@@ -13,7 +13,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from src.engine.api import app as api_app
-from tests.fakes import patch_soft_evidence_for_all_domains
+from tests.fakes import ADMIN, patch_soft_evidence_for_all_domains
 
 from .snapshot import assert_matches_snapshot
 
@@ -34,7 +34,7 @@ READ_ROUTES = [
 def client(monkeypatch):
     monkeypatch.delenv("FIREWORKS_API_KEY", raising=False)
     patch_soft_evidence_for_all_domains(monkeypatch)
-    with TestClient(api_app.app) as c:
+    with TestClient(api_app.app, headers=ADMIN) as c:
         yield c
 
 

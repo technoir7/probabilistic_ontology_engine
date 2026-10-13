@@ -103,11 +103,11 @@ async def _engine_error(_request: Request, exc: EngineError) -> JSONResponse:
 
 
 # No credentials: the monitor frontend sends no cookies, and a wildcard origin combined
-# with credentials would let any site act as a logged-in user. Narrow the origins to the
-# Vercel deploy URL once one is fixed.
+# with credentials would let any site act as a logged-in user. POE_CORS_ORIGINS narrows
+# the origins (e.g. to the Vercel deploy URL); operator routes are guarded by api.auth.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=list(Settings.from_env().cors_origins),
     allow_methods=["*"],
     allow_headers=["*"],
 )

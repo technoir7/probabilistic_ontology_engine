@@ -14,6 +14,7 @@ from fastapi.testclient import TestClient
 
 from src.engine.api import app as api_app
 from tests.fakes import (
+    ADMIN,
     domain_keys,
     domain_variables,
     freeze_clock,
@@ -31,7 +32,7 @@ BACKFILL_DAYS = 21
 def client(monkeypatch):
     freeze_clock(monkeypatch, FROZEN_NOW)
     patch_soft_evidence_for_all_domains(monkeypatch)
-    with TestClient(api_app.app) as c:
+    with TestClient(api_app.app, headers=ADMIN) as c:
         yield c
 
 

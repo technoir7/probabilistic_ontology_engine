@@ -24,6 +24,10 @@ from src.engine.schemas import (
 
 FetchFn = Callable[[str, date], Awaitable[EvidenceRecord]]
 
+# conftest sets POE_ADMIN_TOKEN to this for every test.
+ADMIN_TOKEN = "test-admin-token"
+ADMIN = {"Authorization": f"Bearer {ADMIN_TOKEN}"}
+
 
 def soft_record(variables: Iterable[Variable], target_date: date, *, seed: int | str) -> EvidenceRecord:
     """A SOFT_OBSERVED record over *variables*, deterministic for (seed, target_date)."""

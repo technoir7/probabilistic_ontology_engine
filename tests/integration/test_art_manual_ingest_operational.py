@@ -6,7 +6,7 @@ from fastapi.testclient import TestClient
 
 from src.engine.api import app as api_app
 from src.engine.runtime.art import import_art_module
-from tests.fakes import running_engine
+from tests.fakes import ADMIN, running_engine
 
 
 def _write_manual_file(path):
@@ -36,7 +36,7 @@ def test_manual_art_endpoint_persists_and_serves_domain_art(monkeypatch, tmp_pat
     manual_path = tmp_path / "manual_art_signal.json"
     _write_manual_file(manual_path)
 
-    with TestClient(api_app.app) as client:
+    with TestClient(api_app.app, headers=ADMIN) as client:
         ingest = client.post("/v1/ingest/art/manual", params={"path": str(manual_path)})
         assert ingest.status_code == 200, ingest.text
         ingest_body = ingest.json()
@@ -71,7 +71,7 @@ def test_manual_art_endpoint_is_idempotent_by_default(monkeypatch, tmp_path):
     manual_path = tmp_path / "manual_art_signal.json"
     _write_manual_file(manual_path)
 
-    with TestClient(api_app.app) as client:
+    with TestClient(api_app.app, headers=ADMIN) as client:
         first = client.post("/v1/ingest/art/manual", params={"path": str(manual_path)})
         second = client.post("/v1/ingest/art/manual", params={"path": str(manual_path)})
 
@@ -98,7 +98,7 @@ def test_duplicate_only_manual_art_endpoint_learns_existing_uninitialized_rows(
     manual_path = tmp_path / "manual_art_signal.json"
     _write_manual_file(manual_path)
 
-    with TestClient(api_app.app) as client:
+    with TestClient(api_app.app, headers=ADMIN) as client:
         manual_ingest = import_art_module("manual_ingest")
         engine = running_engine("art")
         records = manual_ingest.ingest_manual_path(manual_path)
@@ -146,7 +146,7 @@ def test_duplicate_only_manual_art_endpoint_does_not_relearn_restored_population
     manual_path = tmp_path / "manual_art_signal.json"
     _write_manual_file(manual_path)
 
-    with TestClient(api_app.app) as client:
+    with TestClient(api_app.app, headers=ADMIN) as client:
         first = client.post("/v1/ingest/art/manual", params={"path": str(manual_path)})
         assert first.status_code == 200, first.text
 
@@ -188,7 +188,7 @@ def test_manual_art_endpoint_force_reingests_duplicate(monkeypatch, tmp_path):
     manual_path = tmp_path / "manual_art_signal.json"
     _write_manual_file(manual_path)
 
-    with TestClient(api_app.app) as client:
+    with TestClient(api_app.app, headers=ADMIN) as client:
         first = client.post("/v1/ingest/art/manual", params={"path": str(manual_path)})
         second = client.post(
             "/v1/ingest/art/manual",
@@ -211,7 +211,7 @@ def test_manual_art_endpoint_invalid_json_counted_as_failed(monkeypatch, tmp_pat
     bad_path = tmp_path / "bad.json"
     bad_path.write_text('{"title": "Broken",', encoding="utf-8")
 
-    with TestClient(api_app.app) as client:
+    with TestClient(api_app.app, headers=ADMIN) as client:
         response = client.post("/v1/ingest/art/manual", params={"path": str(bad_path)})
 
     # Pins current behaviour: since art-market-domain 5f7eb159 (2026-05-28)

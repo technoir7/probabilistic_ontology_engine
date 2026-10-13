@@ -104,7 +104,8 @@ GET  /v1/population/lineage/{candidate_id}
 GET  /v1/population/shifts
 GET  /v1/evidence/recent
 POST /v1/ingest/trigger
-POST /v1/ingest/backfill?days=N
+POST /v1/ingest/backfill?days=N             # needs Authorization: Bearer $POE_ADMIN_TOKEN
+POST /v1/ingest/art/manual?path=...          # needs Authorization: Bearer $POE_ADMIN_TOKEN
 GET  /v1/export/narrative-snapshot
 GET  /v1/report/{domain}                     # read cached report (no LLM call)
 POST /v1/report/{domain}/refresh             # regenerate if snapshot changed (Fireworks)
@@ -141,6 +142,8 @@ EIA_API_KEY=...                     # required for NG
 FIREWORKS_API_KEY=...               # required for POST /v1/report/{domain}/refresh
 EVIDENCE_SCHEDULER_ENABLED=true
 POE_DATA_DIR=/data                  # Railway: persistent volume mount; default "." loses reports on redeploy
+POE_ADMIN_TOKEN=...                 # enables backfill and art manual ingest; unset = those routes return 503
+POE_CORS_ORIGINS=https://x.vercel.app,http://localhost:3000   # default "*"; read before .env loads, so set it in the real environment
 ```
 
 No key required for SF Open Data, CoinGecko public endpoints, or GDELT. SEC EDGAR requires only a valid `User-Agent` header.

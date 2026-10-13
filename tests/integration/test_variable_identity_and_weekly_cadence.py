@@ -12,7 +12,7 @@ from src.domains.sovereign_debt_v1.domain import SovereignDebtV1, get_variables 
 from src.domains.natural_gas_v1.domain import NaturalGasV1
 from src.domains.test_domain_v1.domain import TestDomainV1, get_variables as _test_variables
 from src.engine.api import app as api_app
-from tests.fakes import patch_evidence_fetch
+from tests.fakes import ADMIN, patch_evidence_fetch
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import (
     EvidenceRecord,
@@ -107,7 +107,7 @@ def test_api_sovereign_debt_backfill_steps_weekly(monkeypatch, tmp_path):
 
     patch_evidence_fetch(monkeypatch, fake_fetch)
 
-    with TestClient(api_app.app) as client:
+    with TestClient(api_app.app, headers=ADMIN) as client:
         response = client.post("/v1/ingest/backfill?domain=sd&days=15")
 
     assert response.status_code == 200
@@ -120,7 +120,7 @@ def test_evidence_geometry_endpoint_exposes_weekly_fields(monkeypatch, tmp_path)
     monkeypatch.setenv("EVIDENCE_SCHEDULER_ENABLED", "false")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
 
-    with TestClient(api_app.app) as client:
+    with TestClient(api_app.app, headers=ADMIN) as client:
         body = client.get("/v1/debug/evidence-geometry?domain=sd").json()
 
     assert "cadence_detected" in body
@@ -157,7 +157,7 @@ def test_ng_scheduler_backfill_dates_remain_daily(monkeypatch, tmp_path):
 
     patch_evidence_fetch(monkeypatch, fake_fetch)
 
-    with TestClient(api_app.app) as client:
+    with TestClient(api_app.app, headers=ADMIN) as client:
         response = client.post("/v1/ingest/backfill?domain=ng&days=3")
 
     assert response.status_code == 200

@@ -5,7 +5,7 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import ValidationError
 
 from ...runtime.art import import_art_module
@@ -13,6 +13,7 @@ from ...runtime.ingestion import backfill
 from ...runtime.registry import BY_KEY
 from ...runtime.settings import Settings
 from .. import context, presenters
+from ..auth import require_admin
 from ..dto import (
     IngestTriggerOut,
     IngestBackfillOut,
@@ -57,7 +58,7 @@ async def ingest_trigger(request: Request, domain: str = Query("ng")) -> IngestT
     )
 
 
-@router.post("/v1/ingest/backfill", response_model=IngestBackfillOut)
+@router.post("/v1/ingest/backfill", response_model=IngestBackfillOut, dependencies=[Depends(require_admin)])
 async def ingest_backfill(
     request: Request,
     domain: str = Query("ng"),
@@ -90,7 +91,7 @@ async def ingest_backfill(
     )
 
 
-@router.post("/v1/ingest/art/manual", response_model=ManualArtIngestOut)
+@router.post("/v1/ingest/art/manual", response_model=ManualArtIngestOut, dependencies=[Depends(require_admin)])
 async def ingest_art_manual(
     request: Request,
     path: Optional[str] = Query(None),

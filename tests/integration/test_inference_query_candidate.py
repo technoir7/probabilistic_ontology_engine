@@ -8,12 +8,12 @@ from fastapi.testclient import TestClient
 
 from src.engine.api import app as api_app
 from src.engine.schemas import InferenceQuery
-from tests.fakes import patch_soft_evidence_for_all_domains, running_engine
+from tests.fakes import ADMIN, patch_soft_evidence_for_all_domains, running_engine
 
 
 def test_inference_query_answers_for_the_requested_candidate(monkeypatch):
     patch_soft_evidence_for_all_domains(monkeypatch)
-    with TestClient(api_app.app) as client:
+    with TestClient(api_app.app, headers=ADMIN) as client:
         assert client.post("/v1/ingest/backfill?domain=ng&days=21").status_code == 200
         engine = running_engine("ng")
         pop = engine.get_population("natural-gas-v1")
@@ -38,7 +38,7 @@ def test_weighted_avg_answers_for_the_population(monkeypatch):
     """REFACTOR_SPEC D6: aggregation="weighted_avg" (the dashboard sends it) averages
     P(True) over the population by structure weight; the graph stays the candidate's."""
     patch_soft_evidence_for_all_domains(monkeypatch)
-    with TestClient(api_app.app) as client:
+    with TestClient(api_app.app, headers=ADMIN) as client:
         assert client.post("/v1/ingest/backfill?domain=ng&days=21").status_code == 200
         engine = running_engine("ng")
         pop = engine.get_population("natural-gas-v1")
