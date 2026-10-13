@@ -118,8 +118,9 @@ async def ingest_art_reports(request: Request, path: Optional[str] = Query(None)
 @router.post("/v1/ingest/art/rebuild", response_model=ArtRebuildOut, dependencies=[Depends(require_admin)])
 async def rebuild_art(
     request: Request,
-    # Bounded: one upstream fetch per month.
-    months: int = Query(60, ge=1, le=240),
+    # Bounded: each month is at least one GDELT request, and GDELT allows one
+    # per 5 s, so 36 months take about three minutes.
+    months: int = Query(36, ge=1, le=120),
 ) -> ArtRebuildOut:
     """
     Forget everything learned for art and relearn it from *months* of fetched

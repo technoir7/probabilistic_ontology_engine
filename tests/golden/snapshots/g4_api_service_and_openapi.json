@@ -2060,8 +2060,8 @@
        "name": "months",
        "required": false,
        "schema": {
-        "default": 60,
-        "maximum": 240,
+        "default": 36,
+        "maximum": 120,
         "minimum": 1,
         "title": "Months",
         "type": "integer"
