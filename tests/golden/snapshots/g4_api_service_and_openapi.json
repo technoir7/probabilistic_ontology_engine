@@ -9,37 +9,102 @@
   "components": {
    "schemas": {
     "ArtRebuildOut": {
+     "description": "The latest art rebuild since the service started (state \"idle\" if none).",
      "properties": {
       "domain": {
        "title": "Domain",
        "type": "string"
       },
+      "error": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Error"
+      },
       "failed_reports": {
+       "default": [],
        "items": {
         "type": "string"
        },
        "title": "Failed Reports",
        "type": "array"
       },
+      "finished_at": {
+       "anyOf": [
+        {
+         "format": "date-time",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Finished At"
+      },
       "months_requested": {
-       "title": "Months Requested",
-       "type": "integer"
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Months Requested"
       },
       "records_learned": {
-       "title": "Records Learned",
-       "type": "integer"
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Records Learned"
       },
       "reports_found": {
-       "title": "Reports Found",
-       "type": "integer"
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Reports Found"
+      },
+      "started_at": {
+       "anyOf": [
+        {
+         "format": "date-time",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Started At"
+      },
+      "state": {
+       "enum": [
+        "idle",
+        "running",
+        "done",
+        "failed"
+       ],
+       "title": "State",
+       "type": "string"
       }
      },
      "required": [
       "domain",
-      "months_requested",
-      "reports_found",
-      "records_learned",
-      "failed_reports"
+      "state"
      ],
      "title": "ArtRebuildOut",
      "type": "object"
@@ -2051,8 +2116,53 @@
     }
    },
    "/v1/ingest/art/rebuild": {
+    "get": {
+     "description": "The latest art rebuild since the service started.",
+     "operationId": "art_rebuild_status_v1_ingest_art_rebuild_get",
+     "parameters": [
+      {
+       "in": "header",
+       "name": "authorization",
+       "required": false,
+       "schema": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Authorization"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/ArtRebuildOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Art Rebuild Status"
+    },
     "post": {
-     "description": "Forget everything learned for art and relearn it from *months* of fetched\nevidence plus every report in the reports directory, oldest first. Slow:\none fetch per month, with the domain's backfill pause between them.",
+     "description": "Start forgetting everything learned for art and relearning it from\n*months* of fetched evidence plus every report in the reports directory,\noldest first. Runs in the background, since it outlasts any request\ntimeout; GET this route for its progress. 409 while one is running.",
      "operationId": "rebuild_art_v1_ingest_art_rebuild_post",
      "parameters": [
       {
@@ -2085,7 +2195,7 @@
       }
      ],
      "responses": {
-      "200": {
+      "202": {
        "content": {
         "application/json": {
          "schema": {

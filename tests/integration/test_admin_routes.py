@@ -1,5 +1,5 @@
 """
-REFACTOR_SPEC D7, A14: backfill and art manual ingest need the admin token.
+REFACTOR_SPEC D7, A14: backfill and the art operator routes need the admin token.
 
 They are operator tools (up to 1,825 days of upstream calls; a full rebuild
 of the art domain from a file) and the dashboard never calls them. The
@@ -16,25 +16,27 @@ from src.engine.runtime.settings import Settings
 from tests.fakes import ADMIN_TOKEN, patch_soft_evidence_for_all_domains
 
 ADMIN_ROUTES = [
-    ("/v1/ingest/backfill", {"domain": "ng", "days": 7}),
-    ("/v1/ingest/art/manual", {"path": "missing.json"}),
+    ("POST", "/v1/ingest/backfill", {"domain": "ng", "days": 7}),
+    ("POST", "/v1/ingest/art/manual", {"path": "missing.json"}),
+    ("POST", "/v1/ingest/art/rebuild", {"months": 1}),
+    ("GET", "/v1/ingest/art/rebuild", {}),
 ]
 
 
-@pytest.mark.parametrize("path,params", ADMIN_ROUTES)
+@pytest.mark.parametrize("method,path,params", ADMIN_ROUTES)
 @pytest.mark.parametrize("headers", [{}, {"Authorization": "Bearer wrong"}, {"Authorization": ADMIN_TOKEN}])
-def test_admin_routes_refuse_a_missing_or_wrong_token(path, params, headers):
+def test_admin_routes_refuse_a_missing_or_wrong_token(method, path, params, headers):
     with TestClient(api_app.app) as client:
-        resp = client.post(path, params=params, headers=headers)
+        resp = client.request(method, path, params=params, headers=headers)
     assert resp.status_code == 401, resp.text
     assert resp.headers["www-authenticate"] == "Bearer"
 
 
-@pytest.mark.parametrize("path,params", ADMIN_ROUTES)
-def test_admin_routes_are_off_when_no_token_is_configured(monkeypatch, path, params):
+@pytest.mark.parametrize("method,path,params", ADMIN_ROUTES)
+def test_admin_routes_are_off_when_no_token_is_configured(monkeypatch, method, path, params):
     monkeypatch.delenv("POE_ADMIN_TOKEN")
     with TestClient(api_app.app) as client:
-        resp = client.post(path, params=params, headers={"Authorization": f"Bearer {ADMIN_TOKEN}"})
+        resp = client.request(method, path, params=params, headers={"Authorization": f"Bearer {ADMIN_TOKEN}"})
     assert resp.status_code == 503
     assert "POE_ADMIN_TOKEN" in resp.json()["detail"]
 

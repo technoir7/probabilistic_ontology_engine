@@ -106,7 +106,8 @@ GET  /v1/evidence/recent
 POST /v1/ingest/trigger
 POST /v1/ingest/backfill?days=N             # needs Authorization: Bearer $POE_ADMIN_TOKEN
 POST /v1/ingest/art/manual?path=...          # learn new report files; needs Authorization: Bearer $POE_ADMIN_TOKEN
-POST /v1/ingest/art/rebuild?months=36        # forget art, relearn fetched months + reports (~3 min); admin token
+POST /v1/ingest/art/rebuild?months=36        # start forgetting art and relearning fetched months + reports, in the background; admin token
+GET  /v1/ingest/art/rebuild                  # progress of the latest rebuild (idle / running / done / failed); admin token
 GET  /v1/export/narrative-snapshot
 GET  /v1/report/{domain}                     # read cached report (no LLM call)
 POST /v1/report/{domain}/refresh             # regenerate if snapshot changed (Fireworks)

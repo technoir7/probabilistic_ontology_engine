@@ -1,6 +1,7 @@
 """Request and response models of the HTTP API."""
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Any, Literal, Optional
 
 from pydantic import BaseModel
@@ -238,11 +239,16 @@ class ArtReportIngestOut(BaseModel):
 
 
 class ArtRebuildOut(BaseModel):
+    """The latest art rebuild since the service started (state "idle" if none)."""
     domain: str
-    months_requested: int
-    reports_found: int
-    records_learned: int            # fetched months plus reports
-    failed_reports: list[str]
+    state: Literal["idle", "running", "done", "failed"]
+    months_requested: Optional[int] = None
+    started_at: Optional[datetime] = None
+    finished_at: Optional[datetime] = None
+    reports_found: Optional[int] = None
+    records_learned: Optional[int] = None   # fetched months plus reports
+    failed_reports: list[str] = []
+    error: Optional[str] = None
 
 
 class VariableEntropyDebugOut(BaseModel):
