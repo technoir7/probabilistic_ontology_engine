@@ -8,6 +8,7 @@ import os
 # Ensure src is on path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+import httpx
 import pytest
 
 from src.domains.test_domain_v1.domain import (
@@ -23,6 +24,47 @@ from src.domains.test_domain_v1.domain import (
 from src.domains.test_domain_v1.synthetic_generator import SyntheticDataGenerator
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import OntologyCandidate, OntologyPopulation
+from src.domains.sources import gdelt
+from tests.fakes import ADMIN_TOKEN
+
+
+def pytest_configure(config):
+    # The app's lifespan loads .env; keep a developer's real keys out of tests.
+    os.environ["POE_LOAD_DOTENV"] = "0"
+
+
+class NetworkBlocked(RuntimeError):
+    pass
+
+
+@pytest.fixture(autouse=True)
+def _sealed_runtime(request, monkeypatch, tmp_path):
+    """
+    Every test gets its own data dir, no schedulers, and no real HTTP.
+
+    Without this, a test that forgets POE_DATA_DIR writes SQLite files into the
+    cwd, and a test that forgets to fake a fetch silently calls EIA/FRED/etc.
+    Only the real network transports are blocked, so TestClient and
+    httpx.MockTransport keep working. Tests marked ``live`` are exempt.
+    """
+    monkeypatch.setenv("POE_DATA_DIR", str(tmp_path / "poe_data"))
+    # Art manual-ingest tests write their input files into tmp_path.
+    monkeypatch.setenv("POE_ART_MANUAL_DIR", str(tmp_path))
+    monkeypatch.setenv("EVIDENCE_SCHEDULER_ENABLED", "false")
+    monkeypatch.setenv("POE_ADMIN_TOKEN", ADMIN_TOKEN)
+    # The process-wide GDELT limit would make tests wait real seconds on each other.
+    monkeypatch.setattr(gdelt, "GDELT_RATE_LIMIT", gdelt.RateLimiter(0.0))
+    if "live" in request.keywords:
+        return
+
+    def _refuse(self, req, *args, **kwargs):
+        raise NetworkBlocked(f"test tried to reach the network: {req.method} {req.url}")
+
+    async def _refuse_async(self, req, *args, **kwargs):
+        _refuse(self, req)
+
+    monkeypatch.setattr(httpx.HTTPTransport, "handle_request", _refuse)
+    monkeypatch.setattr(httpx.AsyncHTTPTransport, "handle_async_request", _refuse_async)
 
 
 def chunk(lst: list, size: int) -> list[list]:

@@ -46,6 +46,8 @@ junit.xml
 
 # SQLite databases
 *.db
+# Committed on purpose: databases written by older code, for migration tests.
+!tests/fixtures/*.db
 *.sqlite
 *.sqlite3
 *.db-wal

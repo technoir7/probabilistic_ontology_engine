@@ -142,67 +142,20 @@ def test_live_fred_total_nonfarm_employment():
 # ---------------------------------------------------------------------------
 
 @pytest.mark.live
-def test_live_sfgov_permits():
-    """SF Gov permits endpoint returns 200 OK and non-empty records."""
-    async def _run():
-        async with SFGovClient(timeout=30.0) as client:
-            return await client.fetch_permits(lookback_days=365)
-
-    permits = asyncio.run(_run())
-    assert len(permits) > 0, (
-        "SF Gov permits (i98e-djp9.json): expected non-empty results, got 0 — "
-        "check endpoint availability and column names"
-    )
-    # Spot-check a record
-    first = permits[0]
-    assert first.filed_date is not None
-    assert isinstance(first.permit_type, str)
-
-
-# ---------------------------------------------------------------------------
-# LIVE-SF-05  SF Gov crime / police incidents (wg3w-h783.json)
-# ---------------------------------------------------------------------------
-
-@pytest.mark.live
-def test_live_sfgov_crime():
-    """SF Gov crime endpoint returns 200 OK and non-empty records."""
-    async def _run():
-        async with SFGovClient(timeout=30.0) as client:
-            return await client.fetch_incidents(lookback_days=365)
-
-    incidents = asyncio.run(_run())
-    assert len(incidents) > 0, (
-        "SF Gov crime (wg3w-h783.json): expected non-empty results, got 0 — "
-        "check endpoint availability and column names"
-    )
-    first = incidents[0]
-    assert first.incident_date is not None
-    assert isinstance(first.category, str)
-
-
-# ---------------------------------------------------------------------------
-# LIVE-SF-06  SF Gov business registrations (g8m3-pdis.json)
-# ---------------------------------------------------------------------------
-
-@pytest.mark.live
-def test_live_sfgov_business_registrations():
-    """SF Gov business registrations endpoint returns 200 OK and non-empty records.
-
-    This endpoint previously failed with HTTP 400 due to wrong column names
-    (lic_start_dt / lic_end_dt).  The fix uses location_start_date /
-    location_end_date with a proper ISO datetime filter.
+@pytest.mark.parametrize("fetch", ["fetch_permits", "fetch_incidents", "fetch_business_openings", "fetch_business_closures"])
+def test_live_sfgov_monthly_counts(fetch):
+    """
+    Each SF Open Data monthly series returns 200 OK with at least 12 complete
+    months of counts (what the z-scores need). Previously failed with a 301
+    (host moved, B16) and before that returned truncated rows (B13).
     """
     async def _run():
         async with SFGovClient(timeout=30.0) as client:
-            return await client.fetch_businesses(lookback_days=365)
+            return await getattr(client, fetch)()
 
-    businesses = asyncio.run(_run())
-    assert len(businesses) > 0, (
-        "SF Gov businesses (g8m3-pdis.json): expected non-empty results, got 0 — "
-        "check column names (location_start_date / location_end_date) and "
-        "Socrata SoQL datetime filter syntax"
-    )
-    first = businesses[0]
-    assert first.start_date is not None
-    # end_date may be None (still-active business) — just check the type
-    assert first.end_date is None or isinstance(first.end_date, date)
+    rows = asyncio.run(_run())
+    months = {r.month for r in rows}
+    assert len(months) >= 12, f"{fetch}: only {len(months)} months returned"
+    assert all(r.count > 0 for r in rows)
+    if fetch == "fetch_permits":
+        assert any("office" in r.category for r in rows), "no office permits: proposed_use not returned?"

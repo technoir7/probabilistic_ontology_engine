@@ -23,6 +23,7 @@ from fastapi.testclient import TestClient
 
 from src.domains.natural_gas_v1.domain import get_variables
 from src.engine.api import app as api_app
+from tests.fakes import patch_evidence_fetch
 from src.engine.schemas import (
     EvidenceRecord,
     MissingnessType,
@@ -70,7 +71,7 @@ def _patch_fetch(monkeypatch):
     async def fake_fetch(domain_key: str, target_date: date) -> EvidenceRecord:
         return _make_ng_record(target_date)
 
-    monkeypatch.setattr(api_app, "_fetch_evidence_record", fake_fetch)
+    patch_evidence_fetch(monkeypatch, fake_fetch)
 
 
 # ── SD-01: endpoint returns 200 with correct top-level shape ──────────────────

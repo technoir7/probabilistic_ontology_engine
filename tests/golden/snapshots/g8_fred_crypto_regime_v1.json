@@ -1,0 +1,64 @@
+{
+ "failures": {
+  "all_missing": "OSError",
+  "empty": "OSError",
+  "http_500": "FredHTTPError",
+  "not_json": "OSError"
+ },
+ "fetch_all_series": {
+  "DEXUSEU": [
+   [
+    "2026-03-01",
+    6.95,
+    "DEXUSEU"
+   ],
+   [
+    "2026-02-01",
+    6.7,
+    "DEXUSEU"
+   ],
+   [
+    "2026-01-01",
+    6.45,
+    "DEXUSEU"
+   ]
+  ]
+ },
+ "fetch_all_series_when_every_series_fails": {
+  "DEXUSEU": 0
+ },
+ "fetch_series_explicit_window": [
+  [
+   "2026-03-01",
+   6.95
+  ],
+  [
+   "2026-02-01",
+   6.7
+  ],
+  [
+   "2026-01-01",
+   6.45
+  ]
+ ],
+ "requests": [
+  {
+   "file_type": "json",
+   "limit": "12",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-01",
+   "path": "/fred/series/observations",
+   "series_id": "DEXUSEU",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-30",
+   "path": "/fred/series/observations",
+   "series_id": "DEXUSEU",
+   "sort_order": "desc"
+  }
+ ]
+}

@@ -18,7 +18,7 @@ Eleven domains are live and registered in the API:
 | `cr` | `crypto-regime-v1` | Weekly | CoinGecko + yfinance + FRED |
 | `gp` | `geopolitics-v1` | Weekly | GDELT + FRED |
 | `sf` | `sf-urban-v1` | Weekly | SF Open Data + FRED |
-| `art` | `art_prestige_regime_v1` | Monthly | art-market-domain manual/live ingestion |
+| `art` | `art_prestige_regime_v1` | Monthly | GDELT news coverage, Art Institute of Chicago acquisitions, hand-labelled reports |
 
 Most domains track eight Boolean variables across five seed candidate DAGs. The art domain tracks 25 Boolean variables across five seed candidate DAGs.
 
@@ -54,8 +54,8 @@ Most domains track eight Boolean variables across five seed candidate DAGs. The 
 **`sf-urban-v1`**: `TechHiringAccelerating`, `OfficeVacancyFalling`, `RetailClosureElevated`, `PermitActivityRising`, `CrimeIndexElevated`, `StartupFormationRising`, `FootTrafficRecovering`, `PopulationFlowPositive`
 — SF Open Data: permits (`i98e-djp9`), crime (`wg3w-h783`), businesses (`g8m3-pdis`); FRED: `SANF806INFO`, `SANF806LEIH`, `SANF806NA` (SF-Oakland-Fremont MSA, monthly SA)
 
-**`art_prestige_regime_v1`**: 25 art prestige regime variables supplied by the external `art-market-domain` package; backend registers `ArtPrestigeRegimeV1` under key `art`.
-— Manual JSON ingestion via `art_prestige_regime_v1.manual_ingest`; live ingestion is owned by the art domain package.
+**`art_prestige_regime_v1`**: 25 art prestige regime variables (institutional, market, cultural) and five seed hypotheses, in `src/domains/art_prestige_regime_v1`.
+— Fetched monthly where a series measures the variable (see `ingestion/pipeline.py` `MEASURES`); hand-labelled reports in `report_files/` cover the rest under the rules in `reports.py`. Unmeasured variables are MISSING.
 
 ## Architecture
 
@@ -72,9 +72,25 @@ Core services:
 - `EdgeExistenceService`: BIC-style edge existence updates and pruning.
 - `PopulationManager`: candidate scoring, pruning, mutation, paradigm-shift tracking.
 - `InferenceService`: pgmpy-backed Bayesian inference.
-- `ExploreExploitService`: empirical mutual information — implemented and tested.
+- `ExploreExploitService`: empirical mutual information — implemented and tested, not yet used by the learning loop (REFACTOR_SPEC D3).
 
 Variable identity is deterministic via `stable_variable_id(domain_module_id, variable_name)`, preserving evidence continuity across restarts.
+
+Code layout (layers import downward only; enforced by `uv run lint-imports`):
+
+```
+api/        HTTP routers, response models, view logic
+runtime/    domain registry, settings, ingest/backfill/scheduler
+engine.py   the facade over services + stores
+services/   learning, edge existence, population, inference (pure)
+stores/     SQLite repositories, migrations/*.sql, one transaction per learning cycle
+model/      CPTs, the candidate score, cadence, domain contract, errors
+domains/    one package per domain + sources/ (shared FRED/yfinance clients, helpers)
+```
+
+Adding a domain: give its package a `DomainModule` (`domain.py`) and a
+`source.open_source(env)`, then add one `DomainRegistration` in
+`src/engine/runtime/registry.py`. Nothing else names domains.
 
 ## API
 
@@ -88,7 +104,9 @@ GET  /v1/population/lineage/{candidate_id}
 GET  /v1/population/shifts
 GET  /v1/evidence/recent
 POST /v1/ingest/trigger
-POST /v1/ingest/backfill?days=N
+POST /v1/ingest/backfill?days=N             # needs Authorization: Bearer $POE_ADMIN_TOKEN
+POST /v1/ingest/art/manual?path=...          # learn new report files; needs Authorization: Bearer $POE_ADMIN_TOKEN
+POST /v1/ingest/art/rebuild?months=36        # forget art, relearn fetched months + reports (~3 min); admin token
 GET  /v1/export/narrative-snapshot
 GET  /v1/report/{domain}                     # read cached report (no LLM call)
 POST /v1/report/{domain}/refresh             # regenerate if snapshot changed (Fireworks)
@@ -113,8 +131,8 @@ Exported regime state uses BN inference posteriors, not soft priors.
 
 ```bash
 cd probabilistic_ontology_engine
-source .venv/bin/activate
-uvicorn src.engine.api.app:app --host 0.0.0.0 --port 8000 --reload
+uv sync            # creates .venv from uv.lock
+uv run uvicorn src.engine.api.app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 Environment (`.env`):
@@ -125,6 +143,8 @@ EIA_API_KEY=...                     # required for NG
 FIREWORKS_API_KEY=...               # required for POST /v1/report/{domain}/refresh
 EVIDENCE_SCHEDULER_ENABLED=true
 POE_DATA_DIR=/data                  # Railway: persistent volume mount; default "." loses reports on redeploy
+POE_ADMIN_TOKEN=...                 # enables backfill and the art routes; unset = those routes return 503
+POE_CORS_ORIGINS=https://x.vercel.app,http://localhost:3000   # default "*"; read before .env loads, so set it in the real environment
 ```
 
 No key required for SF Open Data, CoinGecko public endpoints, or GDELT. SEC EDGAR requires only a valid `User-Agent` header.
@@ -132,13 +152,18 @@ No key required for SF Open Data, CoinGecko public endpoints, or GDELT. SEC EDGA
 ## Tests
 
 ```bash
-# Standard suite (live tests excluded automatically):
-.venv/bin/python -m pytest tests/ -v
-# 370 passed, 6 deselected
+# Standard suite (live tests excluded automatically; real HTTP is blocked):
+uv run pytest
 
 # Live tests only (hit real external APIs):
-.venv/bin/python -m pytest tests/ -v -m live
-# 6 passed
+uv run pytest -m live
+
+# Regenerate golden snapshots after an intentional behaviour change,
+# then review the snapshot diff before committing:
+POE_UPDATE_GOLDEN=1 uv run pytest tests/golden
 ```
+
+`tests/golden/` pins engine, API, domain and calendar behaviour as committed
+JSON snapshots; see `REFACTOR_SPEC.md` §7 Phase 0.
 
 See `SNAPSHOT.md` for the full current-state handoff and `NEXT.md` for the active priority queue.

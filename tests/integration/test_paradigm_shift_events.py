@@ -73,13 +73,13 @@ def _make_stack(candidates, max_pop=10, rng_seed=42):
 def _run_cycle(ps, ls, ees, pm, batch, idx=0):
     pop = pm.get_population(DOMAIN_ID)
     for c in pop.active_candidates():
+        ll = ls.compute_log_likelihood(batch, c)  # before learning it, as the engine does
         ls.accumulate(batch, c)
         ees.update(c)
         ees.prune_below_threshold(c, ps)
-        ll = ls.compute_log_likelihood(batch, c)
         pm.update_score(DOMAIN_ID, c.candidate_id, ll, idx, batch_size=len(batch))
     pm.prune_low_scorers(DOMAIN_ID)
-    pm.introduce_variants(DOMAIN_ID, ls)
+    pm.introduce_variants(DOMAIN_ID)
     pm.end_cycle(DOMAIN_ID)
 
 
@@ -130,17 +130,18 @@ def test_pse_02_no_shift_when_dominant_unchanged():
 
     ps, ls, ees, pm, pop_store = _make_stack([cand_tstar, cand_null])
 
-    # Run a single batch — T* should dominate from the start and stay there.
-    # With 2 candidates T* data clearly separates them.
-    first_batch = gen.sample(n=50)
-    _run_cycle(ps, ls, ees, pm, first_batch, 0)
+    # Let T* take the lead first. The first batch is scored before anything is
+    # learned, so it only reflects the BIC penalty and favours the sparser null.
+    for i, batch in enumerate(_chunk(gen.sample(n=150), 50)):
+        _run_cycle(ps, ls, ees, pm, batch, i)
 
     dom_after_first = pm.dominant(DOMAIN_ID)
     assert dom_after_first is not None
 
     # Run more T* batches — dominant should not change
+    shifts_before = len(pop_store.load_shift_events(DOMAIN_ID))
     for i, batch in enumerate(_chunk(gen.sample(n=150), 50)):
-        _run_cycle(ps, ls, ees, pm, batch, 1 + i)
+        _run_cycle(ps, ls, ees, pm, batch, 3 + i)
 
     dom_final = pm.dominant(DOMAIN_ID)
     assert dom_final is not None
@@ -149,11 +150,7 @@ def test_pse_02_no_shift_when_dominant_unchanged():
     )
 
     events = pop_store.load_shift_events(DOMAIN_ID)
-    # May have 0 or very few — definitely fewer than cycles run (not every cycle is a shift)
-    n_cycles = 4  # 1 first + 3 subsequent
-    assert len(events) < n_cycles, (
-        f"Too many shift events ({len(events)}) for a stable dominant — expected < {n_cycles}"
-    )
+    assert len(events) == shifts_before, "a shift was logged while the dominant held"
 
 
 # ---------------------------------------------------------------------------
@@ -237,20 +234,22 @@ def test_pse_04_domain_isolation():
     for i, batch in enumerate(_chunk(gen_a.sample(n=300), 30)):
         pop = pm.get_population(DOMAIN_A)
         for c in pop.active_candidates():
+            ll = ls.compute_log_likelihood(batch, c)
             ls.accumulate(batch, c); ees.update(c); ees.prune_below_threshold(c, ps)
-            pm.update_score(DOMAIN_A, c.candidate_id, ls.compute_log_likelihood(batch, c), i, len(batch))
+            pm.update_score(DOMAIN_A, c.candidate_id, ll, i, len(batch))
         pm.prune_low_scorers(DOMAIN_A)
-        pm.introduce_variants(DOMAIN_A, ls)
+        pm.introduce_variants(DOMAIN_A)
         pm.end_cycle(DOMAIN_A)
 
     gen_a.switch_regime("T_alt")
     for i, batch in enumerate(_chunk(gen_a.sample(n=300), 30)):
         pop = pm.get_population(DOMAIN_A)
         for c in pop.active_candidates():
+            ll = ls.compute_log_likelihood(batch, c)
             ls.accumulate(batch, c); ees.update(c); ees.prune_below_threshold(c, ps)
-            pm.update_score(DOMAIN_A, c.candidate_id, ls.compute_log_likelihood(batch, c), 10+i, len(batch))
+            pm.update_score(DOMAIN_A, c.candidate_id, ll, 10+i, len(batch))
         pm.prune_low_scorers(DOMAIN_A)
-        pm.introduce_variants(DOMAIN_A, ls)
+        pm.introduce_variants(DOMAIN_A)
         pm.end_cycle(DOMAIN_A)
 
     events_a = pop_store.load_shift_events(DOMAIN_A)

@@ -12,15 +12,13 @@ Responsibilities:
 """
 from __future__ import annotations
 
-import copy
-import math
 import random
 from datetime import datetime
-from typing import Any
 from uuid import UUID, uuid4
 
-import networkx as nx
 
+from ..model.scoring import add_to_window, candidate_score
+from ..model.scoring import dominant as best_candidate
 from ..schemas import (
     CandidateStatus,
     DependencyEdge,
@@ -28,14 +26,13 @@ from ..schemas import (
     EdgeExistenceThresholdConfig,
     OntologyCandidate,
     OntologyPopulation,
-    Variable,
 )
 from ..stores.parameter_store import ParameterStore
 from ..stores.population_store import PopulationStore
 
 
-# Minimum number of batches before pruning is considered
-_MIN_BATCHES_FOR_PRUNING = 3
+# Pruning starts once any candidate has scored this many evidence records.
+_MIN_RECORDS_FOR_PRUNING = 3
 
 
 class PopulationManager:
@@ -88,6 +85,34 @@ class PopulationManager:
             self.pop_store.save_candidate(c)
         return pop
 
+    def adopt(
+        self,
+        domain_module_id: str,
+        population: OntologyPopulation,
+        admissible_edges: set[tuple[str, str]],
+        state: dict,
+    ) -> None:
+        """Install a population restored from storage, with the rng where it left off."""
+        self._populations[domain_module_id] = population
+        self._admissible_edges[domain_module_id] = admissible_edges
+        self._last_mutation_stats[domain_module_id] = dict(state.get("mutation_stats", {}))
+        version, internal, gauss_next = state["rng_state"]
+        self.rng.setstate((version, tuple(internal), gauss_next))
+
+    def forget(self, domain_module_id: str) -> None:
+        """Drop the domain's in-memory population (for a reset; storage is separate)."""
+        self._populations.pop(domain_module_id, None)
+        self._admissible_edges.pop(domain_module_id, None)
+        self._last_mutation_stats.pop(domain_module_id, None)
+
+    def export_state(self, domain_module_id: str) -> dict:
+        """What adopt() needs besides the population itself (JSON-serializable)."""
+        version, internal, gauss_next = self.rng.getstate()
+        return {
+            "rng_state": [version, list(internal), gauss_next],
+            "mutation_stats": self.last_mutation_stats(domain_module_id),
+        }
+
     # ------------------------------------------------------------------
     # Accessors
     # ------------------------------------------------------------------
@@ -97,11 +122,7 @@ class PopulationManager:
 
     def dominant(self, domain_module_id: str) -> OntologyCandidate | None:
         """Return highest average-score active candidate (fair to late-arrivals)."""
-        pop = self._populations[domain_module_id]
-        active = pop.active_candidates()
-        if not active:
-            return None
-        return max(active, key=lambda c: self._avg_score(c))
+        return best_candidate(self._populations[domain_module_id].active_candidates())
 
     def dominant_matches_structure(
         self, domain_module_id: str, target_signature: frozenset[tuple[str, str]]
@@ -131,47 +152,15 @@ class PopulationManager:
             if c.candidate_id == candidate_id:
                 c.log_score += log_likelihood
                 c.evidence_count += batch_size   # count actual records
-                self.pop_store.update_score(c.candidate_id, c.log_score, c.evidence_count)
+                c.window_log_score, c.window_evidence = add_to_window(
+                    c.window_log_score, c.window_evidence, log_likelihood, batch_size
+                )
+                self.pop_store.update_score(
+                    c.candidate_id, c.log_score, c.evidence_count,
+                    window=(c.window_log_score, c.window_evidence),
+                )
                 self.pop_store.append_score_record(c.candidate_id, log_likelihood, batch_index)
                 break
-
-    def _avg_score(self, candidate: OntologyCandidate, multiplier: float = 1.0) -> float:
-        """
-        BIC-corrected average log-likelihood (for fair cross-candidate comparison).
-
-        BIC = log_lik - 0.5 * k * log(N) * multiplier
-        where k = total free parameters in the model.
-
-        For BOOLEAN variables with boolean parents:
-          free_params_per_var = 2^(num_parents)
-
-        We count ALL edges (including disabled/pruned ones) when computing k.
-        This penalizes candidates that explored extra edges even if later pruned,
-        preventing warm-started variants from gaming the score by adding then
-        pruning spurious edges.
-
-        Parameters
-        ----------
-        multiplier : float, default 1.0
-            Scale factor applied to the BIC penalty.  The live system always
-            uses 1.0 (strict).  The diagnostic endpoint passes 0.25 for the
-            ``bic_score_explore`` side-by-side column without affecting
-            production scoring.
-        """
-        n = candidate.evidence_count
-        if n == 0:
-            return float("-inf")
-        avg_ll = candidate.log_score / n
-        # Count total free parameters — include disabled edges in parent count
-        k = 0
-        for v in candidate.variables:
-            n_parents = sum(
-                1 for e in candidate.edges
-                if e.child_variable_id == v.variable_id
-            )
-            k += 2 ** n_parents
-        bic_penalty = 0.5 * k * math.log(max(n, 2)) / n * multiplier
-        return avg_ll - bic_penalty
 
     # ------------------------------------------------------------------
     # Pruning
@@ -188,11 +177,11 @@ class PopulationManager:
             return []
 
         # Only prune if enough evidence processed (at least 3 batches of any candidate)
-        if not any(c.evidence_count >= _MIN_BATCHES_FOR_PRUNING for c in active):
+        if not any(c.evidence_count >= _MIN_RECORDS_FOR_PRUNING for c in active):
             return []
 
         # Rank by average score (fair across candidates with different evidence counts)
-        ranked = sorted(active, key=lambda c: self._avg_score(c))
+        ranked = sorted(active, key=candidate_score)
         n_prune = max(1, len(active) // 4)
 
         pruned = []
@@ -212,11 +201,7 @@ class PopulationManager:
     # Variant introduction
     # ------------------------------------------------------------------
 
-    def introduce_variants(
-        self,
-        domain_module_id: str,
-        learning_service=None,
-    ) -> list[OntologyCandidate]:
+    def introduce_variants(self, domain_module_id: str) -> list[OntologyCandidate]:
         """
         Introduce new candidates as variants of the top survivors.
         Variants are: add one edge OR remove one edge.
@@ -230,8 +215,9 @@ class PopulationManager:
         if slots <= 0:
             return []
 
-        # Sort survivors by score (best first)
-        survivors = sorted(active, key=lambda c: c.log_score, reverse=True)
+        # Best first by the same score that decides dominance and pruning; raw
+        # log_score mostly measures how much evidence a candidate has seen.
+        survivors = sorted(active, key=candidate_score, reverse=True)
         admissible = self._admissible_edges.get(domain_module_id, set())
 
         new_candidates: list[OntologyCandidate] = []
@@ -243,8 +229,8 @@ class PopulationManager:
         _duplicate_rejections = 0
 
         while len(new_candidates) < slots and attempts < max_attempts:
-            attempts += 1
             parent_cand = survivors[attempts % len(survivors)]
+            attempts += 1
             variant = self._make_variant(domain_module_id, parent_cand, admissible)
             if variant is None:
                 continue
@@ -265,18 +251,17 @@ class PopulationManager:
             # Initialize CPTs for the new candidate (clone from parent)
             self.ps.clone_candidate(parent_cand.candidate_id, variant.candidate_id)
 
-            # If learning_service provided, re-initialize new edges
-            if learning_service is not None:
-                for var in variant.variables:
-                    parent_vars = variant.get_parents(var.variable_id)
-                    parent_names = sorted(pv.name for pv in parent_vars)
-                    old_parents = (
-                        self.ps.get(variant.candidate_id, var.name).parents
-                        if self.ps.has(variant.candidate_id, var.name)
-                        else []
-                    )
-                    if set(parent_names) != set(old_parents):
-                        self.ps.update_parents(variant.candidate_id, var.name, parent_names)
+            # The clone has the parent's parent sets; reset the CPT of every
+            # variable whose parents the mutation changed.
+            for var in variant.variables:
+                parent_names = sorted(pv.name for pv in variant.get_parents(var.variable_id))
+                old_parents = (
+                    self.ps.get(variant.candidate_id, var.name).parents
+                    if self.ps.has(variant.candidate_id, var.name)
+                    else []
+                )
+                if set(parent_names) != set(old_parents):
+                    self.ps.update_parents(variant.candidate_id, var.name, parent_names)
 
             new_candidates.append(variant)
 
@@ -383,6 +368,8 @@ class PopulationManager:
             edges=variant_edges,
             log_score=parent.log_score,
             evidence_count=parent.evidence_count,
+            window_log_score=parent.window_log_score,
+            window_evidence=parent.window_evidence,
             status=CandidateStatus.ACTIVE,
             description=description,
         )
@@ -448,29 +435,23 @@ class PopulationManager:
         if shifted and prev_cand is not None:
             new_dom = pop.dominant()
             if new_dom is not None:
-                try:
-                    self.pop_store.append_shift_event(
-                        domain_module_id=domain_module_id,
-                        generation=pop.generation,
-                        prev_dominant_id=prev_cand.candidate_id,
-                        prev_dominant_name=(
-                            prev_cand.description
-                            or str(prev_cand.candidate_id)[:8]
-                        ),
-                        new_dominant_id=new_dom.candidate_id,
-                        new_dominant_name=(
-                            new_dom.description
-                            or str(new_dom.candidate_id)[:8]
-                        ),
-                        evidence_count_at_shift=new_dom.evidence_count,
-                    )
-                except Exception as exc:
-                    # Shift logging must never crash the learning loop.
-                    import logging
-                    logging.getLogger(__name__).warning(
-                        "Failed to persist paradigm-shift event for %s: %s",
-                        domain_module_id, exc,
-                    )
+                # Inside the learning cycle's transaction: a failed write fails
+                # the cycle instead of silently losing the event.
+                self.pop_store.append_shift_event(
+                    domain_module_id=domain_module_id,
+                    generation=pop.generation,
+                    prev_dominant_id=prev_cand.candidate_id,
+                    prev_dominant_name=(
+                        prev_cand.description
+                        or str(prev_cand.candidate_id)[:8]
+                    ),
+                    new_dominant_id=new_dom.candidate_id,
+                    new_dominant_name=(
+                        new_dom.description
+                        or str(new_dom.candidate_id)[:8]
+                    ),
+                    evidence_count_at_shift=new_dom.evidence_count,
+                )
 
         self.pop_store.save_population(pop)
         return pop.summary()

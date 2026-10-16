@@ -20,6 +20,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from src.engine.api import app as api_app
+from src.domains.natural_gas_v1.domain import get_variables
+from tests.fakes import patch_evidence_fetch, soft_record
 
 # Expected variable counts per domain short key
 _DOMAIN_VAR_COUNTS: dict[str, int] = {
@@ -64,12 +66,12 @@ def client(tmp_path_factory):
     Single TestClient shared across all NS tests.
     No scheduler, fresh in-memory DBs in a temp directory.
     """
-    import os
     tmp = tmp_path_factory.mktemp("ns_test")
-    os.environ["EVIDENCE_SCHEDULER_ENABLED"] = "false"
-    os.environ["POE_DATA_DIR"] = str(tmp)
-    with TestClient(api_app.app) as c:
-        yield c
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setenv("EVIDENCE_SCHEDULER_ENABLED", "false")
+        mp.setenv("POE_DATA_DIR", str(tmp))
+        with TestClient(api_app.app) as c:
+            yield c
 
 
 # ---------------------------------------------------------------------------
@@ -293,20 +295,18 @@ def test_ns_11_regime_state_uses_inference(tmp_path, monkeypatch):
     2. The regime_state probability for each variable matches the probability
        returned by POST /v1/inference/query for the same variable.
     """
-    import os
     monkeypatch.setenv("EVIDENCE_SCHEDULER_ENABLED", "false")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
 
+    async def fake_fetch(domain_key, target_date):
+        assert domain_key == "ng"
+        return soft_record(get_variables().values(), target_date, seed=11)
+
+    patch_evidence_fetch(monkeypatch, fake_fetch)
+
     with TestClient(api_app.app) as c:
-        # Ingest one day of evidence via the trigger endpoint.
-        # This requires no external API keys — the NG domain uses mock-friendly
-        # defaults when EIA/NOAA aren't reachable; we skip if it errors.
         trigger_resp = c.post("/v1/ingest/trigger?domain=ng")
-        if trigger_resp.status_code != 200:
-            pytest.skip(
-                f"Ingestion trigger failed ({trigger_resp.status_code}); "
-                "skipping inference comparison test"
-            )
+        assert trigger_resp.status_code == 200, trigger_resp.text
 
         snap = c.get("/v1/export/narrative-snapshot?domain=ng").json()
         regime = snap["current_regime_state"]

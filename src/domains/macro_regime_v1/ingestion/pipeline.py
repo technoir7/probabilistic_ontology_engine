@@ -84,23 +84,19 @@ during data outages while signalling genuine uncertainty to the ontology.
 from __future__ import annotations
 
 import logging
-import math
 import statistics
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, timedelta
 from typing import Optional
-from uuid import uuid4
 
 import numpy as np
 
 from ....engine.schemas import (
     EvidenceRecord,
-    MissingnessType,
-    ObservedAssignment,
-    SourceType,
 )
 from ..domain import get_variables
 from .fred_client import FREDClient, FREDObservation
+from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
 
 logger = logging.getLogger(__name__)
 
@@ -130,7 +126,8 @@ _MIN_OBS: dict[str, int] = {
 # Snapshot dataclass — carries all derived signals
 # ---------------------------------------------------------------------------
 
-@dataclass
+# slots: a misspelled field name raises instead of silently adding a field.
+@dataclass(slots=True)
 class MacroRegimeSnapshot:
     """
     Derived signals and soft-probability calibrations for one evidence week.
@@ -172,6 +169,8 @@ class MacroRegimeSnapshot:
     ai_risk_on: bool = False
 
     # Data confidence per variable (1.0 = full data, 0.5 = degraded/fallback)
+    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
+    missing: set[str] = field(default_factory=set)
     confidence: dict[str, float] = field(default_factory=dict)
 
     # Target date for this evidence record
@@ -182,29 +181,9 @@ class MacroRegimeSnapshot:
 # Sigmoid and soft-bool helpers
 # ---------------------------------------------------------------------------
 
-def _sigmoid(x: float) -> float:
-    """Numerically stable sigmoid."""
-    if x >= 0:
-        return 1.0 / (1.0 + math.exp(-x))
-    ex = math.exp(x)
-    return ex / (1.0 + ex)
-
 
 def _soft_bool(signal: float) -> float:
-    """Convert a signed signal to P(True) via sigmoid, clamped to [0.01, 0.99]."""
-    return max(_CLAMP_LO, min(_CLAMP_HI, _sigmoid(signal)))
-
-
-def _zscore(current: float, values: list[float]) -> float:
-    """Rolling z-score: (current - mean) / std. Returns 0.0 if std ≈ 0."""
-    if len(values) < 2:
-        return 0.0
-    arr = np.array(values, dtype=float)
-    mu = float(np.mean(arr))
-    sigma = float(np.std(arr, ddof=1))
-    if sigma < 1e-9:
-        return 0.0
-    return (current - mu) / sigma
+    return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
 
 
 def _values_from_obs(obs: list[FREDObservation]) -> list[float]:
@@ -465,6 +444,7 @@ def compute_snapshot(
     t10y2y_obs = observations.get("T10Y2Y", [])
     t10y2y_sig, t10y2y_conf = _compute_yield_curve_signal(t10y2y_obs, target_date)
     if t10y2y_sig is None:
+        snap.missing.add("YieldCurveInverted")
         t10y2y_sig = 0.0
     snap.t10y2y_weekly_median = (
         -t10y2y_sig * 0.30 if t10y2y_sig is not None else None
@@ -477,6 +457,7 @@ def compute_snapshot(
     cpi_obs = observations.get("CPIAUCSL", [])
     infl_sig, infl_conf = _compute_inflation_signal(cpi_obs)
     if infl_sig is None:
+        snap.missing.add("InflationShock")
         infl_sig = 0.0
     snap.cpi_yoy_pct = (infl_sig * 0.75 + 3.5) if infl_sig is not None else None
     snap.p_inflation_shock = _soft_bool(infl_sig)
@@ -487,6 +468,7 @@ def compute_snapshot(
     walcl_obs = observations.get("WALCL", [])
     liq_sig, liq_conf = _compute_liquidity_signal(walcl_obs)
     if liq_sig is None:
+        snap.missing.add("LiquidityStress")
         liq_sig = 0.0
     snap.walcl_13w_change_pct = (
         -liq_sig / 5.0 if liq_sig is not None else None
@@ -499,6 +481,7 @@ def compute_snapshot(
     hy_obs = observations.get("BAMLH0A0HYM2", [])
     credit_sig, credit_conf = _compute_credit_signal(hy_obs)
     if credit_sig is None:
+        snap.missing.add("CreditSpreadStress")
         credit_sig = 0.0
     snap.hy_spread_zscore = credit_sig
     snap.p_credit_spread_stress = _soft_bool(credit_sig)
@@ -509,6 +492,7 @@ def compute_snapshot(
     vix_obs = observations.get("VIXCLS", [])
     vol_sig, vol_conf = _compute_volatility_signal(vix_obs)
     if vol_sig is None:
+        snap.missing.add("VolatilityShock")
         vol_sig = 0.0
     snap.vix_signal = vol_sig
     snap.p_volatility_shock = _soft_bool(vol_sig)
@@ -519,6 +503,7 @@ def compute_snapshot(
     dex_obs = observations.get("DEXUSEU", [])
     dol_sig, dol_conf = _compute_dollar_signal(dex_obs)
     if dol_sig is None:
+        snap.missing.add("DollarStrength")
         dol_sig = 0.0
     snap.dexuseu_zscore = dol_sig
     snap.p_dollar_strength = _soft_bool(dol_sig)
@@ -529,6 +514,7 @@ def compute_snapshot(
     unrate_obs = observations.get("UNRATE", [])
     eq_sig, eq_conf = _compute_equity_signal(unrate_obs)
     if eq_sig is None:
+        snap.missing.add("EquityRiskOn")
         eq_sig = 0.0
     snap.unrate_signal = eq_sig
     snap.p_equity_risk_on = _soft_bool(eq_sig)
@@ -539,6 +525,7 @@ def compute_snapshot(
     nasdaq_obs = observations.get("NASDAQCOM", [])
     ai_sig, ai_conf = _compute_ai_signal(nasdaq_obs)
     if ai_sig is None:
+        snap.missing.add("AIRiskOn")
         ai_sig = 0.0
     snap.nasdaq_return_zscore = ai_sig
     snap.p_ai_risk_on = _soft_bool(ai_sig)
@@ -573,7 +560,7 @@ class MacroRegimePipeline:
 
     async def fetch_evidence(
         self,
-        target_date: Optional[date] = None,
+        target_date: date,
     ) -> EvidenceRecord:
         """
         Fetch FRED data for the given week and return an EvidenceRecord.
@@ -594,8 +581,6 @@ class MacroRegimePipeline:
         IOError
             If all FRED series fail to return data.
         """
-        if target_date is None:
-            target_date = _last_friday()
 
         observations = await self._fred.fetch_all_series(end_date=target_date)
         snapshot = compute_snapshot(observations, target_date)
@@ -620,102 +605,32 @@ class MacroRegimePipeline:
 
         This method is synchronous and has no external dependencies.
         """
-        variables = get_variables()
-        conf = snapshot.confidence
-
-        def _assignment(
-            var_name: str,
-            observed_value: bool,
-            p_true: float,
-        ) -> ObservedAssignment:
-            c = conf.get(var_name, 1.0)
-            return ObservedAssignment(
-                variable_id=variables[var_name].variable_id,
-                observed_value=observed_value,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=c,
-                probabilities={True: p_true, False: 1.0 - p_true},
-            )
-
-        assignments = [
-            _assignment(
-                "YieldCurveInverted",
-                snapshot.yield_curve_inverted,
-                snapshot.p_yield_curve_inverted,
-            ),
-            _assignment(
-                "InflationShock",
-                snapshot.inflation_shock,
-                snapshot.p_inflation_shock,
-            ),
-            _assignment(
-                "LiquidityStress",
-                snapshot.liquidity_stress,
-                snapshot.p_liquidity_stress,
-            ),
-            _assignment(
-                "CreditSpreadStress",
-                snapshot.credit_spread_stress,
-                snapshot.p_credit_spread_stress,
-            ),
-            _assignment(
-                "VolatilityShock",
-                snapshot.volatility_shock,
-                snapshot.p_volatility_shock,
-            ),
-            _assignment(
-                "DollarStrength",
-                snapshot.dollar_strength,
-                snapshot.p_dollar_strength,
-            ),
-            _assignment(
-                "EquityRiskOn",
-                snapshot.equity_risk_on,
-                snapshot.p_equity_risk_on,
-            ),
-            _assignment(
-                "AIRiskOn",
-                snapshot.ai_risk_on,
-                snapshot.p_ai_risk_on,
-            ),
-        ]
-
-        target_date = snapshot.target_date or datetime.now(timezone.utc).date()
-        ts = datetime(
-            target_date.year,
-            target_date.month,
-            target_date.day,
-            tzinfo=timezone.utc,
-        )
-
-        # Overall record confidence: mean of per-variable confidences
-        overall_confidence = float(
-            sum(conf.values()) / len(conf)
-        ) if conf else 1.0
-
-        return EvidenceRecord(
-            evidence_id=uuid4(),
-            timestamp=ts,
-            observed_assignments=assignments,
-            source_type=SourceType.API,
-            source_ref=(
-                "FRED:T10Y2Y+CPIAUCSL+WALCL+BAMLH0A0HYM2"
-                "+VIXCLS+DEXUSEU+UNRATE+NASDAQCOM"
-                f"@week-ending-{target_date}"
-            ),
-            confidence=overall_confidence,
+        target_date = snapshot.target_date
+        return build_soft_record(
+            module_id="macro-regime-v1",
+            variables=get_variables(),
+            states=[
+                ("YieldCurveInverted", snapshot.yield_curve_inverted, snapshot.p_yield_curve_inverted),
+                ("InflationShock", snapshot.inflation_shock, snapshot.p_inflation_shock),
+                ("LiquidityStress", snapshot.liquidity_stress, snapshot.p_liquidity_stress),
+                ("CreditSpreadStress", snapshot.credit_spread_stress, snapshot.p_credit_spread_stress),
+                ("VolatilityShock", snapshot.volatility_shock, snapshot.p_volatility_shock),
+                ("DollarStrength", snapshot.dollar_strength, snapshot.p_dollar_strength),
+                ("EquityRiskOn", snapshot.equity_risk_on, snapshot.p_equity_risk_on),
+                ("AIRiskOn", snapshot.ai_risk_on, snapshot.p_ai_risk_on),
+            ],
+            confidence=snapshot.confidence,
+            missing=snapshot.missing,
+            target_date=target_date,
+            source_ref="FRED:T10Y2Y+CPIAUCSL+WALCL+BAMLH0A0HYM2"
+            "+VIXCLS+DEXUSEU+UNRATE+NASDAQCOM"
+            f"@week-ending-{target_date}",
         )
 
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
-
-def _last_friday(as_of: Optional[date] = None) -> date:
-    """Return the most recent Friday on or before `as_of` (default: today)."""
-    today = as_of or datetime.now(timezone.utc).date()
-    days_since_friday = (today.weekday() - 4) % 7  # Monday=0, Friday=4
-    return today - timedelta(days=days_since_friday)
 
 
 def _log_snapshot(snapshot: MacroRegimeSnapshot, target_date: date) -> None:

@@ -5,15 +5,11 @@ Converts an OntologyCandidate (with CPT data from ParameterStore) into a
 pgmpy BayesianNetwork and answers MARGINAL queries.
 
 Population-level queries aggregate over multiple candidates, weighted by
-exp(log_score).
+model.scoring.score_weights.
 """
 from __future__ import annotations
 
-import math
-from typing import Any
 
-import numpy as np
-from pgmpy.factors.discrete import TabularCPD
 from pgmpy.inference import VariableElimination
 from pgmpy.models import DiscreteBayesianNetwork as BayesianNetwork
 
@@ -23,7 +19,12 @@ from ..schemas import (
     OntologyPopulation,
     PopulationAggregation,
 )
-from ..stores.parameter_store import CPTData, ParameterStore
+from ..model.errors import InferenceFailed
+from ..model.scoring import candidate_score, score_weights
+from ..stores.parameter_store import ParameterStore
+from .bn_model import build_network, encode_value
+
+_NEGLIGIBLE_WEIGHT = 1e-9
 
 
 class InferenceService:
@@ -44,128 +45,81 @@ class InferenceService:
             dom = population.dominant()
             if dom is None:
                 return {"error": "no active candidates"}
-            result = self._query_candidate(dom, inference_query)
+            result = self.query_candidate(dom, inference_query)
             result["population_summary"] = population.summary()
             return result
 
         elif agg == PopulationAggregation.WEIGHTED_AVERAGE:
-            active = population.active_candidates()
-            weights = population.score_weights()
-            all_results = [
-                self._query_candidate(c, inference_query) for c in active
+            # Skip structures the data has all but ruled out: with posterior
+            # weights most candidates are ~0, and each query is a full VE run.
+            weighted = [
+                (c, w) for c, w in zip(population.active_candidates(), population.score_weights())
+                if w > _NEGLIGIBLE_WEIGHT
             ]
+            total = sum(w for _, w in weighted)
+            weights = [w / total for _, w in weighted]
+            all_results = [self.query_candidate(c, inference_query) for c, _ in weighted]
             merged = self._weighted_merge(all_results, weights, inference_query.target_variables)
             merged["population_summary"] = population.summary()
             return merged
 
         else:  # TOP_K
+            # Rank and weight by the population score. exp(raw log_score)
+            # underflowed to 0.0 for every candidate at real scores.
             top_k = sorted(
-                population.active_candidates(), key=lambda c: c.log_score, reverse=True
+                population.active_candidates(), key=candidate_score, reverse=True
             )[:3]
-            weights = self._normalize_weights([math.exp(c.log_score) for c in top_k])
-            all_results = [self._query_candidate(c, inference_query) for c in top_k]
+            weights = score_weights(top_k)
+            all_results = [self.query_candidate(c, inference_query) for c in top_k]
             merged = self._weighted_merge(all_results, weights, inference_query.target_variables)
             merged["population_summary"] = population.summary()
             return merged
 
     # ------------------------------------------------------------------
-    def _query_candidate(
+    def query_candidate(
         self, candidate: OntologyCandidate, query: InferenceQuery
     ) -> dict:
-        """Run inference on a single candidate and return posterior dict."""
-        try:
-            model = self._build_pgmpy_model(candidate)
-            ve = VariableElimination(model)
+        """
+        Posteriors for the query's target variables under this one candidate.
 
-            evidence = {}
-            for obs in query.conditioned_on:
-                var = candidate.get_variable_by_id(obs.variable_id)
-                if var is None:
-                    for v in candidate.variables:
-                        if str(v.variable_id) == str(obs.variable_id):
-                            var = v
-                            break
-                if var is not None:
-                    evidence[var.name] = _encode_value(obs.observed_value, var.support)
+        Raises UnknownValue for evidence outside a variable's support and
+        InferenceFailed if pgmpy cannot answer; it does not fall back to a
+        uniform distribution, which would read as "maximally uncertain".
+        """
+        model = self._build_pgmpy_model(candidate)
+        ve = VariableElimination(model)
 
-            posteriors = {}
-            for vname in query.target_variables:
-                var = candidate.get_variable_by_name(vname)
-                if var is None:
-                    continue
-                try:
-                    q = ve.query([vname], evidence=evidence, show_progress=False)
-                    dist = {}
-                    for i, val in enumerate(var.support):
-                        dist[str(val)] = float(q.values[i])
-                    posteriors[vname] = dist
-                except Exception as e:
-                    # Fallback: use marginal from CPT
-                    posteriors[vname] = self._marginal_fallback(candidate, vname)
+        evidence = {}
+        for obs in query.conditioned_on:
+            var = candidate.get_variable_by_id(obs.variable_id)
+            if var is not None:
+                evidence[var.name] = encode_value(obs.observed_value, var.support)
 
-            result: dict = {"posteriors": posteriors, "candidate_id": str(candidate.candidate_id)}
+        posteriors = {}
+        for vname in query.target_variables:
+            var = candidate.get_variable_by_name(vname)
+            if var is None:
+                continue
+            try:
+                q = ve.query([vname], evidence=evidence, show_progress=False)
+            except Exception as exc:
+                raise InferenceFailed(
+                    f"inference for {vname!r} failed on candidate {candidate.candidate_id}: {exc}"
+                ) from exc
+            posteriors[vname] = {str(val): float(q.values[i]) for i, val in enumerate(var.support)}
 
-            if query.explain:
-                result["explanations"] = self._explain(candidate, query, posteriors)
-
-            return result
-
-        except Exception as e:
-            return {
-                "posteriors": {},
-                "candidate_id": str(candidate.candidate_id),
-                "error": str(e),
-            }
+        result: dict = {"posteriors": posteriors, "candidate_id": str(candidate.candidate_id)}
+        if query.explain:
+            result["explanations"] = self._explain(candidate, query, posteriors)
+        return result
 
     # ------------------------------------------------------------------
     def _build_pgmpy_model(self, candidate: OntologyCandidate) -> BayesianNetwork:
-        """Build a pgmpy BayesianNetwork from candidate + CPTs."""
-        edges_pgmpy = []
-        for e in candidate.get_active_edges():
-            pv = candidate.get_variable_by_id(e.parent_variable_id)
-            cv = candidate.get_variable_by_id(e.child_variable_id)
-            if pv and cv:
-                edges_pgmpy.append((pv.name, cv.name))
-
-        model = BayesianNetwork(edges_pgmpy)
-        # Ensure all variables are nodes even if isolated
-        for v in candidate.variables:
-            if v.name not in model.nodes():
-                model.add_node(v.name)
-
-        # Build CPDs
-        for var in candidate.topological_order():
-            parent_vars = candidate.get_parents(var.variable_id)
-            if not self.ps.has(candidate.candidate_id, var.name):
-                # Uniform CPD as fallback
-                n = len(var.support)
-                if parent_vars:
-                    total_cols = 1
-                    for pv in parent_vars:
-                        total_cols *= len(pv.support)
-                    values = np.full((n, total_cols), 1.0 / n)
-                else:
-                    values = np.full((n, 1), 1.0 / n)
-                cpd = TabularCPD(
-                    variable=var.name,
-                    variable_card=n,
-                    values=values,
-                    evidence=[pv.name for pv in parent_vars] if parent_vars else None,
-                    evidence_card=[len(pv.support) for pv in parent_vars] if parent_vars else None,
-                )
-                model.add_cpds(cpd)
-                continue
-
-            cpt_data = self.ps.get(candidate.candidate_id, var.name)
-            cpd = _build_tabular_cpd(var, parent_vars, cpt_data)
-            model.add_cpds(cpd)
-
-        # Validate
+        model = build_network(candidate, self.ps)
         try:
             model.check_model()
-        except Exception:
-            pass  # Allow slight numerical imprecision
-
+        except ValueError:
+            pass  # CPD columns can miss summing to 1 by float error; inference still works
         return model
 
     # ------------------------------------------------------------------
@@ -212,14 +166,6 @@ class InferenceService:
         return explanations
 
     # ------------------------------------------------------------------
-    def _marginal_fallback(self, candidate: OntologyCandidate, vname: str) -> dict:
-        var = candidate.get_variable_by_name(vname)
-        if var is None:
-            return {}
-        n = len(var.support)
-        return {str(v): 1.0 / n for v in var.support}
-
-    # ------------------------------------------------------------------
     @staticmethod
     def _weighted_merge(
         results: list[dict], weights: list[float], target_variables: list[str]
@@ -232,73 +178,3 @@ class InferenceService:
                 for val, p in dist.items():
                     merged_posteriors[vname][val] = merged_posteriors[vname].get(val, 0.0) + w * p
         return {"posteriors": merged_posteriors}
-
-    @staticmethod
-    def _normalize_weights(weights: list[float]) -> list[float]:
-        total = sum(weights) or 1.0
-        return [w / total for w in weights]
-
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
-def _encode_value(value: Any, support: list) -> int:
-    """Map a Python value to its index in the support list (pgmpy uses 0-based int states)."""
-    for i, s in enumerate(support):
-        if s == value or str(s) == str(value):
-            return i
-    return 0
-
-
-def _build_tabular_cpd(var, parent_vars, cpt_data: CPTData) -> TabularCPD:
-    """
-    Build a pgmpy TabularCPD from our CPTData.
-
-    pgmpy column ordering:
-        Evidence states iterate from the LAST evidence variable fastest.
-        e.g., evidence=['A','B'], evidence_card=[2,2]:
-        columns: (A=0,B=0),(A=0,B=1),(A=1,B=0),(A=1,B=1)
-    """
-    n_var = len(var.support)
-    evidence_names = [pv.name for pv in parent_vars]
-    evidence_cards = [len(pv.support) for pv in parent_vars]
-    evidence_supports = {pv.name: pv.support for pv in parent_vars}
-
-    if not parent_vars:
-        # Root node
-        probs = []
-        for val in var.support:
-            probs.append([cpt_data.get_probability(val, {})])
-        return TabularCPD(
-            variable=var.name,
-            variable_card=n_var,
-            values=probs,
-        )
-
-    # Generate all parent configs in pgmpy column order
-    from itertools import product as iproduct
-    parent_value_combos = list(iproduct(*[pv.support for pv in parent_vars]))
-
-    values = []
-    for val in var.support:
-        row = []
-        for combo in parent_value_combos:
-            parent_assignment = dict(zip(evidence_names, combo))
-            p = cpt_data.get_probability(val, parent_assignment)
-            row.append(p)
-        values.append(row)
-
-    # Normalize columns to sum to 1
-    arr = np.array(values, dtype=float)
-    col_sums = arr.sum(axis=0)
-    col_sums = np.where(col_sums == 0, 1.0, col_sums)
-    arr = arr / col_sums
-
-    return TabularCPD(
-        variable=var.name,
-        variable_card=n_var,
-        values=arr.tolist(),
-        evidence=evidence_names,
-        evidence_card=evidence_cards,
-    )

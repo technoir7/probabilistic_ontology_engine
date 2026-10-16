@@ -5,47 +5,31 @@ Schema is PostgreSQL-compatible (uses JSONB as TEXT fallback in SQLite).
 from __future__ import annotations
 
 import json
-import sqlite3
 from datetime import datetime
 from pathlib import Path
 from uuid import UUID
 
 from ..schemas import EvidenceRecord
-
-
-_CREATE_TABLE = """
-CREATE TABLE IF NOT EXISTS evidence_records (
-    evidence_id   TEXT PRIMARY KEY,
-    domain_module TEXT NOT NULL,
-    timestamp     TEXT NOT NULL,
-    source_type   TEXT NOT NULL,
-    source_ref    TEXT NOT NULL DEFAULT '',
-    confidence    REAL NOT NULL DEFAULT 1.0,
-    assignments   TEXT NOT NULL DEFAULT '[]'  -- JSON array
-)
-"""
+from .database import Database
 
 
 class EvidenceStore:
-    """Thread-safe SQLite evidence store per domain module."""
+    """Append-only evidence records per domain module."""
 
-    def __init__(self, db_path: str | Path = ":memory:"):
-        self.db_path = str(db_path)
-        self._conn = sqlite3.connect(self.db_path, check_same_thread=False)
-        self._conn.execute("PRAGMA journal_mode=WAL")
-        self._conn.execute(_CREATE_TABLE)
-        self._conn.commit()
+    def __init__(self, db: Database | str | Path = ":memory:"):
+        self._db = db if isinstance(db, Database) else Database(db)
+        self._conn = self._db.conn
+        self.db_path = self._db.path
 
     # ------------------------------------------------------------------
     def append(self, record: EvidenceRecord, domain_module_id: str) -> None:
-        assignments_json = json.dumps(
-            [a.model_dump(mode="json") for a in record.observed_assignments]
-        )
+        assignments_json = _assignments_json(record)
         self._conn.execute(
             """
-            INSERT OR IGNORE INTO evidence_records
+            INSERT INTO evidence_records
               (evidence_id, domain_module, timestamp, source_type, source_ref, confidence, assignments)
             VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT (evidence_id) DO NOTHING
             """,
             (
                 str(record.evidence_id),
@@ -57,7 +41,7 @@ class EvidenceStore:
                 assignments_json,
             ),
         )
-        self._conn.commit()
+        self._db.commit()
 
     # ------------------------------------------------------------------
     def append_batch(self, records: list[EvidenceRecord], domain_module_id: str) -> None:
@@ -70,26 +54,39 @@ class EvidenceStore:
                 r.source_type.value,
                 r.source_ref,
                 r.confidence,
-                json.dumps([a.model_dump(mode="json") for a in r.observed_assignments]),
+                _assignments_json(r),
             ))
         self._conn.executemany(
             """
-            INSERT OR IGNORE INTO evidence_records
+            INSERT INTO evidence_records
               (evidence_id, domain_module, timestamp, source_type, source_ref, confidence, assignments)
             VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT (evidence_id) DO NOTHING
             """,
             rows,
         )
-        self._conn.commit()
+        self._db.commit()
 
     # ------------------------------------------------------------------
     def load_all(self, domain_module_id: str) -> list[EvidenceRecord]:
+        """Every record for the domain, oldest first. Unbounded; prefer load_latest on request paths."""
         cur = self._conn.execute(
             """SELECT evidence_id, timestamp, source_type, source_ref, confidence, assignments
                FROM evidence_records WHERE domain_module=? ORDER BY timestamp""",
             (domain_module_id,),
         )
         return [_row_to_record(row) for row in cur.fetchall()]
+
+    def load_latest(self, domain_module_id: str, limit: int | None) -> list[EvidenceRecord]:
+        """The most recent *limit* records (all if None), oldest first."""
+        if limit is None:
+            return self.load_all(domain_module_id)
+        cur = self._conn.execute(
+            """SELECT evidence_id, timestamp, source_type, source_ref, confidence, assignments
+               FROM evidence_records WHERE domain_module=? ORDER BY timestamp DESC LIMIT ?""",
+            (domain_module_id, limit),
+        )
+        return [_row_to_record(row) for row in reversed(cur.fetchall())]
 
     # ------------------------------------------------------------------
     def count(self, domain_module_id: str) -> int:
@@ -165,12 +162,59 @@ class EvidenceStore:
             migrated_records += 1
             migrated_assignments += len(assignments)
         if migrated_records:
-            self._conn.commit()
+            self._db.commit()
         return {
             "migrated_records": migrated_records,
             "migrated_assignments": migrated_assignments,
             "mismatched_records": mismatched_records,
         }
+
+    # ------------------------------------------------------------------
+    def has_record_at(self, domain_module_id: str, timestamp: datetime, source_ref: str) -> bool:
+        """True if a record from this source with exactly this timestamp is stored. One indexed query."""
+        cur = self._conn.execute(
+            "SELECT 1 FROM evidence_records WHERE domain_module=? AND timestamp=? AND source_ref=? LIMIT 1",
+            (domain_module_id, timestamp.isoformat(), source_ref),
+        )
+        return cur.fetchone() is not None
+
+    def has_record(self, evidence_id: UUID) -> bool:
+        """True if a record with this id is stored. One primary-key lookup."""
+        cur = self._conn.execute("SELECT 1 FROM evidence_records WHERE evidence_id=?", (str(evidence_id),))
+        return cur.fetchone() is not None
+
+    # ------------------------------------------------------------------
+    def restamp(self, domain_module_id: str, new_timestamp) -> tuple[int, int]:
+        """
+        Re-date records: *new_timestamp(ts)* returns the new datetime, or None
+        to leave the record alone. A record whose new timestamp is already
+        taken is deleted instead (that period is already represented).
+        Returns (moved, deleted). One read of all timestamps, then one write
+        per changed record; the caller decides the transaction.
+        """
+        rows = self._conn.execute(
+            "SELECT evidence_id, timestamp FROM evidence_records WHERE domain_module=?",
+            (domain_module_id,),
+        ).fetchall()
+        taken = {row[1] for row in rows}
+        moved = deleted = 0
+        for evidence_id, ts in rows:
+            new = new_timestamp(datetime.fromisoformat(ts))
+            if new is None:
+                continue
+            new_ts = new.isoformat()
+            if new_ts in taken:
+                self._conn.execute("DELETE FROM evidence_records WHERE evidence_id=?", (evidence_id,))
+                deleted += 1
+            else:
+                self._conn.execute(
+                    "UPDATE evidence_records SET timestamp=? WHERE evidence_id=?", (new_ts, evidence_id)
+                )
+                taken.discard(ts)
+                taken.add(new_ts)
+                moved += 1
+        self._db.commit()
+        return moved, deleted
 
     # ------------------------------------------------------------------
     def latest_timestamp(self, domain_module_id: str) -> str | None:
@@ -188,7 +232,36 @@ class EvidenceStore:
             "DELETE FROM evidence_records WHERE domain_module=?",
             (domain_module_id,),
         )
-        self._conn.commit()
+        self._db.commit()
+
+
+def _assignments_json(record: EvidenceRecord) -> str:
+    """
+    JSON for a record's assignments, keeping soft-evidence keys' types.
+
+    JSON object keys are always strings, so {True: 0.64} would come back as
+    {"true": 0.64} and miss every CPT row keyed by True. Probabilities are
+    stored as [[value, p], ...] pairs instead.
+    """
+    out = []
+    for a in record.observed_assignments:
+        data = a.model_dump(mode="json")
+        if a.probabilities is not None:
+            data["probabilities"] = [[value, p] for value, p in a.probabilities.items()]
+        out.append(data)
+    return json.dumps(out)
+
+
+# Rows written before _assignments_json stored probabilities as a JSON object.
+_LEGACY_BOOL_KEYS = {"true": True, "false": False}
+
+
+def _probabilities_from_json(raw):
+    if raw is None:
+        return None
+    if isinstance(raw, list):
+        return {value: p for value, p in raw}
+    return {_LEGACY_BOOL_KEYS.get(k, k): p for k, p in raw.items()}
 
 
 def _row_to_record(row: tuple) -> EvidenceRecord:
@@ -201,7 +274,7 @@ def _row_to_record(row: tuple) -> EvidenceRecord:
             observed_value=a["observed_value"],
             missingness=MissingnessType(a.get("missingness", "OBSERVED")),
             confidence=a.get("confidence", 1.0),
-            probabilities=a.get("probabilities"),
+            probabilities=_probabilities_from_json(a.get("probabilities")),
         ))
     return EvidenceRecord(
         evidence_id=UUID(row[0]),

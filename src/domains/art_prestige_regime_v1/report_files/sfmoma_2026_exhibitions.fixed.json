@@ -1,0 +1,206 @@
+[
+  {
+    "title": "SFMOMA Announces 2026 Exhibitions, Including Transformed Fisher Collection Galleries, Matisse’s Femme au chapeau, and RM x SFMOMA",
+    "url": "",
+    "published_at": "2026-01-09",
+    "notes": "Museum-wide announcement covering major exhibitions, collection transformations, and high-profile contemporary installations.",
+    "assignments": {
+      "MuseumAcquisitionMomentum": {
+        "value": true,
+        "confidence": 0.67,
+        "rationale": "Announcement emphasizes major collection displays and institutional investment in large-scale exhibitions and gallery transformations."
+      },
+      "RegionalSceneMomentum": {
+        "value": true,
+        "confidence": 0.74,
+        "rationale": "SFMOMA positions San Francisco as an active global art hub through a dense 2026 exhibition slate."
+      },
+      "AuthenticityPremium": {
+        "value": true,
+        "confidence": 0.59,
+        "rationale": "Focus on iconic works and museum framing reinforces value tied to canonical objects and institutional validation."
+      }
+    }
+  },
+  {
+    "title": "Exclusive SFMOMA Presentation of Matisse's Femme au chapeau: A Modern Scandal Explores the Spectacular Debut and Enduring Impact of Matisse's Iconic Painting",
+    "url": "",
+    "published_at": "2025-08-06",
+    "notes": "Press release centered on a landmark Matisse exhibition and the cultural prestige of a canonical modernist work.",
+    "assignments": {
+      "AuthenticityPremium": {
+        "value": true,
+        "confidence": 0.92,
+        "rationale": "The exhibition centers on the historical and symbolic importance of an iconic original painting by Matisse."
+      },
+      "RitualAuraPremium": {
+        "value": true,
+        "confidence": 0.89,
+        "rationale": "Museum presentation and emphasis on the painting’s legendary status reinforce aura and pilgrimage-style viewing."
+      },
+      "BlueChipConcentration": {
+        "value": true,
+        "confidence": 0.78,
+        "rationale": "Institutional focus on a globally recognized blue-chip masterpiece signals continued concentration around canonical names."
+      }
+    }
+  },
+  {
+    "title": "Exclusive SFMOMA Presentation of Matisse's Femme au chapeau: A Modern Scandal Explores the Spectacular Debut and Enduring Impact of Matisse's Iconic Painting",
+    "url": "",
+    "published_at": "2025-08-06",
+    "notes": "Duplicate or alternate formatting of the same SFMOMA Matisse exhibition release.",
+    "assignments": {
+      "AuthenticityPremium": {
+        "value": true,
+        "confidence": 0.91,
+        "rationale": "The release frames the original Matisse painting as historically singular and culturally authoritative."
+      },
+      "RitualAuraPremium": {
+        "value": true,
+        "confidence": 0.87,
+        "rationale": "The exhibition narrative stresses the experiential and symbolic power of seeing the work in person."
+      }
+    }
+  },
+  {
+    "title": "SFMOMA to Unveil Complete Transformation of the Renowned Doris and Donald Fisher Collection in April 2026",
+    "url": "",
+    "published_at": "2025-11-19",
+    "notes": "Announcement regarding reinstallation and reinterpretation of the Fisher Collection.",
+    "assignments": {
+      "BlueChipConcentration": {
+        "value": true,
+        "confidence": 0.84,
+        "rationale": "The Fisher Collection contains major postwar and contemporary blue-chip artists presented through a flagship institutional platform."
+      },
+      "MuseumAcquisitionMomentum": {
+        "value": true,
+        "confidence": 0.73,
+        "rationale": "The transformed collection galleries demonstrate continued institutional commitment to major holdings and long-term stewardship."
+      },
+      "RegionalSceneMomentum": {
+        "value": true,
+        "confidence": 0.62,
+        "rationale": "The project reinforces San Francisco’s visibility within the international museum ecosystem."
+      }
+    },
+    "causal_claims": [
+      {
+        "source": "MuseumAcquisitionMomentum",
+        "target": "RegionalSceneMomentum",
+        "direction": "positive",
+        "confidence": 0.68,
+        "claim_strength": "implied",
+        "rationale": "SFMOMA's institutional commitment to transforming and stewarding the major Fisher Collection strongly implies that flagship museum investment in major holdings reinforces the regional scene's international visibility, with the text explicitly noting the project reinforces San Francisco's position within the international museum ecosystem.",
+        "evidence_span": "The project reinforces San Francisco's visibility within the international museum ecosystem",
+        "extraction_method": "manual"
+      }
+    ]
+  },
+  {
+    "title": "Three Artists Win SFMOMA's 2026 SECA Art Award",
+    "url": "",
+    "published_at": "2026-04-27",
+    "notes": "Announcement of the SECA award recipients and upcoming exhibition.",
+    "assignments": {
+      "PrestigeFragmentation": {
+        "value": true,
+        "confidence": 0.68,
+        "rationale": "Recognition of emerging and locally connected artists suggests prestige production beyond purely global blue-chip circuits."
+      },
+      "RegionalSceneMomentum": {
+        "value": true,
+        "confidence": 0.83,
+        "rationale": "The SECA program foregrounds Bay Area artists and strengthens regional institutional ecosystems."
+      },
+      "MuseumAcquisitionMomentum": {
+        "value": true,
+        "confidence": 0.51,
+        "rationale": "Museum-backed awards and exhibitions create institutional pathways for emerging artists into collections and canon formation."
+      }
+    }
+  },
+  {
+    "title": "Last Call to Join SFMOMA’s Museumwide Art Bash Party on April 29",
+    "url": "",
+    "published_at": "2026-03-19",
+    "notes": "Fundraising and social event announcement tied to museum patronage and auctions.",
+    "assignments": {
+      "RitualAuraPremium": {
+        "value": true,
+        "confidence": 0.72,
+        "rationale": "The gala-style Art Bash reinforces elite social ritual and experiential prestige around museum participation."
+      },
+      "BlueChipConcentration": {
+        "value": true,
+        "confidence": 0.55,
+        "rationale": "Auction and patronage structures surrounding museum fundraising typically reinforce established prestige networks and collector hierarchies."
+      }
+    }
+  },
+  {
+    "title": "Global Debut of RM x SFMOMA Exhibition Opens to the Public on October 3, 2026",
+    "url": "",
+    "published_at": "2025-10-02",
+    "notes": "Exhibition featuring artworks from RM’s personal collection.",
+    "assignments": {
+      "PrestigeFragmentation": {
+        "value": true,
+        "confidence": 0.77,
+        "rationale": "The collaboration merges contemporary celebrity culture, fandom, and museum authority in a hybrid prestige structure."
+      },
+      "RegionalSceneMomentum": {
+        "value": true,
+        "confidence": 0.64,
+        "rationale": "The exhibition positions SFMOMA as a globally networked institution capable of attracting international audiences."
+      },
+      "AuthenticityPremium": {
+        "value": true,
+        "confidence": 0.58,
+        "rationale": "The framing around RM’s personal collection emphasizes provenance and collector identity as prestige markers."
+      }
+    }
+  },
+  {
+    "title": "SFMOMA Announces Landmark Jacob Hashimoto Installation for Admission-Free Roberts Family Gallery",
+    "url": "",
+    "published_at": "2026-02-26",
+    "notes": "Announcement for a large-scale public installation by Jacob Hashimoto.",
+    "assignments": {
+      "RegionalSceneMomentum": {
+        "value": true,
+        "confidence": 0.69,
+        "rationale": "The installation expands SFMOMA’s public-facing contemporary programming and civic visibility."
+      },
+      "PrestigeFragmentation": {
+        "value": true,
+        "confidence": 0.56,
+        "rationale": "Large immersive installations in admission-free spaces indicate diversified modes of institutional prestige production."
+      }
+    }
+  },
+  {
+    "title": "SFMOMA to Open Graciela Iturbide: Between Two Worlds, a Major Retrospective",
+    "url": "",
+    "published_at": "2026-03-26",
+    "notes": "Retrospective exhibition dedicated to photographer Graciela Iturbide.",
+    "assignments": {
+      "AuthenticityPremium": {
+        "value": true,
+        "confidence": 0.79,
+        "rationale": "The retrospective format elevates Iturbide’s documentary and artistic practice through institutional canonization."
+      },
+      "RitualAuraPremium": {
+        "value": true,
+        "confidence": 0.66,
+        "rationale": "The exhibition emphasizes embodied viewing of historically and culturally resonant photographic works."
+      },
+      "MuseumAcquisitionMomentum": {
+        "value": true,
+        "confidence": 0.57,
+        "rationale": "Major retrospectives often correlate with increased institutional validation and collection interest."
+      }
+    }
+  }
+]

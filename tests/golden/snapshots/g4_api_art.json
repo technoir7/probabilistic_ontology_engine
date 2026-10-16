@@ -1,0 +1,5208 @@
+{
+ "backfill": {
+  "body": {
+   "days_requested": 21,
+   "days_successfully_ingested": 2,
+   "domain": "Art Prestige Regime"
+  },
+  "status": 200
+ },
+ "candidates": {
+  "body": {
+   "candidates": [
+    {
+     "edge_count": 3,
+     "evidence_count": 2,
+     "generation_introduced": 0,
+     "id": "<id0>",
+     "log_score": -34.607224058,
+     "name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum",
+     "score_normalized": 0.95,
+     "status": "dominant"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 2,
+     "generation_introduced": 0,
+     "id": "<id1>",
+     "log_score": -34.817350271,
+     "name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
+     "score_normalized": 0.798991029,
+     "status": "rising"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 2,
+     "generation_introduced": 1,
+     "id": "<id2>",
+     "log_score": -34.80068497,
+     "name": "variant_add_AIImageSaturation->AuthenticityPremium",
+     "score_normalized": 0.561899662,
+     "status": "rising"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 2,
+     "generation_introduced": 0,
+     "id": "<id3>",
+     "log_score": -34.816071611,
+     "name": "H5: NeoAcademicResurgence \u2014 aura + authenticity premium \u2192 neo-academic figurative revival",
+     "score_normalized": 0.550841923,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 2,
+     "generation_introduced": 0,
+     "id": "<id4>",
+     "log_score": -34.828084612,
+     "name": "H3: DefensiveBlueChipConsolidation \u2014 market uncertainty \u2192 blue-chip flight \u2192 institutional conservatism",
+     "score_normalized": 0.542208679,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 2,
+     "generation_introduced": 1,
+     "id": "<id5>",
+     "log_score": -34.638686548,
+     "name": "variant_add_RegionalSceneMomentum->BlueChipInstitutionalCapture",
+     "score_normalized": 0.429253165,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 5,
+     "evidence_count": 2,
+     "generation_introduced": 1,
+     "id": "<id6>",
+     "log_score": -34.682016886,
+     "name": "variant_add_AuthenticityPremium->RegionalSceneMomentum",
+     "score_normalized": 0.398113453,
+     "status": "falling"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 2,
+     "generation_introduced": 0,
+     "id": "<id7>",
+     "log_score": -34.822281633,
+     "name": "H1: CraftAuraBacklash \u2014 AI saturation \u2192 aura premium \u2192 craft/figurative institutionalisation",
+     "score_normalized": 0.297311013,
+     "status": "falling"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 2,
+     "generation_introduced": 1,
+     "id": "<id8>",
+     "log_score": -34.900465672,
+     "name": "variant_add_AIImageSaturation->ConceptualDominance",
+     "score_normalized": 0.241123395,
+     "status": "falling"
+    },
+    {
+     "edge_count": 5,
+     "evidence_count": 2,
+     "generation_introduced": 1,
+     "id": "<id9>",
+     "log_score": -34.819836781,
+     "name": "variant_add_MarketUncertainty->AttentionFragmentation",
+     "score_normalized": 0.05,
+     "status": "falling"
+    }
+   ],
+   "domain": "Art Prestige Regime",
+   "generation": 5
+  },
+  "status": 200
+ },
+ "debug_entropy": {
+  "body": {
+   "domain": "Art Prestige Regime",
+   "domain_key": "art",
+   "domain_module_id": "art_prestige_regime_v1",
+   "pairwise_mutual_information": [
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "MuseumFigurativeAcceptance"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "ConceptualDominance"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "AIArtInstitutionalAcceptance"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "CuratorialMaterialityShift"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "CraftPrestigeRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "PrestigeFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "RegionalSceneMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "BlueChipInstitutionalCapture"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "BiennialFatigue"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "MuseumAcquisitionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "BlueChipConcentration"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "AuctionSpeculationElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "CollectorFlightToSafety"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "FigurativeAuctionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "EmergingMarketLiquidity"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "MarketPolarization"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "MarketUncertainty"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InstitutionalRiskAversion",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "ConceptualDominance"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "AIArtInstitutionalAcceptance"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "CuratorialMaterialityShift"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "CraftPrestigeRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "PrestigeFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "RegionalSceneMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "BlueChipInstitutionalCapture"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "BiennialFatigue"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "MuseumAcquisitionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "BlueChipConcentration"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "AuctionSpeculationElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "CollectorFlightToSafety"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "FigurativeAuctionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "EmergingMarketLiquidity"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "MarketPolarization"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "MarketUncertainty"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumFigurativeAcceptance",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "AIArtInstitutionalAcceptance"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "CuratorialMaterialityShift"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "CraftPrestigeRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "PrestigeFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "RegionalSceneMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "BlueChipInstitutionalCapture"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "BiennialFatigue"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "MuseumAcquisitionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "BlueChipConcentration"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "AuctionSpeculationElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "CollectorFlightToSafety"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "FigurativeAuctionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "EmergingMarketLiquidity"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "MarketPolarization"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "MarketUncertainty"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ConceptualDominance",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "CuratorialMaterialityShift"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "CraftPrestigeRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "PrestigeFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "RegionalSceneMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "BlueChipInstitutionalCapture"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "BiennialFatigue"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "MuseumAcquisitionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "BlueChipConcentration"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "AuctionSpeculationElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "CollectorFlightToSafety"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "FigurativeAuctionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "EmergingMarketLiquidity"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "MarketPolarization"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "MarketUncertainty"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIArtInstitutionalAcceptance",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "CraftPrestigeRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "PrestigeFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "RegionalSceneMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "BlueChipInstitutionalCapture"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "BiennialFatigue"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "MuseumAcquisitionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "BlueChipConcentration"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "AuctionSpeculationElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "CollectorFlightToSafety"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "FigurativeAuctionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "EmergingMarketLiquidity"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "MarketPolarization"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "MarketUncertainty"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CuratorialMaterialityShift",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "PrestigeFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "RegionalSceneMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "BlueChipInstitutionalCapture"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "BiennialFatigue"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "MuseumAcquisitionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "BlueChipConcentration"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "AuctionSpeculationElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "CollectorFlightToSafety"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "FigurativeAuctionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "EmergingMarketLiquidity"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "MarketPolarization"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "MarketUncertainty"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CraftPrestigeRising",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "RegionalSceneMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "BlueChipInstitutionalCapture"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "BiennialFatigue"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "MuseumAcquisitionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "BlueChipConcentration"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "AuctionSpeculationElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "CollectorFlightToSafety"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "FigurativeAuctionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "EmergingMarketLiquidity"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "MarketPolarization"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "MarketUncertainty"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "PrestigeFragmentation",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RegionalSceneMomentum",
+     "variable_y": "BlueChipInstitutionalCapture"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RegionalSceneMomentum",
+     "variable_y": "BiennialFatigue"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RegionalSceneMomentum",
+     "variable_y": "MuseumAcquisitionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RegionalSceneMomentum",
+     "variable_y": "BlueChipConcentration"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RegionalSceneMomentum",
+     "variable_y": "AuctionSpeculationElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RegionalSceneMomentum",
+     "variable_y": "CollectorFlightToSafety"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RegionalSceneMomentum",
+     "variable_y": "FigurativeAuctionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RegionalSceneMomentum",
+     "variable_y": "EmergingMarketLiquidity"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RegionalSceneMomentum",
+     "variable_y": "MarketPolarization"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RegionalSceneMomentum",
+     "variable_y": "MarketUncertainty"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RegionalSceneMomentum",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RegionalSceneMomentum",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RegionalSceneMomentum",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RegionalSceneMomentum",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RegionalSceneMomentum",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RegionalSceneMomentum",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RegionalSceneMomentum",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipInstitutionalCapture",
+     "variable_y": "BiennialFatigue"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipInstitutionalCapture",
+     "variable_y": "MuseumAcquisitionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipInstitutionalCapture",
+     "variable_y": "BlueChipConcentration"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipInstitutionalCapture",
+     "variable_y": "AuctionSpeculationElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipInstitutionalCapture",
+     "variable_y": "CollectorFlightToSafety"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipInstitutionalCapture",
+     "variable_y": "FigurativeAuctionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipInstitutionalCapture",
+     "variable_y": "EmergingMarketLiquidity"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipInstitutionalCapture",
+     "variable_y": "MarketPolarization"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipInstitutionalCapture",
+     "variable_y": "MarketUncertainty"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipInstitutionalCapture",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipInstitutionalCapture",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipInstitutionalCapture",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipInstitutionalCapture",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipInstitutionalCapture",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipInstitutionalCapture",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipInstitutionalCapture",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BiennialFatigue",
+     "variable_y": "MuseumAcquisitionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BiennialFatigue",
+     "variable_y": "BlueChipConcentration"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BiennialFatigue",
+     "variable_y": "AuctionSpeculationElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BiennialFatigue",
+     "variable_y": "CollectorFlightToSafety"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BiennialFatigue",
+     "variable_y": "FigurativeAuctionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BiennialFatigue",
+     "variable_y": "EmergingMarketLiquidity"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BiennialFatigue",
+     "variable_y": "MarketPolarization"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BiennialFatigue",
+     "variable_y": "MarketUncertainty"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BiennialFatigue",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BiennialFatigue",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BiennialFatigue",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BiennialFatigue",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BiennialFatigue",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BiennialFatigue",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BiennialFatigue",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumAcquisitionMomentum",
+     "variable_y": "BlueChipConcentration"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumAcquisitionMomentum",
+     "variable_y": "AuctionSpeculationElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumAcquisitionMomentum",
+     "variable_y": "CollectorFlightToSafety"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumAcquisitionMomentum",
+     "variable_y": "FigurativeAuctionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumAcquisitionMomentum",
+     "variable_y": "EmergingMarketLiquidity"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumAcquisitionMomentum",
+     "variable_y": "MarketPolarization"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumAcquisitionMomentum",
+     "variable_y": "MarketUncertainty"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumAcquisitionMomentum",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumAcquisitionMomentum",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumAcquisitionMomentum",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumAcquisitionMomentum",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumAcquisitionMomentum",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumAcquisitionMomentum",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MuseumAcquisitionMomentum",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipConcentration",
+     "variable_y": "AuctionSpeculationElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipConcentration",
+     "variable_y": "CollectorFlightToSafety"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipConcentration",
+     "variable_y": "FigurativeAuctionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipConcentration",
+     "variable_y": "EmergingMarketLiquidity"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipConcentration",
+     "variable_y": "MarketPolarization"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipConcentration",
+     "variable_y": "MarketUncertainty"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipConcentration",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipConcentration",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipConcentration",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipConcentration",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipConcentration",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipConcentration",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "BlueChipConcentration",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AuctionSpeculationElevated",
+     "variable_y": "CollectorFlightToSafety"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AuctionSpeculationElevated",
+     "variable_y": "FigurativeAuctionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AuctionSpeculationElevated",
+     "variable_y": "EmergingMarketLiquidity"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AuctionSpeculationElevated",
+     "variable_y": "MarketPolarization"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AuctionSpeculationElevated",
+     "variable_y": "MarketUncertainty"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AuctionSpeculationElevated",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AuctionSpeculationElevated",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AuctionSpeculationElevated",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AuctionSpeculationElevated",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AuctionSpeculationElevated",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AuctionSpeculationElevated",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AuctionSpeculationElevated",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CollectorFlightToSafety",
+     "variable_y": "FigurativeAuctionMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CollectorFlightToSafety",
+     "variable_y": "EmergingMarketLiquidity"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CollectorFlightToSafety",
+     "variable_y": "MarketPolarization"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CollectorFlightToSafety",
+     "variable_y": "MarketUncertainty"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CollectorFlightToSafety",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CollectorFlightToSafety",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CollectorFlightToSafety",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CollectorFlightToSafety",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CollectorFlightToSafety",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CollectorFlightToSafety",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CollectorFlightToSafety",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "FigurativeAuctionMomentum",
+     "variable_y": "EmergingMarketLiquidity"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "FigurativeAuctionMomentum",
+     "variable_y": "MarketPolarization"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "FigurativeAuctionMomentum",
+     "variable_y": "MarketUncertainty"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "FigurativeAuctionMomentum",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "FigurativeAuctionMomentum",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "FigurativeAuctionMomentum",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "FigurativeAuctionMomentum",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "FigurativeAuctionMomentum",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "FigurativeAuctionMomentum",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "FigurativeAuctionMomentum",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EmergingMarketLiquidity",
+     "variable_y": "MarketPolarization"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EmergingMarketLiquidity",
+     "variable_y": "MarketUncertainty"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EmergingMarketLiquidity",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EmergingMarketLiquidity",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EmergingMarketLiquidity",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EmergingMarketLiquidity",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EmergingMarketLiquidity",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EmergingMarketLiquidity",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EmergingMarketLiquidity",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketPolarization",
+     "variable_y": "MarketUncertainty"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketPolarization",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketPolarization",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketPolarization",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketPolarization",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketPolarization",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketPolarization",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketPolarization",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketUncertainty",
+     "variable_y": "RitualAuraPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketUncertainty",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketUncertainty",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketUncertainty",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketUncertainty",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketUncertainty",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "MarketUncertainty",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RitualAuraPremium",
+     "variable_y": "EmbodimentDiscourseRising"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RitualAuraPremium",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RitualAuraPremium",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RitualAuraPremium",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RitualAuraPremium",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RitualAuraPremium",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EmbodimentDiscourseRising",
+     "variable_y": "AntiDigitalSentiment"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EmbodimentDiscourseRising",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EmbodimentDiscourseRising",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EmbodimentDiscourseRising",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EmbodimentDiscourseRising",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AntiDigitalSentiment",
+     "variable_y": "AIImageSaturation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AntiDigitalSentiment",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AntiDigitalSentiment",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AntiDigitalSentiment",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIImageSaturation",
+     "variable_y": "AuthenticityPremium"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIImageSaturation",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AIImageSaturation",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AuthenticityPremium",
+     "variable_y": "NeoAcademicResurgence"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "AuthenticityPremium",
+     "variable_y": "AttentionFragmentation"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "NeoAcademicResurgence",
+     "variable_y": "AttentionFragmentation"
+    }
+   ],
+   "total_evidence_rows": 2,
+   "unique_observed_patterns": [
+    {
+     "count": 2,
+     "pattern": {
+      "AIArtInstitutionalAcceptance": null,
+      "AIImageSaturation": null,
+      "AntiDigitalSentiment": null,
+      "AttentionFragmentation": null,
+      "AuctionSpeculationElevated": null,
+      "AuthenticityPremium": null,
+      "BiennialFatigue": null,
+      "BlueChipConcentration": null,
+      "BlueChipInstitutionalCapture": null,
+      "CollectorFlightToSafety": null,
+      "ConceptualDominance": null,
+      "CraftPrestigeRising": null,
+      "CuratorialMaterialityShift": null,
+      "EmbodimentDiscourseRising": null,
+      "EmergingMarketLiquidity": null,
+      "FigurativeAuctionMomentum": null,
+      "InstitutionalRiskAversion": null,
+      "MarketPolarization": null,
+      "MarketUncertainty": null,
+      "MuseumAcquisitionMomentum": null,
+      "MuseumFigurativeAcceptance": null,
+      "NeoAcademicResurgence": null,
+      "PrestigeFragmentation": null,
+      "RegionalSceneMomentum": null,
+      "RitualAuraPremium": null
+     }
+    }
+   ],
+   "variables": {
+    "AIArtInstitutionalAcceptance": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "AIImageSaturation": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "AntiDigitalSentiment": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "AttentionFragmentation": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "AuctionSpeculationElevated": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "AuthenticityPremium": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "BiennialFatigue": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "BlueChipConcentration": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "BlueChipInstitutionalCapture": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "CollectorFlightToSafety": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "ConceptualDominance": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "CraftPrestigeRising": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "CuratorialMaterialityShift": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "EmbodimentDiscourseRising": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "EmergingMarketLiquidity": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "FigurativeAuctionMomentum": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "InstitutionalRiskAversion": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "MarketPolarization": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "MarketUncertainty": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "MuseumAcquisitionMomentum": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "MuseumFigurativeAcceptance": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "NeoAcademicResurgence": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "PrestigeFragmentation": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "RegionalSceneMomentum": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "RitualAuraPremium": {
+     "entropy": 0.0,
+     "missing_count": 2,
+     "observed_count": 0,
+     "value_counts": {}
+    }
+   }
+  },
+  "status": 200
+ },
+ "debug_evidence-geometry": {
+  "body": {
+   "average_pairwise_mi": 0.183333333,
+   "cadence_detected": "irregular",
+   "compression_ratio_daily_to_weekly": 1.0,
+   "daily_state_count": 2,
+   "daily_transition_count": 1,
+   "daily_unique_state_count": 2,
+   "domain": "Art Prestige Regime",
+   "domain_key": "art",
+   "domain_module_id": "art_prestige_regime_v1",
+   "effective_state_density": 1.0,
+   "effective_transitions_per_month": 1.087053571,
+   "highest_entropy_variable": {
+    "shannon_entropy": 1.0,
+    "variable": "InstitutionalRiskAversion"
+   },
+   "highest_mi_variable_pair": {
+    "joint_observed_count": 2,
+    "mutual_information": 1.0,
+    "variable_x": "InstitutionalRiskAversion",
+    "variable_y": "CraftPrestigeRising"
+   },
+   "lowest_entropy_variable": {
+    "shannon_entropy": 0.0,
+    "variable": "MuseumFigurativeAcceptance"
+   },
+   "pairwise_joint_observed_counts": {
+    "AIArtInstitutionalAcceptance": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "AIImageSaturation": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "AntiDigitalSentiment": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "AttentionFragmentation": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "AuctionSpeculationElevated": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "AuthenticityPremium": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "BiennialFatigue": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "BlueChipConcentration": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "BlueChipInstitutionalCapture": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "CollectorFlightToSafety": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "ConceptualDominance": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "CraftPrestigeRising": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "CuratorialMaterialityShift": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "EmbodimentDiscourseRising": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "EmergingMarketLiquidity": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "FigurativeAuctionMomentum": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "InstitutionalRiskAversion": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "MarketPolarization": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "MarketUncertainty": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "MuseumAcquisitionMomentum": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "MuseumFigurativeAcceptance": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "NeoAcademicResurgence": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "PrestigeFragmentation": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "RegionalSceneMomentum": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    },
+    "RitualAuraPremium": {
+     "AIArtInstitutionalAcceptance": 2,
+     "AIImageSaturation": 2,
+     "AntiDigitalSentiment": 2,
+     "AttentionFragmentation": 2,
+     "AuctionSpeculationElevated": 2,
+     "AuthenticityPremium": 2,
+     "BiennialFatigue": 2,
+     "BlueChipConcentration": 2,
+     "BlueChipInstitutionalCapture": 2,
+     "CollectorFlightToSafety": 2,
+     "ConceptualDominance": 2,
+     "CraftPrestigeRising": 2,
+     "CuratorialMaterialityShift": 2,
+     "EmbodimentDiscourseRising": 2,
+     "EmergingMarketLiquidity": 2,
+     "FigurativeAuctionMomentum": 2,
+     "InstitutionalRiskAversion": 2,
+     "MarketPolarization": 2,
+     "MarketUncertainty": 2,
+     "MuseumAcquisitionMomentum": 2,
+     "MuseumFigurativeAcceptance": 2,
+     "NeoAcademicResurgence": 2,
+     "PrestigeFragmentation": 2,
+     "RegionalSceneMomentum": 2,
+     "RitualAuraPremium": 2
+    }
+   },
+   "pairwise_mutual_information_matrix": {
+    "AIArtInstitutionalAcceptance": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 0.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 0.0,
+     "BlueChipConcentration": 0.0,
+     "BlueChipInstitutionalCapture": 0.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 0.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 0.0,
+     "FigurativeAuctionMomentum": 0.0,
+     "InstitutionalRiskAversion": 0.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 0.0,
+     "PrestigeFragmentation": 0.0,
+     "RegionalSceneMomentum": 0.0,
+     "RitualAuraPremium": 0.0
+    },
+    "AIImageSaturation": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 0.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 0.0,
+     "BlueChipConcentration": 0.0,
+     "BlueChipInstitutionalCapture": 0.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 0.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 0.0,
+     "FigurativeAuctionMomentum": 0.0,
+     "InstitutionalRiskAversion": 0.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 0.0,
+     "PrestigeFragmentation": 0.0,
+     "RegionalSceneMomentum": 0.0,
+     "RitualAuraPremium": 0.0
+    },
+    "AntiDigitalSentiment": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 0.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 0.0,
+     "BlueChipConcentration": 0.0,
+     "BlueChipInstitutionalCapture": 0.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 0.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 0.0,
+     "FigurativeAuctionMomentum": 0.0,
+     "InstitutionalRiskAversion": 0.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 0.0,
+     "PrestigeFragmentation": 0.0,
+     "RegionalSceneMomentum": 0.0,
+     "RitualAuraPremium": 0.0
+    },
+    "AttentionFragmentation": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 1.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 1.0,
+     "BlueChipConcentration": 1.0,
+     "BlueChipInstitutionalCapture": 1.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 1.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 1.0,
+     "FigurativeAuctionMomentum": 1.0,
+     "InstitutionalRiskAversion": 1.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 1.0,
+     "PrestigeFragmentation": 1.0,
+     "RegionalSceneMomentum": 1.0,
+     "RitualAuraPremium": 0.0
+    },
+    "AuctionSpeculationElevated": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 0.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 0.0,
+     "BlueChipConcentration": 0.0,
+     "BlueChipInstitutionalCapture": 0.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 0.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 0.0,
+     "FigurativeAuctionMomentum": 0.0,
+     "InstitutionalRiskAversion": 0.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 0.0,
+     "PrestigeFragmentation": 0.0,
+     "RegionalSceneMomentum": 0.0,
+     "RitualAuraPremium": 0.0
+    },
+    "AuthenticityPremium": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 0.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 0.0,
+     "BlueChipConcentration": 0.0,
+     "BlueChipInstitutionalCapture": 0.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 0.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 0.0,
+     "FigurativeAuctionMomentum": 0.0,
+     "InstitutionalRiskAversion": 0.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 0.0,
+     "PrestigeFragmentation": 0.0,
+     "RegionalSceneMomentum": 0.0,
+     "RitualAuraPremium": 0.0
+    },
+    "BiennialFatigue": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 1.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 1.0,
+     "BlueChipConcentration": 1.0,
+     "BlueChipInstitutionalCapture": 1.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 1.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 1.0,
+     "FigurativeAuctionMomentum": 1.0,
+     "InstitutionalRiskAversion": 1.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 1.0,
+     "PrestigeFragmentation": 1.0,
+     "RegionalSceneMomentum": 1.0,
+     "RitualAuraPremium": 0.0
+    },
+    "BlueChipConcentration": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 1.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 1.0,
+     "BlueChipConcentration": 1.0,
+     "BlueChipInstitutionalCapture": 1.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 1.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 1.0,
+     "FigurativeAuctionMomentum": 1.0,
+     "InstitutionalRiskAversion": 1.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 1.0,
+     "PrestigeFragmentation": 1.0,
+     "RegionalSceneMomentum": 1.0,
+     "RitualAuraPremium": 0.0
+    },
+    "BlueChipInstitutionalCapture": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 1.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 1.0,
+     "BlueChipConcentration": 1.0,
+     "BlueChipInstitutionalCapture": 1.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 1.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 1.0,
+     "FigurativeAuctionMomentum": 1.0,
+     "InstitutionalRiskAversion": 1.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 1.0,
+     "PrestigeFragmentation": 1.0,
+     "RegionalSceneMomentum": 1.0,
+     "RitualAuraPremium": 0.0
+    },
+    "CollectorFlightToSafety": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 0.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 0.0,
+     "BlueChipConcentration": 0.0,
+     "BlueChipInstitutionalCapture": 0.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 0.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 0.0,
+     "FigurativeAuctionMomentum": 0.0,
+     "InstitutionalRiskAversion": 0.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 0.0,
+     "PrestigeFragmentation": 0.0,
+     "RegionalSceneMomentum": 0.0,
+     "RitualAuraPremium": 0.0
+    },
+    "ConceptualDominance": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 0.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 0.0,
+     "BlueChipConcentration": 0.0,
+     "BlueChipInstitutionalCapture": 0.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 0.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 0.0,
+     "FigurativeAuctionMomentum": 0.0,
+     "InstitutionalRiskAversion": 0.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 0.0,
+     "PrestigeFragmentation": 0.0,
+     "RegionalSceneMomentum": 0.0,
+     "RitualAuraPremium": 0.0
+    },
+    "CraftPrestigeRising": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 1.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 1.0,
+     "BlueChipConcentration": 1.0,
+     "BlueChipInstitutionalCapture": 1.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 1.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 1.0,
+     "FigurativeAuctionMomentum": 1.0,
+     "InstitutionalRiskAversion": 1.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 1.0,
+     "PrestigeFragmentation": 1.0,
+     "RegionalSceneMomentum": 1.0,
+     "RitualAuraPremium": 0.0
+    },
+    "CuratorialMaterialityShift": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 0.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 0.0,
+     "BlueChipConcentration": 0.0,
+     "BlueChipInstitutionalCapture": 0.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 0.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 0.0,
+     "FigurativeAuctionMomentum": 0.0,
+     "InstitutionalRiskAversion": 0.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 0.0,
+     "PrestigeFragmentation": 0.0,
+     "RegionalSceneMomentum": 0.0,
+     "RitualAuraPremium": 0.0
+    },
+    "EmbodimentDiscourseRising": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 0.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 0.0,
+     "BlueChipConcentration": 0.0,
+     "BlueChipInstitutionalCapture": 0.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 0.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 0.0,
+     "FigurativeAuctionMomentum": 0.0,
+     "InstitutionalRiskAversion": 0.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 0.0,
+     "PrestigeFragmentation": 0.0,
+     "RegionalSceneMomentum": 0.0,
+     "RitualAuraPremium": 0.0
+    },
+    "EmergingMarketLiquidity": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 1.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 1.0,
+     "BlueChipConcentration": 1.0,
+     "BlueChipInstitutionalCapture": 1.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 1.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 1.0,
+     "FigurativeAuctionMomentum": 1.0,
+     "InstitutionalRiskAversion": 1.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 1.0,
+     "PrestigeFragmentation": 1.0,
+     "RegionalSceneMomentum": 1.0,
+     "RitualAuraPremium": 0.0
+    },
+    "FigurativeAuctionMomentum": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 1.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 1.0,
+     "BlueChipConcentration": 1.0,
+     "BlueChipInstitutionalCapture": 1.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 1.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 1.0,
+     "FigurativeAuctionMomentum": 1.0,
+     "InstitutionalRiskAversion": 1.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 1.0,
+     "PrestigeFragmentation": 1.0,
+     "RegionalSceneMomentum": 1.0,
+     "RitualAuraPremium": 0.0
+    },
+    "InstitutionalRiskAversion": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 1.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 1.0,
+     "BlueChipConcentration": 1.0,
+     "BlueChipInstitutionalCapture": 1.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 1.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 1.0,
+     "FigurativeAuctionMomentum": 1.0,
+     "InstitutionalRiskAversion": 1.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 1.0,
+     "PrestigeFragmentation": 1.0,
+     "RegionalSceneMomentum": 1.0,
+     "RitualAuraPremium": 0.0
+    },
+    "MarketPolarization": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 0.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 0.0,
+     "BlueChipConcentration": 0.0,
+     "BlueChipInstitutionalCapture": 0.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 0.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 0.0,
+     "FigurativeAuctionMomentum": 0.0,
+     "InstitutionalRiskAversion": 0.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 0.0,
+     "PrestigeFragmentation": 0.0,
+     "RegionalSceneMomentum": 0.0,
+     "RitualAuraPremium": 0.0
+    },
+    "MarketUncertainty": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 0.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 0.0,
+     "BlueChipConcentration": 0.0,
+     "BlueChipInstitutionalCapture": 0.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 0.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 0.0,
+     "FigurativeAuctionMomentum": 0.0,
+     "InstitutionalRiskAversion": 0.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 0.0,
+     "PrestigeFragmentation": 0.0,
+     "RegionalSceneMomentum": 0.0,
+     "RitualAuraPremium": 0.0
+    },
+    "MuseumAcquisitionMomentum": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 0.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 0.0,
+     "BlueChipConcentration": 0.0,
+     "BlueChipInstitutionalCapture": 0.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 0.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 0.0,
+     "FigurativeAuctionMomentum": 0.0,
+     "InstitutionalRiskAversion": 0.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 0.0,
+     "PrestigeFragmentation": 0.0,
+     "RegionalSceneMomentum": 0.0,
+     "RitualAuraPremium": 0.0
+    },
+    "MuseumFigurativeAcceptance": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 0.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 0.0,
+     "BlueChipConcentration": 0.0,
+     "BlueChipInstitutionalCapture": 0.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 0.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 0.0,
+     "FigurativeAuctionMomentum": 0.0,
+     "InstitutionalRiskAversion": 0.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 0.0,
+     "PrestigeFragmentation": 0.0,
+     "RegionalSceneMomentum": 0.0,
+     "RitualAuraPremium": 0.0
+    },
+    "NeoAcademicResurgence": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 1.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 1.0,
+     "BlueChipConcentration": 1.0,
+     "BlueChipInstitutionalCapture": 1.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 1.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 1.0,
+     "FigurativeAuctionMomentum": 1.0,
+     "InstitutionalRiskAversion": 1.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 1.0,
+     "PrestigeFragmentation": 1.0,
+     "RegionalSceneMomentum": 1.0,
+     "RitualAuraPremium": 0.0
+    },
+    "PrestigeFragmentation": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 1.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 1.0,
+     "BlueChipConcentration": 1.0,
+     "BlueChipInstitutionalCapture": 1.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 1.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 1.0,
+     "FigurativeAuctionMomentum": 1.0,
+     "InstitutionalRiskAversion": 1.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 1.0,
+     "PrestigeFragmentation": 1.0,
+     "RegionalSceneMomentum": 1.0,
+     "RitualAuraPremium": 0.0
+    },
+    "RegionalSceneMomentum": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 1.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 1.0,
+     "BlueChipConcentration": 1.0,
+     "BlueChipInstitutionalCapture": 1.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 1.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 1.0,
+     "FigurativeAuctionMomentum": 1.0,
+     "InstitutionalRiskAversion": 1.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 1.0,
+     "PrestigeFragmentation": 1.0,
+     "RegionalSceneMomentum": 1.0,
+     "RitualAuraPremium": 0.0
+    },
+    "RitualAuraPremium": {
+     "AIArtInstitutionalAcceptance": 0.0,
+     "AIImageSaturation": 0.0,
+     "AntiDigitalSentiment": 0.0,
+     "AttentionFragmentation": 0.0,
+     "AuctionSpeculationElevated": 0.0,
+     "AuthenticityPremium": 0.0,
+     "BiennialFatigue": 0.0,
+     "BlueChipConcentration": 0.0,
+     "BlueChipInstitutionalCapture": 0.0,
+     "CollectorFlightToSafety": 0.0,
+     "ConceptualDominance": 0.0,
+     "CraftPrestigeRising": 0.0,
+     "CuratorialMaterialityShift": 0.0,
+     "EmbodimentDiscourseRising": 0.0,
+     "EmergingMarketLiquidity": 0.0,
+     "FigurativeAuctionMomentum": 0.0,
+     "InstitutionalRiskAversion": 0.0,
+     "MarketPolarization": 0.0,
+     "MarketUncertainty": 0.0,
+     "MuseumAcquisitionMomentum": 0.0,
+     "MuseumFigurativeAcceptance": 0.0,
+     "NeoAcademicResurgence": 0.0,
+     "PrestigeFragmentation": 0.0,
+     "RegionalSceneMomentum": 0.0,
+     "RitualAuraPremium": 0.0
+    }
+   },
+   "position_fallback_assignment_count": 0,
+   "top_10_most_common_assignment_patterns": [
+    {
+     "count": 1,
+     "pattern": {
+      "AIArtInstitutionalAcceptance": true,
+      "AIImageSaturation": true,
+      "AntiDigitalSentiment": false,
+      "AttentionFragmentation": true,
+      "AuctionSpeculationElevated": true,
+      "AuthenticityPremium": false,
+      "BiennialFatigue": false,
+      "BlueChipConcentration": false,
+      "BlueChipInstitutionalCapture": false,
+      "CollectorFlightToSafety": false,
+      "ConceptualDominance": false,
+      "CraftPrestigeRising": true,
+      "CuratorialMaterialityShift": true,
+      "EmbodimentDiscourseRising": true,
+      "EmergingMarketLiquidity": false,
+      "FigurativeAuctionMomentum": false,
+      "InstitutionalRiskAversion": false,
+      "MarketPolarization": false,
+      "MarketUncertainty": true,
+      "MuseumAcquisitionMomentum": true,
+      "MuseumFigurativeAcceptance": true,
+      "NeoAcademicResurgence": true,
+      "PrestigeFragmentation": false,
+      "RegionalSceneMomentum": true,
+      "RitualAuraPremium": true
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AIArtInstitutionalAcceptance": true,
+      "AIImageSaturation": true,
+      "AntiDigitalSentiment": false,
+      "AttentionFragmentation": false,
+      "AuctionSpeculationElevated": true,
+      "AuthenticityPremium": false,
+      "BiennialFatigue": true,
+      "BlueChipConcentration": true,
+      "BlueChipInstitutionalCapture": true,
+      "CollectorFlightToSafety": false,
+      "ConceptualDominance": false,
+      "CraftPrestigeRising": false,
+      "CuratorialMaterialityShift": true,
+      "EmbodimentDiscourseRising": true,
+      "EmergingMarketLiquidity": true,
+      "FigurativeAuctionMomentum": true,
+      "InstitutionalRiskAversion": true,
+      "MarketPolarization": false,
+      "MarketUncertainty": true,
+      "MuseumAcquisitionMomentum": true,
+      "MuseumFigurativeAcceptance": true,
+      "NeoAcademicResurgence": false,
+      "PrestigeFragmentation": true,
+      "RegionalSceneMomentum": false,
+      "RitualAuraPremium": true
+     }
+    }
+   ],
+   "total_assignment_count": 50,
+   "total_evidence_records": 2,
+   "unique_observed_assignment_patterns": 2,
+   "unique_state_retention_ratio": 1.0,
+   "used_assignment_position_fallback": false,
+   "variable_id_match_count": 50,
+   "variable_id_match_ratio": 1.0,
+   "variable_id_mismatch_count": 0,
+   "variables": {
+    "AIArtInstitutionalAcceptance": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.0,
+     "transition_count": 0,
+     "unique_value_count": 1,
+     "value_distribution": {
+      "True": 2
+     }
+    },
+    "AIImageSaturation": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.0,
+     "transition_count": 0,
+     "unique_value_count": 1,
+     "value_distribution": {
+      "True": 2
+     }
+    },
+    "AntiDigitalSentiment": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.0,
+     "transition_count": 0,
+     "unique_value_count": 1,
+     "value_distribution": {
+      "False": 2
+     }
+    },
+    "AttentionFragmentation": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 1
+     }
+    },
+    "AuctionSpeculationElevated": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.0,
+     "transition_count": 0,
+     "unique_value_count": 1,
+     "value_distribution": {
+      "True": 2
+     }
+    },
+    "AuthenticityPremium": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.0,
+     "transition_count": 0,
+     "unique_value_count": 1,
+     "value_distribution": {
+      "False": 2
+     }
+    },
+    "BiennialFatigue": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 1
+     }
+    },
+    "BlueChipConcentration": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 1
+     }
+    },
+    "BlueChipInstitutionalCapture": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 1
+     }
+    },
+    "CollectorFlightToSafety": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.0,
+     "transition_count": 0,
+     "unique_value_count": 1,
+     "value_distribution": {
+      "False": 2
+     }
+    },
+    "ConceptualDominance": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.0,
+     "transition_count": 0,
+     "unique_value_count": 1,
+     "value_distribution": {
+      "False": 2
+     }
+    },
+    "CraftPrestigeRising": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 1
+     }
+    },
+    "CuratorialMaterialityShift": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.0,
+     "transition_count": 0,
+     "unique_value_count": 1,
+     "value_distribution": {
+      "True": 2
+     }
+    },
+    "EmbodimentDiscourseRising": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.0,
+     "transition_count": 0,
+     "unique_value_count": 1,
+     "value_distribution": {
+      "True": 2
+     }
+    },
+    "EmergingMarketLiquidity": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 1
+     }
+    },
+    "FigurativeAuctionMomentum": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 1
+     }
+    },
+    "InstitutionalRiskAversion": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 1
+     }
+    },
+    "MarketPolarization": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.0,
+     "transition_count": 0,
+     "unique_value_count": 1,
+     "value_distribution": {
+      "False": 2
+     }
+    },
+    "MarketUncertainty": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.0,
+     "transition_count": 0,
+     "unique_value_count": 1,
+     "value_distribution": {
+      "True": 2
+     }
+    },
+    "MuseumAcquisitionMomentum": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.0,
+     "transition_count": 0,
+     "unique_value_count": 1,
+     "value_distribution": {
+      "True": 2
+     }
+    },
+    "MuseumFigurativeAcceptance": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.0,
+     "transition_count": 0,
+     "unique_value_count": 1,
+     "value_distribution": {
+      "True": 2
+     }
+    },
+    "NeoAcademicResurgence": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 1
+     }
+    },
+    "PrestigeFragmentation": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 1
+     }
+    },
+    "RegionalSceneMomentum": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 1
+     }
+    },
+    "RitualAuraPremium": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 2,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.0,
+     "transition_count": 0,
+     "unique_value_count": 1,
+     "value_distribution": {
+      "True": 2
+     }
+    }
+   },
+   "weekly_aggregation": [
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 5,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "AIArtInstitutionalAcceptance": true,
+        "AIImageSaturation": true,
+        "AntiDigitalSentiment": false,
+        "AttentionFragmentation": false,
+        "AuctionSpeculationElevated": true,
+        "AuthenticityPremium": false,
+        "BiennialFatigue": true,
+        "BlueChipConcentration": true,
+        "BlueChipInstitutionalCapture": true,
+        "CollectorFlightToSafety": false,
+        "ConceptualDominance": false,
+        "CraftPrestigeRising": false,
+        "CuratorialMaterialityShift": true,
+        "EmbodimentDiscourseRising": true,
+        "EmergingMarketLiquidity": true,
+        "FigurativeAuctionMomentum": true,
+        "InstitutionalRiskAversion": true,
+        "MarketPolarization": false,
+        "MarketUncertainty": true,
+        "MuseumAcquisitionMomentum": true,
+        "MuseumFigurativeAcceptance": true,
+        "NeoAcademicResurgence": false,
+        "PrestigeFragmentation": true,
+        "RegionalSceneMomentum": false,
+        "RitualAuraPremium": true
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-01-26"
+    },
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 9,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "AIArtInstitutionalAcceptance": true,
+        "AIImageSaturation": true,
+        "AntiDigitalSentiment": false,
+        "AttentionFragmentation": true,
+        "AuctionSpeculationElevated": true,
+        "AuthenticityPremium": false,
+        "BiennialFatigue": false,
+        "BlueChipConcentration": false,
+        "BlueChipInstitutionalCapture": false,
+        "CollectorFlightToSafety": false,
+        "ConceptualDominance": false,
+        "CraftPrestigeRising": true,
+        "CuratorialMaterialityShift": true,
+        "EmbodimentDiscourseRising": true,
+        "EmergingMarketLiquidity": false,
+        "FigurativeAuctionMomentum": false,
+        "InstitutionalRiskAversion": false,
+        "MarketPolarization": false,
+        "MarketUncertainty": true,
+        "MuseumAcquisitionMomentum": true,
+        "MuseumFigurativeAcceptance": true,
+        "NeoAcademicResurgence": true,
+        "PrestigeFragmentation": false,
+        "RegionalSceneMomentum": true,
+        "RitualAuraPremium": true
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-02-23"
+    }
+   ],
+   "weekly_bucket_count": 2,
+   "weekly_compressed_state_count": 2,
+   "weekly_compression_ratio": 1.0,
+   "weekly_retention_ratio": 1.0,
+   "weekly_transition_count": 1,
+   "weekly_unique_state_count": 2
+  },
+  "status": 200
+ },
+ "debug_learning": {
+  "body": {
+   "active_candidates": 10,
+   "current_generation": 5,
+   "domain": "Art Prestige Regime",
+   "domain_module_id": "art_prestige_regime_v1",
+   "dominant_evidence_count": 2,
+   "dominant_log_score": -34.607224058,
+   "last_learn_timestamp": "<ts>",
+   "last_mutation_introduced": 5,
+   "last_mutation_total_attempts": 6,
+   "learn_calls_this_session": 2,
+   "pipeline_status": {
+    "backfill_calls_learn": true,
+    "scheduler_calls_learn": true,
+    "trigger_calls_learn": true
+   },
+   "records_scored_this_session": 2,
+   "total_evidence_records": 2
+  },
+  "status": 200
+ },
+ "debug_structure": {
+  "body": {
+   "candidates": [
+    {
+     "active_edge_count": 3,
+     "avg_ll": -17.303525152,
+     "bic_penalty_raw": 4.868846052,
+     "bic_score_explore": -18.520736665,
+     "bic_score_strict": -22.172371204,
+     "candidate_id": "<id0>",
+     "description": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum",
+     "edge_structure": [
+      [
+       "AttentionFragmentation",
+       "PrestigeFragmentation"
+      ],
+      [
+       "PrestigeFragmentation",
+       "BlueChipConcentration"
+      ],
+      [
+       "PrestigeFragmentation",
+       "RegionalSceneMomentum"
+      ]
+     ],
+     "evidence_count": 2,
+     "generation": 0,
+     "is_dominant": true,
+     "log_score": -34.607224058,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -17.408952378,
+     "bic_penalty_raw": 4.868846052,
+     "bic_score_explore": -18.626163891,
+     "bic_score_strict": -22.27779843,
+     "candidate_id": "<id1>",
+     "description": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
+     "edge_structure": [
+      [
+       "AIArtInstitutionalAcceptance",
+       "ConceptualDominance"
+      ],
+      [
+       "AIArtInstitutionalAcceptance",
+       "MuseumAcquisitionMomentum"
+      ],
+      [
+       "AIImageSaturation",
+       "AIArtInstitutionalAcceptance"
+      ]
+     ],
+     "evidence_count": 2,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -34.817350271,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -17.400590849,
+     "bic_penalty_raw": 5.042733411,
+     "bic_score_explore": -18.661274202,
+     "bic_score_strict": -22.44332426,
+     "candidate_id": "<id2>",
+     "description": "variant_add_AIImageSaturation->AuthenticityPremium",
+     "edge_structure": [
+      [
+       "AIArtInstitutionalAcceptance",
+       "ConceptualDominance"
+      ],
+      [
+       "AIArtInstitutionalAcceptance",
+       "MuseumAcquisitionMomentum"
+      ],
+      [
+       "AIImageSaturation",
+       "AIArtInstitutionalAcceptance"
+      ],
+      [
+       "AIImageSaturation",
+       "AuthenticityPremium"
+      ]
+     ],
+     "evidence_count": 2,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -34.80068497,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -17.408310833,
+     "bic_penalty_raw": 5.042733411,
+     "bic_score_explore": -18.668994185,
+     "bic_score_strict": -22.451044244,
+     "candidate_id": "<id3>",
+     "description": "H5: NeoAcademicResurgence \u2014 aura + authenticity premium \u2192 neo-academic figurative revival",
+     "edge_structure": [
+      [
+       "AuthenticityPremium",
+       "NeoAcademicResurgence"
+      ],
+      [
+       "NeoAcademicResurgence",
+       "MuseumFigurativeAcceptance"
+      ],
+      [
+       "RitualAuraPremium",
+       "NeoAcademicResurgence"
+      ]
+     ],
+     "evidence_count": 2,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -34.816071611,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -17.41433815,
+     "bic_penalty_raw": 5.042733411,
+     "bic_score_explore": -18.675021503,
+     "bic_score_strict": -22.457071561,
+     "candidate_id": "<id4>",
+     "description": "H3: DefensiveBlueChipConsolidation \u2014 market uncertainty \u2192 blue-chip flight \u2192 institutional conservatism",
+     "edge_structure": [
+      [
+       "BlueChipConcentration",
+       "InstitutionalRiskAversion"
+      ],
+      [
+       "BlueChipInstitutionalCapture",
+       "MuseumAcquisitionMomentum"
+      ],
+      [
+       "CollectorFlightToSafety",
+       "BlueChipConcentration"
+      ],
+      [
+       "MarketUncertainty",
+       "CollectorFlightToSafety"
+      ]
+     ],
+     "evidence_count": 2,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -34.828084612,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -17.319310917,
+     "bic_penalty_raw": 5.21662077,
+     "bic_score_explore": -18.62346611,
+     "bic_score_strict": -22.535931687,
+     "candidate_id": "<id5>",
+     "description": "variant_add_RegionalSceneMomentum->BlueChipInstitutionalCapture",
+     "edge_structure": [
+      [
+       "AuthenticityPremium",
+       "NeoAcademicResurgence"
+      ],
+      [
+       "NeoAcademicResurgence",
+       "MuseumFigurativeAcceptance"
+      ],
+      [
+       "RegionalSceneMomentum",
+       "BlueChipInstitutionalCapture"
+      ],
+      [
+       "RitualAuraPremium",
+       "NeoAcademicResurgence"
+      ]
+     ],
+     "evidence_count": 2,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -34.638686548,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -17.341051172,
+     "bic_penalty_raw": 5.21662077,
+     "bic_score_explore": -18.645206364,
+     "bic_score_strict": -22.557671942,
+     "candidate_id": "<id6>",
+     "description": "variant_add_AuthenticityPremium->RegionalSceneMomentum",
+     "edge_structure": [
+      [
+       "AuthenticityPremium",
+       "RegionalSceneMomentum"
+      ],
+      [
+       "BlueChipConcentration",
+       "InstitutionalRiskAversion"
+      ],
+      [
+       "BlueChipInstitutionalCapture",
+       "MuseumAcquisitionMomentum"
+      ],
+      [
+       "CollectorFlightToSafety",
+       "BlueChipConcentration"
+      ],
+      [
+       "MarketUncertainty",
+       "CollectorFlightToSafety"
+      ]
+     ],
+     "evidence_count": 2,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -34.682016886,
+     "status": "ACTIVE",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -17.411426605,
+     "bic_penalty_raw": 5.21662077,
+     "bic_score_explore": -18.715581797,
+     "bic_score_strict": -22.628047375,
+     "candidate_id": "<id7>",
+     "description": "H1: CraftAuraBacklash \u2014 AI saturation \u2192 aura premium \u2192 craft/figurative institutionalisation",
+     "edge_structure": [
+      [
+       "AIImageSaturation",
+       "RitualAuraPremium"
+      ],
+      [
+       "CraftPrestigeRising",
+       "MuseumFigurativeAcceptance"
+      ],
+      [
+       "CuratorialMaterialityShift",
+       "CraftPrestigeRising"
+      ],
+      [
+       "RitualAuraPremium",
+       "CraftPrestigeRising"
+      ]
+     ],
+     "evidence_count": 2,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -34.822281633,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -17.450654106,
+     "bic_penalty_raw": 5.21662077,
+     "bic_score_explore": -18.754809299,
+     "bic_score_strict": -22.667274876,
+     "candidate_id": "<id8>",
+     "description": "variant_add_AIImageSaturation->ConceptualDominance",
+     "edge_structure": [
+      [
+       "AIArtInstitutionalAcceptance",
+       "ConceptualDominance"
+      ],
+      [
+       "AIArtInstitutionalAcceptance",
+       "MuseumAcquisitionMomentum"
+      ],
+      [
+       "AIImageSaturation",
+       "AIArtInstitutionalAcceptance"
+      ],
+      [
+       "AIImageSaturation",
+       "ConceptualDominance"
+      ]
+     ],
+     "evidence_count": 2,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -34.900465672,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -17.410199942,
+     "bic_penalty_raw": 5.390508129,
+     "bic_score_explore": -18.757826974,
+     "bic_score_strict": -22.800708071,
+     "candidate_id": "<id9>",
+     "description": "variant_add_MarketUncertainty->AttentionFragmentation",
+     "edge_structure": [
+      [
+       "AIImageSaturation",
+       "RitualAuraPremium"
+      ],
+      [
+       "CraftPrestigeRising",
+       "MuseumFigurativeAcceptance"
+      ],
+      [
+       "CuratorialMaterialityShift",
+       "CraftPrestigeRising"
+      ],
+      [
+       "MarketUncertainty",
+       "AttentionFragmentation"
+      ],
+      [
+       "RitualAuraPremium",
+       "CraftPrestigeRising"
+      ]
+     ],
+     "evidence_count": 2,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -34.819836781,
+     "status": "ACTIVE",
+     "total_edge_count": 5
+    }
+   ],
+   "domain": "Art Prestige Regime",
+   "domain_module_id": "art_prestige_regime_v1",
+   "env_bic_multiplier": 1.0,
+   "env_mode": "strict",
+   "last_mutation_cycle": {
+    "dag_violations": 0,
+    "duplicate_rejections": 1,
+    "introduced": 5,
+    "total_attempts": 6
+   },
+   "total_evidence_records": 2
+  },
+  "status": 200
+ },
+ "evidence_recent": {
+  "body": {
+   "domain": "Art Prestige Regime",
+   "records": [
+    {
+     "description": "fake@2026-02-28",
+     "id": "<id12>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-01-31",
+     "id": "<id13>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    }
+   ]
+  },
+  "status": 200
+ },
+ "inference_dominant": {
+  "body": {
+   "candidate_id": "<id0>",
+   "edges": [
+    {
+     "probability": 0.568374504,
+     "source": "AttentionFragmentation",
+     "status": "explore",
+     "target": "PrestigeFragmentation"
+    },
+    {
+     "probability": 0.546779196,
+     "source": "PrestigeFragmentation",
+     "status": "explore",
+     "target": "RegionalSceneMomentum"
+    },
+    {
+     "probability": 0.476268452,
+     "source": "PrestigeFragmentation",
+     "status": "explore",
+     "target": "BlueChipConcentration"
+    }
+   ],
+   "frontier_edges": [
+    {
+     "explore_weight": 1.1025,
+     "note": "existence_probability=0.568 in explore band [0.25, 0.75]",
+     "probability": 0.568374504,
+     "relation": "attention dispersal \u2192 prestige hierarchy fragmentation",
+     "source": "AttentionFragmentation",
+     "target": "PrestigeFragmentation"
+    },
+    {
+     "explore_weight": 1.1025,
+     "note": "existence_probability=0.547 in explore band [0.25, 0.75]",
+     "probability": 0.546779196,
+     "relation": "prestige fragmentation \u2192 regional scenes gain visibility",
+     "source": "PrestigeFragmentation",
+     "target": "RegionalSceneMomentum"
+    },
+    {
+     "explore_weight": 1.1025,
+     "note": "existence_probability=0.476 in explore band [0.25, 0.75]",
+     "probability": 0.476268452,
+     "relation": "fragmentation \u2192 suppressed blue-chip consensus",
+     "source": "PrestigeFragmentation",
+     "target": "BlueChipConcentration"
+    }
+   ],
+   "nodes": [
+    {
+     "id": "InstitutionalRiskAversion",
+     "label": "InstitutionalRiskAversion",
+     "observation": null,
+     "probability": 0.454225,
+     "status": "target"
+    },
+    {
+     "id": "MuseumFigurativeAcceptance",
+     "label": "MuseumFigurativeAcceptance",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "ConceptualDominance",
+     "label": "ConceptualDominance",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "AIArtInstitutionalAcceptance",
+     "label": "AIArtInstitutionalAcceptance",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "CuratorialMaterialityShift",
+     "label": "CuratorialMaterialityShift",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "CraftPrestigeRising",
+     "label": "CraftPrestigeRising",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "PrestigeFragmentation",
+     "label": "PrestigeFragmentation",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "RegionalSceneMomentum",
+     "label": "RegionalSceneMomentum",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "BlueChipInstitutionalCapture",
+     "label": "BlueChipInstitutionalCapture",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "BiennialFatigue",
+     "label": "BiennialFatigue",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "MuseumAcquisitionMomentum",
+     "label": "MuseumAcquisitionMomentum",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "BlueChipConcentration",
+     "label": "BlueChipConcentration",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "AuctionSpeculationElevated",
+     "label": "AuctionSpeculationElevated",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "CollectorFlightToSafety",
+     "label": "CollectorFlightToSafety",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "FigurativeAuctionMomentum",
+     "label": "FigurativeAuctionMomentum",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "EmergingMarketLiquidity",
+     "label": "EmergingMarketLiquidity",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "MarketPolarization",
+     "label": "MarketPolarization",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "MarketUncertainty",
+     "label": "MarketUncertainty",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "RitualAuraPremium",
+     "label": "RitualAuraPremium",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "EmbodimentDiscourseRising",
+     "label": "EmbodimentDiscourseRising",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "AntiDigitalSentiment",
+     "label": "AntiDigitalSentiment",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "AIImageSaturation",
+     "label": "AIImageSaturation",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "AuthenticityPremium",
+     "label": "AuthenticityPremium",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "NeoAcademicResurgence",
+     "label": "NeoAcademicResurgence",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "AttentionFragmentation",
+     "label": "AttentionFragmentation",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    }
+   ],
+   "target_probability": 0.454225,
+   "target_variable": "InstitutionalRiskAversion"
+  },
+  "status": 200
+ },
+ "inference_other_candidate": {
+  "body": {
+   "candidate_id": "<id9>",
+   "edges": [
+    {
+     "probability": 0.56773987,
+     "source": "AIImageSaturation",
+     "status": "explore",
+     "target": "RitualAuraPremium"
+    },
+    {
+     "probability": 0.481486823,
+     "source": "RitualAuraPremium",
+     "status": "explore",
+     "target": "CraftPrestigeRising"
+    },
+    {
+     "probability": 0.514894353,
+     "source": "CraftPrestigeRising",
+     "status": "explore",
+     "target": "MuseumFigurativeAcceptance"
+    },
+    {
+     "probability": 0.428622502,
+     "source": "CuratorialMaterialityShift",
+     "status": "explore",
+     "target": "CraftPrestigeRising"
+    },
+    {
+     "probability": 0.5,
+     "source": "MarketUncertainty",
+     "status": "explore",
+     "target": "AttentionFragmentation"
+    }
+   ],
+   "frontier_edges": [
+    {
+     "explore_weight": 1.1025,
+     "note": "existence_probability=0.568 in explore band [0.25, 0.75]",
+     "probability": 0.56773987,
+     "relation": "AI image saturation \u2192 aura/ritual premium",
+     "source": "AIImageSaturation",
+     "target": "RitualAuraPremium"
+    },
+    {
+     "explore_weight": 1.1025,
+     "note": "existence_probability=0.481 in explore band [0.25, 0.75]",
+     "probability": 0.481486823,
+     "relation": "ritual aura premium \u2192 craft prestige elevation",
+     "source": "RitualAuraPremium",
+     "target": "CraftPrestigeRising"
+    },
+    {
+     "explore_weight": 1.1025,
+     "note": "existence_probability=0.515 in explore band [0.25, 0.75]",
+     "probability": 0.514894353,
+     "relation": "craft prestige \u2192 institutional figurative acceptance",
+     "source": "CraftPrestigeRising",
+     "target": "MuseumFigurativeAcceptance"
+    },
+    {
+     "explore_weight": 1.1025,
+     "note": "existence_probability=0.429 in explore band [0.25, 0.75]",
+     "probability": 0.428622502,
+     "relation": "curatorial materiality shift \u2192 craft rising",
+     "source": "CuratorialMaterialityShift",
+     "target": "CraftPrestigeRising"
+    },
+    {
+     "explore_weight": 1.05,
+     "note": "existence_probability=0.500 in explore band [0.25, 0.75]",
+     "probability": 0.5,
+     "relation": "MarketUncertainty\u2192AttentionFragmentation",
+     "source": "MarketUncertainty",
+     "target": "AttentionFragmentation"
+    }
+   ],
+   "nodes": [
+    {
+     "id": "InstitutionalRiskAversion",
+     "label": "InstitutionalRiskAversion",
+     "observation": null,
+     "probability": 0.454225,
+     "status": "target"
+    },
+    {
+     "id": "MuseumFigurativeAcceptance",
+     "label": "MuseumFigurativeAcceptance",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "ConceptualDominance",
+     "label": "ConceptualDominance",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "AIArtInstitutionalAcceptance",
+     "label": "AIArtInstitutionalAcceptance",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "CuratorialMaterialityShift",
+     "label": "CuratorialMaterialityShift",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "CraftPrestigeRising",
+     "label": "CraftPrestigeRising",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "PrestigeFragmentation",
+     "label": "PrestigeFragmentation",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "RegionalSceneMomentum",
+     "label": "RegionalSceneMomentum",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "BlueChipInstitutionalCapture",
+     "label": "BlueChipInstitutionalCapture",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "BiennialFatigue",
+     "label": "BiennialFatigue",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "MuseumAcquisitionMomentum",
+     "label": "MuseumAcquisitionMomentum",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "BlueChipConcentration",
+     "label": "BlueChipConcentration",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "AuctionSpeculationElevated",
+     "label": "AuctionSpeculationElevated",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "CollectorFlightToSafety",
+     "label": "CollectorFlightToSafety",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "FigurativeAuctionMomentum",
+     "label": "FigurativeAuctionMomentum",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "EmergingMarketLiquidity",
+     "label": "EmergingMarketLiquidity",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "MarketPolarization",
+     "label": "MarketPolarization",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "MarketUncertainty",
+     "label": "MarketUncertainty",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "RitualAuraPremium",
+     "label": "RitualAuraPremium",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "EmbodimentDiscourseRising",
+     "label": "EmbodimentDiscourseRising",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "AntiDigitalSentiment",
+     "label": "AntiDigitalSentiment",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "AIImageSaturation",
+     "label": "AIImageSaturation",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "AuthenticityPremium",
+     "label": "AuthenticityPremium",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "NeoAcademicResurgence",
+     "label": "NeoAcademicResurgence",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "AttentionFragmentation",
+     "label": "AttentionFragmentation",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    }
+   ],
+   "target_probability": 0.454225,
+   "target_variable": "InstitutionalRiskAversion"
+  },
+  "status": 200
+ },
+ "lineage_dominant": {
+  "body": {
+   "candidate_id": "<id0>",
+   "domain": "Art Prestige Regime",
+   "events": [
+    {
+     "description": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum",
+     "dominant_after": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum",
+     "event_type": "current",
+     "generation": 0
+    },
+    {
+     "description": "Became dominant candidate after 2 paradigm shift(s)",
+     "dominant_after": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum",
+     "event_type": "shift",
+     "generation": 5
+    }
+   ]
+  },
+  "status": 200
+ },
+ "narrative_snapshot": {
+  "body": {
+   "competing_candidates": {
+    "candidates": [
+     {
+      "edge_count": 3,
+      "log_score": -34.607224058,
+      "name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum",
+      "score_normalized": 0.95,
+      "status": "dominant"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -34.817350271,
+      "name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
+      "score_normalized": 0.798991029,
+      "status": "rising"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -34.80068497,
+      "name": "variant_add_AIImageSaturation->AuthenticityPremium",
+      "score_normalized": 0.561899662,
+      "status": "rising"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -34.816071611,
+      "name": "H5: NeoAcademicResurgence \u2014 aura + authenticity premium \u2192 neo-academic figurative revival",
+      "score_normalized": 0.550841923,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -34.828084612,
+      "name": "H3: DefensiveBlueChipConsolidation \u2014 market uncertainty \u2192 blue-chip flight \u2192 institutional conservatism",
+      "score_normalized": 0.542208679,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -34.638686548,
+      "name": "variant_add_RegionalSceneMomentum->BlueChipInstitutionalCapture",
+      "score_normalized": 0.429253165,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 5,
+      "log_score": -34.682016886,
+      "name": "variant_add_AuthenticityPremium->RegionalSceneMomentum",
+      "score_normalized": 0.398113453,
+      "status": "falling"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -34.822281633,
+      "name": "H1: CraftAuraBacklash \u2014 AI saturation \u2192 aura premium \u2192 craft/figurative institutionalisation",
+      "score_normalized": 0.297311013,
+      "status": "falling"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -34.900465672,
+      "name": "variant_add_AIImageSaturation->ConceptualDominance",
+      "score_normalized": 0.241123395,
+      "status": "falling"
+     },
+     {
+      "edge_count": 5,
+      "log_score": -34.819836781,
+      "name": "variant_add_MarketUncertainty->AttentionFragmentation",
+      "score_normalized": 0.05,
+      "status": "falling"
+     }
+    ],
+    "score_gap_to_dominant": 0.105427226
+   },
+   "current_regime_state": [
+    {
+     "boolean_state": false,
+     "name": "InstitutionalRiskAversion",
+     "probability": 0.454225
+    },
+    {
+     "boolean_state": true,
+     "name": "MuseumFigurativeAcceptance",
+     "probability": 0.671225
+    },
+    {
+     "boolean_state": false,
+     "name": "ConceptualDominance",
+     "probability": 0.347675
+    },
+    {
+     "boolean_state": true,
+     "name": "AIArtInstitutionalAcceptance",
+     "probability": 0.579475
+    },
+    {
+     "boolean_state": true,
+     "name": "CuratorialMaterialityShift",
+     "probability": 0.629575
+    },
+    {
+     "boolean_state": true,
+     "name": "CraftPrestigeRising",
+     "probability": 0.5191
+    },
+    {
+     "boolean_state": true,
+     "name": "PrestigeFragmentation",
+     "probability": 0.514531499
+    },
+    {
+     "boolean_state": true,
+     "name": "RegionalSceneMomentum",
+     "probability": 0.530633451
+    },
+    {
+     "boolean_state": true,
+     "name": "BlueChipInstitutionalCapture",
+     "probability": 0.52765
+    },
+    {
+     "boolean_state": true,
+     "name": "BiennialFatigue",
+     "probability": 0.524975
+    },
+    {
+     "boolean_state": true,
+     "name": "MuseumAcquisitionMomentum",
+     "probability": 0.599125
+    },
+    {
+     "boolean_state": false,
+     "name": "BlueChipConcentration",
+     "probability": 0.435542344
+    },
+    {
+     "boolean_state": true,
+     "name": "AuctionSpeculationElevated",
+     "probability": 0.673375
+    },
+    {
+     "boolean_state": false,
+     "name": "CollectorFlightToSafety",
+     "probability": 0.345475
+    },
+    {
+     "boolean_state": false,
+     "name": "FigurativeAuctionMomentum",
+     "probability": 0.478875
+    },
+    {
+     "boolean_state": false,
+     "name": "EmergingMarketLiquidity",
+     "probability": 0.459825
+    },
+    {
+     "boolean_state": false,
+     "name": "MarketPolarization",
+     "probability": 0.457725
+    },
+    {
+     "boolean_state": true,
+     "name": "MarketUncertainty",
+     "probability": 0.535225
+    },
+    {
+     "boolean_state": true,
+     "name": "RitualAuraPremium",
+     "probability": 0.56995
+    },
+    {
+     "boolean_state": true,
+     "name": "EmbodimentDiscourseRising",
+     "probability": 0.5436
+    },
+    {
+     "boolean_state": false,
+     "name": "AntiDigitalSentiment",
+     "probability": 0.447825
+    },
+    {
+     "boolean_state": true,
+     "name": "AIImageSaturation",
+     "probability": 0.63495
+    },
+    {
+     "boolean_state": false,
+     "name": "AuthenticityPremium",
+     "probability": 0.4099
+    },
+    {
+     "boolean_state": true,
+     "name": "NeoAcademicResurgence",
+     "probability": 0.519025
+    },
+    {
+     "boolean_state": false,
+     "name": "AttentionFragmentation",
+     "probability": 0.4768
+    }
+   ],
+   "dominant_hypothesis": {
+    "candidate_id": "<id0>",
+    "edge_count": 3,
+    "edges": [
+     {
+      "existence_probability": 0.568374504,
+      "source": "AttentionFragmentation",
+      "target": "PrestigeFragmentation"
+     },
+     {
+      "existence_probability": 0.546779196,
+      "source": "PrestigeFragmentation",
+      "target": "RegionalSceneMomentum"
+     },
+     {
+      "existence_probability": 0.476268452,
+      "source": "PrestigeFragmentation",
+      "target": "BlueChipConcentration"
+     }
+    ],
+    "generations_dominant": 5,
+    "log_score": -34.607224058,
+    "name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum"
+   },
+   "frontier": {
+    "frontier_edge_count": 3,
+    "frontier_edges": [
+     {
+      "probability": 0.568374504,
+      "relation": "attention dispersal \u2192 prestige hierarchy fragmentation",
+      "source": "AttentionFragmentation",
+      "target": "PrestigeFragmentation"
+     },
+     {
+      "probability": 0.546779196,
+      "relation": "prestige fragmentation \u2192 regional scenes gain visibility",
+      "source": "PrestigeFragmentation",
+      "target": "RegionalSceneMomentum"
+     },
+     {
+      "probability": 0.476268452,
+      "relation": "fragmentation \u2192 suppressed blue-chip consensus",
+      "source": "PrestigeFragmentation",
+      "target": "BlueChipConcentration"
+     }
+    ]
+   },
+   "interpretation_hints": [
+    "structure_entropy is high (2.240): engine has not converged; multiple causal stories remain plausible",
+    "dominant hypothesis has held for 5 generations",
+    "last paradigm shift was <ago>",
+    "evidence base is small (2 records); scores may not yet be reliable",
+    "3 edge(s) are in the explore band: causal structure is still being refined in these relations"
+   ],
+   "metadata": {
+    "current_generation": 5,
+    "domain": "Art Prestige Regime",
+    "domain_module_id": "art_prestige_regime_v1",
+    "evidence_count": 2,
+    "timestamp": "<ts>"
+   },
+   "ontology_competition": {
+    "active_candidates": 10,
+    "entropy_interpretation": "high",
+    "paradigm_shifts_total": 2,
+    "recent_shifts": [
+     {
+      "from_name": "H1: CraftAuraBacklash \u2014 AI saturation \u2192 aura premium \u2192 craft/figurative institutionalisation",
+      "generation": 5,
+      "timestamp": "<ts>",
+      "to_name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy"
+     },
+     {
+      "from_name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
+      "generation": 5,
+      "timestamp": "<ts>",
+      "to_name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum"
+     }
+    ],
+    "structure_entropy": 2.240331472
+   }
+  },
+  "status": 200
+ },
+ "shifts": {
+  "body": {
+   "domain": "Art Prestige Regime",
+   "domain_module_id": "art_prestige_regime_v1",
+   "events": [
+    {
+     "evidence_count_at_shift": 1,
+     "generation": 5,
+     "new_dominant_id": "<id1>",
+     "new_dominant_name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
+     "previous_dominant_id": "<id7>",
+     "previous_dominant_name": "H1: CraftAuraBacklash \u2014 AI saturation \u2192 aura premium \u2192 craft/figurative institutionalisation",
+     "shift_id": "<id10>",
+     "timestamp": "<ts>"
+    },
+    {
+     "evidence_count_at_shift": 2,
+     "generation": 5,
+     "new_dominant_id": "<id0>",
+     "new_dominant_name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum",
+     "previous_dominant_id": "<id1>",
+     "previous_dominant_name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
+     "shift_id": "<id11>",
+     "timestamp": "<ts>"
+    }
+   ],
+   "total_shifts": 2
+  },
+  "status": 200
+ },
+ "status": {
+  "body": {
+   "active_candidates": 10,
+   "current_generation": 5,
+   "domain": "Art Prestige Regime",
+   "dominant_hypothesis": {
+    "candidate_id": "<id0>",
+    "generations_dominant": 5,
+    "name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum"
+   },
+   "engine_status": "online",
+   "frontier_edge_count": 3,
+   "last_evidence_cycle_ago": "<ago>",
+   "max_candidates": 10,
+   "paradigm_shifts_this_window": 2,
+   "structure_entropy": 2.240331472
+  },
+  "status": 200
+ }
+}

@@ -38,22 +38,17 @@ RefinancingStress
 from __future__ import annotations
 
 import logging
-import math
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta, timezone
+from datetime import date
 from typing import Optional
-from uuid import uuid4
 
-import numpy as np
 
 from ....engine.schemas import (
     EvidenceRecord,
-    MissingnessType,
-    ObservedAssignment,
-    SourceType,
 )
 from ..domain import get_variables
 from .fred_client import FREDClient, FREDObservation
+from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +64,8 @@ _MIN_OBS: dict[str, int] = {
 }
 
 
-@dataclass
+# slots: a misspelled field name raises instead of silently adding a field.
+@dataclass(slots=True)
 class CreditCycleSnapshot:
     p_hy_spread_elevated: float = 0.5
     p_leveraged_loan_stress: float = 0.5
@@ -89,30 +85,14 @@ class CreditCycleSnapshot:
     high_yield_issuance_falling: bool = False
     refinancing_stress: bool = False
 
+    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
+    missing: set[str] = field(default_factory=set)
     confidence: dict[str, float] = field(default_factory=dict)
     target_date: Optional[date] = None
 
 
-def _sigmoid(x: float) -> float:
-    if x >= 0:
-        return 1.0 / (1.0 + math.exp(-x))
-    ex = math.exp(x)
-    return ex / (1.0 + ex)
-
-
 def _soft_bool(signal: float) -> float:
-    return max(_CLAMP_LO, min(_CLAMP_HI, _sigmoid(signal)))
-
-
-def _zscore(current: float, values: list[float]) -> float:
-    if len(values) < 2:
-        return 0.0
-    arr = np.array(values, dtype=float)
-    mu = float(np.mean(arr))
-    sigma = float(np.std(arr, ddof=1))
-    if sigma < 1e-9:
-        return 0.0
-    return (current - mu) / sigma
+    return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
 
 
 def _values_from_obs(obs: list[FREDObservation]) -> list[float]:
@@ -193,13 +173,14 @@ def _compute_refinancing_stress(
     if len(dgs5_obs) < _MIN_OBS["DGS5"] or len(hy_obs) < _MIN_OBS["BAMLH0A0HYM2"]:
         return None, 0.5
 
-    # Build composite series (shorter of the two)
-    n = min(len(dgs5_obs), len(hy_obs), 260)
+    # Pair by date: the two series have different holiday calendars, so pairing
+    # by position drifts by a day after every date only one of them has.
+    hy_by_date = {o.obs_date: o.value for o in hy_obs}
     composite_values = [
-        (dgs5_obs[i].value + hy_obs[i].value) / 2.0
-        for i in range(n)
-        if i < len(dgs5_obs) and i < len(hy_obs)
-    ]
+        (o.value + hy_by_date[o.obs_date]) / 2.0
+        for o in dgs5_obs
+        if o.obs_date in hy_by_date
+    ][:260]
     if not composite_values:
         return None, 0.5
     current = composite_values[0]
@@ -214,6 +195,8 @@ def compute_snapshot(
     confidence: dict[str, float] = {}
 
     def _apply(var_name: str, sig: Optional[float], conf: float, p_attr: str, bool_attr: str) -> None:
+        if sig is None:
+            snap.missing.add(var_name)
         s = sig if sig is not None else 0.0
         p = _soft_bool(s)
         setattr(snap, p_attr, p)
@@ -257,66 +240,32 @@ class CreditCyclePipeline:
     def __init__(self, fred: FREDClient) -> None:
         self._fred = fred
 
-    async def fetch_evidence(self, target_date: Optional[date] = None) -> EvidenceRecord:
-        if target_date is None:
-            target_date = _last_friday()
+    async def fetch_evidence(self, target_date: date) -> EvidenceRecord:
         observations = await self._fred.fetch_all_series(end_date=target_date)
         snapshot = compute_snapshot(observations, target_date)
         return self.build_evidence_record(snapshot)
 
     @staticmethod
     def build_evidence_record(snapshot: CreditCycleSnapshot) -> EvidenceRecord:
-        variables = get_variables()
-        conf = snapshot.confidence
-
-        def _assignment(var_name: str, observed_value: bool, p_true: float) -> ObservedAssignment:
-            c = conf.get(var_name, 1.0)
-            return ObservedAssignment(
-                variable_id=variables[var_name].variable_id,
-                observed_value=observed_value,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=c,
-                probabilities={True: p_true, False: 1.0 - p_true},
-            )
-
-        assignments = [
-            _assignment("HYSpreadElevated",         snapshot.hy_spread_elevated,          snapshot.p_hy_spread_elevated),
-            _assignment("LeveragedLoanStress",       snapshot.leveraged_loan_stress,       snapshot.p_leveraged_loan_stress),
-            _assignment("CorporateDefaultRisk",      snapshot.corporate_default_risk,      snapshot.p_corporate_default_risk),
-            _assignment("CreditImpulseNegative",     snapshot.credit_impulse_negative,     snapshot.p_credit_impulse_negative),
-            _assignment("BankLendingTightening",     snapshot.bank_lending_tightening,     snapshot.p_bank_lending_tightening),
-            _assignment("InvestmentGradeSpread",     snapshot.investment_grade_spread,     snapshot.p_investment_grade_spread),
-            _assignment("HighYieldIssuanceFalling",  snapshot.high_yield_issuance_falling, snapshot.p_high_yield_issuance_falling),
-            _assignment("RefinancingStress",         snapshot.refinancing_stress,          snapshot.p_refinancing_stress),
-        ]
-
-        target_date = snapshot.target_date or datetime.now(timezone.utc).date()
-        ts = datetime(target_date.year, target_date.month, target_date.day, tzinfo=timezone.utc)
-        overall_conf = float(sum(conf.values()) / len(conf)) if conf else 1.0
-
-        return EvidenceRecord(
-            evidence_id=uuid4(),
-            timestamp=ts,
-            observed_assignments=assignments,
-            source_type=SourceType.API,
-            source_ref=(
-                "FRED:BAMLH0A0HYM2+DRTSCILM+TOTCI+BAMLC0A0CM+DGS5"
-                f"@week-ending-{target_date}"
-            ),
-            confidence=overall_conf,
+        target_date = snapshot.target_date
+        return build_soft_record(
+            module_id="credit-cycle-v1",
+            variables=get_variables(),
+            states=[
+                ("HYSpreadElevated", snapshot.hy_spread_elevated, snapshot.p_hy_spread_elevated),
+                ("LeveragedLoanStress", snapshot.leveraged_loan_stress, snapshot.p_leveraged_loan_stress),
+                ("CorporateDefaultRisk", snapshot.corporate_default_risk, snapshot.p_corporate_default_risk),
+                ("CreditImpulseNegative", snapshot.credit_impulse_negative, snapshot.p_credit_impulse_negative),
+                ("BankLendingTightening", snapshot.bank_lending_tightening, snapshot.p_bank_lending_tightening),
+                ("InvestmentGradeSpread", snapshot.investment_grade_spread, snapshot.p_investment_grade_spread),
+                ("HighYieldIssuanceFalling", snapshot.high_yield_issuance_falling, snapshot.p_high_yield_issuance_falling),
+                ("RefinancingStress", snapshot.refinancing_stress, snapshot.p_refinancing_stress),
+            ],
+            confidence=snapshot.confidence,
+            missing=snapshot.missing,
+            target_date=target_date,
+            source_ref="FRED:BAMLH0A0HYM2+DRTSCILM+TOTCI+BAMLC0A0CM+DGS5"
+            f"@week-ending-{target_date}",
         )
 
 
-def _last_friday(as_of: Optional[date] = None) -> date:
-    today = as_of or datetime.now(timezone.utc).date()
-    days_since_friday = (today.weekday() - 4) % 7
-    return today - timedelta(days=days_since_friday)
-
-
-def _weekly_backfill_dates(backfill_weeks: int, today: date) -> list[date]:
-    fridays: set[date] = set()
-    for delta in range(backfill_weeks * 7, 0, -1):
-        d = today - timedelta(days=delta)
-        if d.weekday() == 4:
-            fridays.add(d)
-    return sorted(fridays)

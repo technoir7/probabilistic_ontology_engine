@@ -35,9 +35,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import math
 from datetime import date, datetime, timezone
-from typing import Any
 from uuid import uuid4
 
 from ....engine.schemas import (
@@ -49,6 +47,7 @@ from ....engine.schemas import (
 from ..domain import get_variables
 from .eia_client import EIAClient, NatGasSnapshot
 from .noaa_client import DailyClimateObs, MONTHLY_NORMALS_C, NOAAClient
+from ...sources.soft_evidence import soft_bool
 
 logger = logging.getLogger(__name__)
 
@@ -56,21 +55,13 @@ logger = logging.getLogger(__name__)
 # Sigmoid calibration helpers
 # ---------------------------------------------------------------------------
 
-def _sigmoid(x: float) -> float:
-    """Numerically stable sigmoid function."""
-    if x >= 0:
-        return 1.0 / (1.0 + math.exp(-x))
-    ex = math.exp(x)
-    return ex / (1.0 + ex)
-
 
 _CLAMP_LO: float = 0.01
 _CLAMP_HI: float = 0.99
 
 
 def _soft_bool(signal: float) -> float:
-    """Convert a signed signal to P(True) via sigmoid, clamped to [0.01, 0.99]."""
-    return max(_CLAMP_LO, min(_CLAMP_HI, _sigmoid(signal)))
+    return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
 
 
 class NaturalGasPipeline:

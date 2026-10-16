@@ -1,0 +1,1872 @@
+{
+ "backfill": {
+  "body": {
+   "days_requested": 21,
+   "days_successfully_ingested": 4,
+   "domain": "Macro Regime"
+  },
+  "status": 200
+ },
+ "candidates": {
+  "body": {
+   "candidates": [
+    {
+     "edge_count": 2,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id0>",
+     "log_score": -23.090518456,
+     "name": "T_null: volatility-only baseline",
+     "score_normalized": 0.95,
+     "status": "dominant"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id1>",
+     "log_score": -22.889489403,
+     "name": "variant_add_AIRiskOn->DollarStrength",
+     "score_normalized": 0.821059338,
+     "status": "rising"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id2>",
+     "log_score": -22.967764372,
+     "name": "T_ai_boom: AI productivity narrative dominant",
+     "score_normalized": 0.800121036,
+     "status": "rising"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id3>",
+     "log_score": -23.194840543,
+     "name": "variant_add_LiquidityStress->AIRiskOn",
+     "score_normalized": 0.739697858,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id4>",
+     "log_score": -22.965153151,
+     "name": "variant_add_VolatilityShock->YieldCurveInverted",
+     "score_normalized": 0.618202978,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id5>",
+     "log_score": -22.984041019,
+     "name": "variant_add_CreditSpreadStress->AIRiskOn",
+     "score_normalized": 0.613109752,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 4,
+     "generation_introduced": 2,
+     "id": "<id6>",
+     "log_score": -23.194840543,
+     "name": "variant_add_VolatilityShock->LiquidityStress",
+     "score_normalized": 0.557086686,
+     "status": "falling"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id7>",
+     "log_score": -23.040906689,
+     "name": "T_credit: credit-market-led regime",
+     "score_normalized": 0.415222345,
+     "status": "falling"
+    },
+    {
+     "edge_count": 6,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id8>",
+     "log_score": -22.847734124,
+     "name": "T_recession: recessionary tightening cascade",
+     "score_normalized": 0.28330919,
+     "status": "falling"
+    },
+    {
+     "edge_count": 5,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id9>",
+     "log_score": -23.040906689,
+     "name": "variant_add_YieldCurveInverted->EquityRiskOn",
+     "score_normalized": 0.05,
+     "status": "falling"
+    }
+   ],
+   "domain": "Macro Regime",
+   "generation": 9
+  },
+  "status": 200
+ },
+ "debug_entropy": {
+  "body": {
+   "domain": "Macro Regime",
+   "domain_key": "mr",
+   "domain_module_id": "macro-regime-v1",
+   "pairwise_mutual_information": [
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "YieldCurveInverted",
+     "variable_y": "InflationShock"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "YieldCurveInverted",
+     "variable_y": "LiquidityStress"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "YieldCurveInverted",
+     "variable_y": "CreditSpreadStress"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "YieldCurveInverted",
+     "variable_y": "VolatilityShock"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "YieldCurveInverted",
+     "variable_y": "DollarStrength"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "YieldCurveInverted",
+     "variable_y": "EquityRiskOn"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "YieldCurveInverted",
+     "variable_y": "AIRiskOn"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InflationShock",
+     "variable_y": "LiquidityStress"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InflationShock",
+     "variable_y": "CreditSpreadStress"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InflationShock",
+     "variable_y": "VolatilityShock"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InflationShock",
+     "variable_y": "DollarStrength"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InflationShock",
+     "variable_y": "EquityRiskOn"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "InflationShock",
+     "variable_y": "AIRiskOn"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "LiquidityStress",
+     "variable_y": "CreditSpreadStress"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "LiquidityStress",
+     "variable_y": "VolatilityShock"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "LiquidityStress",
+     "variable_y": "DollarStrength"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "LiquidityStress",
+     "variable_y": "EquityRiskOn"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "LiquidityStress",
+     "variable_y": "AIRiskOn"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CreditSpreadStress",
+     "variable_y": "VolatilityShock"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CreditSpreadStress",
+     "variable_y": "DollarStrength"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CreditSpreadStress",
+     "variable_y": "EquityRiskOn"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "CreditSpreadStress",
+     "variable_y": "AIRiskOn"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "VolatilityShock",
+     "variable_y": "DollarStrength"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "VolatilityShock",
+     "variable_y": "EquityRiskOn"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "VolatilityShock",
+     "variable_y": "AIRiskOn"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "DollarStrength",
+     "variable_y": "EquityRiskOn"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "DollarStrength",
+     "variable_y": "AIRiskOn"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EquityRiskOn",
+     "variable_y": "AIRiskOn"
+    }
+   ],
+   "total_evidence_rows": 4,
+   "unique_observed_patterns": [
+    {
+     "count": 4,
+     "pattern": {
+      "AIRiskOn": null,
+      "CreditSpreadStress": null,
+      "DollarStrength": null,
+      "EquityRiskOn": null,
+      "InflationShock": null,
+      "LiquidityStress": null,
+      "VolatilityShock": null,
+      "YieldCurveInverted": null
+     }
+    }
+   ],
+   "variables": {
+    "AIRiskOn": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "CreditSpreadStress": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "DollarStrength": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "EquityRiskOn": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "InflationShock": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "LiquidityStress": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "VolatilityShock": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "YieldCurveInverted": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    }
+   }
+  },
+  "status": 200
+ },
+ "debug_evidence-geometry": {
+  "body": {
+   "average_pairwise_mi": 0.352067634,
+   "cadence_detected": "weekly",
+   "compression_ratio_daily_to_weekly": 1.0,
+   "daily_state_count": 4,
+   "daily_transition_count": 3,
+   "daily_unique_state_count": 4,
+   "domain": "Macro Regime",
+   "domain_key": "mr",
+   "domain_module_id": "macro-regime-v1",
+   "effective_state_density": 1.0,
+   "effective_transitions_per_month": 4.348214286,
+   "highest_entropy_variable": {
+    "shannon_entropy": 1.0,
+    "variable": "YieldCurveInverted"
+   },
+   "highest_mi_variable_pair": {
+    "joint_observed_count": 4,
+    "mutual_information": 1.0,
+    "variable_x": "YieldCurveInverted",
+    "variable_y": "InflationShock"
+   },
+   "lowest_entropy_variable": {
+    "shannon_entropy": 0.811278124,
+    "variable": "EquityRiskOn"
+   },
+   "pairwise_joint_observed_counts": {
+    "AIRiskOn": {
+     "AIRiskOn": 4,
+     "CreditSpreadStress": 4,
+     "DollarStrength": 4,
+     "EquityRiskOn": 4,
+     "InflationShock": 4,
+     "LiquidityStress": 4,
+     "VolatilityShock": 4,
+     "YieldCurveInverted": 4
+    },
+    "CreditSpreadStress": {
+     "AIRiskOn": 4,
+     "CreditSpreadStress": 4,
+     "DollarStrength": 4,
+     "EquityRiskOn": 4,
+     "InflationShock": 4,
+     "LiquidityStress": 4,
+     "VolatilityShock": 4,
+     "YieldCurveInverted": 4
+    },
+    "DollarStrength": {
+     "AIRiskOn": 4,
+     "CreditSpreadStress": 4,
+     "DollarStrength": 4,
+     "EquityRiskOn": 4,
+     "InflationShock": 4,
+     "LiquidityStress": 4,
+     "VolatilityShock": 4,
+     "YieldCurveInverted": 4
+    },
+    "EquityRiskOn": {
+     "AIRiskOn": 4,
+     "CreditSpreadStress": 4,
+     "DollarStrength": 4,
+     "EquityRiskOn": 4,
+     "InflationShock": 4,
+     "LiquidityStress": 4,
+     "VolatilityShock": 4,
+     "YieldCurveInverted": 4
+    },
+    "InflationShock": {
+     "AIRiskOn": 4,
+     "CreditSpreadStress": 4,
+     "DollarStrength": 4,
+     "EquityRiskOn": 4,
+     "InflationShock": 4,
+     "LiquidityStress": 4,
+     "VolatilityShock": 4,
+     "YieldCurveInverted": 4
+    },
+    "LiquidityStress": {
+     "AIRiskOn": 4,
+     "CreditSpreadStress": 4,
+     "DollarStrength": 4,
+     "EquityRiskOn": 4,
+     "InflationShock": 4,
+     "LiquidityStress": 4,
+     "VolatilityShock": 4,
+     "YieldCurveInverted": 4
+    },
+    "VolatilityShock": {
+     "AIRiskOn": 4,
+     "CreditSpreadStress": 4,
+     "DollarStrength": 4,
+     "EquityRiskOn": 4,
+     "InflationShock": 4,
+     "LiquidityStress": 4,
+     "VolatilityShock": 4,
+     "YieldCurveInverted": 4
+    },
+    "YieldCurveInverted": {
+     "AIRiskOn": 4,
+     "CreditSpreadStress": 4,
+     "DollarStrength": 4,
+     "EquityRiskOn": 4,
+     "InflationShock": 4,
+     "LiquidityStress": 4,
+     "VolatilityShock": 4,
+     "YieldCurveInverted": 4
+    }
+   },
+   "pairwise_mutual_information_matrix": {
+    "AIRiskOn": {
+     "AIRiskOn": 0.811278124,
+     "CreditSpreadStress": 0.311278124,
+     "DollarStrength": 0.311278124,
+     "EquityRiskOn": 0.122556249,
+     "InflationShock": 0.311278124,
+     "LiquidityStress": 0.311278124,
+     "VolatilityShock": 0.311278124,
+     "YieldCurveInverted": 0.311278124
+    },
+    "CreditSpreadStress": {
+     "AIRiskOn": 0.311278124,
+     "CreditSpreadStress": 1.0,
+     "DollarStrength": 0.0,
+     "EquityRiskOn": 0.311278124,
+     "InflationShock": 0.0,
+     "LiquidityStress": 0.0,
+     "VolatilityShock": 0.0,
+     "YieldCurveInverted": 0.0
+    },
+    "DollarStrength": {
+     "AIRiskOn": 0.311278124,
+     "CreditSpreadStress": 0.0,
+     "DollarStrength": 1.0,
+     "EquityRiskOn": 0.311278124,
+     "InflationShock": 0.0,
+     "LiquidityStress": 0.0,
+     "VolatilityShock": 0.0,
+     "YieldCurveInverted": 0.0
+    },
+    "EquityRiskOn": {
+     "AIRiskOn": 0.122556249,
+     "CreditSpreadStress": 0.311278124,
+     "DollarStrength": 0.311278124,
+     "EquityRiskOn": 0.811278124,
+     "InflationShock": 0.311278124,
+     "LiquidityStress": 0.311278124,
+     "VolatilityShock": 0.311278124,
+     "YieldCurveInverted": 0.311278124
+    },
+    "InflationShock": {
+     "AIRiskOn": 0.311278124,
+     "CreditSpreadStress": 0.0,
+     "DollarStrength": 0.0,
+     "EquityRiskOn": 0.311278124,
+     "InflationShock": 1.0,
+     "LiquidityStress": 1.0,
+     "VolatilityShock": 1.0,
+     "YieldCurveInverted": 1.0
+    },
+    "LiquidityStress": {
+     "AIRiskOn": 0.311278124,
+     "CreditSpreadStress": 0.0,
+     "DollarStrength": 0.0,
+     "EquityRiskOn": 0.311278124,
+     "InflationShock": 1.0,
+     "LiquidityStress": 1.0,
+     "VolatilityShock": 1.0,
+     "YieldCurveInverted": 1.0
+    },
+    "VolatilityShock": {
+     "AIRiskOn": 0.311278124,
+     "CreditSpreadStress": 0.0,
+     "DollarStrength": 0.0,
+     "EquityRiskOn": 0.311278124,
+     "InflationShock": 1.0,
+     "LiquidityStress": 1.0,
+     "VolatilityShock": 1.0,
+     "YieldCurveInverted": 1.0
+    },
+    "YieldCurveInverted": {
+     "AIRiskOn": 0.311278124,
+     "CreditSpreadStress": 0.0,
+     "DollarStrength": 0.0,
+     "EquityRiskOn": 0.311278124,
+     "InflationShock": 1.0,
+     "LiquidityStress": 1.0,
+     "VolatilityShock": 1.0,
+     "YieldCurveInverted": 1.0
+    }
+   },
+   "position_fallback_assignment_count": 0,
+   "top_10_most_common_assignment_patterns": [
+    {
+     "count": 1,
+     "pattern": {
+      "AIRiskOn": true,
+      "CreditSpreadStress": false,
+      "DollarStrength": false,
+      "EquityRiskOn": true,
+      "InflationShock": false,
+      "LiquidityStress": true,
+      "VolatilityShock": true,
+      "YieldCurveInverted": false
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AIRiskOn": true,
+      "CreditSpreadStress": true,
+      "DollarStrength": true,
+      "EquityRiskOn": false,
+      "InflationShock": false,
+      "LiquidityStress": true,
+      "VolatilityShock": true,
+      "YieldCurveInverted": false
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AIRiskOn": true,
+      "CreditSpreadStress": false,
+      "DollarStrength": true,
+      "EquityRiskOn": true,
+      "InflationShock": true,
+      "LiquidityStress": false,
+      "VolatilityShock": false,
+      "YieldCurveInverted": true
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AIRiskOn": false,
+      "CreditSpreadStress": true,
+      "DollarStrength": false,
+      "EquityRiskOn": true,
+      "InflationShock": true,
+      "LiquidityStress": false,
+      "VolatilityShock": false,
+      "YieldCurveInverted": true
+     }
+    }
+   ],
+   "total_assignment_count": 32,
+   "total_evidence_records": 4,
+   "unique_observed_assignment_patterns": 4,
+   "unique_state_retention_ratio": 1.0,
+   "used_assignment_position_fallback": false,
+   "variable_id_match_count": 32,
+   "variable_id_match_ratio": 1.0,
+   "variable_id_mismatch_count": 0,
+   "variables": {
+    "AIRiskOn": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.811278124,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 3
+     }
+    },
+    "CreditSpreadStress": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 3,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 2,
+      "True": 2
+     }
+    },
+    "DollarStrength": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 2,
+      "True": 2
+     }
+    },
+    "EquityRiskOn": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.811278124,
+     "transition_count": 2,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 3
+     }
+    },
+    "InflationShock": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 2,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 2,
+      "True": 2
+     }
+    },
+    "LiquidityStress": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 2,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 2,
+      "True": 2
+     }
+    },
+    "VolatilityShock": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 2,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 2,
+      "True": 2
+     }
+    },
+    "YieldCurveInverted": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 2,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 2,
+      "True": 2
+     }
+    }
+   },
+   "weekly_aggregation": [
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 6,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskOn": false,
+        "CreditSpreadStress": true,
+        "DollarStrength": false,
+        "EquityRiskOn": true,
+        "InflationShock": true,
+        "LiquidityStress": false,
+        "VolatilityShock": false,
+        "YieldCurveInverted": true
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-02-02"
+    },
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 7,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskOn": true,
+        "CreditSpreadStress": false,
+        "DollarStrength": false,
+        "EquityRiskOn": true,
+        "InflationShock": false,
+        "LiquidityStress": true,
+        "VolatilityShock": true,
+        "YieldCurveInverted": false
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-02-09"
+    },
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 8,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskOn": true,
+        "CreditSpreadStress": true,
+        "DollarStrength": true,
+        "EquityRiskOn": false,
+        "InflationShock": false,
+        "LiquidityStress": true,
+        "VolatilityShock": true,
+        "YieldCurveInverted": false
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-02-16"
+    },
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 9,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "AIRiskOn": true,
+        "CreditSpreadStress": false,
+        "DollarStrength": true,
+        "EquityRiskOn": true,
+        "InflationShock": true,
+        "LiquidityStress": false,
+        "VolatilityShock": false,
+        "YieldCurveInverted": true
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-02-23"
+    }
+   ],
+   "weekly_bucket_count": 4,
+   "weekly_compressed_state_count": 4,
+   "weekly_compression_ratio": 1.0,
+   "weekly_retention_ratio": 1.0,
+   "weekly_transition_count": 3,
+   "weekly_unique_state_count": 4
+  },
+  "status": 200
+ },
+ "debug_learning": {
+  "body": {
+   "active_candidates": 10,
+   "current_generation": 9,
+   "domain": "Macro Regime",
+   "domain_module_id": "macro-regime-v1",
+   "dominant_evidence_count": 4,
+   "dominant_log_score": -23.090518456,
+   "last_learn_timestamp": "<ts>",
+   "last_mutation_introduced": 2,
+   "last_mutation_total_attempts": 7,
+   "learn_calls_this_session": 4,
+   "pipeline_status": {
+    "backfill_calls_learn": true,
+    "scheduler_calls_learn": true,
+    "trigger_calls_learn": true
+   },
+   "records_scored_this_session": 4,
+   "total_evidence_records": 4
+  },
+  "status": 200
+ },
+ "debug_structure": {
+  "body": {
+   "candidates": [
+    {
+     "active_edge_count": 2,
+     "avg_ll": -5.773492744,
+     "bic_penalty_raw": 1.737832329,
+     "bic_score_explore": -6.207950826,
+     "bic_score_strict": -7.511325072,
+     "candidate_id": "<id0>",
+     "description": "T_null: volatility-only baseline",
+     "edge_structure": [
+      [
+       "VolatilityShock",
+       "CreditSpreadStress"
+      ],
+      [
+       "VolatilityShock",
+       "EquityRiskOn"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": true,
+     "log_score": -23.090518456,
+     "status": "ACTIVE",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.722416817,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.200320707,
+     "bic_score_strict": -7.634032379,
+     "candidate_id": "<id1>",
+     "description": "variant_add_AIRiskOn->DollarStrength",
+     "edge_structure": [
+      [
+       "AIRiskOn",
+       "DollarStrength"
+      ],
+      [
+       "VolatilityShock",
+       "CreditSpreadStress"
+      ],
+      [
+       "VolatilityShock",
+       "EquityRiskOn"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -22.889489403,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.742342903,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.220246793,
+     "bic_score_strict": -7.653958465,
+     "candidate_id": "<id2>",
+     "description": "T_ai_boom: AI productivity narrative dominant",
+     "edge_structure": [
+      [
+       "AIRiskOn",
+       "DollarStrength"
+      ],
+      [
+       "AIRiskOn",
+       "EquityRiskOn"
+      ],
+      [
+       "EquityRiskOn",
+       "VolatilityShock"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -22.967764372,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.799845053,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.277748944,
+     "bic_score_strict": -7.711460615,
+     "candidate_id": "<id3>",
+     "description": "variant_add_LiquidityStress->AIRiskOn",
+     "edge_structure": [
+      [
+       "LiquidityStress",
+       "AIRiskOn"
+      ],
+      [
+       "VolatilityShock",
+       "CreditSpreadStress"
+      ],
+      [
+       "VolatilityShock",
+       "EquityRiskOn"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -23.194840543,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.741683295,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.263032994,
+     "bic_score_strict": -7.82708209,
+     "candidate_id": "<id4>",
+     "description": "variant_add_VolatilityShock->YieldCurveInverted",
+     "edge_structure": [
+      [
+       "AIRiskOn",
+       "DollarStrength"
+      ],
+      [
+       "AIRiskOn",
+       "EquityRiskOn"
+      ],
+      [
+       "EquityRiskOn",
+       "VolatilityShock"
+      ],
+      [
+       "VolatilityShock",
+       "YieldCurveInverted"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -22.965153151,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.746530301,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.26788,
+     "bic_score_strict": -7.831929096,
+     "candidate_id": "<id5>",
+     "description": "variant_add_CreditSpreadStress->AIRiskOn",
+     "edge_structure": [
+      [
+       "AIRiskOn",
+       "DollarStrength"
+      ],
+      [
+       "AIRiskOn",
+       "EquityRiskOn"
+      ],
+      [
+       "CreditSpreadStress",
+       "AIRiskOn"
+      ],
+      [
+       "EquityRiskOn",
+       "VolatilityShock"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -22.984041019,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.799845053,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.321194752,
+     "bic_score_strict": -7.885243848,
+     "candidate_id": "<id6>",
+     "description": "variant_add_VolatilityShock->LiquidityStress",
+     "edge_structure": [
+      [
+       "LiquidityStress",
+       "AIRiskOn"
+      ],
+      [
+       "VolatilityShock",
+       "CreditSpreadStress"
+      ],
+      [
+       "VolatilityShock",
+       "EquityRiskOn"
+      ],
+      [
+       "VolatilityShock",
+       "LiquidityStress"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -23.194840543,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.761068039,
+     "bic_penalty_raw": 2.259182028,
+     "bic_score_explore": -6.325863546,
+     "bic_score_strict": -8.020250067,
+     "candidate_id": "<id7>",
+     "description": "T_credit: credit-market-led regime",
+     "edge_structure": [
+      [
+       "CreditSpreadStress",
+       "EquityRiskOn"
+      ],
+      [
+       "CreditSpreadStress",
+       "VolatilityShock"
+      ],
+      [
+       "DollarStrength",
+       "CreditSpreadStress"
+      ],
+      [
+       "LiquidityStress",
+       "CreditSpreadStress"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -23.040906689,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 6,
+     "avg_ll": -5.712820907,
+     "bic_penalty_raw": 2.432965261,
+     "bic_score_explore": -6.321062222,
+     "bic_score_strict": -8.145786167,
+     "candidate_id": "<id8>",
+     "description": "T_recession: recessionary tightening cascade",
+     "edge_structure": [
+      [
+       "CreditSpreadStress",
+       "EquityRiskOn"
+      ],
+      [
+       "CreditSpreadStress",
+       "VolatilityShock"
+      ],
+      [
+       "InflationShock",
+       "DollarStrength"
+      ],
+      [
+       "InflationShock",
+       "LiquidityStress"
+      ],
+      [
+       "LiquidityStress",
+       "YieldCurveInverted"
+      ],
+      [
+       "YieldCurveInverted",
+       "CreditSpreadStress"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -22.847734124,
+     "status": "ACTIVE",
+     "total_edge_count": 6
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.761068039,
+     "bic_penalty_raw": 2.606748493,
+     "bic_score_explore": -6.412755163,
+     "bic_score_strict": -8.367816533,
+     "candidate_id": "<id9>",
+     "description": "variant_add_YieldCurveInverted->EquityRiskOn",
+     "edge_structure": [
+      [
+       "CreditSpreadStress",
+       "EquityRiskOn"
+      ],
+      [
+       "CreditSpreadStress",
+       "VolatilityShock"
+      ],
+      [
+       "DollarStrength",
+       "CreditSpreadStress"
+      ],
+      [
+       "LiquidityStress",
+       "CreditSpreadStress"
+      ],
+      [
+       "YieldCurveInverted",
+       "EquityRiskOn"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -23.040906689,
+     "status": "ACTIVE",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.724648982,
+     "bic_penalty_raw": 2.432965261,
+     "bic_score_explore": -6.332890297,
+     "bic_score_strict": -8.157614242,
+     "candidate_id": "<id11>",
+     "description": "T_monetary: inflation-driven tightening chain",
+     "edge_structure": [
+      [
+       "CreditSpreadStress",
+       "EquityRiskOn"
+      ],
+      [
+       "InflationShock",
+       "LiquidityStress"
+      ],
+      [
+       "InflationShock",
+       "YieldCurveInverted"
+      ],
+      [
+       "LiquidityStress",
+       "CreditSpreadStress"
+      ],
+      [
+       "YieldCurveInverted",
+       "CreditSpreadStress"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -22.894628414,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 5,
+     "avg_ll": -5.756943625,
+     "bic_penalty_raw": 2.432965261,
+     "bic_score_explore": -6.36518494,
+     "bic_score_strict": -8.189908885,
+     "candidate_id": "<id16>",
+     "description": "variant_add_DollarStrength->InflationShock",
+     "edge_structure": [
+      [
+       "CreditSpreadStress",
+       "EquityRiskOn"
+      ],
+      [
+       "CreditSpreadStress",
+       "VolatilityShock"
+      ],
+      [
+       "DollarStrength",
+       "CreditSpreadStress"
+      ],
+      [
+       "DollarStrength",
+       "InflationShock"
+      ],
+      [
+       "LiquidityStress",
+       "CreditSpreadStress"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -23.024151938,
+     "status": "PRUNED",
+     "total_edge_count": 5
+    },
+    {
+     "active_edge_count": 7,
+     "avg_ll": -5.682842995,
+     "bic_penalty_raw": 2.748181447,
+     "bic_score_explore": -6.369888357,
+     "bic_score_strict": -8.431024442,
+     "candidate_id": "<id17>",
+     "description": "variant_add_VolatilityShock->AIRiskOn",
+     "edge_structure": [
+      [
+       "CreditSpreadStress",
+       "EquityRiskOn"
+      ],
+      [
+       "CreditSpreadStress",
+       "VolatilityShock"
+      ],
+      [
+       "InflationShock",
+       "DollarStrength"
+      ],
+      [
+       "InflationShock",
+       "LiquidityStress"
+      ],
+      [
+       "LiquidityStress",
+       "YieldCurveInverted"
+      ],
+      [
+       "VolatilityShock",
+       "AIRiskOn"
+      ],
+      [
+       "YieldCurveInverted",
+       "CreditSpreadStress"
+      ]
+     ],
+     "evidence_count": 3,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -17.04577878,
+     "status": "PRUNED",
+     "total_edge_count": 7
+    },
+    {
+     "active_edge_count": 6,
+     "avg_ll": -5.707590404,
+     "bic_penalty_raw": 2.931393544,
+     "bic_score_explore": -6.440438789,
+     "bic_score_strict": -8.638983947,
+     "candidate_id": "<id18>",
+     "description": "variant_add_VolatilityShock->LiquidityStress",
+     "edge_structure": [
+      [
+       "CreditSpreadStress",
+       "EquityRiskOn"
+      ],
+      [
+       "InflationShock",
+       "LiquidityStress"
+      ],
+      [
+       "InflationShock",
+       "YieldCurveInverted"
+      ],
+      [
+       "LiquidityStress",
+       "CreditSpreadStress"
+      ],
+      [
+       "VolatilityShock",
+       "LiquidityStress"
+      ],
+      [
+       "YieldCurveInverted",
+       "CreditSpreadStress"
+      ]
+     ],
+     "evidence_count": 3,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -17.119216402,
+     "status": "PRUNED",
+     "total_edge_count": 6
+    }
+   ],
+   "domain": "Macro Regime",
+   "domain_module_id": "macro-regime-v1",
+   "env_bic_multiplier": 1.0,
+   "env_mode": "strict",
+   "last_mutation_cycle": {
+    "dag_violations": 0,
+    "duplicate_rejections": 5,
+    "introduced": 2,
+    "total_attempts": 7
+   },
+   "total_evidence_records": 4
+  },
+  "status": 200
+ },
+ "evidence_recent": {
+  "body": {
+   "domain": "Macro Regime",
+   "records": [
+    {
+     "description": "fake@2026-03-01",
+     "id": "<id12>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-22",
+     "id": "<id13>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-15",
+     "id": "<id14>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-08",
+     "id": "<id15>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    }
+   ]
+  },
+  "status": 200
+ },
+ "inference_dominant": {
+  "body": {
+   "candidate_id": "<id0>",
+   "edges": [
+    {
+     "probability": 0.390292953,
+     "source": "VolatilityShock",
+     "status": "explore",
+     "target": "CreditSpreadStress"
+    },
+    {
+     "probability": 0.403335156,
+     "source": "VolatilityShock",
+     "status": "explore",
+     "target": "EquityRiskOn"
+    }
+   ],
+   "frontier_edges": [
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.390 in explore band [0.25, 0.75]",
+     "probability": 0.390292953,
+     "relation": "vol \u2192 credit widening",
+     "source": "VolatilityShock",
+     "target": "CreditSpreadStress"
+    },
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.403 in explore band [0.25, 0.75]",
+     "probability": 0.403335156,
+     "relation": "vol \u2192 equity risk-off",
+     "source": "VolatilityShock",
+     "target": "EquityRiskOn"
+    }
+   ],
+   "nodes": [
+    {
+     "id": "YieldCurveInverted",
+     "label": "YieldCurveInverted",
+     "observation": null,
+     "probability": 0.543133333,
+     "status": "target"
+    },
+    {
+     "id": "InflationShock",
+     "label": "InflationShock",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "LiquidityStress",
+     "label": "LiquidityStress",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "CreditSpreadStress",
+     "label": "CreditSpreadStress",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "VolatilityShock",
+     "label": "VolatilityShock",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "DollarStrength",
+     "label": "DollarStrength",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "EquityRiskOn",
+     "label": "EquityRiskOn",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "AIRiskOn",
+     "label": "AIRiskOn",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    }
+   ],
+   "target_probability": 0.543133333,
+   "target_variable": "YieldCurveInverted"
+  },
+  "status": 200
+ },
+ "inference_other_candidate": {
+  "body": {
+   "candidate_id": "<id9>",
+   "edges": [
+    {
+     "probability": 0.340101851,
+     "source": "DollarStrength",
+     "status": "explore",
+     "target": "CreditSpreadStress"
+    },
+    {
+     "probability": 0.390221989,
+     "source": "LiquidityStress",
+     "status": "explore",
+     "target": "CreditSpreadStress"
+    },
+    {
+     "probability": 0.549969185,
+     "source": "CreditSpreadStress",
+     "status": "explore",
+     "target": "VolatilityShock"
+    },
+    {
+     "probability": 0.505207097,
+     "source": "CreditSpreadStress",
+     "status": "explore",
+     "target": "EquityRiskOn"
+    },
+    {
+     "probability": 0.5,
+     "source": "YieldCurveInverted",
+     "status": "explore",
+     "target": "EquityRiskOn"
+    }
+   ],
+   "frontier_edges": [
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.340 in explore band [0.25, 0.75]",
+     "probability": 0.340101851,
+     "relation": "dollar squeeze \u2192 credit stress",
+     "source": "DollarStrength",
+     "target": "CreditSpreadStress"
+    },
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.390 in explore band [0.25, 0.75]",
+     "probability": 0.390221989,
+     "relation": "liquidity drain \u2192 credit stress",
+     "source": "LiquidityStress",
+     "target": "CreditSpreadStress"
+    },
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.550 in explore band [0.25, 0.75]",
+     "probability": 0.549969185,
+     "relation": "credit stress \u2192 equity vol",
+     "source": "CreditSpreadStress",
+     "target": "VolatilityShock"
+    },
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.505 in explore band [0.25, 0.75]",
+     "probability": 0.505207097,
+     "relation": "credit stress \u2192 equity risk-off",
+     "source": "CreditSpreadStress",
+     "target": "EquityRiskOn"
+    },
+    {
+     "explore_weight": 1.0,
+     "note": "existence_probability=0.500 in explore band [0.25, 0.75]",
+     "probability": 0.5,
+     "relation": "YieldCurveInverted\u2192EquityRiskOn",
+     "source": "YieldCurveInverted",
+     "target": "EquityRiskOn"
+    }
+   ],
+   "nodes": [
+    {
+     "id": "YieldCurveInverted",
+     "label": "YieldCurveInverted",
+     "observation": null,
+     "probability": 0.543133333,
+     "status": "target"
+    },
+    {
+     "id": "InflationShock",
+     "label": "InflationShock",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "LiquidityStress",
+     "label": "LiquidityStress",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "CreditSpreadStress",
+     "label": "CreditSpreadStress",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "VolatilityShock",
+     "label": "VolatilityShock",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "DollarStrength",
+     "label": "DollarStrength",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "EquityRiskOn",
+     "label": "EquityRiskOn",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "AIRiskOn",
+     "label": "AIRiskOn",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    }
+   ],
+   "target_probability": 0.543133333,
+   "target_variable": "YieldCurveInverted"
+  },
+  "status": 200
+ },
+ "lineage_dominant": {
+  "body": {
+   "candidate_id": "<id0>",
+   "domain": "Macro Regime",
+   "events": [
+    {
+     "description": "T_null: volatility-only baseline",
+     "dominant_after": "T_null: volatility-only baseline",
+     "event_type": "current",
+     "generation": 0
+    },
+    {
+     "description": "Became dominant candidate after 1 paradigm shift(s)",
+     "dominant_after": "T_null: volatility-only baseline",
+     "event_type": "shift",
+     "generation": 9
+    }
+   ]
+  },
+  "status": 200
+ },
+ "narrative_snapshot": {
+  "body": {
+   "competing_candidates": {
+    "candidates": [
+     {
+      "edge_count": 2,
+      "log_score": -23.090518456,
+      "name": "T_null: volatility-only baseline",
+      "score_normalized": 0.95,
+      "status": "dominant"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -22.889489403,
+      "name": "variant_add_AIRiskOn->DollarStrength",
+      "score_normalized": 0.821059338,
+      "status": "rising"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -22.967764372,
+      "name": "T_ai_boom: AI productivity narrative dominant",
+      "score_normalized": 0.800121036,
+      "status": "rising"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -23.194840543,
+      "name": "variant_add_LiquidityStress->AIRiskOn",
+      "score_normalized": 0.739697858,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -22.965153151,
+      "name": "variant_add_VolatilityShock->YieldCurveInverted",
+      "score_normalized": 0.618202978,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -22.984041019,
+      "name": "variant_add_CreditSpreadStress->AIRiskOn",
+      "score_normalized": 0.613109752,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -23.194840543,
+      "name": "variant_add_VolatilityShock->LiquidityStress",
+      "score_normalized": 0.557086686,
+      "status": "falling"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -23.040906689,
+      "name": "T_credit: credit-market-led regime",
+      "score_normalized": 0.415222345,
+      "status": "falling"
+     },
+     {
+      "edge_count": 6,
+      "log_score": -22.847734124,
+      "name": "T_recession: recessionary tightening cascade",
+      "score_normalized": 0.28330919,
+      "status": "falling"
+     },
+     {
+      "edge_count": 5,
+      "log_score": -23.040906689,
+      "name": "variant_add_YieldCurveInverted->EquityRiskOn",
+      "score_normalized": 0.05,
+      "status": "falling"
+     }
+    ],
+    "score_gap_to_dominant": 0.122707306
+   },
+   "current_regime_state": [
+    {
+     "boolean_state": true,
+     "name": "YieldCurveInverted",
+     "probability": 0.543133333
+    },
+    {
+     "boolean_state": true,
+     "name": "InflationShock",
+     "probability": 0.509766667
+    },
+    {
+     "boolean_state": false,
+     "name": "LiquidityStress",
+     "probability": 0.43075
+    },
+    {
+     "boolean_state": true,
+     "name": "CreditSpreadStress",
+     "probability": 0.501164201
+    },
+    {
+     "boolean_state": false,
+     "name": "VolatilityShock",
+     "probability": 0.494166667
+    },
+    {
+     "boolean_state": false,
+     "name": "DollarStrength",
+     "probability": 0.457683333
+    },
+    {
+     "boolean_state": true,
+     "name": "EquityRiskOn",
+     "probability": 0.558185038
+    },
+    {
+     "boolean_state": true,
+     "name": "AIRiskOn",
+     "probability": 0.627566667
+    }
+   ],
+   "dominant_hypothesis": {
+    "candidate_id": "<id0>",
+    "edge_count": 2,
+    "edges": [
+     {
+      "existence_probability": 0.390292953,
+      "source": "VolatilityShock",
+      "target": "CreditSpreadStress"
+     },
+     {
+      "existence_probability": 0.403335156,
+      "source": "VolatilityShock",
+      "target": "EquityRiskOn"
+     }
+    ],
+    "generations_dominant": 9,
+    "log_score": -23.090518456,
+    "name": "T_null: volatility-only baseline"
+   },
+   "frontier": {
+    "frontier_edge_count": 2,
+    "frontier_edges": [
+     {
+      "probability": 0.390292953,
+      "relation": "vol \u2192 credit widening",
+      "source": "VolatilityShock",
+      "target": "CreditSpreadStress"
+     },
+     {
+      "probability": 0.403335156,
+      "relation": "vol \u2192 equity risk-off",
+      "source": "VolatilityShock",
+      "target": "EquityRiskOn"
+     }
+    ]
+   },
+   "interpretation_hints": [
+    "structure_entropy is high (2.014): engine has not converged; multiple causal stories remain plausible",
+    "dominant hypothesis has held for 9 generations",
+    "last paradigm shift was <ago>",
+    "evidence base is small (4 records); scores may not yet be reliable",
+    "2 edge(s) are in the explore band: causal structure is still being refined in these relations"
+   ],
+   "metadata": {
+    "current_generation": 9,
+    "domain": "Macro Regime",
+    "domain_module_id": "macro-regime-v1",
+    "evidence_count": 4,
+    "timestamp": "<ts>"
+   },
+   "ontology_competition": {
+    "active_candidates": 10,
+    "entropy_interpretation": "high",
+    "paradigm_shifts_total": 1,
+    "recent_shifts": [
+     {
+      "from_name": "T_monetary: inflation-driven tightening chain",
+      "generation": 5,
+      "timestamp": "<ts>",
+      "to_name": "T_null: volatility-only baseline"
+     }
+    ],
+    "structure_entropy": 2.014061741
+   }
+  },
+  "status": 200
+ },
+ "shifts": {
+  "body": {
+   "domain": "Macro Regime",
+   "domain_module_id": "macro-regime-v1",
+   "events": [
+    {
+     "evidence_count_at_shift": 1,
+     "generation": 5,
+     "new_dominant_id": "<id0>",
+     "new_dominant_name": "T_null: volatility-only baseline",
+     "previous_dominant_id": "<id11>",
+     "previous_dominant_name": "T_monetary: inflation-driven tightening chain",
+     "shift_id": "<id10>",
+     "timestamp": "<ts>"
+    }
+   ],
+   "total_shifts": 1
+  },
+  "status": 200
+ },
+ "status": {
+  "body": {
+   "active_candidates": 10,
+   "current_generation": 9,
+   "domain": "Macro Regime",
+   "dominant_hypothesis": {
+    "candidate_id": "<id0>",
+    "generations_dominant": 9,
+    "name": "T_null: volatility-only baseline"
+   },
+   "engine_status": "online",
+   "frontier_edge_count": 2,
+   "last_evidence_cycle_ago": "<ago>",
+   "max_candidates": 10,
+   "paradigm_shifts_this_window": 1,
+   "structure_entropy": 2.014061741
+  },
+  "status": 200
+ }
+}

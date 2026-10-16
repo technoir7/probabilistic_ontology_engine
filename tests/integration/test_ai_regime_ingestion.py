@@ -29,7 +29,6 @@ TEST-AI-19  EDGAR _extract_capex_entries parses realistic JSON correctly
 TEST-AI-20  EDGAR _compute_yoy_growth returns correct result and handles missing prior
 TEST-AI-21  EDGAR client caches responses (second call does not hit HTTP)
 TEST-AI-22  Weekly backfill date computation is correct and idempotent
-TEST-AI-23  _last_friday returns correct day
 TEST-AI-24  compute_snapshot falls back gracefully with no data
 TEST-AI-25  compute_snapshot partial data does not raise
 TEST-AI-26  Full pipeline fetch_evidence with fully mocked clients
@@ -56,6 +55,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 import pytest
 
+from src.domains.sources.soft_evidence import sigmoid as _sigmoid, zscore as _zscore
 from src.domains.ai_regime_v1.domain import (
     AIRegimeV1,
     get_variables,
@@ -86,11 +86,7 @@ from src.domains.ai_regime_v1.ingestion.fred_client import (
 from src.domains.ai_regime_v1.ingestion.pipeline import (
     AIRegimePipeline,
     AIRegimeSnapshot,
-    _last_friday,
-    _weekly_backfill_dates,
     _soft_bool,
-    _sigmoid,
-    _zscore,
     compute_snapshot,
     _compute_13w_return_zscore,
     _compute_concentration_ratio_zscore,
@@ -101,10 +97,7 @@ from src.domains.ai_regime_v1.ingestion.pipeline import (
     _compute_vix_signal,
     _compute_ip_investment_signal,
 )
-from src.domains.ai_regime_v1.scheduler import (
-    AIRegimeScheduler,
-    _weekly_backfill_dates as scheduler_backfill_dates,
-)
+from src.engine.model.cadence import Weekly
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import EvidenceRecord, MissingnessType
 
@@ -682,40 +675,6 @@ def test_edgar_client_caches_responses():
 # TEST-AI-22 — Weekly backfill date computation
 # ---------------------------------------------------------------------------
 
-def test_weekly_backfill_dates_returns_fridays():
-    """_weekly_backfill_dates must return only Friday dates."""
-    today = date(2024, 5, 6)  # Monday
-    dates = _weekly_backfill_dates(4, today)
-
-    assert len(dates) == 4
-    for d in dates:
-        assert d.weekday() == 4, f"Expected Friday, got {d} (weekday {d.weekday()})"
-    assert dates == sorted(dates)
-
-
-def test_weekly_backfill_dates_are_unique():
-    """Backfill dates must be unique."""
-    today = date(2024, 5, 10)
-    dates = _weekly_backfill_dates(8, today)
-    assert len(dates) == len(set(dates)), "Backfill dates contain duplicates"
-
-
-# ---------------------------------------------------------------------------
-# TEST-AI-23 — _last_friday returns correct day
-# ---------------------------------------------------------------------------
-
-@pytest.mark.parametrize("as_of,expected", [
-    (date(2024, 5, 6), date(2024, 5, 3)),   # Monday → previous Friday
-    (date(2024, 5, 3), date(2024, 5, 3)),   # Friday → same day
-    (date(2024, 5, 4), date(2024, 5, 3)),   # Saturday → last Friday
-    (date(2024, 5, 5), date(2024, 5, 3)),   # Sunday → last Friday
-    (date(2024, 5, 7), date(2024, 5, 3)),   # Tuesday → last Friday
-])
-def test_last_friday(as_of: date, expected: date):
-    result = _last_friday(as_of)
-    assert result == expected
-    assert result.weekday() == 4
-
 
 # ---------------------------------------------------------------------------
 # TEST-AI-24 — compute_snapshot fallback with no data
@@ -931,10 +890,10 @@ def test_ip_investment_uses_historical_median():
 # TEST-AI-33 — Scheduler backfill returns Fridays
 # ---------------------------------------------------------------------------
 
-def test_scheduler_backfill_dates_are_fridays():
-    """AIRegimeScheduler backfill dates must all be Fridays."""
+def test_scheduler_backfill_dates_are_sundays():
+    """The AI scheduler's startup backfill dates are Sundays (decision D12)."""
     today = date(2024, 5, 13)  # Monday
-    dates = scheduler_backfill_dates(4, today)
-    assert len(dates) == 4
+    dates = Weekly().window_targets(4 * 7, today)
+    assert len(dates) in (4, 5)
     for d in dates:
-        assert d.weekday() == 4, f"Expected Friday, got weekday {d.weekday()}"
+        assert d.weekday() == 6, f"Expected Sunday, got weekday {d.weekday()}"

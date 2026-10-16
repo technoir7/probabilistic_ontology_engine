@@ -35,6 +35,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 import pytest
 
+from src.domains.sources.soft_evidence import sigmoid as _sigmoid
 from src.domains.sf_urban_v1.domain import (
     SFUrbanV1,
     get_variables,
@@ -44,12 +45,7 @@ from src.domains.sf_urban_v1.domain import (
     make_bottom_formation_candidate,
     make_null_candidate,
 )
-from src.domains.sf_urban_v1.ingestion.sfgov_client import (
-    SFGovClient,
-    SFPermitObs,
-    SFIncidentObs,
-    SFBusinessObs,
-)
+from src.domains.sf_urban_v1.ingestion.sfgov_client import MonthlyCount, SFGovClient
 from src.domains.sf_urban_v1.ingestion.fred_client import (
     FREDClient,
     FREDObservation,
@@ -59,9 +55,6 @@ from src.domains.sf_urban_v1.ingestion.pipeline import (
     SFUrbanSnapshot,
     compute_snapshot,
     _soft_bool,
-    _sigmoid,
-    _monthly_counts,
-    _monthly_zscore,
 )
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import EvidenceRecord, MissingnessType
@@ -69,68 +62,49 @@ from src.engine.schemas import EvidenceRecord, MissingnessType
 _TARGET_DATE = date(2024, 5, 3)  # a Friday
 
 
-def _make_incidents(
-    monthly_counts_map: dict[str, int],
-) -> list[SFIncidentObs]:
-    """Create synthetic incident observations from monthly counts.
-
-    Uses a single representative date per month and repeats it count times
-    to ensure the monthly bucket has the right count, bypassing the 28-day limit.
-    """
-    obs = []
-    for month_str, count in monthly_counts_map.items():
-        year, month = int(month_str[:4]), int(month_str[5:7])
-        # Use day=1 as representative date, repeat count times
-        d = date(year, month, 1)
-        for _ in range(count):
-            obs.append(SFIncidentObs(incident_date=d, category="Larceny Theft"))
-    return obs
+# The signals compare complete months only, so fixtures end with the latest
+# month before _TARGET_DATE's (2024-04); 2024-05 is in progress and ignored.
+def _complete_months(n: int = 13) -> list[date]:
+    months = []
+    d = _TARGET_DATE.replace(day=1)
+    for _ in range(n):
+        d = (d - timedelta(days=1)).replace(day=1)
+        months.append(d)
+    return sorted(months)
 
 
-def _make_permits(num_total: int = 50, num_months: int = 12) -> list[SFPermitObs]:
-    """Create synthetic permit observations spread across months."""
-    obs = []
-    per_month = max(1, num_total // num_months)
-    for m in range(num_months):
-        month_date = _TARGET_DATE.replace(day=1) - timedelta(days=m * 30)
-        for day in range(1, per_month + 1):
-            try:
-                d = date(month_date.year, month_date.month, day)
-                obs.append(SFPermitObs(filed_date=d, permit_type="building alteration"))
-            except ValueError:
-                pass
-    return obs
+def _counts(values: list[int], category: str = "") -> list[MonthlyCount]:
+    """One MonthlyCount per complete month, oldest first, from *values*."""
+    months = _complete_months(len(values))
+    return [MonthlyCount(month=m, count=c, category=category) for m, c in zip(months, values)]
 
 
-def _make_businesses(
-    start_count: int = 20,
-    end_count: int = 5,
-    num_months: int = 12,
-) -> list[SFBusinessObs]:
-    """Create synthetic business obs with some starts and closures."""
-    obs = []
-    start_per_month = max(1, start_count // num_months)
-    end_per_month = max(1, end_count // num_months)
+def _make_incidents(latest: int, history: list[int]) -> list[MonthlyCount]:
+    return _counts(history + [latest])
 
-    for m in range(num_months):
-        month_date = _TARGET_DATE.replace(day=1) - timedelta(days=m * 30)
-        year, month = month_date.year, month_date.month
-        # New businesses
-        for day in range(1, start_per_month + 1):
-            try:
-                d = date(year, month, day)
-                obs.append(SFBusinessObs(start_date=d, end_date=None))
-            except ValueError:
-                pass
-        # Closures
-        for day in range(1, end_per_month + 1):
-            try:
-                d = date(year, month, min(day + 15, 28))
-                start = date(year - 2, month, 1)
-                obs.append(SFBusinessObs(start_date=start, end_date=d))
-            except ValueError:
-                pass
-    return obs
+
+def _make_permits() -> list[MonthlyCount]:
+    """Office and other permits per month, office share varying a little."""
+    office = [12, 10, 11, 13, 9, 12, 10, 11, 12, 10, 13, 11, 12]
+    other = [40, 42, 39, 41, 43, 40, 38, 42, 41, 39, 40, 42, 41]
+    return _counts(office, "office") + _counts(other, "1 family dwelling")
+
+
+def _make_business_openings() -> list[MonthlyCount]:
+    return _counts([10, 11, 9, 10, 12, 10, 11, 9, 10, 11, 10, 12, 10])
+
+
+def _make_business_closures() -> list[MonthlyCount]:
+    return _counts([4, 5, 3, 4, 4, 5, 3, 4, 5, 4, 3, 4, 4])
+
+
+def _sfgov(incidents: list[MonthlyCount]) -> dict:
+    return {
+        "permits": _make_permits(),
+        "incidents": incidents,
+        "business_openings": _make_business_openings(),
+        "business_closures": _make_business_closures(),
+    }
 
 
 def _make_fred_obs(
@@ -152,27 +126,10 @@ def _make_full_data(
     tech_emp_trend: float = 0.0,
     crime_level: str = "normal",
 ) -> tuple[dict, dict]:
-    # Build incidents with variability for z-score
-    if crime_level == "high":
-        # Recent month much higher than history
-        monthly = {"2024-05": 200, "2024-04": 80, "2024-03": 85, "2024-02": 78, "2024-01": 82,
-                   "2023-12": 80, "2023-11": 75, "2023-10": 83, "2023-09": 79, "2023-08": 77,
-                   "2023-07": 81, "2023-06": 84}
-    elif crime_level == "low":
-        # Recent month much lower than history
-        monthly = {"2024-05": 10, "2024-04": 90, "2024-03": 88, "2024-02": 85, "2024-01": 92,
-                   "2023-12": 87, "2023-11": 91, "2023-10": 89, "2023-09": 86, "2023-08": 90,
-                   "2023-07": 88, "2023-06": 85}
-    else:
-        monthly = {"2024-05": 80, "2024-04": 82, "2024-03": 79, "2024-02": 81, "2024-01": 83,
-                   "2023-12": 80, "2023-11": 78, "2023-10": 82, "2023-09": 80, "2023-08": 81,
-                   "2023-07": 79, "2023-06": 83}
-
-    sfgov_data = {
-        "permits": _make_permits(num_total=500, num_months=13),
-        "incidents": _make_incidents(monthly),
-        "businesses": _make_businesses(start_count=130, end_count=52, num_months=13),
-    }
+    # Latest complete month vs a stable history (variability for the z-score)
+    history = [80, 85, 78, 82, 80, 75, 83, 79, 77, 81, 84]
+    latest = {"high": 200, "low": 10}.get(crime_level, 81)
+    sfgov_data = _sfgov(_make_incidents(latest, history))
 
     fred_data = {
         "SANF806INFO": _make_fred_obs("SANF806INFO", 24, 200.0, tech_emp_trend),
@@ -388,14 +345,10 @@ def test_sfgov_client_returns_empty_on_http_error():
 
     client = SFGovClient(client=http_mock)
 
-    # All three fetch methods should return empty lists, not raise
-    permits = asyncio.run(client.fetch_permits())
-    incidents = asyncio.run(client.fetch_incidents())
-    businesses = asyncio.run(client.fetch_businesses())
-
-    assert permits == []
-    assert incidents == []
-    assert businesses == []
+    # Every fetch returns an empty list, not an exception
+    for fetch in (client.fetch_permits, client.fetch_incidents,
+                  client.fetch_business_openings, client.fetch_business_closures):
+        assert asyncio.run(fetch()) == []
 
 
 # ---------------------------------------------------------------------------
@@ -460,11 +413,7 @@ def test_rising_tech_employment_drives_signal_high():
         "SANF806LEIH": _make_fred_obs("SANF806LEIH", 24, 150.0),
         "SANF806NA":   _make_fred_obs("SANF806NA",   24, 1200.0),
     }
-    sfgov_data = {
-        "permits": _make_permits(),
-        "incidents": _make_incidents({"2024-05": 80}),
-        "businesses": _make_businesses(),
-    }
+    sfgov_data = _sfgov(_make_incidents(80, [80, 82, 79, 81]))
 
     snap = compute_snapshot(sfgov_data, fred_data, _TARGET_DATE)
     assert snap.p_tech_hiring_accelerating > 0.5, \
@@ -490,11 +439,7 @@ def test_falling_tech_employment_drives_signal_low():
         "SANF806LEIH": _make_fred_obs("SANF806LEIH", 24, 150.0),
         "SANF806NA":   _make_fred_obs("SANF806NA",   24, 1200.0),
     }
-    sfgov_data = {
-        "permits": _make_permits(),
-        "incidents": _make_incidents({"2024-05": 80}),
-        "businesses": _make_businesses(),
-    }
+    sfgov_data = _sfgov(_make_incidents(80, [80, 82, 79, 81]))
 
     snap = compute_snapshot(sfgov_data, fred_data, _TARGET_DATE)
     assert snap.p_tech_hiring_accelerating < 0.5, \

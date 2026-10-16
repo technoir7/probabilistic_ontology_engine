@@ -1,0 +1,118 @@
+{
+ "failures": {
+  "all_missing": "OSError",
+  "empty": "OSError",
+  "http_500": "FredHTTPError",
+  "not_json": "OSError"
+ },
+ "fetch_all_series": {
+  "SANF806INFO": [
+   [
+    "2026-03-01",
+    8.25,
+    "SANF806INFO"
+   ],
+   [
+    "2026-02-01",
+    8.0,
+    "SANF806INFO"
+   ],
+   [
+    "2026-01-01",
+    7.75,
+    "SANF806INFO"
+   ]
+  ],
+  "SANF806LEIH": [
+   [
+    "2026-03-01",
+    7.25,
+    "SANF806LEIH"
+   ],
+   [
+    "2026-02-01",
+    7.0,
+    "SANF806LEIH"
+   ],
+   [
+    "2026-01-01",
+    6.75,
+    "SANF806LEIH"
+   ]
+  ],
+  "SANF806NA": [
+   [
+    "2026-03-01",
+    2.25,
+    "SANF806NA"
+   ],
+   [
+    "2026-02-01",
+    2.0,
+    "SANF806NA"
+   ],
+   [
+    "2026-01-01",
+    1.75,
+    "SANF806NA"
+   ]
+  ]
+ },
+ "fetch_all_series_when_every_series_fails": {
+  "SANF806INFO": 0,
+  "SANF806LEIH": 0,
+  "SANF806NA": 0
+ },
+ "fetch_series_explicit_window": [
+  [
+   "2026-03-01",
+   8.25
+  ],
+  [
+   "2026-02-01",
+   8.0
+  ],
+  [
+   "2026-01-01",
+   7.75
+  ]
+ ],
+ "requests": [
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2024-03-06",
+   "path": "/fred/series/observations",
+   "series_id": "SANF806INFO",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "12",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-01",
+   "path": "/fred/series/observations",
+   "series_id": "SANF806INFO",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2024-03-06",
+   "path": "/fred/series/observations",
+   "series_id": "SANF806LEIH",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2024-03-06",
+   "path": "/fred/series/observations",
+   "series_id": "SANF806NA",
+   "sort_order": "desc"
+  }
+ ]
+}

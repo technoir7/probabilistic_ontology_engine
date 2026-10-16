@@ -180,8 +180,8 @@ def test_soft_root_variable_fractional_counts():
 
     cpt_a = ps.get(candidate.candidate_id, "A")
     # Root CPT is stored under () config
-    counts_true = cpt_a.counts.get((), {}).get(True, 0.0)
-    counts_false = cpt_a.counts.get((), {}).get(False, 0.0)
+    counts_true = cpt_a.row({}).get(True, 0.0)
+    counts_false = cpt_a.row({}).get(False, 0.0)
 
     assert abs(counts_true - 0.7) < 1e-9, (
         f"Expected 0.7 fractional True count, got {counts_true}"
@@ -223,8 +223,7 @@ def test_soft_child_with_hard_parent_fractional_counts():
     ls.accumulate([record], candidate)
 
     cpt_b = ps.get(candidate.candidate_id, "B")
-    parent_cfg = (("A", True),)
-    row = cpt_b.counts.get(parent_cfg, {})
+    row = cpt_b.row({"A": True})
 
     assert abs(row.get(True, 0.0) - 0.6) < 1e-9, (
         f"Expected 0.6 fractional True count for B|A=True, got {row}"

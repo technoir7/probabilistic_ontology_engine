@@ -1,0 +1,1805 @@
+{
+ "backfill": {
+  "body": {
+   "days_requested": 21,
+   "days_successfully_ingested": 4,
+   "domain": "Labor Market"
+  },
+  "status": 200
+ },
+ "candidates": {
+  "body": {
+   "candidates": [
+    {
+     "edge_count": 2,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id0>",
+     "log_score": -22.875718583,
+     "name": "T_null: layoff-unemployment baseline",
+     "score_normalized": 0.95,
+     "status": "dominant"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id1>",
+     "log_score": -22.566490031,
+     "name": "variant_add_JobOpeningsFalling->LayoffCycleBeginning",
+     "score_normalized": 0.719867922,
+     "status": "rising"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id2>",
+     "log_score": -22.838588783,
+     "name": "H2: layoff_cycle",
+     "score_normalized": 0.557541759,
+     "status": "rising"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id3>",
+     "log_score": -22.841513463,
+     "name": "H4: wage_price_spiral",
+     "score_normalized": 0.556706812,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id4>",
+     "log_score": -22.880153318,
+     "name": "H1: labor_tightening",
+     "score_normalized": 0.533231121,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id5>",
+     "log_score": -22.97519063,
+     "name": "H3: structural_shift",
+     "score_normalized": 0.476432474,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id6>",
+     "log_score": -22.993053828,
+     "name": "variant_add_TightLaborMarket->LaborProductivityWeak",
+     "score_normalized": 0.464640602,
+     "status": "falling"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id7>",
+     "log_score": -22.60167624,
+     "name": "variant_add_TightLaborMarket->ParticipationRateFalling",
+     "score_normalized": 0.285049329,
+     "status": "falling"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id8>",
+     "log_score": -22.841513463,
+     "name": "variant_add_UnemploymentRising->ParticipationRateFalling",
+     "score_normalized": 0.142066209,
+     "status": "falling"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 4,
+     "generation_introduced": 2,
+     "id": "<id9>",
+     "log_score": -22.993053828,
+     "name": "variant_add_WageInflationPersistent->LayoffCycleBeginning",
+     "score_normalized": 0.05,
+     "status": "falling"
+    }
+   ],
+   "domain": "Labor Market",
+   "generation": 9
+  },
+  "status": 200
+ },
+ "debug_entropy": {
+  "body": {
+   "domain": "Labor Market",
+   "domain_key": "lm",
+   "domain_module_id": "labor-market-v1",
+   "pairwise_mutual_information": [
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "UnemploymentRising",
+     "variable_y": "WageInflationPersistent"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "UnemploymentRising",
+     "variable_y": "JobOpeningsFalling"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "UnemploymentRising",
+     "variable_y": "LayoffCycleBeginning"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "UnemploymentRising",
+     "variable_y": "LaborProductivityWeak"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "UnemploymentRising",
+     "variable_y": "ParticipationRateFalling"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "UnemploymentRising",
+     "variable_y": "RealWageGrowthPositive"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "UnemploymentRising",
+     "variable_y": "TightLaborMarket"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "WageInflationPersistent",
+     "variable_y": "JobOpeningsFalling"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "WageInflationPersistent",
+     "variable_y": "LayoffCycleBeginning"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "WageInflationPersistent",
+     "variable_y": "LaborProductivityWeak"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "WageInflationPersistent",
+     "variable_y": "ParticipationRateFalling"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "WageInflationPersistent",
+     "variable_y": "RealWageGrowthPositive"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "WageInflationPersistent",
+     "variable_y": "TightLaborMarket"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "JobOpeningsFalling",
+     "variable_y": "LayoffCycleBeginning"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "JobOpeningsFalling",
+     "variable_y": "LaborProductivityWeak"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "JobOpeningsFalling",
+     "variable_y": "ParticipationRateFalling"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "JobOpeningsFalling",
+     "variable_y": "RealWageGrowthPositive"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "JobOpeningsFalling",
+     "variable_y": "TightLaborMarket"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "LayoffCycleBeginning",
+     "variable_y": "LaborProductivityWeak"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "LayoffCycleBeginning",
+     "variable_y": "ParticipationRateFalling"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "LayoffCycleBeginning",
+     "variable_y": "RealWageGrowthPositive"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "LayoffCycleBeginning",
+     "variable_y": "TightLaborMarket"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "LaborProductivityWeak",
+     "variable_y": "ParticipationRateFalling"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "LaborProductivityWeak",
+     "variable_y": "RealWageGrowthPositive"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "LaborProductivityWeak",
+     "variable_y": "TightLaborMarket"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ParticipationRateFalling",
+     "variable_y": "RealWageGrowthPositive"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "ParticipationRateFalling",
+     "variable_y": "TightLaborMarket"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RealWageGrowthPositive",
+     "variable_y": "TightLaborMarket"
+    }
+   ],
+   "total_evidence_rows": 4,
+   "unique_observed_patterns": [
+    {
+     "count": 4,
+     "pattern": {
+      "JobOpeningsFalling": null,
+      "LaborProductivityWeak": null,
+      "LayoffCycleBeginning": null,
+      "ParticipationRateFalling": null,
+      "RealWageGrowthPositive": null,
+      "TightLaborMarket": null,
+      "UnemploymentRising": null,
+      "WageInflationPersistent": null
+     }
+    }
+   ],
+   "variables": {
+    "JobOpeningsFalling": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "LaborProductivityWeak": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "LayoffCycleBeginning": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "ParticipationRateFalling": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "RealWageGrowthPositive": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "TightLaborMarket": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "UnemploymentRising": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "WageInflationPersistent": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    }
+   }
+  },
+  "status": 200
+ },
+ "debug_evidence-geometry": {
+  "body": {
+   "average_pairwise_mi": 0.360821651,
+   "cadence_detected": "weekly",
+   "compression_ratio_daily_to_weekly": 1.0,
+   "daily_state_count": 4,
+   "daily_transition_count": 3,
+   "daily_unique_state_count": 4,
+   "domain": "Labor Market",
+   "domain_key": "lm",
+   "domain_module_id": "labor-market-v1",
+   "effective_state_density": 1.0,
+   "effective_transitions_per_month": 4.348214286,
+   "highest_entropy_variable": {
+    "shannon_entropy": 1.0,
+    "variable": "UnemploymentRising"
+   },
+   "highest_mi_variable_pair": {
+    "joint_observed_count": 4,
+    "mutual_information": 1.0,
+    "variable_x": "UnemploymentRising",
+    "variable_y": "JobOpeningsFalling"
+   },
+   "lowest_entropy_variable": {
+    "shannon_entropy": 0.0,
+    "variable": "LaborProductivityWeak"
+   },
+   "pairwise_joint_observed_counts": {
+    "JobOpeningsFalling": {
+     "JobOpeningsFalling": 4,
+     "LaborProductivityWeak": 4,
+     "LayoffCycleBeginning": 4,
+     "ParticipationRateFalling": 4,
+     "RealWageGrowthPositive": 4,
+     "TightLaborMarket": 4,
+     "UnemploymentRising": 4,
+     "WageInflationPersistent": 4
+    },
+    "LaborProductivityWeak": {
+     "JobOpeningsFalling": 4,
+     "LaborProductivityWeak": 4,
+     "LayoffCycleBeginning": 4,
+     "ParticipationRateFalling": 4,
+     "RealWageGrowthPositive": 4,
+     "TightLaborMarket": 4,
+     "UnemploymentRising": 4,
+     "WageInflationPersistent": 4
+    },
+    "LayoffCycleBeginning": {
+     "JobOpeningsFalling": 4,
+     "LaborProductivityWeak": 4,
+     "LayoffCycleBeginning": 4,
+     "ParticipationRateFalling": 4,
+     "RealWageGrowthPositive": 4,
+     "TightLaborMarket": 4,
+     "UnemploymentRising": 4,
+     "WageInflationPersistent": 4
+    },
+    "ParticipationRateFalling": {
+     "JobOpeningsFalling": 4,
+     "LaborProductivityWeak": 4,
+     "LayoffCycleBeginning": 4,
+     "ParticipationRateFalling": 4,
+     "RealWageGrowthPositive": 4,
+     "TightLaborMarket": 4,
+     "UnemploymentRising": 4,
+     "WageInflationPersistent": 4
+    },
+    "RealWageGrowthPositive": {
+     "JobOpeningsFalling": 4,
+     "LaborProductivityWeak": 4,
+     "LayoffCycleBeginning": 4,
+     "ParticipationRateFalling": 4,
+     "RealWageGrowthPositive": 4,
+     "TightLaborMarket": 4,
+     "UnemploymentRising": 4,
+     "WageInflationPersistent": 4
+    },
+    "TightLaborMarket": {
+     "JobOpeningsFalling": 4,
+     "LaborProductivityWeak": 4,
+     "LayoffCycleBeginning": 4,
+     "ParticipationRateFalling": 4,
+     "RealWageGrowthPositive": 4,
+     "TightLaborMarket": 4,
+     "UnemploymentRising": 4,
+     "WageInflationPersistent": 4
+    },
+    "UnemploymentRising": {
+     "JobOpeningsFalling": 4,
+     "LaborProductivityWeak": 4,
+     "LayoffCycleBeginning": 4,
+     "ParticipationRateFalling": 4,
+     "RealWageGrowthPositive": 4,
+     "TightLaborMarket": 4,
+     "UnemploymentRising": 4,
+     "WageInflationPersistent": 4
+    },
+    "WageInflationPersistent": {
+     "JobOpeningsFalling": 4,
+     "LaborProductivityWeak": 4,
+     "LayoffCycleBeginning": 4,
+     "ParticipationRateFalling": 4,
+     "RealWageGrowthPositive": 4,
+     "TightLaborMarket": 4,
+     "UnemploymentRising": 4,
+     "WageInflationPersistent": 4
+    }
+   },
+   "pairwise_mutual_information_matrix": {
+    "JobOpeningsFalling": {
+     "JobOpeningsFalling": 1.0,
+     "LaborProductivityWeak": 0.0,
+     "LayoffCycleBeginning": 0.311278124,
+     "ParticipationRateFalling": 1.0,
+     "RealWageGrowthPositive": 1.0,
+     "TightLaborMarket": 0.311278124,
+     "UnemploymentRising": 1.0,
+     "WageInflationPersistent": 0.311278124
+    },
+    "LaborProductivityWeak": {
+     "JobOpeningsFalling": 0.0,
+     "LaborProductivityWeak": 0.0,
+     "LayoffCycleBeginning": 0.0,
+     "ParticipationRateFalling": 0.0,
+     "RealWageGrowthPositive": 0.0,
+     "TightLaborMarket": 0.0,
+     "UnemploymentRising": 0.0,
+     "WageInflationPersistent": 0.0
+    },
+    "LayoffCycleBeginning": {
+     "JobOpeningsFalling": 0.311278124,
+     "LaborProductivityWeak": 0.0,
+     "LayoffCycleBeginning": 0.811278124,
+     "ParticipationRateFalling": 0.311278124,
+     "RealWageGrowthPositive": 0.311278124,
+     "TightLaborMarket": 0.122556249,
+     "UnemploymentRising": 0.311278124,
+     "WageInflationPersistent": 0.122556249
+    },
+    "ParticipationRateFalling": {
+     "JobOpeningsFalling": 1.0,
+     "LaborProductivityWeak": 0.0,
+     "LayoffCycleBeginning": 0.311278124,
+     "ParticipationRateFalling": 1.0,
+     "RealWageGrowthPositive": 1.0,
+     "TightLaborMarket": 0.311278124,
+     "UnemploymentRising": 1.0,
+     "WageInflationPersistent": 0.311278124
+    },
+    "RealWageGrowthPositive": {
+     "JobOpeningsFalling": 1.0,
+     "LaborProductivityWeak": 0.0,
+     "LayoffCycleBeginning": 0.311278124,
+     "ParticipationRateFalling": 1.0,
+     "RealWageGrowthPositive": 1.0,
+     "TightLaborMarket": 0.311278124,
+     "UnemploymentRising": 1.0,
+     "WageInflationPersistent": 0.311278124
+    },
+    "TightLaborMarket": {
+     "JobOpeningsFalling": 0.311278124,
+     "LaborProductivityWeak": 0.0,
+     "LayoffCycleBeginning": 0.122556249,
+     "ParticipationRateFalling": 0.311278124,
+     "RealWageGrowthPositive": 0.311278124,
+     "TightLaborMarket": 0.811278124,
+     "UnemploymentRising": 0.311278124,
+     "WageInflationPersistent": 0.122556249
+    },
+    "UnemploymentRising": {
+     "JobOpeningsFalling": 1.0,
+     "LaborProductivityWeak": 0.0,
+     "LayoffCycleBeginning": 0.311278124,
+     "ParticipationRateFalling": 1.0,
+     "RealWageGrowthPositive": 1.0,
+     "TightLaborMarket": 0.311278124,
+     "UnemploymentRising": 1.0,
+     "WageInflationPersistent": 0.311278124
+    },
+    "WageInflationPersistent": {
+     "JobOpeningsFalling": 0.311278124,
+     "LaborProductivityWeak": 0.0,
+     "LayoffCycleBeginning": 0.122556249,
+     "ParticipationRateFalling": 0.311278124,
+     "RealWageGrowthPositive": 0.311278124,
+     "TightLaborMarket": 0.122556249,
+     "UnemploymentRising": 0.311278124,
+     "WageInflationPersistent": 0.811278124
+    }
+   },
+   "position_fallback_assignment_count": 0,
+   "top_10_most_common_assignment_patterns": [
+    {
+     "count": 1,
+     "pattern": {
+      "JobOpeningsFalling": true,
+      "LaborProductivityWeak": false,
+      "LayoffCycleBeginning": false,
+      "ParticipationRateFalling": true,
+      "RealWageGrowthPositive": false,
+      "TightLaborMarket": false,
+      "UnemploymentRising": false,
+      "WageInflationPersistent": true
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "JobOpeningsFalling": true,
+      "LaborProductivityWeak": false,
+      "LayoffCycleBeginning": true,
+      "ParticipationRateFalling": true,
+      "RealWageGrowthPositive": false,
+      "TightLaborMarket": true,
+      "UnemploymentRising": false,
+      "WageInflationPersistent": true
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "JobOpeningsFalling": false,
+      "LaborProductivityWeak": false,
+      "LayoffCycleBeginning": false,
+      "ParticipationRateFalling": false,
+      "RealWageGrowthPositive": true,
+      "TightLaborMarket": true,
+      "UnemploymentRising": true,
+      "WageInflationPersistent": false
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "JobOpeningsFalling": false,
+      "LaborProductivityWeak": false,
+      "LayoffCycleBeginning": false,
+      "ParticipationRateFalling": false,
+      "RealWageGrowthPositive": true,
+      "TightLaborMarket": true,
+      "UnemploymentRising": true,
+      "WageInflationPersistent": true
+     }
+    }
+   ],
+   "total_assignment_count": 32,
+   "total_evidence_records": 4,
+   "unique_observed_assignment_patterns": 4,
+   "unique_state_retention_ratio": 1.0,
+   "used_assignment_position_fallback": false,
+   "variable_id_match_count": 32,
+   "variable_id_match_ratio": 1.0,
+   "variable_id_mismatch_count": 0,
+   "variables": {
+    "JobOpeningsFalling": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 2,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 2,
+      "True": 2
+     }
+    },
+    "LaborProductivityWeak": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.0,
+     "transition_count": 0,
+     "unique_value_count": 1,
+     "value_distribution": {
+      "False": 4
+     }
+    },
+    "LayoffCycleBeginning": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.811278124,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 3,
+      "True": 1
+     }
+    },
+    "ParticipationRateFalling": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 2,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 2,
+      "True": 2
+     }
+    },
+    "RealWageGrowthPositive": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 2,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 2,
+      "True": 2
+     }
+    },
+    "TightLaborMarket": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.811278124,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 3
+     }
+    },
+    "UnemploymentRising": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 2,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 2,
+      "True": 2
+     }
+    },
+    "WageInflationPersistent": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.811278124,
+     "transition_count": 2,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 3
+     }
+    }
+   },
+   "weekly_aggregation": [
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 6,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "JobOpeningsFalling": true,
+        "LaborProductivityWeak": false,
+        "LayoffCycleBeginning": true,
+        "ParticipationRateFalling": true,
+        "RealWageGrowthPositive": false,
+        "TightLaborMarket": true,
+        "UnemploymentRising": false,
+        "WageInflationPersistent": true
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-02-02"
+    },
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 7,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "JobOpeningsFalling": false,
+        "LaborProductivityWeak": false,
+        "LayoffCycleBeginning": false,
+        "ParticipationRateFalling": false,
+        "RealWageGrowthPositive": true,
+        "TightLaborMarket": true,
+        "UnemploymentRising": true,
+        "WageInflationPersistent": true
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-02-09"
+    },
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 8,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "JobOpeningsFalling": false,
+        "LaborProductivityWeak": false,
+        "LayoffCycleBeginning": false,
+        "ParticipationRateFalling": false,
+        "RealWageGrowthPositive": true,
+        "TightLaborMarket": true,
+        "UnemploymentRising": true,
+        "WageInflationPersistent": false
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-02-16"
+    },
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 9,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "JobOpeningsFalling": true,
+        "LaborProductivityWeak": false,
+        "LayoffCycleBeginning": false,
+        "ParticipationRateFalling": true,
+        "RealWageGrowthPositive": false,
+        "TightLaborMarket": false,
+        "UnemploymentRising": false,
+        "WageInflationPersistent": true
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-02-23"
+    }
+   ],
+   "weekly_bucket_count": 4,
+   "weekly_compressed_state_count": 4,
+   "weekly_compression_ratio": 1.0,
+   "weekly_retention_ratio": 1.0,
+   "weekly_transition_count": 3,
+   "weekly_unique_state_count": 4
+  },
+  "status": 200
+ },
+ "debug_learning": {
+  "body": {
+   "active_candidates": 10,
+   "current_generation": 9,
+   "domain": "Labor Market",
+   "domain_module_id": "labor-market-v1",
+   "dominant_evidence_count": 4,
+   "dominant_log_score": -22.875718583,
+   "last_learn_timestamp": "<ts>",
+   "last_mutation_introduced": 2,
+   "last_mutation_total_attempts": 7,
+   "learn_calls_this_session": 4,
+   "pipeline_status": {
+    "backfill_calls_learn": true,
+    "scheduler_calls_learn": true,
+    "trigger_calls_learn": true
+   },
+   "records_scored_this_session": 4,
+   "total_evidence_records": 4
+  },
+  "status": 200
+ },
+ "debug_structure": {
+  "body": {
+   "candidates": [
+    {
+     "active_edge_count": 2,
+     "avg_ll": -5.719186649,
+     "bic_penalty_raw": 1.737832329,
+     "bic_score_explore": -6.153644731,
+     "bic_score_strict": -7.457018978,
+     "candidate_id": "<id0>",
+     "description": "T_null: layoff-unemployment baseline",
+     "edge_structure": [
+      [
+       "LayoffCycleBeginning",
+       "UnemploymentRising"
+      ],
+      [
+       "TightLaborMarket",
+       "WageInflationPersistent"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": true,
+     "log_score": -22.875718583,
+     "status": "ACTIVE",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.641855853,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.119759743,
+     "bic_score_strict": -7.553471415,
+     "candidate_id": "<id1>",
+     "description": "variant_add_JobOpeningsFalling->LayoffCycleBeginning",
+     "edge_structure": [
+      [
+       "JobOpeningsFalling",
+       "LayoffCycleBeginning"
+      ],
+      [
+       "LayoffCycleBeginning",
+       "UnemploymentRising"
+      ],
+      [
+       "TightLaborMarket",
+       "WageInflationPersistent"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -22.566490031,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.709889628,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.187793518,
+     "bic_score_strict": -7.62150519,
+     "candidate_id": "<id2>",
+     "description": "H2: layoff_cycle",
+     "edge_structure": [
+      [
+       "LayoffCycleBeginning",
+       "JobOpeningsFalling"
+      ],
+      [
+       "LayoffCycleBeginning",
+       "UnemploymentRising"
+      ],
+      [
+       "UnemploymentRising",
+       "LaborProductivityWeak"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -22.838588783,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.710239569,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.18814346,
+     "bic_score_strict": -7.621855131,
+     "candidate_id": "<id3>",
+     "description": "H4: wage_price_spiral",
+     "edge_structure": [
+      [
+       "RealWageGrowthPositive",
+       "TightLaborMarket"
+      ],
+      [
+       "WageInflationPersistent",
+       "LaborProductivityWeak"
+      ],
+      [
+       "WageInflationPersistent",
+       "RealWageGrowthPositive"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -22.841513463,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.720078648,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.197982538,
+     "bic_score_strict": -7.63169421,
+     "candidate_id": "<id4>",
+     "description": "H1: labor_tightening",
+     "edge_structure": [
+      [
+       "JobOpeningsFalling",
+       "TightLaborMarket"
+      ],
+      [
+       "TightLaborMarket",
+       "WageInflationPersistent"
+      ],
+      [
+       "WageInflationPersistent",
+       "RealWageGrowthPositive"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -22.880153318,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.743883968,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.221787859,
+     "bic_score_strict": -7.65549953,
+     "candidate_id": "<id5>",
+     "description": "H3: structural_shift",
+     "edge_structure": [
+      [
+       "ParticipationRateFalling",
+       "LaborProductivityWeak"
+      ],
+      [
+       "ParticipationRateFalling",
+       "TightLaborMarket"
+      ],
+      [
+       "TightLaborMarket",
+       "WageInflationPersistent"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -22.97519063,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.748826151,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.226730042,
+     "bic_score_strict": -7.660441713,
+     "candidate_id": "<id6>",
+     "description": "variant_add_TightLaborMarket->LaborProductivityWeak",
+     "edge_structure": [
+      [
+       "LayoffCycleBeginning",
+       "UnemploymentRising"
+      ],
+      [
+       "TightLaborMarket",
+       "LaborProductivityWeak"
+      ],
+      [
+       "TightLaborMarket",
+       "WageInflationPersistent"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -22.993053828,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.650312807,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.171662506,
+     "bic_score_strict": -7.735711602,
+     "candidate_id": "<id7>",
+     "description": "variant_add_TightLaborMarket->ParticipationRateFalling",
+     "edge_structure": [
+      [
+       "RealWageGrowthPositive",
+       "TightLaborMarket"
+      ],
+      [
+       "TightLaborMarket",
+       "ParticipationRateFalling"
+      ],
+      [
+       "WageInflationPersistent",
+       "LaborProductivityWeak"
+      ],
+      [
+       "WageInflationPersistent",
+       "RealWageGrowthPositive"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -22.60167624,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.710239569,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.231589268,
+     "bic_score_strict": -7.795638364,
+     "candidate_id": "<id8>",
+     "description": "variant_add_UnemploymentRising->ParticipationRateFalling",
+     "edge_structure": [
+      [
+       "RealWageGrowthPositive",
+       "TightLaborMarket"
+      ],
+      [
+       "UnemploymentRising",
+       "ParticipationRateFalling"
+      ],
+      [
+       "WageInflationPersistent",
+       "LaborProductivityWeak"
+      ],
+      [
+       "WageInflationPersistent",
+       "RealWageGrowthPositive"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -22.841513463,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.748826151,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.27017585,
+     "bic_score_strict": -7.834224946,
+     "candidate_id": "<id9>",
+     "description": "variant_add_WageInflationPersistent->LayoffCycleBeginning",
+     "edge_structure": [
+      [
+       "LayoffCycleBeginning",
+       "UnemploymentRising"
+      ],
+      [
+       "TightLaborMarket",
+       "LaborProductivityWeak"
+      ],
+      [
+       "TightLaborMarket",
+       "WageInflationPersistent"
+      ],
+      [
+       "WageInflationPersistent",
+       "LayoffCycleBeginning"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -22.993053828,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.696895326,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.218245025,
+     "bic_score_strict": -7.782294121,
+     "candidate_id": "<id15>",
+     "description": "variant_add_UnemploymentRising->RealWageGrowthPositive",
+     "edge_structure": [
+      [
+       "ParticipationRateFalling",
+       "LaborProductivityWeak"
+      ],
+      [
+       "ParticipationRateFalling",
+       "TightLaborMarket"
+      ],
+      [
+       "TightLaborMarket",
+       "WageInflationPersistent"
+      ],
+      [
+       "UnemploymentRising",
+       "RealWageGrowthPositive"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -22.786684912,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.638505542,
+     "bic_penalty_raw": 2.259182028,
+     "bic_score_explore": -6.203301049,
+     "bic_score_strict": -7.89768757,
+     "candidate_id": "<id16>",
+     "description": "variant_add_UnemploymentRising->WageInflationPersistent",
+     "edge_structure": [
+      [
+       "JobOpeningsFalling",
+       "LayoffCycleBeginning"
+      ],
+      [
+       "LayoffCycleBeginning",
+       "UnemploymentRising"
+      ],
+      [
+       "TightLaborMarket",
+       "WageInflationPersistent"
+      ],
+      [
+       "UnemploymentRising",
+       "WageInflationPersistent"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -22.553227004,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.746301167,
+     "bic_penalty_raw": 2.381757254,
+     "bic_score_explore": -6.341740481,
+     "bic_score_strict": -8.128058422,
+     "candidate_id": "<id17>",
+     "description": "variant_add_LayoffCycleBeginning->LaborProductivityWeak",
+     "edge_structure": [
+      [
+       "LayoffCycleBeginning",
+       "JobOpeningsFalling"
+      ],
+      [
+       "LayoffCycleBeginning",
+       "LaborProductivityWeak"
+      ],
+      [
+       "LayoffCycleBeginning",
+       "UnemploymentRising"
+      ],
+      [
+       "UnemploymentRising",
+       "LaborProductivityWeak"
+      ]
+     ],
+     "evidence_count": 3,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -17.236542134,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.771422582,
+     "bic_penalty_raw": 2.381757254,
+     "bic_score_explore": -6.366861895,
+     "bic_score_strict": -8.153179836,
+     "candidate_id": "<id18>",
+     "description": "variant_add_JobOpeningsFalling->WageInflationPersistent",
+     "edge_structure": [
+      [
+       "JobOpeningsFalling",
+       "TightLaborMarket"
+      ],
+      [
+       "JobOpeningsFalling",
+       "WageInflationPersistent"
+      ],
+      [
+       "TightLaborMarket",
+       "WageInflationPersistent"
+      ],
+      [
+       "WageInflationPersistent",
+       "RealWageGrowthPositive"
+      ]
+     ],
+     "evidence_count": 3,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -17.312407199,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    }
+   ],
+   "domain": "Labor Market",
+   "domain_module_id": "labor-market-v1",
+   "env_bic_multiplier": 1.0,
+   "env_mode": "strict",
+   "last_mutation_cycle": {
+    "dag_violations": 0,
+    "duplicate_rejections": 5,
+    "introduced": 2,
+    "total_attempts": 7
+   },
+   "total_evidence_records": 4
+  },
+  "status": 200
+ },
+ "evidence_recent": {
+  "body": {
+   "domain": "Labor Market",
+   "records": [
+    {
+     "description": "fake@2026-03-01",
+     "id": "<id11>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-22",
+     "id": "<id12>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-15",
+     "id": "<id13>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-08",
+     "id": "<id14>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    }
+   ]
+  },
+  "status": 200
+ },
+ "inference_dominant": {
+  "body": {
+   "candidate_id": "<id0>",
+   "edges": [
+    {
+     "probability": 0.383912026,
+     "source": "LayoffCycleBeginning",
+     "status": "explore",
+     "target": "UnemploymentRising"
+    },
+    {
+     "probability": 0.379312015,
+     "source": "TightLaborMarket",
+     "status": "explore",
+     "target": "WageInflationPersistent"
+    }
+   ],
+   "frontier_edges": [
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.384 in explore band [0.25, 0.75]",
+     "probability": 0.383912026,
+     "relation": "layoffs \u2192 unemployment (baseline)",
+     "source": "LayoffCycleBeginning",
+     "target": "UnemploymentRising"
+    },
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.379 in explore band [0.25, 0.75]",
+     "probability": 0.379312015,
+     "relation": "tight market \u2192 wages (baseline)",
+     "source": "TightLaborMarket",
+     "target": "WageInflationPersistent"
+    }
+   ],
+   "nodes": [
+    {
+     "id": "UnemploymentRising",
+     "label": "UnemploymentRising",
+     "observation": null,
+     "probability": 0.48602875,
+     "status": "target"
+    },
+    {
+     "id": "WageInflationPersistent",
+     "label": "WageInflationPersistent",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "JobOpeningsFalling",
+     "label": "JobOpeningsFalling",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "LayoffCycleBeginning",
+     "label": "LayoffCycleBeginning",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "LaborProductivityWeak",
+     "label": "LaborProductivityWeak",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "ParticipationRateFalling",
+     "label": "ParticipationRateFalling",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "RealWageGrowthPositive",
+     "label": "RealWageGrowthPositive",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "TightLaborMarket",
+     "label": "TightLaborMarket",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    }
+   ],
+   "target_probability": 0.48602875,
+   "target_variable": "UnemploymentRising"
+  },
+  "status": 200
+ },
+ "inference_other_candidate": {
+  "body": {
+   "candidate_id": "<id9>",
+   "edges": [
+    {
+     "probability": 0.383912026,
+     "source": "LayoffCycleBeginning",
+     "status": "explore",
+     "target": "UnemploymentRising"
+    },
+    {
+     "probability": 0.379312015,
+     "source": "TightLaborMarket",
+     "status": "explore",
+     "target": "WageInflationPersistent"
+    },
+    {
+     "probability": 0.5,
+     "source": "TightLaborMarket",
+     "status": "explore",
+     "target": "LaborProductivityWeak"
+    },
+    {
+     "probability": 0.5,
+     "source": "WageInflationPersistent",
+     "status": "explore",
+     "target": "LayoffCycleBeginning"
+    }
+   ],
+   "frontier_edges": [
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.384 in explore band [0.25, 0.75]",
+     "probability": 0.383912026,
+     "relation": "layoffs \u2192 unemployment (baseline)",
+     "source": "LayoffCycleBeginning",
+     "target": "UnemploymentRising"
+    },
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.379 in explore band [0.25, 0.75]",
+     "probability": 0.379312015,
+     "relation": "tight market \u2192 wages (baseline)",
+     "source": "TightLaborMarket",
+     "target": "WageInflationPersistent"
+    },
+    {
+     "explore_weight": 1.05,
+     "note": "existence_probability=0.500 in explore band [0.25, 0.75]",
+     "probability": 0.5,
+     "relation": "TightLaborMarket\u2192LaborProductivityWeak",
+     "source": "TightLaborMarket",
+     "target": "LaborProductivityWeak"
+    },
+    {
+     "explore_weight": 1.0,
+     "note": "existence_probability=0.500 in explore band [0.25, 0.75]",
+     "probability": 0.5,
+     "relation": "WageInflationPersistent\u2192LayoffCycleBeginning",
+     "source": "WageInflationPersistent",
+     "target": "LayoffCycleBeginning"
+    }
+   ],
+   "nodes": [
+    {
+     "id": "UnemploymentRising",
+     "label": "UnemploymentRising",
+     "observation": null,
+     "probability": 0.48121375,
+     "status": "target"
+    },
+    {
+     "id": "WageInflationPersistent",
+     "label": "WageInflationPersistent",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "JobOpeningsFalling",
+     "label": "JobOpeningsFalling",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "LayoffCycleBeginning",
+     "label": "LayoffCycleBeginning",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "LaborProductivityWeak",
+     "label": "LaborProductivityWeak",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "ParticipationRateFalling",
+     "label": "ParticipationRateFalling",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "RealWageGrowthPositive",
+     "label": "RealWageGrowthPositive",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "TightLaborMarket",
+     "label": "TightLaborMarket",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    }
+   ],
+   "target_probability": 0.48121375,
+   "target_variable": "UnemploymentRising"
+  },
+  "status": 200
+ },
+ "lineage_dominant": {
+  "body": {
+   "candidate_id": "<id0>",
+   "domain": "Labor Market",
+   "events": [
+    {
+     "description": "T_null: layoff-unemployment baseline",
+     "dominant_after": "T_null: layoff-unemployment baseline",
+     "event_type": "current",
+     "generation": 0
+    },
+    {
+     "description": "Became dominant candidate after 1 paradigm shift(s)",
+     "dominant_after": "T_null: layoff-unemployment baseline",
+     "event_type": "shift",
+     "generation": 9
+    }
+   ]
+  },
+  "status": 200
+ },
+ "narrative_snapshot": {
+  "body": {
+   "competing_candidates": {
+    "candidates": [
+     {
+      "edge_count": 2,
+      "log_score": -22.875718583,
+      "name": "T_null: layoff-unemployment baseline",
+      "score_normalized": 0.95,
+      "status": "dominant"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -22.566490031,
+      "name": "variant_add_JobOpeningsFalling->LayoffCycleBeginning",
+      "score_normalized": 0.719867922,
+      "status": "rising"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -22.838588783,
+      "name": "H2: layoff_cycle",
+      "score_normalized": 0.557541759,
+      "status": "rising"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -22.841513463,
+      "name": "H4: wage_price_spiral",
+      "score_normalized": 0.556706812,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -22.880153318,
+      "name": "H1: labor_tightening",
+      "score_normalized": 0.533231121,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -22.97519063,
+      "name": "H3: structural_shift",
+      "score_normalized": 0.476432474,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -22.993053828,
+      "name": "variant_add_TightLaborMarket->LaborProductivityWeak",
+      "score_normalized": 0.464640602,
+      "status": "falling"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -22.60167624,
+      "name": "variant_add_TightLaborMarket->ParticipationRateFalling",
+      "score_normalized": 0.285049329,
+      "status": "falling"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -22.841513463,
+      "name": "variant_add_UnemploymentRising->ParticipationRateFalling",
+      "score_normalized": 0.142066209,
+      "status": "falling"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -22.993053828,
+      "name": "variant_add_WageInflationPersistent->LayoffCycleBeginning",
+      "score_normalized": 0.05,
+      "status": "falling"
+     }
+    ],
+    "score_gap_to_dominant": 0.096452437
+   },
+   "current_regime_state": [
+    {
+     "boolean_state": false,
+     "name": "UnemploymentRising",
+     "probability": 0.48602875
+    },
+    {
+     "boolean_state": true,
+     "name": "WageInflationPersistent",
+     "probability": 0.581806517
+    },
+    {
+     "boolean_state": true,
+     "name": "JobOpeningsFalling",
+     "probability": 0.559683333
+    },
+    {
+     "boolean_state": false,
+     "name": "LayoffCycleBeginning",
+     "probability": 0.385966667
+    },
+    {
+     "boolean_state": false,
+     "name": "LaborProductivityWeak",
+     "probability": 0.366466667
+    },
+    {
+     "boolean_state": false,
+     "name": "ParticipationRateFalling",
+     "probability": 0.499683333
+    },
+    {
+     "boolean_state": true,
+     "name": "RealWageGrowthPositive",
+     "probability": 0.541966667
+    },
+    {
+     "boolean_state": true,
+     "name": "TightLaborMarket",
+     "probability": 0.577666667
+    }
+   ],
+   "dominant_hypothesis": {
+    "candidate_id": "<id0>",
+    "edge_count": 2,
+    "edges": [
+     {
+      "existence_probability": 0.383912026,
+      "source": "LayoffCycleBeginning",
+      "target": "UnemploymentRising"
+     },
+     {
+      "existence_probability": 0.379312015,
+      "source": "TightLaborMarket",
+      "target": "WageInflationPersistent"
+     }
+    ],
+    "generations_dominant": 9,
+    "log_score": -22.875718583,
+    "name": "T_null: layoff-unemployment baseline"
+   },
+   "frontier": {
+    "frontier_edge_count": 2,
+    "frontier_edges": [
+     {
+      "probability": 0.383912026,
+      "relation": "layoffs \u2192 unemployment (baseline)",
+      "source": "LayoffCycleBeginning",
+      "target": "UnemploymentRising"
+     },
+     {
+      "probability": 0.379312015,
+      "relation": "tight market \u2192 wages (baseline)",
+      "source": "TightLaborMarket",
+      "target": "WageInflationPersistent"
+     }
+    ]
+   },
+   "interpretation_hints": [
+    "structure_entropy is high (2.217): engine has not converged; multiple causal stories remain plausible",
+    "dominant hypothesis has held for 9 generations",
+    "last paradigm shift was <ago>",
+    "evidence base is small (4 records); scores may not yet be reliable",
+    "2 edge(s) are in the explore band: causal structure is still being refined in these relations"
+   ],
+   "metadata": {
+    "current_generation": 9,
+    "domain": "Labor Market",
+    "domain_module_id": "labor-market-v1",
+    "evidence_count": 4,
+    "timestamp": "<ts>"
+   },
+   "ontology_competition": {
+    "active_candidates": 10,
+    "entropy_interpretation": "high",
+    "paradigm_shifts_total": 1,
+    "recent_shifts": [
+     {
+      "from_name": "H1: labor_tightening",
+      "generation": 5,
+      "timestamp": "<ts>",
+      "to_name": "T_null: layoff-unemployment baseline"
+     }
+    ],
+    "structure_entropy": 2.216624467
+   }
+  },
+  "status": 200
+ },
+ "shifts": {
+  "body": {
+   "domain": "Labor Market",
+   "domain_module_id": "labor-market-v1",
+   "events": [
+    {
+     "evidence_count_at_shift": 1,
+     "generation": 5,
+     "new_dominant_id": "<id0>",
+     "new_dominant_name": "T_null: layoff-unemployment baseline",
+     "previous_dominant_id": "<id4>",
+     "previous_dominant_name": "H1: labor_tightening",
+     "shift_id": "<id10>",
+     "timestamp": "<ts>"
+    }
+   ],
+   "total_shifts": 1
+  },
+  "status": 200
+ },
+ "status": {
+  "body": {
+   "active_candidates": 10,
+   "current_generation": 9,
+   "domain": "Labor Market",
+   "dominant_hypothesis": {
+    "candidate_id": "<id0>",
+    "generations_dominant": 9,
+    "name": "T_null: layoff-unemployment baseline"
+   },
+   "engine_status": "online",
+   "frontier_edge_count": 2,
+   "last_evidence_cycle_ago": "<ago>",
+   "max_candidates": 10,
+   "paradigm_shifts_this_window": 1,
+   "structure_entropy": 2.216624467
+  },
+  "status": 200
+ }
+}

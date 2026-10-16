@@ -7,14 +7,12 @@ from uuid import uuid4
 
 from fastapi.testclient import TestClient
 
-from src.domains.agriculture_weekly import (
-    latest_week_ending_on_or_before,
-    weekly_backfill_dates,
-)
+from src.engine.model.cadence import Weekly
 from src.domains.sovereign_debt_v1.domain import SovereignDebtV1, get_variables as sd_variables
 from src.domains.natural_gas_v1.domain import NaturalGasV1
 from src.domains.test_domain_v1.domain import TestDomainV1, get_variables as _test_variables
 from src.engine.api import app as api_app
+from tests.fakes import ADMIN, patch_evidence_fetch
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import (
     EvidenceRecord,
@@ -69,7 +67,7 @@ def test_legacy_persisted_evidence_remains_readable_by_position(tmp_path):
 
 
 def test_weekly_backfill_dates_step_by_iso_week():
-    dates = weekly_backfill_dates(15, today=date(2026, 5, 26))
+    dates = Weekly().window_targets(15, date(2026, 5, 26))
 
     assert dates == [date(2026, 5, 10), date(2026, 5, 17), date(2026, 5, 24)]
     assert all(day.weekday() == 6 for day in dates)
@@ -107,9 +105,9 @@ def test_api_sovereign_debt_backfill_steps_weekly(monkeypatch, tmp_path):
             source_ref=f"weekly-test@{target_date}",
         )
 
-    monkeypatch.setattr(api_app, "_fetch_evidence_record", fake_fetch)
+    patch_evidence_fetch(monkeypatch, fake_fetch)
 
-    with TestClient(api_app.app) as client:
+    with TestClient(api_app.app, headers=ADMIN) as client:
         response = client.post("/v1/ingest/backfill?domain=sd&days=15")
 
     assert response.status_code == 200
@@ -122,7 +120,7 @@ def test_evidence_geometry_endpoint_exposes_weekly_fields(monkeypatch, tmp_path)
     monkeypatch.setenv("EVIDENCE_SCHEDULER_ENABLED", "false")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
 
-    with TestClient(api_app.app) as client:
+    with TestClient(api_app.app, headers=ADMIN) as client:
         body = client.get("/v1/debug/evidence-geometry?domain=sd").json()
 
     assert "cadence_detected" in body
@@ -157,9 +155,9 @@ def test_ng_scheduler_backfill_dates_remain_daily(monkeypatch, tmp_path):
             source_ref=f"ng-daily@{target_date}",
         )
 
-    monkeypatch.setattr(api_app, "_fetch_evidence_record", fake_fetch)
+    patch_evidence_fetch(monkeypatch, fake_fetch)
 
-    with TestClient(api_app.app) as client:
+    with TestClient(api_app.app, headers=ADMIN) as client:
         response = client.post("/v1/ingest/backfill?domain=ng&days=3")
 
     assert response.status_code == 200

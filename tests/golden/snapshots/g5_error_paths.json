@@ -1,0 +1,409 @@
+{
+ "backfill days=0": {
+  "body": {
+   "detail": [
+    {
+     "ctx": {
+      "ge": 1
+     },
+     "input": "0",
+     "loc": [
+      "query",
+      "days"
+     ],
+     "msg": "Input should be greater than or equal to 1",
+     "type": "greater_than_equal"
+    }
+   ]
+  },
+  "status": 422
+ },
+ "inference fuzzy suffix": {
+  "body": {
+   "candidate_id": "<id1>",
+   "edges": [
+    {
+     "probability": 0.75,
+     "source": "TempAnom",
+     "status": "explore",
+     "target": "HeatingDem"
+    },
+    {
+     "probability": 0.7,
+     "source": "HeatingDem",
+     "status": "explore",
+     "target": "StorageDraw"
+    },
+    {
+     "probability": 0.7,
+     "source": "StorageDraw",
+     "status": "explore",
+     "target": "PriceUp"
+    }
+   ],
+   "frontier_edges": [
+    {
+     "explore_weight": 1.0,
+     "note": "existence_probability=0.750 in explore band [0.25, 0.75]",
+     "probability": 0.75,
+     "relation": "TempAnom\u2192HeatingDem",
+     "source": "TempAnom",
+     "target": "HeatingDem"
+    },
+    {
+     "explore_weight": 1.0,
+     "note": "existence_probability=0.700 in explore band [0.25, 0.75]",
+     "probability": 0.7,
+     "relation": "HeatingDem\u2192StorageDraw",
+     "source": "HeatingDem",
+     "target": "StorageDraw"
+    },
+    {
+     "explore_weight": 1.0,
+     "note": "existence_probability=0.700 in explore band [0.25, 0.75]",
+     "probability": 0.7,
+     "relation": "StorageDraw\u2192PriceUp",
+     "source": "StorageDraw",
+     "target": "PriceUp"
+    }
+   ],
+   "nodes": [
+    {
+     "id": "TempAnom",
+     "label": "TempAnom",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "HeatingDem",
+     "label": "HeatingDem",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "StorageDraw",
+     "label": "StorageDraw",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "PriceUp",
+     "label": "PriceUp",
+     "observation": null,
+     "probability": 0.5,
+     "status": "target"
+    }
+   ],
+   "target_probability": 0.5,
+   "target_variable": "PriceUp"
+  },
+  "status": 200
+ },
+ "inference malformed candidate id": {
+  "body": {
+   "candidate_id": "<id1>",
+   "edges": [
+    {
+     "probability": 0.75,
+     "source": "TempAnom",
+     "status": "explore",
+     "target": "HeatingDem"
+    },
+    {
+     "probability": 0.7,
+     "source": "HeatingDem",
+     "status": "explore",
+     "target": "StorageDraw"
+    },
+    {
+     "probability": 0.7,
+     "source": "StorageDraw",
+     "status": "explore",
+     "target": "PriceUp"
+    }
+   ],
+   "frontier_edges": [
+    {
+     "explore_weight": 1.0,
+     "note": "existence_probability=0.750 in explore band [0.25, 0.75]",
+     "probability": 0.75,
+     "relation": "TempAnom\u2192HeatingDem",
+     "source": "TempAnom",
+     "target": "HeatingDem"
+    },
+    {
+     "explore_weight": 1.0,
+     "note": "existence_probability=0.700 in explore band [0.25, 0.75]",
+     "probability": 0.7,
+     "relation": "HeatingDem\u2192StorageDraw",
+     "source": "HeatingDem",
+     "target": "StorageDraw"
+    },
+    {
+     "explore_weight": 1.0,
+     "note": "existence_probability=0.700 in explore band [0.25, 0.75]",
+     "probability": 0.7,
+     "relation": "StorageDraw\u2192PriceUp",
+     "source": "StorageDraw",
+     "target": "PriceUp"
+    }
+   ],
+   "nodes": [
+    {
+     "id": "TempAnom",
+     "label": "TempAnom",
+     "observation": null,
+     "probability": 0.5,
+     "status": "target"
+    },
+    {
+     "id": "HeatingDem",
+     "label": "HeatingDem",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "StorageDraw",
+     "label": "StorageDraw",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "PriceUp",
+     "label": "PriceUp",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    }
+   ],
+   "target_probability": 0.5,
+   "target_variable": "TempAnom"
+  },
+  "status": 200
+ },
+ "inference unknown candidate uuid": {
+  "body": {
+   "detail": "Candidate '<id2>' not found"
+  },
+  "status": 404
+ },
+ "inference unknown variable": {
+  "body": {
+   "detail": "Variable 'Nope' not found in domain 'ng'"
+  },
+  "status": 422
+ },
+ "inference with conditions": {
+  "body": {
+   "candidate_id": "<id1>",
+   "edges": [
+    {
+     "probability": 0.75,
+     "source": "TempAnom",
+     "status": "explore",
+     "target": "HeatingDem"
+    },
+    {
+     "probability": 0.7,
+     "source": "HeatingDem",
+     "status": "explore",
+     "target": "StorageDraw"
+    },
+    {
+     "probability": 0.7,
+     "source": "StorageDraw",
+     "status": "explore",
+     "target": "PriceUp"
+    }
+   ],
+   "frontier_edges": [
+    {
+     "explore_weight": 1.0,
+     "note": "existence_probability=0.750 in explore band [0.25, 0.75]",
+     "probability": 0.75,
+     "relation": "TempAnom\u2192HeatingDem",
+     "source": "TempAnom",
+     "target": "HeatingDem"
+    },
+    {
+     "explore_weight": 1.0,
+     "note": "existence_probability=0.700 in explore band [0.25, 0.75]",
+     "probability": 0.7,
+     "relation": "HeatingDem\u2192StorageDraw",
+     "source": "HeatingDem",
+     "target": "StorageDraw"
+    },
+    {
+     "explore_weight": 1.0,
+     "note": "existence_probability=0.700 in explore band [0.25, 0.75]",
+     "probability": 0.7,
+     "relation": "StorageDraw\u2192PriceUp",
+     "source": "StorageDraw",
+     "target": "PriceUp"
+    }
+   ],
+   "nodes": [
+    {
+     "id": "TempAnom",
+     "label": "TempAnom",
+     "observation": null,
+     "probability": 0.5,
+     "status": "target"
+    },
+    {
+     "id": "HeatingDem",
+     "label": "HeatingDem",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "StorageDraw",
+     "label": "StorageDraw",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "PriceUp",
+     "label": "PriceUp",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    }
+   ],
+   "target_probability": 0.5,
+   "target_variable": "TempAnom"
+  },
+  "status": 200
+ },
+ "lineage unknown uuid": {
+  "body": {
+   "detail": "Candidate '<id0>' not found"
+  },
+  "status": 404
+ },
+ "report read, nothing cached": {
+  "body": {
+   "domain": "ng",
+   "found": false,
+   "ontology_mode": "apriori"
+  },
+  "status": 200
+ },
+ "report refresh, no API key": {
+  "body": {
+   "detail": "FIREWORKS_API_KEY not configured. Set it to enable report generation."
+  },
+  "status": 503
+ },
+ "status ontology_mode=bogus": {
+  "body": {
+   "detail": [
+    {
+     "ctx": {
+      "expected": "'apriori' or 'dynamic'"
+     },
+     "input": "bogus",
+     "loc": [
+      "query",
+      "ontology_mode"
+     ],
+     "msg": "Input should be 'apriori' or 'dynamic'",
+     "type": "literal_error"
+    }
+   ]
+  },
+  "status": 422
+ },
+ "status ontology_mode=dynamic non-art": {
+  "body": {
+   "active_candidates": 3,
+   "current_generation": 0,
+   "domain": "Natural Gas",
+   "dominant_hypothesis": {
+    "candidate_id": "<id1>",
+    "generations_dominant": 0,
+    "name": "T*: demand-chain"
+   },
+   "engine_status": "online",
+   "frontier_edge_count": 3,
+   "last_evidence_cycle_ago": "never",
+   "max_candidates": 10,
+   "paradigm_shifts_this_window": 0,
+   "structure_entropy": 1.098612289
+  },
+  "status": 200
+ },
+ "unknown_domain /v1/debug/entropy": {
+  "body": {
+   "detail": "Unknown domain 'xx'"
+  },
+  "status": 404
+ },
+ "unknown_domain /v1/debug/evidence-geometry": {
+  "body": {
+   "detail": "Unknown domain 'xx'"
+  },
+  "status": 404
+ },
+ "unknown_domain /v1/debug/learning": {
+  "body": {
+   "detail": "Unknown domain 'xx'"
+  },
+  "status": 404
+ },
+ "unknown_domain /v1/debug/structure": {
+  "body": {
+   "detail": "Unknown domain 'xx'"
+  },
+  "status": 404
+ },
+ "unknown_domain /v1/evidence/recent": {
+  "body": {
+   "detail": "Unknown domain 'xx'"
+  },
+  "status": 404
+ },
+ "unknown_domain /v1/export/narrative-snapshot": {
+  "body": {
+   "detail": "Unknown domain 'xx'"
+  },
+  "status": 404
+ },
+ "unknown_domain /v1/population/candidates": {
+  "body": {
+   "detail": "Unknown domain 'xx'"
+  },
+  "status": 404
+ },
+ "unknown_domain /v1/population/shifts": {
+  "body": {
+   "detail": "Unknown domain 'xx'"
+  },
+  "status": 404
+ },
+ "unknown_domain /v1/population/status": {
+  "body": {
+   "detail": "Unknown domain 'xx'"
+  },
+  "status": 404
+ },
+ "unknown_domain report": {
+  "body": {
+   "detail": "Unknown domain 'xx'"
+  },
+  "status": 404
+ },
+ "unknown_domain trigger": {
+  "body": {
+   "detail": "Unknown domain 'xx'"
+  },
+  "status": 404
+ }
+}

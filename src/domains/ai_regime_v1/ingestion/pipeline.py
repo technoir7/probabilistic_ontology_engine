@@ -93,20 +93,14 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import math
-import statistics
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, timedelta
 from typing import Optional
-from uuid import uuid4
 
 import numpy as np
 
 from ....engine.schemas import (
     EvidenceRecord,
-    MissingnessType,
-    ObservedAssignment,
-    SourceType,
 )
 from ..domain import get_variables
 from .edgar_client import EDGARClient, HyperscalerCapexSnapshot
@@ -117,6 +111,7 @@ from .fred_client import (
     FREDObservation,
 )
 from .yfinance_client import AIYFinanceClient, YFObservation
+from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
 
 logger = logging.getLogger(__name__)
 
@@ -132,7 +127,8 @@ _CLAMP_HI: float = 0.99
 # Snapshot dataclass — carries all derived signals
 # ---------------------------------------------------------------------------
 
-@dataclass
+# slots: a misspelled field name raises instead of silently adding a field.
+@dataclass(slots=True)
 class AIRegimeSnapshot:
     """
     Derived signals and soft-probability calibrations for one evidence week.
@@ -174,6 +170,8 @@ class AIRegimeSnapshot:
     ai_risk_premium_compressed: bool = False
 
     # Data confidence per variable (1.0 = full data, 0.5 = degraded/fallback)
+    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
+    missing: set[str] = field(default_factory=set)
     confidence: dict[str, float] = field(default_factory=dict)
 
     # Target date for this evidence record
@@ -184,29 +182,9 @@ class AIRegimeSnapshot:
 # Sigmoid and soft-bool helpers
 # ---------------------------------------------------------------------------
 
-def _sigmoid(x: float) -> float:
-    """Numerically stable sigmoid."""
-    if x >= 0:
-        return 1.0 / (1.0 + math.exp(-x))
-    ex = math.exp(x)
-    return ex / (1.0 + ex)
-
 
 def _soft_bool(signal: float) -> float:
-    """Convert a signed signal to P(True) via sigmoid, clamped to [0.01, 0.99]."""
-    return max(_CLAMP_LO, min(_CLAMP_HI, _sigmoid(signal)))
-
-
-def _zscore(current: float, values: list[float]) -> float:
-    """Rolling z-score: (current − mean) / std.  Returns 0.0 if std ≈ 0."""
-    if len(values) < 2:
-        return 0.0
-    arr = np.array(values, dtype=float)
-    mu = float(np.mean(arr))
-    sigma = float(np.std(arr, ddof=1))
-    if sigma < 1e-9:
-        return 0.0
-    return (current - mu) / sigma
+    return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
 
 
 def _values_from_obs(obs: list[FREDObservation]) -> list[float]:
@@ -539,6 +517,7 @@ def compute_snapshot(
     sox_sig, sox_conf = _compute_13w_return_zscore(sox_obs, "^SOX")
     snap.sox_return_zscore = sox_sig
     if sox_sig is None:
+        snap.missing.add("SemiconductorMomentum")
         # No data → maximum uncertainty
         snap.p_semiconductor_momentum = 0.5
     else:
@@ -553,6 +532,7 @@ def compute_snapshot(
     conc_sig, conc_conf = _compute_concentration_ratio_zscore(qqq_obs, rsp_obs)
     snap.concentration_ratio_zscore = conc_sig
     if conc_sig is None:
+        snap.missing.add("MarketConcentrationExtreme")
         # No data → maximum uncertainty
         snap.p_market_concentration_extreme = 0.5
     else:
@@ -564,6 +544,7 @@ def compute_snapshot(
     # ---- HyperscalerCapexAccelerating (EDGAR) ----------------------------
     capex_sig, capex_conf = _compute_capex_signal(capex)
     if capex_sig is None:
+        snap.missing.add("HyperscalerCapexAccelerating")
         capex_sig = 0.0
     snap.capex_avg_yoy_pct = capex.avg_yoy_growth_pct
     snap.p_hyperscaler_capex_accelerating = _soft_bool(capex_sig)
@@ -575,6 +556,7 @@ def compute_snapshot(
     # val_sig is already (raw_z - 1.0); restore raw z for diagnostics
     snap.qqq_valuation_zscore = (val_sig + 1.0) if val_sig is not None else None
     if val_sig is None:
+        snap.missing.add("TechValuationDetached")
         # No data → maximum uncertainty
         snap.p_tech_valuation_detached = 0.5
     else:
@@ -586,6 +568,7 @@ def compute_snapshot(
     ip_obs = fred_data.get("Y033RC1Q027SBEA", [])
     ip_sig, ip_conf = _compute_ip_investment_signal(ip_obs)
     if ip_sig is None:
+        snap.missing.add("IPInvestmentRising")
         ip_sig = 0.0
     snap.ip_investment_signal = ip_sig
     snap.p_ip_investment_rising = _soft_bool(ip_sig)
@@ -596,6 +579,7 @@ def compute_snapshot(
     prod_obs = fred_data.get("PRS85006092", [])
     prod_sig, prod_conf = _compute_labor_productivity_signal(prod_obs)
     if prod_sig is None:
+        snap.missing.add("LaborProductivityImproving")
         prod_sig = 0.0
     snap.labor_prod_yoy_pct = (
         (prod_sig * 0.5 + 2.0) if prod_sig is not None else None
@@ -608,6 +592,7 @@ def compute_snapshot(
     gdp_obs = fred_data.get("A191RL1Q225SBEA", [])
     gdp_sig, gdp_conf = _compute_gdp_signal(gdp_obs)
     if gdp_sig is None:
+        snap.missing.add("BroadEconomicLift")
         gdp_sig = 0.0
     snap.gdp_growth_pct = (gdp_sig * 0.5 + 2.5) if gdp_sig is not None else None
     snap.p_broad_economic_lift = _soft_bool(gdp_sig)
@@ -618,6 +603,7 @@ def compute_snapshot(
     vix_obs = yf_data.get("^VIX", [])
     vix_sig, vix_conf = _compute_vix_signal(vix_obs)
     if vix_sig is None:
+        snap.missing.add("AIRiskPremiumCompressed")
         vix_sig = 0.0
     snap.vix_zscore = -vix_sig  # store raw z (un-inverted) for diagnostics
     snap.p_ai_risk_premium_compressed = _soft_bool(vix_sig)
@@ -663,7 +649,7 @@ class AIRegimePipeline:
 
     async def fetch_evidence(
         self,
-        target_date: Optional[date] = None,
+        target_date: date,
     ) -> EvidenceRecord:
         """
         Fetch all data sources for the given week and return an EvidenceRecord.
@@ -679,8 +665,6 @@ class AIRegimePipeline:
         EvidenceRecord
             Fully-populated record with 8 soft BOOLEAN assignments.
         """
-        if target_date is None:
-            target_date = _last_friday()
 
         # Fetch yfinance and FRED concurrently; EDGAR uses its own cache
         yf_task = asyncio.create_task(self._yf.fetch_all(end_date=target_date))
@@ -735,116 +719,33 @@ class AIRegimePipeline:
         Produces SOFT_OBSERVED assignments with sigmoid-calibrated
         probability distributions.  Synchronous; no external dependencies.
         """
-        variables = get_variables()
-        conf = snapshot.confidence
-
-        def _assignment(
-            var_name: str,
-            observed_value: bool,
-            p_true: float,
-        ) -> ObservedAssignment:
-            c = conf.get(var_name, 1.0)
-            return ObservedAssignment(
-                variable_id=variables[var_name].variable_id,
-                observed_value=observed_value,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=c,
-                probabilities={True: p_true, False: 1.0 - p_true},
-            )
-
-        assignments = [
-            _assignment(
-                "SemiconductorMomentum",
-                snapshot.semiconductor_momentum,
-                snapshot.p_semiconductor_momentum,
-            ),
-            _assignment(
-                "MarketConcentrationExtreme",
-                snapshot.market_concentration_extreme,
-                snapshot.p_market_concentration_extreme,
-            ),
-            _assignment(
-                "HyperscalerCapexAccelerating",
-                snapshot.hyperscaler_capex_accelerating,
-                snapshot.p_hyperscaler_capex_accelerating,
-            ),
-            _assignment(
-                "TechValuationDetached",
-                snapshot.tech_valuation_detached,
-                snapshot.p_tech_valuation_detached,
-            ),
-            _assignment(
-                "IPInvestmentRising",
-                snapshot.ip_investment_rising,
-                snapshot.p_ip_investment_rising,
-            ),
-            _assignment(
-                "LaborProductivityImproving",
-                snapshot.labor_productivity_improving,
-                snapshot.p_labor_productivity_improving,
-            ),
-            _assignment(
-                "BroadEconomicLift",
-                snapshot.broad_economic_lift,
-                snapshot.p_broad_economic_lift,
-            ),
-            _assignment(
-                "AIRiskPremiumCompressed",
-                snapshot.ai_risk_premium_compressed,
-                snapshot.p_ai_risk_premium_compressed,
-            ),
-        ]
-
-        target_date = snapshot.target_date or datetime.now(timezone.utc).date()
-        ts = datetime(
-            target_date.year,
-            target_date.month,
-            target_date.day,
-            tzinfo=timezone.utc,
-        )
-
-        overall_confidence = (
-            float(sum(conf.values()) / len(conf)) if conf else 1.0
-        )
-
-        return EvidenceRecord(
-            evidence_id=uuid4(),
-            timestamp=ts,
-            observed_assignments=assignments,
-            source_type=SourceType.API,
-            source_ref=(
-                "AI-REGIME:yfinance(^SOX,QQQ,RSP,^VIX)"
-                "+EDGAR(MSFT,GOOGL,AMZN,META)"
-                "+FRED(Y033RC1Q027SBEA,PRS85006092,A191RL1Q225SBEA)"
-                f"@week-ending-{target_date}"
-            ),
-            confidence=overall_confidence,
+        target_date = snapshot.target_date
+        return build_soft_record(
+            module_id="ai-regime-v1",
+            variables=get_variables(),
+            states=[
+                ("SemiconductorMomentum", snapshot.semiconductor_momentum, snapshot.p_semiconductor_momentum),
+                ("MarketConcentrationExtreme", snapshot.market_concentration_extreme, snapshot.p_market_concentration_extreme),
+                ("HyperscalerCapexAccelerating", snapshot.hyperscaler_capex_accelerating, snapshot.p_hyperscaler_capex_accelerating),
+                ("TechValuationDetached", snapshot.tech_valuation_detached, snapshot.p_tech_valuation_detached),
+                ("IPInvestmentRising", snapshot.ip_investment_rising, snapshot.p_ip_investment_rising),
+                ("LaborProductivityImproving", snapshot.labor_productivity_improving, snapshot.p_labor_productivity_improving),
+                ("BroadEconomicLift", snapshot.broad_economic_lift, snapshot.p_broad_economic_lift),
+                ("AIRiskPremiumCompressed", snapshot.ai_risk_premium_compressed, snapshot.p_ai_risk_premium_compressed),
+            ],
+            confidence=snapshot.confidence,
+            missing=snapshot.missing,
+            target_date=target_date,
+            source_ref="AI-REGIME:yfinance(^SOX,QQQ,RSP,^VIX)"
+            "+EDGAR(MSFT,GOOGL,AMZN,META)"
+            "+FRED(Y033RC1Q027SBEA,PRS85006092,A191RL1Q225SBEA)"
+            f"@week-ending-{target_date}",
         )
 
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
-
-def _last_friday(as_of: Optional[date] = None) -> date:
-    """Return the most recent Friday on or before `as_of` (default: today)."""
-    today = as_of or datetime.now(timezone.utc).date()
-    days_since_friday = (today.weekday() - 4) % 7  # Monday=0, Friday=4
-    return today - timedelta(days=days_since_friday)
-
-
-def _weekly_backfill_dates(backfill_weeks: int, today: date) -> list[date]:
-    """
-    Return list of unique week-ending Fridays for the past backfill_weeks.
-
-    Each date is the Friday of a past week, oldest first.
-    """
-    fridays: set[date] = set()
-    for delta in range(backfill_weeks * 7, 0, -1):
-        d = today - timedelta(days=delta)
-        if d.weekday() == 4:  # Friday
-            fridays.add(d)
-    return sorted(fridays)
 
 
 def _log_snapshot(snapshot: AIRegimeSnapshot, target_date: date) -> None:

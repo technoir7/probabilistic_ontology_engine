@@ -35,6 +35,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 import pytest
 
+from src.domains.sources.soft_evidence import sigmoid as _sigmoid
 from src.domains.sovereign_debt_v1.domain import (
     SovereignDebtV1,
     get_variables,
@@ -54,7 +55,6 @@ from src.domains.sovereign_debt_v1.ingestion.pipeline import (
     SovereignDebtSnapshot,
     compute_snapshot,
     _soft_bool,
-    _sigmoid,
     _compute_fed_balance_sheet_shrinking,
     _compute_credit_default_risk,
 )

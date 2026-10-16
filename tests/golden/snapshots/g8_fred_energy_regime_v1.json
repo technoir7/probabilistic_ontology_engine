@@ -1,0 +1,145 @@
+{
+ "failures": {
+  "all_missing": "OSError",
+  "empty": "OSError",
+  "http_500": "FredHTTPError",
+  "not_json": "OSError"
+ },
+ "fetch_all_series": {
+  "CPIENGSL": [
+   [
+    "2026-03-01",
+    2.25,
+    "CPIENGSL"
+   ],
+   [
+    "2026-02-01",
+    2.0,
+    "CPIENGSL"
+   ],
+   [
+    "2026-01-01",
+    1.75,
+    "CPIENGSL"
+   ]
+  ],
+  "DCOILWTICO": [
+   [
+    "2026-03-01",
+    8.15,
+    "DCOILWTICO"
+   ],
+   [
+    "2026-02-01",
+    7.9,
+    "DCOILWTICO"
+   ],
+   [
+    "2026-01-01",
+    7.65,
+    "DCOILWTICO"
+   ]
+  ],
+  "INDPRO": [
+   [
+    "2026-03-01",
+    7.95,
+    "INDPRO"
+   ],
+   [
+    "2026-02-01",
+    7.7,
+    "INDPRO"
+   ],
+   [
+    "2026-01-01",
+    7.45,
+    "INDPRO"
+   ]
+  ],
+  "UNRATE": [
+   [
+    "2026-03-01",
+    8.25,
+    "UNRATE"
+   ],
+   [
+    "2026-02-01",
+    8.0,
+    "UNRATE"
+   ],
+   [
+    "2026-01-01",
+    7.75,
+    "UNRATE"
+   ]
+  ]
+ },
+ "fetch_all_series_when_every_series_fails": {
+  "CPIENGSL": 0,
+  "DCOILWTICO": 0,
+  "INDPRO": 0,
+  "UNRATE": 0
+ },
+ "fetch_series_explicit_window": [
+  [
+   "2026-03-01",
+   2.25
+  ],
+  [
+   "2026-02-01",
+   2.0
+  ],
+  [
+   "2026-01-01",
+   1.75
+  ]
+ ],
+ "requests": [
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2024-12-31",
+   "path": "/fred/series/observations",
+   "series_id": "CPIENGSL",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "12",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-01",
+   "path": "/fred/series/observations",
+   "series_id": "CPIENGSL",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-01-30",
+   "path": "/fred/series/observations",
+   "series_id": "DCOILWTICO",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-09-07",
+   "path": "/fred/series/observations",
+   "series_id": "INDPRO",
+   "sort_order": "desc"
+  },
+  {
+   "file_type": "json",
+   "limit": "500",
+   "observation_end": "2026-03-06",
+   "observation_start": "2025-09-07",
+   "path": "/fred/series/observations",
+   "series_id": "UNRATE",
+   "sort_order": "desc"
+  }
+ ]
+}

@@ -1,0 +1,1817 @@
+{
+ "backfill": {
+  "body": {
+   "days_requested": 21,
+   "days_successfully_ingested": 4,
+   "domain": "Energy Regime"
+  },
+  "status": 200
+ },
+ "candidates": {
+  "body": {
+   "candidates": [
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id0>",
+     "log_score": -22.70592383,
+     "name": "H2: demand_driven",
+     "score_normalized": 0.95,
+     "status": "dominant"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id1>",
+     "log_score": -22.808590677,
+     "name": "H1: supply_shock",
+     "score_normalized": 0.857815619,
+     "status": "rising"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id2>",
+     "log_score": -22.822351143,
+     "name": "H4: renewables_transition",
+     "score_normalized": 0.845581111,
+     "status": "rising"
+    },
+    {
+     "edge_count": 2,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id3>",
+     "log_score": -22.826977511,
+     "name": "T_null: direct supply-geopolitical baseline",
+     "score_normalized": 0.840955799,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 0,
+     "id": "<id4>",
+     "log_score": -23.01405784,
+     "name": "H3: geopolitical_premium",
+     "score_normalized": 0.672671266,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id5>",
+     "log_score": -22.333151903,
+     "name": "variant_add_DemandDestructionRisk->RenewablesDisplacement",
+     "score_normalized": 0.662467823,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id6>",
+     "log_score": -22.458526496,
+     "name": "variant_add_OPECSupplyConstraint->GeopoliticalRiskElevated",
+     "score_normalized": 0.547422736,
+     "status": "falling"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id7>",
+     "log_score": -22.70592383,
+     "name": "variant_add_OilPriceSurge->RenewablesDisplacement",
+     "score_normalized": 0.327328734,
+     "status": "falling"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id8>",
+     "log_score": -22.766630916,
+     "name": "variant_add_OPECSupplyConstraint->EnergyEquityMomentum",
+     "score_normalized": 0.272903836,
+     "status": "falling"
+    },
+    {
+     "edge_count": 4,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id9>",
+     "log_score": -23.01405784,
+     "name": "variant_add_OilPriceSurge->OPECSupplyConstraint",
+     "score_normalized": 0.05,
+     "status": "falling"
+    }
+   ],
+   "domain": "Energy Regime",
+   "generation": 9
+  },
+  "status": 200
+ },
+ "debug_entropy": {
+  "body": {
+   "domain": "Energy Regime",
+   "domain_key": "er",
+   "domain_module_id": "energy-regime-v1",
+   "pairwise_mutual_information": [
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "OilPriceSurge",
+     "variable_y": "NatGasPriceSurge"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "OilPriceSurge",
+     "variable_y": "EnergyEquityMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "OilPriceSurge",
+     "variable_y": "OPECSupplyConstraint"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "OilPriceSurge",
+     "variable_y": "RenewablesDisplacement"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "OilPriceSurge",
+     "variable_y": "EnergyInflationPersistent"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "OilPriceSurge",
+     "variable_y": "GeopoliticalRiskElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "OilPriceSurge",
+     "variable_y": "DemandDestructionRisk"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "NatGasPriceSurge",
+     "variable_y": "EnergyEquityMomentum"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "NatGasPriceSurge",
+     "variable_y": "OPECSupplyConstraint"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "NatGasPriceSurge",
+     "variable_y": "RenewablesDisplacement"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "NatGasPriceSurge",
+     "variable_y": "EnergyInflationPersistent"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "NatGasPriceSurge",
+     "variable_y": "GeopoliticalRiskElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "NatGasPriceSurge",
+     "variable_y": "DemandDestructionRisk"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EnergyEquityMomentum",
+     "variable_y": "OPECSupplyConstraint"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EnergyEquityMomentum",
+     "variable_y": "RenewablesDisplacement"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EnergyEquityMomentum",
+     "variable_y": "EnergyInflationPersistent"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EnergyEquityMomentum",
+     "variable_y": "GeopoliticalRiskElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EnergyEquityMomentum",
+     "variable_y": "DemandDestructionRisk"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "OPECSupplyConstraint",
+     "variable_y": "RenewablesDisplacement"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "OPECSupplyConstraint",
+     "variable_y": "EnergyInflationPersistent"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "OPECSupplyConstraint",
+     "variable_y": "GeopoliticalRiskElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "OPECSupplyConstraint",
+     "variable_y": "DemandDestructionRisk"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RenewablesDisplacement",
+     "variable_y": "EnergyInflationPersistent"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RenewablesDisplacement",
+     "variable_y": "GeopoliticalRiskElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "RenewablesDisplacement",
+     "variable_y": "DemandDestructionRisk"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EnergyInflationPersistent",
+     "variable_y": "GeopoliticalRiskElevated"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "EnergyInflationPersistent",
+     "variable_y": "DemandDestructionRisk"
+    },
+    {
+     "joint_observed_count": 0,
+     "mutual_information": 0.0,
+     "variable_x": "GeopoliticalRiskElevated",
+     "variable_y": "DemandDestructionRisk"
+    }
+   ],
+   "total_evidence_rows": 4,
+   "unique_observed_patterns": [
+    {
+     "count": 4,
+     "pattern": {
+      "DemandDestructionRisk": null,
+      "EnergyEquityMomentum": null,
+      "EnergyInflationPersistent": null,
+      "GeopoliticalRiskElevated": null,
+      "NatGasPriceSurge": null,
+      "OPECSupplyConstraint": null,
+      "OilPriceSurge": null,
+      "RenewablesDisplacement": null
+     }
+    }
+   ],
+   "variables": {
+    "DemandDestructionRisk": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "EnergyEquityMomentum": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "EnergyInflationPersistent": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "GeopoliticalRiskElevated": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "NatGasPriceSurge": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "OPECSupplyConstraint": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "OilPriceSurge": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    },
+    "RenewablesDisplacement": {
+     "entropy": 0.0,
+     "missing_count": 4,
+     "observed_count": 0,
+     "value_counts": {}
+    }
+   }
+  },
+  "status": 200
+ },
+ "debug_evidence-geometry": {
+  "body": {
+   "average_pairwise_mi": 0.279940848,
+   "cadence_detected": "weekly",
+   "compression_ratio_daily_to_weekly": 1.0,
+   "daily_state_count": 4,
+   "daily_transition_count": 2,
+   "daily_unique_state_count": 3,
+   "domain": "Energy Regime",
+   "domain_key": "er",
+   "domain_module_id": "energy-regime-v1",
+   "effective_state_density": 0.75,
+   "effective_transitions_per_month": 2.898809524,
+   "highest_entropy_variable": {
+    "shannon_entropy": 1.0,
+    "variable": "EnergyEquityMomentum"
+   },
+   "highest_mi_variable_pair": {
+    "joint_observed_count": 4,
+    "mutual_information": 0.811278124,
+    "variable_x": "OilPriceSurge",
+    "variable_y": "OPECSupplyConstraint"
+   },
+   "lowest_entropy_variable": {
+    "shannon_entropy": 0.0,
+    "variable": "NatGasPriceSurge"
+   },
+   "pairwise_joint_observed_counts": {
+    "DemandDestructionRisk": {
+     "DemandDestructionRisk": 4,
+     "EnergyEquityMomentum": 4,
+     "EnergyInflationPersistent": 4,
+     "GeopoliticalRiskElevated": 4,
+     "NatGasPriceSurge": 4,
+     "OPECSupplyConstraint": 4,
+     "OilPriceSurge": 4,
+     "RenewablesDisplacement": 4
+    },
+    "EnergyEquityMomentum": {
+     "DemandDestructionRisk": 4,
+     "EnergyEquityMomentum": 4,
+     "EnergyInflationPersistent": 4,
+     "GeopoliticalRiskElevated": 4,
+     "NatGasPriceSurge": 4,
+     "OPECSupplyConstraint": 4,
+     "OilPriceSurge": 4,
+     "RenewablesDisplacement": 4
+    },
+    "EnergyInflationPersistent": {
+     "DemandDestructionRisk": 4,
+     "EnergyEquityMomentum": 4,
+     "EnergyInflationPersistent": 4,
+     "GeopoliticalRiskElevated": 4,
+     "NatGasPriceSurge": 4,
+     "OPECSupplyConstraint": 4,
+     "OilPriceSurge": 4,
+     "RenewablesDisplacement": 4
+    },
+    "GeopoliticalRiskElevated": {
+     "DemandDestructionRisk": 4,
+     "EnergyEquityMomentum": 4,
+     "EnergyInflationPersistent": 4,
+     "GeopoliticalRiskElevated": 4,
+     "NatGasPriceSurge": 4,
+     "OPECSupplyConstraint": 4,
+     "OilPriceSurge": 4,
+     "RenewablesDisplacement": 4
+    },
+    "NatGasPriceSurge": {
+     "DemandDestructionRisk": 4,
+     "EnergyEquityMomentum": 4,
+     "EnergyInflationPersistent": 4,
+     "GeopoliticalRiskElevated": 4,
+     "NatGasPriceSurge": 4,
+     "OPECSupplyConstraint": 4,
+     "OilPriceSurge": 4,
+     "RenewablesDisplacement": 4
+    },
+    "OPECSupplyConstraint": {
+     "DemandDestructionRisk": 4,
+     "EnergyEquityMomentum": 4,
+     "EnergyInflationPersistent": 4,
+     "GeopoliticalRiskElevated": 4,
+     "NatGasPriceSurge": 4,
+     "OPECSupplyConstraint": 4,
+     "OilPriceSurge": 4,
+     "RenewablesDisplacement": 4
+    },
+    "OilPriceSurge": {
+     "DemandDestructionRisk": 4,
+     "EnergyEquityMomentum": 4,
+     "EnergyInflationPersistent": 4,
+     "GeopoliticalRiskElevated": 4,
+     "NatGasPriceSurge": 4,
+     "OPECSupplyConstraint": 4,
+     "OilPriceSurge": 4,
+     "RenewablesDisplacement": 4
+    },
+    "RenewablesDisplacement": {
+     "DemandDestructionRisk": 4,
+     "EnergyEquityMomentum": 4,
+     "EnergyInflationPersistent": 4,
+     "GeopoliticalRiskElevated": 4,
+     "NatGasPriceSurge": 4,
+     "OPECSupplyConstraint": 4,
+     "OilPriceSurge": 4,
+     "RenewablesDisplacement": 4
+    }
+   },
+   "pairwise_mutual_information_matrix": {
+    "DemandDestructionRisk": {
+     "DemandDestructionRisk": 0.811278124,
+     "EnergyEquityMomentum": 0.311278124,
+     "EnergyInflationPersistent": 0.122556249,
+     "GeopoliticalRiskElevated": 0.811278124,
+     "NatGasPriceSurge": 0.0,
+     "OPECSupplyConstraint": 0.122556249,
+     "OilPriceSurge": 0.122556249,
+     "RenewablesDisplacement": 0.811278124
+    },
+    "EnergyEquityMomentum": {
+     "DemandDestructionRisk": 0.311278124,
+     "EnergyEquityMomentum": 1.0,
+     "EnergyInflationPersistent": 0.311278124,
+     "GeopoliticalRiskElevated": 0.311278124,
+     "NatGasPriceSurge": 0.0,
+     "OPECSupplyConstraint": 0.311278124,
+     "OilPriceSurge": 0.311278124,
+     "RenewablesDisplacement": 0.311278124
+    },
+    "EnergyInflationPersistent": {
+     "DemandDestructionRisk": 0.122556249,
+     "EnergyEquityMomentum": 0.311278124,
+     "EnergyInflationPersistent": 0.811278124,
+     "GeopoliticalRiskElevated": 0.122556249,
+     "NatGasPriceSurge": 0.0,
+     "OPECSupplyConstraint": 0.811278124,
+     "OilPriceSurge": 0.811278124,
+     "RenewablesDisplacement": 0.122556249
+    },
+    "GeopoliticalRiskElevated": {
+     "DemandDestructionRisk": 0.811278124,
+     "EnergyEquityMomentum": 0.311278124,
+     "EnergyInflationPersistent": 0.122556249,
+     "GeopoliticalRiskElevated": 0.811278124,
+     "NatGasPriceSurge": 0.0,
+     "OPECSupplyConstraint": 0.122556249,
+     "OilPriceSurge": 0.122556249,
+     "RenewablesDisplacement": 0.811278124
+    },
+    "NatGasPriceSurge": {
+     "DemandDestructionRisk": 0.0,
+     "EnergyEquityMomentum": 0.0,
+     "EnergyInflationPersistent": 0.0,
+     "GeopoliticalRiskElevated": 0.0,
+     "NatGasPriceSurge": 0.0,
+     "OPECSupplyConstraint": 0.0,
+     "OilPriceSurge": 0.0,
+     "RenewablesDisplacement": 0.0
+    },
+    "OPECSupplyConstraint": {
+     "DemandDestructionRisk": 0.122556249,
+     "EnergyEquityMomentum": 0.311278124,
+     "EnergyInflationPersistent": 0.811278124,
+     "GeopoliticalRiskElevated": 0.122556249,
+     "NatGasPriceSurge": 0.0,
+     "OPECSupplyConstraint": 0.811278124,
+     "OilPriceSurge": 0.811278124,
+     "RenewablesDisplacement": 0.122556249
+    },
+    "OilPriceSurge": {
+     "DemandDestructionRisk": 0.122556249,
+     "EnergyEquityMomentum": 0.311278124,
+     "EnergyInflationPersistent": 0.811278124,
+     "GeopoliticalRiskElevated": 0.122556249,
+     "NatGasPriceSurge": 0.0,
+     "OPECSupplyConstraint": 0.811278124,
+     "OilPriceSurge": 0.811278124,
+     "RenewablesDisplacement": 0.122556249
+    },
+    "RenewablesDisplacement": {
+     "DemandDestructionRisk": 0.811278124,
+     "EnergyEquityMomentum": 0.311278124,
+     "EnergyInflationPersistent": 0.122556249,
+     "GeopoliticalRiskElevated": 0.811278124,
+     "NatGasPriceSurge": 0.0,
+     "OPECSupplyConstraint": 0.122556249,
+     "OilPriceSurge": 0.122556249,
+     "RenewablesDisplacement": 0.811278124
+    }
+   },
+   "position_fallback_assignment_count": 0,
+   "top_10_most_common_assignment_patterns": [
+    {
+     "count": 2,
+     "pattern": {
+      "DemandDestructionRisk": false,
+      "EnergyEquityMomentum": false,
+      "EnergyInflationPersistent": true,
+      "GeopoliticalRiskElevated": false,
+      "NatGasPriceSurge": false,
+      "OPECSupplyConstraint": true,
+      "OilPriceSurge": false,
+      "RenewablesDisplacement": true
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "DemandDestructionRisk": true,
+      "EnergyEquityMomentum": true,
+      "EnergyInflationPersistent": true,
+      "GeopoliticalRiskElevated": true,
+      "NatGasPriceSurge": false,
+      "OPECSupplyConstraint": true,
+      "OilPriceSurge": false,
+      "RenewablesDisplacement": false
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "DemandDestructionRisk": false,
+      "EnergyEquityMomentum": true,
+      "EnergyInflationPersistent": false,
+      "GeopoliticalRiskElevated": false,
+      "NatGasPriceSurge": false,
+      "OPECSupplyConstraint": false,
+      "OilPriceSurge": true,
+      "RenewablesDisplacement": true
+     }
+    }
+   ],
+   "total_assignment_count": 32,
+   "total_evidence_records": 4,
+   "unique_observed_assignment_patterns": 3,
+   "unique_state_retention_ratio": 1.0,
+   "used_assignment_position_fallback": false,
+   "variable_id_match_count": 32,
+   "variable_id_match_ratio": 1.0,
+   "variable_id_mismatch_count": 0,
+   "variables": {
+    "DemandDestructionRisk": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.811278124,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 3,
+      "True": 1
+     }
+    },
+    "EnergyEquityMomentum": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 2,
+      "True": 2
+     }
+    },
+    "EnergyInflationPersistent": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.811278124,
+     "transition_count": 2,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 3
+     }
+    },
+    "GeopoliticalRiskElevated": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.811278124,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 3,
+      "True": 1
+     }
+    },
+    "NatGasPriceSurge": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.0,
+     "transition_count": 0,
+     "unique_value_count": 1,
+     "value_distribution": {
+      "False": 4
+     }
+    },
+    "OPECSupplyConstraint": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.811278124,
+     "transition_count": 2,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 3
+     }
+    },
+    "OilPriceSurge": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.811278124,
+     "transition_count": 2,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 3,
+      "True": 1
+     }
+    },
+    "RenewablesDisplacement": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.811278124,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "False": 1,
+      "True": 3
+     }
+    }
+   },
+   "weekly_aggregation": [
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 6,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "DemandDestructionRisk": true,
+        "EnergyEquityMomentum": true,
+        "EnergyInflationPersistent": true,
+        "GeopoliticalRiskElevated": true,
+        "NatGasPriceSurge": false,
+        "OPECSupplyConstraint": true,
+        "OilPriceSurge": false,
+        "RenewablesDisplacement": false
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-02-02"
+    },
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 7,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "DemandDestructionRisk": false,
+        "EnergyEquityMomentum": true,
+        "EnergyInflationPersistent": false,
+        "GeopoliticalRiskElevated": false,
+        "NatGasPriceSurge": false,
+        "OPECSupplyConstraint": false,
+        "OilPriceSurge": true,
+        "RenewablesDisplacement": true
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-02-09"
+    },
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 8,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "DemandDestructionRisk": false,
+        "EnergyEquityMomentum": false,
+        "EnergyInflationPersistent": true,
+        "GeopoliticalRiskElevated": false,
+        "NatGasPriceSurge": false,
+        "OPECSupplyConstraint": true,
+        "OilPriceSurge": false,
+        "RenewablesDisplacement": true
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-02-16"
+    },
+    {
+     "compressed_state_count": 1,
+     "daily_state_count": 1,
+     "iso_week": 9,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "DemandDestructionRisk": false,
+        "EnergyEquityMomentum": false,
+        "EnergyInflationPersistent": true,
+        "GeopoliticalRiskElevated": false,
+        "NatGasPriceSurge": false,
+        "OPECSupplyConstraint": true,
+        "OilPriceSurge": false,
+        "RenewablesDisplacement": true
+       }
+      }
+     ],
+     "unique_state_count": 1,
+     "week_start_date": "2026-02-23"
+    }
+   ],
+   "weekly_bucket_count": 4,
+   "weekly_compressed_state_count": 4,
+   "weekly_compression_ratio": 1.0,
+   "weekly_retention_ratio": 1.0,
+   "weekly_transition_count": 2,
+   "weekly_unique_state_count": 3
+  },
+  "status": 200
+ },
+ "debug_learning": {
+  "body": {
+   "active_candidates": 10,
+   "current_generation": 9,
+   "domain": "Energy Regime",
+   "domain_module_id": "energy-regime-v1",
+   "dominant_evidence_count": 4,
+   "dominant_log_score": -22.70592383,
+   "last_learn_timestamp": "<ts>",
+   "last_mutation_introduced": 2,
+   "last_mutation_total_attempts": 5,
+   "learn_calls_this_session": 4,
+   "pipeline_status": {
+    "backfill_calls_learn": true,
+    "scheduler_calls_learn": true,
+    "trigger_calls_learn": true
+   },
+   "records_scored_this_session": 4,
+   "total_evidence_records": 4
+  },
+  "status": 200
+ },
+ "debug_structure": {
+  "body": {
+   "candidates": [
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.675732769,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.15363666,
+     "bic_score_strict": -7.587348331,
+     "candidate_id": "<id0>",
+     "description": "H2: demand_driven",
+     "edge_structure": [
+      [
+       "DemandDestructionRisk",
+       "OilPriceSurge"
+      ],
+      [
+       "OilPriceSurge",
+       "EnergyEquityMomentum"
+      ],
+      [
+       "OilPriceSurge",
+       "EnergyInflationPersistent"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": true,
+     "log_score": -22.70592383,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.701460791,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.179364681,
+     "bic_score_strict": -7.613076353,
+     "candidate_id": "<id1>",
+     "description": "H1: supply_shock",
+     "edge_structure": [
+      [
+       "OPECSupplyConstraint",
+       "OilPriceSurge"
+      ],
+      [
+       "OilPriceSurge",
+       "EnergyInflationPersistent"
+      ],
+      [
+       "OilPriceSurge",
+       "NatGasPriceSurge"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -22.808590677,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.704875357,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.182779248,
+     "bic_score_strict": -7.616490919,
+     "candidate_id": "<id2>",
+     "description": "H4: renewables_transition",
+     "edge_structure": [
+      [
+       "EnergyEquityMomentum",
+       "OilPriceSurge"
+      ],
+      [
+       "RenewablesDisplacement",
+       "EnergyEquityMomentum"
+      ],
+      [
+       "RenewablesDisplacement",
+       "OPECSupplyConstraint"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -22.822351143,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -5.70616625,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.18407014,
+     "bic_score_strict": -7.617781811,
+     "candidate_id": "<id3>",
+     "description": "T_null: direct supply-geopolitical baseline",
+     "edge_structure": [
+      [
+       "GeopoliticalRiskElevated",
+       "OilPriceSurge"
+      ],
+      [
+       "OPECSupplyConstraint",
+       "OilPriceSurge"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -22.826977511,
+     "status": "ACTIVE",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.753133296,
+     "bic_penalty_raw": 1.911615562,
+     "bic_score_explore": -6.231037187,
+     "bic_score_strict": -7.664748858,
+     "candidate_id": "<id4>",
+     "description": "H3: geopolitical_premium",
+     "edge_structure": [
+      [
+       "GeopoliticalRiskElevated",
+       "EnergyInflationPersistent"
+      ],
+      [
+       "GeopoliticalRiskElevated",
+       "OilPriceSurge"
+      ],
+      [
+       "OilPriceSurge",
+       "NatGasPriceSurge"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 0,
+     "is_dominant": false,
+     "log_score": -23.01405784,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.582197773,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.103547472,
+     "bic_score_strict": -7.667596568,
+     "candidate_id": "<id5>",
+     "description": "variant_add_DemandDestructionRisk->RenewablesDisplacement",
+     "edge_structure": [
+      [
+       "DemandDestructionRisk",
+       "OilPriceSurge"
+      ],
+      [
+       "DemandDestructionRisk",
+       "RenewablesDisplacement"
+      ],
+      [
+       "OilPriceSurge",
+       "EnergyEquityMomentum"
+      ],
+      [
+       "OilPriceSurge",
+       "EnergyInflationPersistent"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -22.333151903,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.614306059,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.135655758,
+     "bic_score_strict": -7.699704854,
+     "candidate_id": "<id6>",
+     "description": "variant_add_OPECSupplyConstraint->GeopoliticalRiskElevated",
+     "edge_structure": [
+      [
+       "GeopoliticalRiskElevated",
+       "OilPriceSurge"
+      ],
+      [
+       "OPECSupplyConstraint",
+       "GeopoliticalRiskElevated"
+      ],
+      [
+       "OPECSupplyConstraint",
+       "OilPriceSurge"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -22.458526496,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.675732769,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.197082468,
+     "bic_score_strict": -7.761131564,
+     "candidate_id": "<id7>",
+     "description": "variant_add_OilPriceSurge->RenewablesDisplacement",
+     "edge_structure": [
+      [
+       "DemandDestructionRisk",
+       "OilPriceSurge"
+      ],
+      [
+       "OilPriceSurge",
+       "EnergyEquityMomentum"
+      ],
+      [
+       "OilPriceSurge",
+       "EnergyInflationPersistent"
+      ],
+      [
+       "OilPriceSurge",
+       "RenewablesDisplacement"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -22.70592383,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -5.690922381,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.21227208,
+     "bic_score_strict": -7.776321176,
+     "candidate_id": "<id8>",
+     "description": "variant_add_OPECSupplyConstraint->EnergyEquityMomentum",
+     "edge_structure": [
+      [
+       "GeopoliticalRiskElevated",
+       "OilPriceSurge"
+      ],
+      [
+       "OPECSupplyConstraint",
+       "EnergyEquityMomentum"
+      ],
+      [
+       "OPECSupplyConstraint",
+       "OilPriceSurge"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -22.766630916,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.753133296,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.274482995,
+     "bic_score_strict": -7.838532091,
+     "candidate_id": "<id9>",
+     "description": "variant_add_OilPriceSurge->OPECSupplyConstraint",
+     "edge_structure": [
+      [
+       "GeopoliticalRiskElevated",
+       "EnergyInflationPersistent"
+      ],
+      [
+       "GeopoliticalRiskElevated",
+       "OilPriceSurge"
+      ],
+      [
+       "OilPriceSurge",
+       "NatGasPriceSurge"
+      ],
+      [
+       "OilPriceSurge",
+       "OPECSupplyConstraint"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -23.01405784,
+     "status": "ACTIVE",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.709190328,
+     "bic_penalty_raw": 2.085398795,
+     "bic_score_explore": -6.230540027,
+     "bic_score_strict": -7.794589123,
+     "candidate_id": "<id15>",
+     "description": "variant_add_OilPriceSurge->EnergyInflationPersistent",
+     "edge_structure": [
+      [
+       "EnergyEquityMomentum",
+       "OilPriceSurge"
+      ],
+      [
+       "OilPriceSurge",
+       "EnergyInflationPersistent"
+      ],
+      [
+       "RenewablesDisplacement",
+       "EnergyEquityMomentum"
+      ],
+      [
+       "RenewablesDisplacement",
+       "OPECSupplyConstraint"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -22.83918073,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.67335635,
+     "bic_penalty_raw": 2.259182028,
+     "bic_score_explore": -6.238151857,
+     "bic_score_strict": -7.932538378,
+     "candidate_id": "<id16>",
+     "description": "variant_add_EnergyInflationPersistent->EnergyEquityMomentum",
+     "edge_structure": [
+      [
+       "DemandDestructionRisk",
+       "OilPriceSurge"
+      ],
+      [
+       "EnergyInflationPersistent",
+       "EnergyEquityMomentum"
+      ],
+      [
+       "OilPriceSurge",
+       "EnergyEquityMomentum"
+      ],
+      [
+       "OilPriceSurge",
+       "EnergyInflationPersistent"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -22.696516191,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.809747123,
+     "bic_penalty_raw": 2.381757254,
+     "bic_score_explore": -6.405186436,
+     "bic_score_strict": -8.191504377,
+     "candidate_id": "<id17>",
+     "description": "variant_add_DemandDestructionRisk->EnergyInflationPersistent",
+     "edge_structure": [
+      [
+       "DemandDestructionRisk",
+       "EnergyInflationPersistent"
+      ],
+      [
+       "OPECSupplyConstraint",
+       "OilPriceSurge"
+      ],
+      [
+       "OilPriceSurge",
+       "EnergyInflationPersistent"
+      ],
+      [
+       "OilPriceSurge",
+       "NatGasPriceSurge"
+      ]
+     ],
+     "evidence_count": 3,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -17.428154537,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    },
+    {
+     "active_edge_count": 4,
+     "avg_ll": -5.817831303,
+     "bic_penalty_raw": 2.381757254,
+     "bic_score_explore": -6.413270616,
+     "bic_score_strict": -8.199588557,
+     "candidate_id": "<id18>",
+     "description": "variant_add_EnergyEquityMomentum->EnergyInflationPersistent",
+     "edge_structure": [
+      [
+       "EnergyEquityMomentum",
+       "EnergyInflationPersistent"
+      ],
+      [
+       "GeopoliticalRiskElevated",
+       "EnergyInflationPersistent"
+      ],
+      [
+       "GeopoliticalRiskElevated",
+       "OilPriceSurge"
+      ],
+      [
+       "OilPriceSurge",
+       "NatGasPriceSurge"
+      ]
+     ],
+     "evidence_count": 3,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -17.452057421,
+     "status": "PRUNED",
+     "total_edge_count": 4
+    }
+   ],
+   "domain": "Energy Regime",
+   "domain_module_id": "energy-regime-v1",
+   "env_bic_multiplier": 1.0,
+   "env_mode": "strict",
+   "last_mutation_cycle": {
+    "dag_violations": 0,
+    "duplicate_rejections": 3,
+    "introduced": 2,
+    "total_attempts": 5
+   },
+   "total_evidence_records": 4
+  },
+  "status": 200
+ },
+ "evidence_recent": {
+  "body": {
+   "domain": "Energy Regime",
+   "records": [
+    {
+     "description": "fake@2026-03-01",
+     "id": "<id11>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-22",
+     "id": "<id12>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-15",
+     "id": "<id13>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    },
+    {
+     "description": "fake@2026-02-08",
+     "id": "<id14>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": null
+    }
+   ]
+  },
+  "status": 200
+ },
+ "inference_dominant": {
+  "body": {
+   "candidate_id": "<id0>",
+   "edges": [
+    {
+     "probability": 0.446778804,
+     "source": "DemandDestructionRisk",
+     "status": "explore",
+     "target": "OilPriceSurge"
+    },
+    {
+     "probability": 0.543221865,
+     "source": "OilPriceSurge",
+     "status": "explore",
+     "target": "EnergyEquityMomentum"
+    },
+    {
+     "probability": 0.435861852,
+     "source": "OilPriceSurge",
+     "status": "explore",
+     "target": "EnergyInflationPersistent"
+    }
+   ],
+   "frontier_edges": [
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.447 in explore band [0.25, 0.75]",
+     "probability": 0.446778804,
+     "relation": "demand resilience \u2192 oil price support",
+     "source": "DemandDestructionRisk",
+     "target": "OilPriceSurge"
+    },
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.543 in explore band [0.25, 0.75]",
+     "probability": 0.543221865,
+     "relation": "oil surge \u2192 energy equity outperformance",
+     "source": "OilPriceSurge",
+     "target": "EnergyEquityMomentum"
+    },
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.436 in explore band [0.25, 0.75]",
+     "probability": 0.435861852,
+     "relation": "oil price \u2192 energy inflation",
+     "source": "OilPriceSurge",
+     "target": "EnergyInflationPersistent"
+    }
+   ],
+   "nodes": [
+    {
+     "id": "OilPriceSurge",
+     "label": "OilPriceSurge",
+     "observation": null,
+     "probability": 0.447575217,
+     "status": "target"
+    },
+    {
+     "id": "NatGasPriceSurge",
+     "label": "NatGasPriceSurge",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "EnergyEquityMomentum",
+     "label": "EnergyEquityMomentum",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "OPECSupplyConstraint",
+     "label": "OPECSupplyConstraint",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "RenewablesDisplacement",
+     "label": "RenewablesDisplacement",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "EnergyInflationPersistent",
+     "label": "EnergyInflationPersistent",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "GeopoliticalRiskElevated",
+     "label": "GeopoliticalRiskElevated",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "DemandDestructionRisk",
+     "label": "DemandDestructionRisk",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    }
+   ],
+   "target_probability": 0.447575217,
+   "target_variable": "OilPriceSurge"
+  },
+  "status": 200
+ },
+ "inference_other_candidate": {
+  "body": {
+   "candidate_id": "<id9>",
+   "edges": [
+    {
+     "probability": 0.583123299,
+     "source": "GeopoliticalRiskElevated",
+     "status": "explore",
+     "target": "OilPriceSurge"
+    },
+    {
+     "probability": 0.482657478,
+     "source": "OilPriceSurge",
+     "status": "explore",
+     "target": "NatGasPriceSurge"
+    },
+    {
+     "probability": 0.431325346,
+     "source": "GeopoliticalRiskElevated",
+     "status": "explore",
+     "target": "EnergyInflationPersistent"
+    },
+    {
+     "probability": 0.5,
+     "source": "OilPriceSurge",
+     "status": "explore",
+     "target": "OPECSupplyConstraint"
+    }
+   ],
+   "frontier_edges": [
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.583 in explore band [0.25, 0.75]",
+     "probability": 0.583123299,
+     "relation": "geopolitical risk \u2192 oil risk premium",
+     "source": "GeopoliticalRiskElevated",
+     "target": "OilPriceSurge"
+    },
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.483 in explore band [0.25, 0.75]",
+     "probability": 0.482657478,
+     "relation": "oil \u2192 gas cross-commodity linkage",
+     "source": "OilPriceSurge",
+     "target": "NatGasPriceSurge"
+    },
+    {
+     "explore_weight": 1.21550625,
+     "note": "existence_probability=0.431 in explore band [0.25, 0.75]",
+     "probability": 0.431325346,
+     "relation": "geopolitical supply risk \u2192 energy inflation",
+     "source": "GeopoliticalRiskElevated",
+     "target": "EnergyInflationPersistent"
+    },
+    {
+     "explore_weight": 1.0,
+     "note": "existence_probability=0.500 in explore band [0.25, 0.75]",
+     "probability": 0.5,
+     "relation": "OilPriceSurge\u2192OPECSupplyConstraint",
+     "source": "OilPriceSurge",
+     "target": "OPECSupplyConstraint"
+    }
+   ],
+   "nodes": [
+    {
+     "id": "OilPriceSurge",
+     "label": "OilPriceSurge",
+     "observation": null,
+     "probability": 0.448203052,
+     "status": "target"
+    },
+    {
+     "id": "NatGasPriceSurge",
+     "label": "NatGasPriceSurge",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "EnergyEquityMomentum",
+     "label": "EnergyEquityMomentum",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "OPECSupplyConstraint",
+     "label": "OPECSupplyConstraint",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "RenewablesDisplacement",
+     "label": "RenewablesDisplacement",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "EnergyInflationPersistent",
+     "label": "EnergyInflationPersistent",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "GeopoliticalRiskElevated",
+     "label": "GeopoliticalRiskElevated",
+     "observation": null,
+     "probability": null,
+     "status": "exploring"
+    },
+    {
+     "id": "DemandDestructionRisk",
+     "label": "DemandDestructionRisk",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    }
+   ],
+   "target_probability": 0.448203052,
+   "target_variable": "OilPriceSurge"
+  },
+  "status": 200
+ },
+ "lineage_dominant": {
+  "body": {
+   "candidate_id": "<id0>",
+   "domain": "Energy Regime",
+   "events": [
+    {
+     "description": "H2: demand_driven",
+     "dominant_after": "H2: demand_driven",
+     "event_type": "current",
+     "generation": 0
+    },
+    {
+     "description": "Became dominant candidate after 1 paradigm shift(s)",
+     "dominant_after": "H2: demand_driven",
+     "event_type": "shift",
+     "generation": 9
+    }
+   ]
+  },
+  "status": 200
+ },
+ "narrative_snapshot": {
+  "body": {
+   "competing_candidates": {
+    "candidates": [
+     {
+      "edge_count": 3,
+      "log_score": -22.70592383,
+      "name": "H2: demand_driven",
+      "score_normalized": 0.95,
+      "status": "dominant"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -22.808590677,
+      "name": "H1: supply_shock",
+      "score_normalized": 0.857815619,
+      "status": "rising"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -22.822351143,
+      "name": "H4: renewables_transition",
+      "score_normalized": 0.845581111,
+      "status": "rising"
+     },
+     {
+      "edge_count": 2,
+      "log_score": -22.826977511,
+      "name": "T_null: direct supply-geopolitical baseline",
+      "score_normalized": 0.840955799,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -23.01405784,
+      "name": "H3: geopolitical_premium",
+      "score_normalized": 0.672671266,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -22.333151903,
+      "name": "variant_add_DemandDestructionRisk->RenewablesDisplacement",
+      "score_normalized": 0.662467823,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -22.458526496,
+      "name": "variant_add_OPECSupplyConstraint->GeopoliticalRiskElevated",
+      "score_normalized": 0.547422736,
+      "status": "falling"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -22.70592383,
+      "name": "variant_add_OilPriceSurge->RenewablesDisplacement",
+      "score_normalized": 0.327328734,
+      "status": "falling"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -22.766630916,
+      "name": "variant_add_OPECSupplyConstraint->EnergyEquityMomentum",
+      "score_normalized": 0.272903836,
+      "status": "falling"
+     },
+     {
+      "edge_count": 4,
+      "log_score": -23.01405784,
+      "name": "variant_add_OilPriceSurge->OPECSupplyConstraint",
+      "score_normalized": 0.05,
+      "status": "falling"
+     }
+    ],
+    "score_gap_to_dominant": 0.025728022
+   },
+   "current_regime_state": [
+    {
+     "boolean_state": false,
+     "name": "OilPriceSurge",
+     "probability": 0.447575217
+    },
+    {
+     "boolean_state": false,
+     "name": "NatGasPriceSurge",
+     "probability": 0.3516
+    },
+    {
+     "boolean_state": false,
+     "name": "EnergyEquityMomentum",
+     "probability": 0.471203618
+    },
+    {
+     "boolean_state": true,
+     "name": "OPECSupplyConstraint",
+     "probability": 0.587316667
+    },
+    {
+     "boolean_state": true,
+     "name": "RenewablesDisplacement",
+     "probability": 0.553466667
+    },
+    {
+     "boolean_state": true,
+     "name": "EnergyInflationPersistent",
+     "probability": 0.57462599
+    },
+    {
+     "boolean_state": false,
+     "name": "GeopoliticalRiskElevated",
+     "probability": 0.429516667
+    },
+    {
+     "boolean_state": false,
+     "name": "DemandDestructionRisk",
+     "probability": 0.412483333
+    }
+   ],
+   "dominant_hypothesis": {
+    "candidate_id": "<id0>",
+    "edge_count": 3,
+    "edges": [
+     {
+      "existence_probability": 0.446778804,
+      "source": "DemandDestructionRisk",
+      "target": "OilPriceSurge"
+     },
+     {
+      "existence_probability": 0.543221865,
+      "source": "OilPriceSurge",
+      "target": "EnergyEquityMomentum"
+     },
+     {
+      "existence_probability": 0.435861852,
+      "source": "OilPriceSurge",
+      "target": "EnergyInflationPersistent"
+     }
+    ],
+    "generations_dominant": 9,
+    "log_score": -22.70592383,
+    "name": "H2: demand_driven"
+   },
+   "frontier": {
+    "frontier_edge_count": 3,
+    "frontier_edges": [
+     {
+      "probability": 0.446778804,
+      "relation": "demand resilience \u2192 oil price support",
+      "source": "DemandDestructionRisk",
+      "target": "OilPriceSurge"
+     },
+     {
+      "probability": 0.543221865,
+      "relation": "oil surge \u2192 energy equity outperformance",
+      "source": "OilPriceSurge",
+      "target": "EnergyEquityMomentum"
+     },
+     {
+      "probability": 0.435861852,
+      "relation": "oil price \u2192 energy inflation",
+      "source": "OilPriceSurge",
+      "target": "EnergyInflationPersistent"
+     }
+    ]
+   },
+   "interpretation_hints": [
+    "structure_entropy is high (2.261): engine has not converged; multiple causal stories remain plausible",
+    "dominant hypothesis has held for 9 generations",
+    "last paradigm shift was <ago>",
+    "evidence base is small (4 records); scores may not yet be reliable",
+    "3 edge(s) are in the explore band: causal structure is still being refined in these relations"
+   ],
+   "metadata": {
+    "current_generation": 9,
+    "domain": "Energy Regime",
+    "domain_module_id": "energy-regime-v1",
+    "evidence_count": 4,
+    "timestamp": "<ts>"
+   },
+   "ontology_competition": {
+    "active_candidates": 10,
+    "entropy_interpretation": "high",
+    "paradigm_shifts_total": 1,
+    "recent_shifts": [
+     {
+      "from_name": "H1: supply_shock",
+      "generation": 5,
+      "timestamp": "<ts>",
+      "to_name": "H2: demand_driven"
+     }
+    ],
+    "structure_entropy": 2.260541286
+   }
+  },
+  "status": 200
+ },
+ "shifts": {
+  "body": {
+   "domain": "Energy Regime",
+   "domain_module_id": "energy-regime-v1",
+   "events": [
+    {
+     "evidence_count_at_shift": 2,
+     "generation": 5,
+     "new_dominant_id": "<id0>",
+     "new_dominant_name": "H2: demand_driven",
+     "previous_dominant_id": "<id1>",
+     "previous_dominant_name": "H1: supply_shock",
+     "shift_id": "<id10>",
+     "timestamp": "<ts>"
+    }
+   ],
+   "total_shifts": 1
+  },
+  "status": 200
+ },
+ "status": {
+  "body": {
+   "active_candidates": 10,
+   "current_generation": 9,
+   "domain": "Energy Regime",
+   "dominant_hypothesis": {
+    "candidate_id": "<id0>",
+    "generations_dominant": 9,
+    "name": "H2: demand_driven"
+   },
+   "engine_status": "online",
+   "frontier_edge_count": 3,
+   "last_evidence_cycle_ago": "<ago>",
+   "max_candidates": 10,
+   "paradigm_shifts_this_window": 1,
+   "structure_entropy": 2.260541286
+  },
+  "status": 200
+ }
+}

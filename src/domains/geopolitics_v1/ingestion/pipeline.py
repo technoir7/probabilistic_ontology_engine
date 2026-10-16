@@ -40,24 +40,19 @@ GlobalTradeVolumeWeak
 from __future__ import annotations
 
 import logging
-import math
-import statistics
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta, timezone
+from datetime import date
 from typing import Optional
-from uuid import uuid4
 
 import numpy as np
 
 from ....engine.schemas import (
     EvidenceRecord,
-    MissingnessType,
-    ObservedAssignment,
-    SourceType,
 )
 from ..domain import get_variables
 from .gdelt_client import GDELTClient, GDELTObs
 from .fred_client import FREDClient, FREDObservation
+from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +61,8 @@ _CLAMP_LO: float = 0.05
 _CLAMP_HI: float = 0.95
 
 
-@dataclass
+# slots: a misspelled field name raises instead of silently adding a field.
+@dataclass(slots=True)
 class GeopoliticsSnapshot:
     """Derived signals and soft probabilities for one evidence week."""
 
@@ -91,6 +87,8 @@ class GeopoliticsSnapshot:
     global_trade_volume_weak: bool = False
 
     # Data confidence per variable
+    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
+    missing: set[str] = field(default_factory=set)
     confidence: dict[str, float] = field(default_factory=dict)
 
     target_date: Optional[date] = None
@@ -100,26 +98,9 @@ class GeopoliticsSnapshot:
 # Signal helpers
 # ---------------------------------------------------------------------------
 
-def _sigmoid(x: float) -> float:
-    if x >= 0:
-        return 1.0 / (1.0 + math.exp(-x))
-    ex = math.exp(x)
-    return ex / (1.0 + ex)
-
 
 def _soft_bool(signal: float) -> float:
-    return max(_CLAMP_LO, min(_CLAMP_HI, _sigmoid(signal)))
-
-
-def _zscore(current: float, values: list[float]) -> float:
-    if len(values) < 2:
-        return 0.0
-    arr = np.array(values, dtype=float)
-    mu = float(np.mean(arr))
-    sigma = float(np.std(arr, ddof=1))
-    if sigma < 1e-9:
-        return 0.0
-    return (current - mu) / sigma
+    return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
 
 
 def _gdelt_4week_avg_zscore(obs: list[GDELTObs]) -> tuple[Optional[float], float]:
@@ -318,6 +299,8 @@ def compute_snapshot(
     confidence: dict[str, float] = {}
 
     def _apply(var_name: str, sig: Optional[float], conf: float, p_attr: str, bool_attr: str) -> None:
+        if sig is None:
+            snap.missing.add(var_name)
         s = sig if sig is not None else 0.0
         p = _soft_bool(s)
         setattr(snap, p_attr, p)
@@ -383,10 +366,8 @@ class GeopoliticsPipeline:
 
     async def fetch_evidence(
         self,
-        target_date: Optional[date] = None,
+        target_date: date,
     ) -> EvidenceRecord:
-        if target_date is None:
-            target_date = _last_friday()
 
         import asyncio
         gdelt_data, fred_data = await asyncio.gather(
@@ -399,45 +380,26 @@ class GeopoliticsPipeline:
 
     @staticmethod
     def build_evidence_record(snapshot: GeopoliticsSnapshot) -> EvidenceRecord:
-        variables = get_variables()
-        conf = snapshot.confidence
-
-        def _assignment(var_name: str, observed_value: bool, p_true: float) -> ObservedAssignment:
-            c = conf.get(var_name, 1.0)
-            return ObservedAssignment(
-                variable_id=variables[var_name].variable_id,
-                observed_value=observed_value,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=c,
-                probabilities={True: p_true, False: 1.0 - p_true},
-            )
-
-        assignments = [
-            _assignment("ConflictIntensityElevated",  snapshot.conflict_intensity_elevated,  snapshot.p_conflict_intensity_elevated),
-            _assignment("TradeDisruptionRisk",         snapshot.trade_disruption_risk,         snapshot.p_trade_disruption_risk),
-            _assignment("SanctionsPressureElevated",   snapshot.sanctions_pressure_elevated,   snapshot.p_sanctions_pressure_elevated),
-            _assignment("DiplomaticTensionHigh",       snapshot.diplomatic_tension_high,       snapshot.p_diplomatic_tension_high),
-            _assignment("SupplyChainStress",           snapshot.supply_chain_stress,           snapshot.p_supply_chain_stress),
-            _assignment("CurrencyWarSignal",           snapshot.currency_war_signal,           snapshot.p_currency_war_signal),
-            _assignment("EnergyWeaponizationRisk",     snapshot.energy_weaponization_risk,     snapshot.p_energy_weaponization_risk),
-            _assignment("GlobalTradeVolumeWeak",       snapshot.global_trade_volume_weak,      snapshot.p_global_trade_volume_weak),
-        ]
-
-        target_date = snapshot.target_date or datetime.now(timezone.utc).date()
-        ts = datetime(target_date.year, target_date.month, target_date.day, tzinfo=timezone.utc)
-        overall_conf = float(sum(conf.values()) / len(conf)) if conf else 1.0
-
-        return EvidenceRecord(
-            evidence_id=uuid4(),
-            timestamp=ts,
-            observed_assignments=assignments,
-            source_type=SourceType.API,
-            source_ref=(
-                "GDELT:conflict+sanctions+diplomatic+energy"
-                "|FRED:DCOILWTICO+PPIACO+DTWEXBGS+INDPRO"
-                f"@week-ending-{target_date}"
-            ),
-            confidence=overall_conf,
+        target_date = snapshot.target_date
+        return build_soft_record(
+            module_id="geopolitics-v1",
+            variables=get_variables(),
+            states=[
+                ("ConflictIntensityElevated", snapshot.conflict_intensity_elevated, snapshot.p_conflict_intensity_elevated),
+                ("TradeDisruptionRisk", snapshot.trade_disruption_risk, snapshot.p_trade_disruption_risk),
+                ("SanctionsPressureElevated", snapshot.sanctions_pressure_elevated, snapshot.p_sanctions_pressure_elevated),
+                ("DiplomaticTensionHigh", snapshot.diplomatic_tension_high, snapshot.p_diplomatic_tension_high),
+                ("SupplyChainStress", snapshot.supply_chain_stress, snapshot.p_supply_chain_stress),
+                ("CurrencyWarSignal", snapshot.currency_war_signal, snapshot.p_currency_war_signal),
+                ("EnergyWeaponizationRisk", snapshot.energy_weaponization_risk, snapshot.p_energy_weaponization_risk),
+                ("GlobalTradeVolumeWeak", snapshot.global_trade_volume_weak, snapshot.p_global_trade_volume_weak),
+            ],
+            confidence=snapshot.confidence,
+            missing=snapshot.missing,
+            target_date=target_date,
+            source_ref="GDELT:conflict+sanctions+diplomatic+energy"
+            "|FRED:DCOILWTICO+PPIACO+DTWEXBGS+INDPRO"
+            f"@week-ending-{target_date}",
         )
 
 
@@ -445,16 +407,4 @@ class GeopoliticsPipeline:
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _last_friday(as_of: Optional[date] = None) -> date:
-    today = as_of or datetime.now(timezone.utc).date()
-    days_since_friday = (today.weekday() - 4) % 7
-    return today - timedelta(days=days_since_friday)
 
-
-def _weekly_backfill_dates(backfill_weeks: int, today: date) -> list[date]:
-    fridays: set[date] = set()
-    for delta in range(backfill_weeks * 7, 0, -1):
-        d = today - timedelta(days=delta)
-        if d.weekday() == 4:
-            fridays.add(d)
-    return sorted(fridays)

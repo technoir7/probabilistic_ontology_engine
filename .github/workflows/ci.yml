@@ -1,0 +1,22 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      # --locked fails the build if uv.lock is out of date with pyproject.toml.
+      - run: uv sync --locked
+      # Guardrails, REFACTOR_SPEC §6: names, private reach-through, blind excepts
+      - run: uv run ruff check src
+      # Layer contracts in pyproject.toml [tool.importlinter]
+      - run: uv run lint-imports
+      - run: uv run pytest -q

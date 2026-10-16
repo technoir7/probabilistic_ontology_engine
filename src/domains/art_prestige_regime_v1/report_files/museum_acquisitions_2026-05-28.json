@@ -1,0 +1,33 @@
+[
+  {
+    "title": "The Philadelphia Museum of Art, Pennsylvania Academy of the Fine Arts, and The Middleton Family Present a Landmark Exhibition of American Art Celebrating the Nation’s 250th Anniversary",
+    "url": "https://press.philamuseum.org/the-philadelphia-museum-of-art-pennsylvania-academy-of-the-fine-arts-and-the-middleton-family-present-a-landmark-exhibition-of-american-art-celebrating-the-nations-250th-anniversary/",
+    "published_at": "2025-06-17T10:26:27-04:00",
+    "notes": "Rule-based promotion from museum acquisition harvester. Source: Philadelphia Museum of Art. Matched keywords: collection. Text length: 23362 chars.",
+    "assignments": {
+      "MuseumAcquisitionMomentum": {
+        "value": true,
+        "confidence": 0.64,
+        "rationale": "Text contains explicit acquisition language: acquisition, bequest."
+      },
+      "MuseumFigurativeAcceptance": {
+        "value": true,
+        "confidence": 0.62,
+        "rationale": "Acquisition involves figurative work: portrait."
+      }
+    }
+  },
+  {
+    "title": "New on View",
+    "url": "https://www.slam.org/explore-the-collection/new-acquisitions/",
+    "published_at": null,
+    "notes": "Rule-based promotion from museum acquisition harvester. Source: Saint Louis Art Museum. Matched keywords: acquisitions, collection. Text length: 5859 chars.",
+    "assignments": {
+      "MuseumAcquisitionMomentum": {
+        "value": true,
+        "confidence": 0.56,
+        "rationale": "Text contains explicit acquisition language: acquired."
+      }
+    }
+  }
+]

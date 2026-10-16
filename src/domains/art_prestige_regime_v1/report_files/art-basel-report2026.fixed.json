@@ -1,0 +1,72 @@
+[
+  {
+    "title": "The Art Basel and UBS Art Market Report 2026",
+    "url": "",
+    "published_at": "2026-01-01",
+    "notes": "Evidence extracted from uploaded Art Basel and UBS Art Market Report 2026 text.",
+    "assignments": {
+      "MarketUncertainty": {
+        "value": true,
+        "confidence": 0.82,
+        "rationale": "Report repeatedly cites geopolitical volatility, tariffs, policy unpredictability, rising costs, and uneven recovery as market pressures."
+      },
+      "CollectorFlightToSafety": {
+        "value": true,
+        "confidence": 0.78,
+        "rationale": "Report says lingering risk aversion concentrated higher prices in established and older market sectors rather than newer artists."
+      },
+      "BlueChipConcentration": {
+        "value": true,
+        "confidence": 0.74,
+        "rationale": "High-end sales above $10 million drove recovery, while established artists and older sectors outperformed newer Contemporary sectors."
+      },
+      "AuctionSpeculationElevated": {
+        "value": true,
+        "confidence": 0.66,
+        "rationale": "Public auction sales rose 9%, with stronger activity above $10 million and record-setting high-end auction results."
+      },
+      "MarketPolarization": {
+        "value": true,
+        "confidence": 0.76,
+        "rationale": "Growth was uneven across price tiers, regions, dealers, and sectors, with high-end recovery alongside pressure elsewhere."
+      },
+      "BiennialFatigue": {
+        "value": true,
+        "confidence": 0.62,
+        "rationale": "Dealers described art fairs as expensive, repetitive, lifestyle-driven, and producing diminishing returns, though still important."
+      },
+      "PrestigeFragmentation": {
+        "value": true,
+        "confidence": 0.68,
+        "rationale": "Report notes shifts toward local sales, newer gallery models, artist-direct sales, online channels, and regional variation."
+      },
+      "RegionalSceneMomentum": {
+        "value": true,
+        "confidence": 0.7,
+        "rationale": "France, Switzerland, South Korea, Spain, Brazil, and some other regions showed growth despite mixed global performance."
+      },
+      "AuthenticityPremium": {
+        "value": true,
+        "confidence": 0.58,
+        "rationale": "Report notes AI-generated works may have lower commercial value and resale rights than works tied to human intellectual creation."
+      },
+      "RitualAuraPremium": {
+        "value": true,
+        "confidence": 0.72,
+        "rationale": "Report says live auctions, exhibitions, fairs, and in-person events remain essential for attracting buyers and generating sales."
+      }
+    },
+    "causal_claims": [
+      {
+        "source": "MarketUncertainty",
+        "target": "CollectorFlightToSafety",
+        "direction": "positive",
+        "confidence": 0.75,
+        "claim_strength": "explicit",
+        "rationale": "Report states that lingering risk aversion concentrated higher prices in established and older market sectors rather than newer artists, directly linking uncertainty to collector retreat to safety.",
+        "evidence_span": "lingering risk aversion concentrated higher prices in established and older market sectors",
+        "extraction_method": "manual"
+      }
+    ]
+  }
+]

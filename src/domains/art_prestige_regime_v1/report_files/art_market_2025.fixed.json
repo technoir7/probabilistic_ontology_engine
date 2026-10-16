@@ -1,0 +1,282 @@
+[
+  {
+    "title": "The Art Market in 2025",
+    "url": "",
+    "published_at": "2026-01-01",
+    "notes": "Artprice / Artron annual market report discussing auction recovery, concentration dynamics, AI art, regional growth, and prestige market restructuring.",
+    "assignments": {
+      "MarketUncertainty": {
+        "value": true,
+        "confidence": 0.94,
+        "rationale": "The report describes a sharply contracting first half of 2025 followed by selective recovery and volatility."
+      },
+      "BlueChipConcentration": {
+        "value": true,
+        "confidence": 0.95,
+        "rationale": "Recovery is attributed heavily to major collections and billion-dollar prestige auctions concentrated in New York, London, and Paris."
+      },
+      "CollectorFlightToSafety": {
+        "value": true,
+        "confidence": 0.92,
+        "rationale": "Auction houses relied on guaranteed sales and historically coherent collections to reassure buyers in a volatile market."
+      },
+      "AIArtInstitutionalAcceptance": {
+        "value": true,
+        "confidence": 0.86,
+        "rationale": "The report explicitly frames AI-generated art and generative technologies as shaping the future of the art market."
+      },
+      "AuthenticityPremium": {
+        "value": true,
+        "confidence": 0.83,
+        "rationale": "The text emphasizes trusted provenance, coherent collections, and historical legibility as premium value drivers."
+      },
+      "PrestigeFragmentation": {
+        "value": true,
+        "confidence": 0.71,
+        "rationale": "The report identifies emerging Gulf ecosystems, online platforms, and diversified collector demographics."
+      },
+      "RegionalSceneMomentum": {
+        "value": true,
+        "confidence": 0.9,
+        "rationale": "The report highlights Gulf-state growth, Vietnamese artists in France, and Chinese market evolution."
+      }
+    }
+  },
+  {
+    "title": "Foreword by Thierry Ehrmann",
+    "url": "",
+    "published_at": "2026-01-01",
+    "notes": "Executive framing of the 2025 global art market.",
+    "assignments": {
+      "MarketUncertainty": {
+        "value": true,
+        "confidence": 0.97,
+        "rationale": "The foreword references gallery closures and severe contraction during the first half of 2025."
+      },
+      "BlueChipConcentration": {
+        "value": true,
+        "confidence": 0.95,
+        "rationale": "Prestige collections from Leonard Lauder and others are identified as central to the market rebound."
+      },
+      "CollectorFlightToSafety": {
+        "value": true,
+        "confidence": 0.89,
+        "rationale": "The rebound depended on trusted collections and established prestige channels."
+      },
+      "RegionalSceneMomentum": {
+        "value": true,
+        "confidence": 0.82,
+        "rationale": "The emergence of a Persian Gulf ecosystem is framed as a major structural development."
+      },
+      "PrestigeFragmentation": {
+        "value": true,
+        "confidence": 0.67,
+        "rationale": "The report suggests market growth is becoming more distributed across lower price tiers and online participation."
+      }
+    }
+  },
+  {
+    "title": "Foreword by Wan Jie",
+    "url": "",
+    "published_at": "2026-01-01",
+    "notes": "Artron perspective on AI, young collectors, and digital transformation.",
+    "assignments": {
+      "AIArtInstitutionalAcceptance": {
+        "value": true,
+        "confidence": 0.98,
+        "rationale": "AI is explicitly described as reshaping artistic production, transactions, exhibitions, and recommendation systems."
+      },
+      "PrestigeFragmentation": {
+        "value": true,
+        "confidence": 0.9,
+        "rationale": "The text describes a transition from capital-dominated hierarchy toward co-creative diversity and online ecosystems."
+      },
+      "RegionalSceneMomentum": {
+        "value": true,
+        "confidence": 0.92,
+        "rationale": "Chinese institutions and support systems for emerging artists are foregrounded as drivers of market evolution."
+      },
+      "MarketUncertainty": {
+        "value": true,
+        "confidence": 0.74,
+        "rationale": "The foreword repeatedly references complex international conditions and ongoing adjustments."
+      }
+    }
+  },
+  {
+    "title": "A Breath of Fresh Air from the Major Collections",
+    "url": "",
+    "published_at": "2026-01-01",
+    "notes": "Discussion of prestige collections as stabilizers of the auction market.",
+    "assignments": {
+      "BlueChipConcentration": {
+        "value": true,
+        "confidence": 0.99,
+        "rationale": "Five elite collections accounted for over $1 billion in a single week of New York sales."
+      },
+      "CollectorFlightToSafety": {
+        "value": true,
+        "confidence": 0.96,
+        "rationale": "Guarantees and prestige collections were explicitly deployed as confidence mechanisms."
+      },
+      "AuthenticityPremium": {
+        "value": true,
+        "confidence": 0.94,
+        "rationale": "Curatorial coherence, provenance, and historical narrative are described as increasing value."
+      },
+      "RitualAuraPremium": {
+        "value": true,
+        "confidence": 0.88,
+        "rationale": "Unified collections and prestige sales are framed as symbolic narrative events rather than purely transactional exchanges."
+      }
+    },
+    "causal_claims": [
+      {
+        "source": "BlueChipConcentration",
+        "target": "AuthenticityPremium",
+        "direction": "positive",
+        "confidence": 0.82,
+        "claim_strength": "explicit",
+        "rationale": "Report directly states that for these concentrated elite collections, curatorial coherence, provenance, and historical narrative are the mechanisms that increase value — positioning blue-chip concentration as the driver of authenticity premiums.",
+        "evidence_span": "curatorial coherence, provenance, and historical narrative are described as increasing value",
+        "extraction_method": "manual"
+      }
+    ]
+  },
+  {
+    "title": "Long-term Value Consolidation",
+    "url": "",
+    "published_at": "2026-01-01",
+    "notes": "Section concerning price stabilization and post-speculative market conditions.",
+    "assignments": {
+      "CollectorFlightToSafety": {
+        "value": true,
+        "confidence": 0.84,
+        "rationale": "The market favors stable long-term value and trusted categories over speculative behavior."
+      },
+      "AuthenticityPremium": {
+        "value": true,
+        "confidence": 0.8,
+        "rationale": "The decline of speculation increases emphasis on authenticity and durable cultural legitimacy."
+      },
+      "MarketUncertainty": {
+        "value": true,
+        "confidence": 0.7,
+        "rationale": "Price rebalancing is presented as a response to previous instability."
+      }
+    }
+  },
+  {
+    "title": "The Discreet Market for NFTs and Generative Art",
+    "url": "",
+    "published_at": "2026-01-01",
+    "notes": "NFT and generative art market dynamics within the broader art economy.",
+    "assignments": {
+      "AIArtInstitutionalAcceptance": {
+        "value": true,
+        "confidence": 0.89,
+        "rationale": "Generative art is treated as a persistent segment of the professional market rather than a temporary anomaly."
+      },
+      "PrestigeFragmentation": {
+        "value": true,
+        "confidence": 0.83,
+        "rationale": "NFT and generative ecosystems operate alongside traditional prestige structures."
+      },
+      "MarketUncertainty": {
+        "value": true,
+        "confidence": 0.76,
+        "rationale": "The subdued framing of the NFT market suggests ongoing uncertainty and consolidation."
+      }
+    }
+  },
+  {
+    "title": "Prints Stimulating the Art Market",
+    "url": "",
+    "published_at": "2026-01-01",
+    "notes": "Discussion of lower-cost transaction growth and liquidity.",
+    "assignments": {
+      "PrestigeFragmentation": {
+        "value": true,
+        "confidence": 0.78,
+        "rationale": "Prints and multiples broaden participation beyond elite trophy collecting."
+      },
+      "MarketUncertainty": {
+        "value": true,
+        "confidence": 0.61,
+        "rationale": "Lower-priced works are framed as stabilizing mechanisms during uncertain conditions."
+      }
+    }
+  },
+  {
+    "title": "France: A Champion of Sales Moving Upmarket",
+    "url": "",
+    "published_at": "2026-01-01",
+    "notes": "French market positioning in the global hierarchy.",
+    "assignments": {
+      "BlueChipConcentration": {
+        "value": true,
+        "confidence": 0.79,
+        "rationale": "The phrase 'moving upmarket' indicates increasing concentration in higher prestige tiers."
+      },
+      "RegionalSceneMomentum": {
+        "value": true,
+        "confidence": 0.88,
+        "rationale": "France is described as strengthening its role in global art commerce."
+      }
+    }
+  },
+  {
+    "title": "Persian Gulf: A New Ecosystem is Emerging",
+    "url": "",
+    "published_at": "2026-01-01",
+    "notes": "Regional emergence of Gulf art infrastructure.",
+    "assignments": {
+      "RegionalSceneMomentum": {
+        "value": true,
+        "confidence": 0.98,
+        "rationale": "The report explicitly frames the Gulf as a newly emerging art ecosystem."
+      },
+      "PrestigeFragmentation": {
+        "value": true,
+        "confidence": 0.8,
+        "rationale": "New geographic prestige centers dilute traditional Western concentration."
+      }
+    }
+  },
+  {
+    "title": "Vietnamese Artists: A Dazzling Year in France",
+    "url": "",
+    "published_at": "2026-01-01",
+    "notes": "Cross-regional market recognition of Vietnamese artists.",
+    "assignments": {
+      "RegionalSceneMomentum": {
+        "value": true,
+        "confidence": 0.97,
+        "rationale": "The report identifies Vietnamese artists as gaining substantial recognition in France."
+      },
+      "PrestigeFragmentation": {
+        "value": true,
+        "confidence": 0.72,
+        "rationale": "Recognition of nontraditional regional scenes broadens prestige geography."
+      }
+    }
+  },
+  {
+    "title": "Female Artists: Analysis of New Records",
+    "url": "",
+    "published_at": "2026-01-01",
+    "notes": "Analysis of record-setting prices for female artists.",
+    "assignments": {
+      "PrestigeFragmentation": {
+        "value": true,
+        "confidence": 0.84,
+        "rationale": "New auction records for female artists indicate reconfiguration of canon formation and prestige allocation."
+      },
+      "BlueChipConcentration": {
+        "value": true,
+        "confidence": 0.62,
+        "rationale": "Record-setting artists still operate within elite auction structures."
+      }
+    }
+  }
+]

@@ -38,23 +38,19 @@ DemandDestructionRisk
 from __future__ import annotations
 
 import logging
-import math
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta, timezone
+from datetime import date
 from typing import Optional
-from uuid import uuid4
 
 import numpy as np
 
 from ....engine.schemas import (
     EvidenceRecord,
-    MissingnessType,
-    ObservedAssignment,
-    SourceType,
 )
 from ..domain import get_variables
 from .fred_client import FREDClient, FREDObservation
 from .yfinance_client import EnergyYFinanceClient, YFObservation
+from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +58,8 @@ _CLAMP_LO: float = 0.01
 _CLAMP_HI: float = 0.99
 
 
-@dataclass
+# slots: a misspelled field name raises instead of silently adding a field.
+@dataclass(slots=True)
 class EnergyRegimeSnapshot:
     p_oil_price_surge: float = 0.5
     p_nat_gas_price_surge: float = 0.5
@@ -82,30 +79,14 @@ class EnergyRegimeSnapshot:
     geopolitical_risk_elevated: bool = False
     demand_destruction_risk: bool = False
 
+    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
+    missing: set[str] = field(default_factory=set)
     confidence: dict[str, float] = field(default_factory=dict)
     target_date: Optional[date] = None
 
 
-def _sigmoid(x: float) -> float:
-    if x >= 0:
-        return 1.0 / (1.0 + math.exp(-x))
-    ex = math.exp(x)
-    return ex / (1.0 + ex)
-
-
 def _soft_bool(signal: float) -> float:
-    return max(_CLAMP_LO, min(_CLAMP_HI, _sigmoid(signal)))
-
-
-def _zscore(current: float, values: list[float]) -> float:
-    if len(values) < 2:
-        return 0.0
-    arr = np.array(values, dtype=float)
-    mu = float(np.mean(arr))
-    sigma = float(np.std(arr, ddof=1))
-    if sigma < 1e-9:
-        return 0.0
-    return (current - mu) / sigma
+    return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
 
 
 def _compute_13w_return_zscore(obs: list[YFObservation]) -> tuple[Optional[float], float]:
@@ -289,6 +270,8 @@ def compute_snapshot(
     confidence: dict[str, float] = {}
 
     def _apply(var_name: str, sig: Optional[float], conf: float, p_attr: str, bool_attr: str) -> None:
+        if sig is None:
+            snap.missing.add(var_name)
         s = sig if sig is not None else 0.0
         p = _soft_bool(s)
         setattr(snap, p_attr, p)
@@ -338,9 +321,7 @@ class EnergyRegimePipeline:
         self._fred = fred
         self._yf = yf_client
 
-    async def fetch_evidence(self, target_date: Optional[date] = None) -> EvidenceRecord:
-        if target_date is None:
-            target_date = _last_friday()
+    async def fetch_evidence(self, target_date: date) -> EvidenceRecord:
 
         import asyncio
         fred_obs, yf_obs = await asyncio.gather(
@@ -353,57 +334,25 @@ class EnergyRegimePipeline:
 
     @staticmethod
     def build_evidence_record(snapshot: EnergyRegimeSnapshot) -> EvidenceRecord:
-        variables = get_variables()
-        conf = snapshot.confidence
-
-        def _assignment(var_name: str, observed_value: bool, p_true: float) -> ObservedAssignment:
-            c = conf.get(var_name, 1.0)
-            return ObservedAssignment(
-                variable_id=variables[var_name].variable_id,
-                observed_value=observed_value,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=c,
-                probabilities={True: p_true, False: 1.0 - p_true},
-            )
-
-        assignments = [
-            _assignment("OilPriceSurge",            snapshot.oil_price_surge,            snapshot.p_oil_price_surge),
-            _assignment("NatGasPriceSurge",          snapshot.nat_gas_price_surge,        snapshot.p_nat_gas_price_surge),
-            _assignment("EnergyEquityMomentum",      snapshot.energy_equity_momentum,     snapshot.p_energy_equity_momentum),
-            _assignment("OPECSupplyConstraint",       snapshot.opec_supply_constraint,     snapshot.p_opec_supply_constraint),
-            _assignment("RenewablesDisplacement",     snapshot.renewables_displacement,    snapshot.p_renewables_displacement),
-            _assignment("EnergyInflationPersistent",  snapshot.energy_inflation_persistent, snapshot.p_energy_inflation_persistent),
-            _assignment("GeopoliticalRiskElevated",   snapshot.geopolitical_risk_elevated, snapshot.p_geopolitical_risk_elevated),
-            _assignment("DemandDestructionRisk",      snapshot.demand_destruction_risk,    snapshot.p_demand_destruction_risk),
-        ]
-
-        target_date = snapshot.target_date or datetime.now(timezone.utc).date()
-        ts = datetime(target_date.year, target_date.month, target_date.day, tzinfo=timezone.utc)
-        overall_conf = float(sum(conf.values()) / len(conf)) if conf else 1.0
-
-        return EvidenceRecord(
-            evidence_id=uuid4(),
-            timestamp=ts,
-            observed_assignments=assignments,
-            source_type=SourceType.API,
-            source_ref=(
-                "yfinance:CL=F+NG=F+XLE+ICLN|FRED:DCOILWTICO+CPIENGSL+INDPRO+UNRATE"
-                f"@week-ending-{target_date}"
-            ),
-            confidence=overall_conf,
+        target_date = snapshot.target_date
+        return build_soft_record(
+            module_id="energy-regime-v1",
+            variables=get_variables(),
+            states=[
+                ("OilPriceSurge", snapshot.oil_price_surge, snapshot.p_oil_price_surge),
+                ("NatGasPriceSurge", snapshot.nat_gas_price_surge, snapshot.p_nat_gas_price_surge),
+                ("EnergyEquityMomentum", snapshot.energy_equity_momentum, snapshot.p_energy_equity_momentum),
+                ("OPECSupplyConstraint", snapshot.opec_supply_constraint, snapshot.p_opec_supply_constraint),
+                ("RenewablesDisplacement", snapshot.renewables_displacement, snapshot.p_renewables_displacement),
+                ("EnergyInflationPersistent", snapshot.energy_inflation_persistent, snapshot.p_energy_inflation_persistent),
+                ("GeopoliticalRiskElevated", snapshot.geopolitical_risk_elevated, snapshot.p_geopolitical_risk_elevated),
+                ("DemandDestructionRisk", snapshot.demand_destruction_risk, snapshot.p_demand_destruction_risk),
+            ],
+            confidence=snapshot.confidence,
+            missing=snapshot.missing,
+            target_date=target_date,
+            source_ref="yfinance:CL=F+NG=F+XLE+ICLN|FRED:DCOILWTICO+CPIENGSL+INDPRO+UNRATE"
+            f"@week-ending-{target_date}",
         )
 
 
-def _last_friday(as_of: Optional[date] = None) -> date:
-    today = as_of or datetime.now(timezone.utc).date()
-    days_since_friday = (today.weekday() - 4) % 7
-    return today - timedelta(days=days_since_friday)
-
-
-def _weekly_backfill_dates(backfill_weeks: int, today: date) -> list[date]:
-    fridays: set[date] = set()
-    for delta in range(backfill_weeks * 7, 0, -1):
-        d = today - timedelta(days=delta)
-        if d.weekday() == 4:
-            fridays.add(d)
-    return sorted(fridays)

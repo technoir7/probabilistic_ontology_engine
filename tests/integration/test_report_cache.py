@@ -76,7 +76,7 @@ _MOCK_SNAPSHOT = {
 
 
 def _mock_snap_model():
-    from src.engine.api.app import NarrativeSnapshotOut
+    from src.engine.api.dto import NarrativeSnapshotOut
     return NarrativeSnapshotOut.model_validate(_MOCK_SNAPSHOT)
 
 
@@ -217,7 +217,7 @@ def test_refresh_cache_hit_skips_llm(tmp_path, monkeypatch):
         "snapshot_hash": h, "report": "Existing report.",
     })
 
-    with patch("src.engine.api.app.narrative_snapshot", new=AsyncMock(return_value=mock_snap)), \
+    with patch("src.engine.api.narrative.snapshot_for", new=MagicMock(return_value=mock_snap)), \
          patch("src.engine.api.report.generate_report", new=counting_generate):
         client = TestClient(api_app.app)
         res = client.post("/v1/report/ng/refresh?ontology_mode=apriori")
@@ -235,7 +235,7 @@ def test_refresh_changed_snapshot_calls_fireworks(tmp_path, monkeypatch):
     mock_snap = _mock_snap_model()
     mock_text = "Fresh Fireworks report."
 
-    with patch("src.engine.api.app.narrative_snapshot", new=AsyncMock(return_value=mock_snap)), \
+    with patch("src.engine.api.narrative.snapshot_for", new=MagicMock(return_value=mock_snap)), \
          patch("src.engine.api.report.generate_report", new=AsyncMock(return_value=mock_text)):
         client = TestClient(api_app.app)
         res = client.post("/v1/report/ng/refresh?ontology_mode=apriori")
@@ -266,7 +266,7 @@ def test_refresh_no_key_stale_cache_serves_stale(tmp_path, monkeypatch):
     }
     save_cache(cache_path(tmp_path, "ng", "apriori", "stale_000000000000000000"), stale_data)
 
-    with patch("src.engine.api.app.narrative_snapshot", new=AsyncMock(return_value=mock_snap)):
+    with patch("src.engine.api.narrative.snapshot_for", new=MagicMock(return_value=mock_snap)):
         client = TestClient(api_app.app)
         res = client.post("/v1/report/ng/refresh?ontology_mode=apriori")
 
@@ -281,7 +281,7 @@ def test_refresh_no_key_no_cache_returns_503(tmp_path, monkeypatch):
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
     mock_snap = _mock_snap_model()
 
-    with patch("src.engine.api.app.narrative_snapshot", new=AsyncMock(return_value=mock_snap)):
+    with patch("src.engine.api.narrative.snapshot_for", new=MagicMock(return_value=mock_snap)):
         client = TestClient(api_app.app)
         res = client.post("/v1/report/ng/refresh?ontology_mode=apriori")
 
@@ -305,7 +305,7 @@ def test_refresh_fireworks_failure_serves_stale(tmp_path, monkeypatch):
     async def failing_generate(*a, **kw):
         raise RuntimeError("Fireworks timeout")
 
-    with patch("src.engine.api.app.narrative_snapshot", new=AsyncMock(return_value=mock_snap)), \
+    with patch("src.engine.api.narrative.snapshot_for", new=MagicMock(return_value=mock_snap)), \
          patch("src.engine.api.report.generate_report", new=failing_generate):
         client = TestClient(api_app.app)
         res = client.post("/v1/report/ng/refresh?ontology_mode=apriori")
@@ -324,7 +324,7 @@ def test_refresh_fireworks_failure_no_cache_returns_502(tmp_path, monkeypatch):
     async def failing_generate(*a, **kw):
         raise RuntimeError("Fireworks timeout")
 
-    with patch("src.engine.api.app.narrative_snapshot", new=AsyncMock(return_value=mock_snap)), \
+    with patch("src.engine.api.narrative.snapshot_for", new=MagicMock(return_value=mock_snap)), \
          patch("src.engine.api.report.generate_report", new=failing_generate):
         client = TestClient(api_app.app)
         res = client.post("/v1/report/ng/refresh?ontology_mode=apriori")
@@ -444,20 +444,12 @@ def test_refresh_still_returns_200_when_retry_matches_heuristic(tmp_path, monkey
     call_count = {"n": 0}
 
     # Both first and strict attempts return a phrase that matches the heuristic.
-    def always_meta(snapshot, api_key, strict=False):
+    def always_meta(snapshot, api_key, model, strict=False):
         call_count["n"] += 1
         return "Let me walk through this: the market is tightening."
 
-    async def _generate(snapshot, api_key, timeout=90.0):
-        import src.engine.api.report as _r
-        text = _r._generate_report_sync(snapshot, api_key)
-        if _r.contains_meta_reasoning(text):
-            text = _r._generate_report_sync(snapshot, api_key, strict=True)
-            # Even if still matching, return it — do not raise.
-        return text
-
     with patch("src.engine.api.report._generate_report_sync", new=always_meta), \
-         patch("src.engine.api.app.narrative_snapshot", new=AsyncMock(return_value=mock_snap)):
+         patch("src.engine.api.narrative.snapshot_for", new=MagicMock(return_value=mock_snap)):
         client = TestClient(api_app.app)
         res = client.post("/v1/report/ng/refresh?ontology_mode=apriori")
 

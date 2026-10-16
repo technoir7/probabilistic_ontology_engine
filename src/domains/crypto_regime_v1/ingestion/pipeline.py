@@ -39,24 +39,20 @@ from __future__ import annotations
 
 import logging
 import math
-import statistics
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta, timezone
+from datetime import date
 from typing import Optional
-from uuid import uuid4
 
 import numpy as np
 
 from ....engine.schemas import (
     EvidenceRecord,
-    MissingnessType,
-    ObservedAssignment,
-    SourceType,
 )
 from ..domain import get_variables
 from .coingecko_client import CoinGeckoClient, CGObs, CGGlobal
 from .yfinance_client import CryptoYFinanceClient, CryptoYFObs
-from .fred_client import FREDClient, FREDObservation
+from .fred_client import FREDClient
+from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +60,8 @@ _CLAMP_LO: float = 0.01
 _CLAMP_HI: float = 0.99
 
 
-@dataclass
+# slots: a misspelled field name raises instead of silently adding a field.
+@dataclass(slots=True)
 class CryptoRegimeSnapshot:
     """Derived signals and soft probabilities for one evidence week."""
 
@@ -89,6 +86,8 @@ class CryptoRegimeSnapshot:
     dollar_debasement_narrative: bool = False
 
     # Data confidence per variable
+    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
+    missing: set[str] = field(default_factory=set)
     confidence: dict[str, float] = field(default_factory=dict)
 
     target_date: Optional[date] = None
@@ -98,26 +97,9 @@ class CryptoRegimeSnapshot:
 # Signal helpers
 # ---------------------------------------------------------------------------
 
-def _sigmoid(x: float) -> float:
-    if x >= 0:
-        return 1.0 / (1.0 + math.exp(-x))
-    ex = math.exp(x)
-    return ex / (1.0 + ex)
-
 
 def _soft_bool(signal: float) -> float:
-    return max(_CLAMP_LO, min(_CLAMP_HI, _sigmoid(signal)))
-
-
-def _zscore(current: float, values: list[float]) -> float:
-    if len(values) < 2:
-        return 0.0
-    arr = np.array(values, dtype=float)
-    mu = float(np.mean(arr))
-    sigma = float(np.std(arr, ddof=1))
-    if sigma < 1e-9:
-        return 0.0
-    return (current - mu) / sigma
+    return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
 
 
 # ---------------------------------------------------------------------------
@@ -416,6 +398,8 @@ def compute_snapshot(
     confidence: dict[str, float] = {}
 
     def _apply(var_name: str, sig: Optional[float], conf: float, p_attr: str, bool_attr: str) -> None:
+        if sig is None:
+            snap.missing.add(var_name)
         s = sig if sig is not None else 0.0
         p = _soft_bool(s)
         setattr(snap, p_attr, p)
@@ -486,10 +470,8 @@ class CryptoRegimePipeline:
 
     async def fetch_evidence(
         self,
-        target_date: Optional[date] = None,
+        target_date: date,
     ) -> EvidenceRecord:
-        if target_date is None:
-            target_date = _last_friday()
 
         import asyncio
         cg_data, yf_data, fred_data = await asyncio.gather(
@@ -503,45 +485,26 @@ class CryptoRegimePipeline:
 
     @staticmethod
     def build_evidence_record(snapshot: CryptoRegimeSnapshot) -> EvidenceRecord:
-        variables = get_variables()
-        conf = snapshot.confidence
-
-        def _assignment(var_name: str, observed_value: bool, p_true: float) -> ObservedAssignment:
-            c = conf.get(var_name, 1.0)
-            return ObservedAssignment(
-                variable_id=variables[var_name].variable_id,
-                observed_value=observed_value,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=c,
-                probabilities={True: p_true, False: 1.0 - p_true},
-            )
-
-        assignments = [
-            _assignment("BTCMomentumPositive",      snapshot.btc_momentum_positive,      snapshot.p_btc_momentum_positive),
-            _assignment("AltcoinSeasonActive",       snapshot.altcoin_season_active,       snapshot.p_altcoin_season_active),
-            _assignment("OnChainActivityElevated",   snapshot.onchain_activity_elevated,   snapshot.p_onchain_activity_elevated),
-            _assignment("StablecoinFlowPositive",    snapshot.stablecoin_flow_positive,    snapshot.p_stablecoin_flow_positive),
-            _assignment("CryptoVolatilityShock",     snapshot.crypto_volatility_shock,     snapshot.p_crypto_volatility_shock),
-            _assignment("RiskAssetCorrelation",      snapshot.risk_asset_correlation,      snapshot.p_risk_asset_correlation),
-            _assignment("NarrativeMomentum",         snapshot.narrative_momentum,          snapshot.p_narrative_momentum),
-            _assignment("DollarDebasementNarrative", snapshot.dollar_debasement_narrative, snapshot.p_dollar_debasement_narrative),
-        ]
-
-        target_date = snapshot.target_date or datetime.now(timezone.utc).date()
-        ts = datetime(target_date.year, target_date.month, target_date.day, tzinfo=timezone.utc)
-        overall_conf = float(sum(conf.values()) / len(conf)) if conf else 1.0
-
-        return EvidenceRecord(
-            evidence_id=uuid4(),
-            timestamp=ts,
-            observed_assignments=assignments,
-            source_type=SourceType.API,
-            source_ref=(
-                "CoinGecko:BTC+ETH+USDT+USDC"
-                "|yfinance:BTC-USD+QQQ+GLD"
-                f"|FRED:DEXUSEU@week-ending-{target_date}"
-            ),
-            confidence=overall_conf,
+        target_date = snapshot.target_date
+        return build_soft_record(
+            module_id="crypto-regime-v1",
+            variables=get_variables(),
+            states=[
+                ("BTCMomentumPositive", snapshot.btc_momentum_positive, snapshot.p_btc_momentum_positive),
+                ("AltcoinSeasonActive", snapshot.altcoin_season_active, snapshot.p_altcoin_season_active),
+                ("OnChainActivityElevated", snapshot.onchain_activity_elevated, snapshot.p_onchain_activity_elevated),
+                ("StablecoinFlowPositive", snapshot.stablecoin_flow_positive, snapshot.p_stablecoin_flow_positive),
+                ("CryptoVolatilityShock", snapshot.crypto_volatility_shock, snapshot.p_crypto_volatility_shock),
+                ("RiskAssetCorrelation", snapshot.risk_asset_correlation, snapshot.p_risk_asset_correlation),
+                ("NarrativeMomentum", snapshot.narrative_momentum, snapshot.p_narrative_momentum),
+                ("DollarDebasementNarrative", snapshot.dollar_debasement_narrative, snapshot.p_dollar_debasement_narrative),
+            ],
+            confidence=snapshot.confidence,
+            missing=snapshot.missing,
+            target_date=target_date,
+            source_ref="CoinGecko:BTC+ETH+USDT+USDC"
+            "|yfinance:BTC-USD+QQQ+GLD"
+            f"|FRED:DEXUSEU@week-ending-{target_date}",
         )
 
 
@@ -549,16 +512,4 @@ class CryptoRegimePipeline:
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _last_friday(as_of: Optional[date] = None) -> date:
-    today = as_of or datetime.now(timezone.utc).date()
-    days_since_friday = (today.weekday() - 4) % 7
-    return today - timedelta(days=days_since_friday)
 
-
-def _weekly_backfill_dates(backfill_weeks: int, today: date) -> list[date]:
-    fridays: set[date] = set()
-    for delta in range(backfill_weeks * 7, 0, -1):
-        d = today - timedelta(days=delta)
-        if d.weekday() == 4:
-            fridays.add(d)
-    return sorted(fridays)

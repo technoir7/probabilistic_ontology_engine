@@ -15,10 +15,17 @@ Explore weight decays as existence_probability converges toward 0 or 1.
 from __future__ import annotations
 
 import math
-from uuid import UUID
 
 from ..schemas import DependencyEdge, EdgeExistenceThresholdConfig, OntologyCandidate
 from ..stores.parameter_store import ParameterStore
+
+
+# Pruning is permanent, and on a few dozen records the BIC penalty can outweigh
+# a real edge (seen: T*'s B->C pruned at 30 records, leaving no candidate with
+# the true graph). SPEC §10.4 asks for "N consecutive windows" below threshold;
+# a minimum of evidence is the simpler guard. Over seeds 0-39, 120 kept T*
+# in 38-39 runs, 60 in 36, none in 33 (REFACTOR_SPEC D14).
+MIN_RECORDS_FOR_EDGE_PRUNING = 120
 
 
 def _sigmoid(x: float) -> float:
@@ -102,25 +109,25 @@ class EdgeExistenceService:
         """
         Mark edges with existence_probability < prune_below as disabled (pruned).
         Also updates the CPT parents for the affected child variable.
-        Returns list of pruned edges.
+        An edge is not pruned while its child's CPT holds fewer than
+        MIN_RECORDS_FOR_EDGE_PRUNING records. Returns the pruned edges.
         """
         pruned = []
         for edge in candidate.edges:
-            if not edge.enabled:
+            if not edge.enabled or edge.existence_probability >= self.thresholds.prune_below:
                 continue
-            if edge.existence_probability < self.thresholds.prune_below:
-                edge.enabled = False
-                pruned.append(edge)
-                # Remove parent from child's CPT
-                parent_var = candidate.get_variable_by_id(edge.parent_variable_id)
-                child_var = candidate.get_variable_by_id(edge.child_variable_id)
-                if parent_var and child_var and parameter_store.has(candidate.candidate_id, child_var.name):
-                    cpt = parameter_store.get(candidate.candidate_id, child_var.name)
-                    if parent_var.name in cpt.parents:
-                        new_parents = [p for p in cpt.parents if p != parent_var.name]
-                        parameter_store.update_parents(
-                            candidate.candidate_id, child_var.name, new_parents
-                        )
+            parent_var = candidate.get_variable_by_id(edge.parent_variable_id)
+            child_var = candidate.get_variable_by_id(edge.child_variable_id)
+            has_cpt = child_var is not None and parameter_store.has(candidate.candidate_id, child_var.name)
+            cpt = parameter_store.get(candidate.candidate_id, child_var.name) if has_cpt else None
+            if cpt is not None and cpt.total_count() < MIN_RECORDS_FOR_EDGE_PRUNING:
+                continue
+            edge.enabled = False
+            pruned.append(edge)
+            # Remove parent from child's CPT
+            if parent_var and cpt is not None and parent_var.name in cpt.parents:
+                new_parents = [p for p in cpt.parents if p != parent_var.name]
+                parameter_store.update_parents(candidate.candidate_id, child_var.name, new_parents)
         return pruned
 
     # ------------------------------------------------------------------

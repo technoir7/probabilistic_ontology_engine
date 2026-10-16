@@ -61,7 +61,7 @@ import asyncio
 import logging
 import time
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timezone
 from typing import Any, Optional
 
 import httpx
