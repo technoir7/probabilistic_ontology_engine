@@ -43,6 +43,9 @@ async def lifespan(app: FastAPI):
     app.state.scheduler_tasks: list[asyncio.Task] = []
     app.state.scheduler_enabled = scheduler_enabled
     app.state.ingest_locks: dict[str, asyncio.Lock] = {r.key: asyncio.Lock() for r in REGISTRY}
+    # Operator jobs that outlive their request (the art rebuild); cancelled on shutdown.
+    app.state.background_tasks: list[asyncio.Task] = []
+    app.state.art_rebuild = None
 
     if scheduler_enabled:
         tasks = []
@@ -66,10 +69,11 @@ async def lifespan(app: FastAPI):
     try:
         yield
     finally:
-        for task in app.state.scheduler_tasks:
+        tasks = [*app.state.scheduler_tasks, *app.state.background_tasks]
+        for task in tasks:
             task.cancel()
-        if app.state.scheduler_tasks:
-            await asyncio.gather(*app.state.scheduler_tasks, return_exceptions=True)
+        if tasks:
+            await asyncio.gather(*tasks, return_exceptions=True)
 
 
 # ── FastAPI app ───────────────────────────────────────────────────────────────

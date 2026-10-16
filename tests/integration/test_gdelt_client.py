@@ -52,9 +52,77 @@ def test_parses_the_points_of_a_real_response_newest_first():
     ]
 
 
-def test_the_rate_limit_notice_is_an_empty_result():
-    client = _client(lambda r: httpx.Response(200, text="Please limit requests to one every 5 seconds"))
-    assert asyncio.run(client.fetch_timeline("q", "x", end_date=date(2026, 9, 30))) == []
+NOTICE = "Please limit requests to one every 5 seconds or contact kalev.leetaru5@gmail.com for larger queries."
+
+
+def _replies(*responses):
+    """A handler that answers with *responses* in turn and records when each request arrived."""
+    clock = FakeClock()
+    sent_at: list[float] = []
+    queue = list(responses)
+
+    def handler(request):
+        sent_at.append(clock.now)
+        return queue.pop(0)
+
+    limiter = RateLimiter(5.0, clock=clock.monotonic, sleep=clock.sleep)
+    return _client(handler, limiter), sent_at
+
+
+def _fetch(client):
+    return asyncio.run(client.fetch_timeline("q", "x", end_date=date(2026, 9, 30)))
+
+
+def test_a_throttled_request_is_retried_after_backing_off():
+    # Live runs from a dev machine and from Railway: most requests came back
+    # 429 even at one per 5 s, and giving up left those months MISSING.
+    client, sent_at = _replies(httpx.Response(429), httpx.Response(200, json=REAL_RESPONSE))
+    assert len(_fetch(client)) == 3
+    assert len(sent_at) == 2 and sent_at[1] - sent_at[0] >= 30.0
+
+
+def test_the_rate_limit_notice_counts_as_throttled():
+    client, sent_at = _replies(httpx.Response(200, text=NOTICE), httpx.Response(200, json=REAL_RESPONSE))
+    assert len(_fetch(client)) == 3 and len(sent_at) == 2
+
+
+def test_a_longer_retry_after_is_honoured():
+    client, sent_at = _replies(httpx.Response(429, headers={"Retry-After": "90"}), httpx.Response(200, json=REAL_RESPONSE))
+    _fetch(client)
+    assert sent_at[1] - sent_at[0] >= 90.0
+
+
+def test_gives_up_with_an_empty_result_after_the_last_backoff():
+    client, sent_at = _replies(*[httpx.Response(429)] * 4)
+    assert _fetch(client) == []
+    assert len(sent_at) == 4
+
+
+def test_other_errors_are_not_retried():
+    client, sent_at = _replies(httpx.Response(500))
+    assert _fetch(client) == [] and len(sent_at) == 1
+
+
+def test_a_throttle_holds_back_every_client_sharing_the_limiter():
+    clock = FakeClock()
+    limiter = RateLimiter(5.0, clock=clock.monotonic, sleep=clock.sleep)
+    queue = [httpx.Response(429), httpx.Response(200, json=REAL_RESPONSE), httpx.Response(200, json=REAL_RESPONSE)]
+    sent: list[tuple[str, float]] = []
+
+    def handler(request):
+        sent.append((request.url.params["query"], clock.now))
+        return queue.pop(0)
+
+    a, b = _client(handler, limiter), _client(handler, limiter)
+
+    async def run():
+        await a.fetch_timeline("first", "a", end_date=date(2026, 9, 30))
+        await b.fetch_timeline("second", "b", end_date=date(2026, 9, 30))
+
+    asyncio.run(run())
+    # GDELT penalises the IP, so the other client waits out the backoff too.
+    assert [q for q, _ in sent] == ["first", "first", "second"]
+    assert sent[1][1] - sent[0][1] >= 30.0
 
 
 def test_clients_sharing_a_limiter_stay_five_seconds_apart():
