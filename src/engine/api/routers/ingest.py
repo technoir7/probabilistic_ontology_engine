@@ -150,8 +150,8 @@ class _RebuildJob:
 )
 async def rebuild_art(
     request: Request,
-    # Bounded: each month is at least one GDELT request at one per 5 s, plus
-    # backoff when GDELT throttles, so 36 months take from 3 minutes to over an hour.
+    # Bounded: the museum years are a few AIC requests each, and the
+    # domain's backfill pause runs between months.
     months: int = Query(36, ge=1, le=120),
 ) -> ArtRebuildOut:
     """

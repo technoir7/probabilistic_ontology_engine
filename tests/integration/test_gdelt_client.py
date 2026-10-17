@@ -13,7 +13,7 @@ from datetime import date
 
 import httpx
 
-from src.domains.sources.gdelt import GDELTClient, RateLimiter
+from src.domains.sources.gdelt import GDELTClient, RateLimiter, TimelineCache
 
 REAL_RESPONSE = {
     "query_details": {"title": '"AI-generated" theme:TAX_FNCACT_ARTIST sourcelang:english', "date_resolution": "day"},
@@ -41,6 +41,7 @@ def _client(handler, limiter=None) -> GDELTClient:
     return GDELTClient(
         client=httpx.AsyncClient(transport=httpx.MockTransport(handler)),
         rate_limit=limiter or RateLimiter(5.0, clock=clock.monotonic, sleep=clock.sleep),
+        cache=TimelineCache(),
     )
 
 
@@ -147,3 +148,58 @@ def test_clients_sharing_a_limiter_stay_five_seconds_apart():
     asyncio.run(run())
     gaps = [y - x for x, y in zip(sent_at, sent_at[1:])]
     assert len(sent_at) == 3 and min(gaps) >= 5.0
+
+
+def _counting_client(responses, cache):
+    sent: list[str] = []
+    queue = list(responses)
+
+    def handler(request):
+        sent.append(request.url.params["enddatetime"])
+        return queue.pop(0)
+
+    clock = FakeClock()
+    client = GDELTClient(
+        client=httpx.AsyncClient(transport=httpx.MockTransport(handler)),
+        rate_limit=RateLimiter(5.0, clock=clock.monotonic, sleep=clock.sleep),
+        cache=cache,
+    )
+    return client, sent
+
+
+def test_an_identical_request_is_answered_from_the_shared_cache():
+    clock = FakeClock()
+    cache = TimelineCache(ttl_s=3600, clock=clock.monotonic)
+    # The art pipeline opens new clients for every month; the cache is shared.
+    a, sent = _counting_client([httpx.Response(200, json=REAL_RESPONSE)], cache)
+    b, _ = _counting_client([], cache)
+    first = asyncio.run(a.fetch_timeline("q", "x", lookback_days=3, end_date=date(2026, 9, 30)))
+    second = asyncio.run(b.fetch_timeline("q", "x", lookback_days=3, end_date=date(2026, 9, 30)))
+    assert first == second and len(first) == 3 and len(sent) == 1
+
+
+def test_a_different_request_or_an_expired_entry_goes_to_gdelt():
+    clock = FakeClock()
+    cache = TimelineCache(ttl_s=3600, clock=clock.monotonic)
+    client, sent = _counting_client([httpx.Response(200, json=REAL_RESPONSE)] * 3, cache)
+    asyncio.run(client.fetch_timeline("q", "x", end_date=date(2026, 9, 30)))
+    asyncio.run(client.fetch_timeline("q", "x", end_date=date(2026, 9, 29)))
+    clock.now += 3601
+    asyncio.run(client.fetch_timeline("q", "x", end_date=date(2026, 9, 30)))
+    assert len(sent) == 3
+
+
+def test_failures_are_not_cached():
+    cache = TimelineCache()
+    client, sent = _counting_client([httpx.Response(500), httpx.Response(200, json=REAL_RESPONSE)], cache)
+    assert asyncio.run(client.fetch_timeline("q", "x", end_date=date(2026, 9, 30))) == []
+    assert len(asyncio.run(client.fetch_timeline("q", "x", end_date=date(2026, 9, 30)))) == 3
+    assert len(sent) == 2
+
+
+def test_the_cache_keeps_only_the_newest_entries():
+    cache = TimelineCache(max_entries=2)
+    client, sent = _counting_client([httpx.Response(200, json=REAL_RESPONSE)] * 4, cache)
+    for day in (28, 29, 30, 28):
+        asyncio.run(client.fetch_timeline("q", "x", end_date=date(2026, 9, day)))
+    assert len(sent) == 4  # the 28th was evicted by the 30th

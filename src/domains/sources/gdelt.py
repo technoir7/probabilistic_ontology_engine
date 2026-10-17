@@ -18,12 +18,18 @@ backoff holds every client on the shared limiter, since the penalty is the IP's.
 
 On any other failure, or once the backoffs run out, fetch_timeline returns []
 (the pipeline then records the variables that needed it as MISSING).
+
+Successful timelines are kept in GDELT_TIMELINE_CACHE, by request, for a few
+hours. A caller that asks the same question for many periods (the art
+pipeline: one full-history request per month of a rebuild) then costs GDELT
+one request, not one per period.
 """
 from __future__ import annotations
 
 import asyncio
 import logging
 import time
+from collections import OrderedDict
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from typing import Awaitable, Callable, Optional, Sequence
@@ -70,6 +76,42 @@ class RateLimiter:
 GDELT_RATE_LIMIT = RateLimiter(5.0)
 
 
+class TimelineCache:
+    """The newest *max_entries* successful timelines by request, each for *ttl_s*."""
+
+    def __init__(
+        self,
+        max_entries: int = 32,
+        ttl_s: float = 6 * 3600,
+        clock: Callable[[], float] = time.monotonic,
+    ) -> None:
+        self._max_entries = max_entries
+        self._ttl = ttl_s
+        self._clock = clock
+        self._entries: OrderedDict[tuple, tuple[float, list["GDELTObs"]]] = OrderedDict()
+
+    def get(self, key: tuple) -> list["GDELTObs"] | None:
+        entry = self._entries.get(key)
+        if entry is None:
+            return None
+        stored_at, value = entry
+        if self._clock() - stored_at > self._ttl:
+            del self._entries[key]
+            return None
+        return list(value)
+
+    def put(self, key: tuple, value: list["GDELTObs"]) -> None:
+        self._entries.pop(key, None)
+        self._entries[key] = (self._clock(), list(value))
+        while len(self._entries) > self._max_entries:
+            self._entries.popitem(last=False)
+
+
+# Six hours: a rebuild finishes well inside it, and GDELT's latest day keeps
+# filling in, so a day-old answer would miss coverage.
+GDELT_TIMELINE_CACHE = TimelineCache()
+
+
 @dataclass(frozen=True)
 class GDELTObs:
     """A single GDELT timeline observation."""
@@ -87,11 +129,13 @@ class GDELTClient:
         timeout: float = 30.0,
         rate_limit: RateLimiter | None = None,
         throttle_backoff_s: Sequence[float] = THROTTLE_BACKOFF_S,
+        cache: TimelineCache | None = None,
     ) -> None:
         self._injected = client is not None
         self._client: httpx.AsyncClient = client or httpx.AsyncClient(timeout=httpx.Timeout(timeout))
-        # Looked up at construction, not import, so tests can swap the shared one.
+        # Looked up at construction, not import, so tests can swap the shared ones.
         self._rate_limit = rate_limit or GDELT_RATE_LIMIT
+        self._cache = cache if cache is not None else GDELT_TIMELINE_CACHE
         self._backoff_s = tuple(throttle_backoff_s)
 
     async def aclose(self) -> None:
@@ -121,6 +165,10 @@ class GDELTClient:
             "startdatetime": start_date.strftime("%Y%m%d") + "000000",
             "enddatetime": end_date.strftime("%Y%m%d") + "235959",
         }
+        key = tuple(sorted(params.items()))
+        cached = self._cache.get(key)
+        if cached is not None:
+            return [GDELTObs(o.obs_date, o.value, label) for o in cached]
         try:
             resp = await self._get_unthrottled(params, label)
             if resp is None:
@@ -149,6 +197,8 @@ class GDELTClient:
                 continue
         result.sort(key=lambda o: o.obs_date, reverse=True)
         logger.debug("GDELT %s: %d obs", label, len(result))
+        if result:
+            self._cache.put(key, result)
         return result
 
     async def _get_unthrottled(self, params: dict[str, str], label: str) -> httpx.Response | None:

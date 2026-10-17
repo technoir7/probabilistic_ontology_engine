@@ -11,7 +11,10 @@ Only three of the 25 variables have a series that measures them acceptably
 
 * AIImageSaturation — GDELT: the monthly share of all monitored news that
   mentions "AI-generated" in articles about artists, against the five years
-  before. Coverage rose from ~0 before 2022 and has stayed high. Wikipedia
+  before. Every month asks GDELT the same question, coverage from 2017 to
+  today, and keeps only the months up to its own: the shared timeline cache
+  then answers a 36-month rebuild with one request (GDELT throttled 36
+  separate five-year requests, B24). Coverage rose from ~0 before 2022 and has stayed high. Wikipedia
   views of the AI-image tools were tried and rejected: they peaked in
   2022-23 and fell as the tools became ordinary, the opposite of saturation.
 * MuseumAcquisitionMomentum — distinct artists the Art Institute of Chicago
@@ -35,8 +38,8 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import date
-from typing import Sequence
+from datetime import date, datetime, timezone
+from typing import Callable, Sequence
 
 from ....engine.schemas import EvidenceRecord
 from ...sources.soft_evidence import build_soft_record, soft_bool, zscore
@@ -45,8 +48,9 @@ from ...sources.gdelt import GDELTClient
 from .aic_client import AICClient
 
 # Five years behind the latest month, so a lasting rise reads as high rather
-# than as the new normal; GDELT starts in 2017.
+# than as the new normal.
 NEWS_MONTHS = 61
+GDELT_START = date(2017, 1, 1)
 MIN_NEWS_HISTORY = 24
 # The latest fiscal year and the seven before it (about 8 points exist since
 # 2018 at the museum's current cataloguing; a longer window would mix eras).
@@ -99,10 +103,15 @@ def reported_fiscal_years(target_date: date) -> list[int] | None:
     return list(range(latest - AIC_YEARS + 1, latest + 1))
 
 
+def _utc_today() -> date:
+    return datetime.now(timezone.utc).date()
+
+
 class ArtPipeline:
-    def __init__(self, gdelt: GDELTClient, aic: AICClient) -> None:
+    def __init__(self, gdelt: GDELTClient, aic: AICClient, today: Callable[[], date] = _utc_today) -> None:
         self._gdelt = gdelt
         self._aic = aic
+        self._today = today
 
     async def fetch_evidence(self, target_date: date) -> EvidenceRecord:
         z: dict[str, float] = {}
@@ -140,17 +149,18 @@ class ArtPipeline:
         return signal([m.artists / t.artists for t, m in zip(totals, matches)], MIN_AIC_HISTORY)
 
     async def _news_signal(self, measure: NewsShare, target_date: date) -> float | None:
-        first = date(target_date.year - NEWS_MONTHS // 12, target_date.month, 1)
+        today = self._today()
         obs = await self._gdelt.fetch_timeline(
-            measure.query, "art-ai-imagery",
-            lookback_days=(target_date - first).days, end_date=target_date,
+            measure.query, "art-ai-imagery", lookback_days=(today - GDELT_START).days, end_date=today,
         )
-        if not obs:
-            return None
+        first = date(target_date.year - NEWS_MONTHS // 12, target_date.month, 1)
+        last = target_date.replace(day=1)
         by_month: dict[date, list[float]] = defaultdict(list)
         for o in obs:
-            by_month[o.obs_date.replace(day=1)].append(o.value)
-        if target_date.replace(day=1) not in by_month:
+            month = o.obs_date.replace(day=1)
+            if first <= month <= last:  # never later than the target: no lookahead
+                by_month[month].append(o.value)
+        if last not in by_month:
             return None  # the target month itself must be covered
         months = sorted(by_month)
         return signal([sum(by_month[m]) / len(by_month[m]) for m in months], MIN_NEWS_HISTORY)
