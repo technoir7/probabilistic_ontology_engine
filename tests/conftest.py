@@ -54,6 +54,7 @@ def _sealed_runtime(request, monkeypatch, tmp_path):
     monkeypatch.setenv("POE_ADMIN_TOKEN", ADMIN_TOKEN)
     # The process-wide GDELT limit would make tests wait real seconds on each other.
     monkeypatch.setattr(gdelt, "GDELT_RATE_LIMIT", gdelt.RateLimiter(0.0))
+    monkeypatch.setattr(gdelt, "GDELT_TIMELINE_CACHE", gdelt.TimelineCache())
     if "live" in request.keywords:
         return
 
