@@ -1169,6 +1169,7 @@ dependencies = [
 dev = [
     { name = "import-linter" },
     { name = "pytest" },
+    { name = "railway-sdk" },
     { name = "ruff" },
 ]
 
@@ -1191,6 +1192,7 @@ requires-dist = [
 dev = [
     { name = "import-linter", specifier = ">=2.15" },
     { name = "pytest", specifier = ">=7.0" },
+    { name = "railway-sdk", specifier = ">=0.7.0" },
     { name = "ruff", specifier = ">=0.17.0" },
 ]
 
@@ -1416,6 +1418,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/da/92/1446574745d74df0c92e6aa4a7b0b3130706a4142b2d1a5869f2eaa423c6/pyyaml-6.0.3-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:16249ee61e95f858e83976573de0f5b2893b3677ba71c9dd36b9cf8be9ac6d65", size = 829923, upload-time = "2025-09-25T21:32:54.537Z" },
     { url = "https://files.pythonhosted.org/packages/f0/7a/1c7270340330e575b92f397352af856a8c06f230aa3e76f86b39d01b416a/pyyaml-6.0.3-cp314-cp314t-win_amd64.whl", hash = "sha256:4ad1906908f2f5ae4e5a8ddfce73c320c2a1429ec52eafd27138b7f1cbe341c9", size = 174062, upload-time = "2025-09-25T21:32:55.767Z" },
     { url = "https://files.pythonhosted.org/packages/f1/12/de94a39c2ef588c7e6455cfbe7343d3b2dc9d6b6b2f40c4c6565744c873d/pyyaml-6.0.3-cp314-cp314t-win_arm64.whl", hash = "sha256:ebc55a14a21cb14062aa4162f906cd962b28e2e9ea38f9b4391244cd8de4ae0b", size = 149341, upload-time = "2025-09-25T21:32:56.828Z" },
+]
+
+[[package]]
+name = "railway-sdk"
+version = "0.7.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/93/a7/67013a27af3bdf33226ef15dad55dbd16561db9255b8238c59649ff0882e/railway_sdk-0.7.0.tar.gz", hash = "sha256:b5687d5936494e5a62ae7feaba20462fd261dd66cee07b4c234cdd6b2c78b5e0", size = 19961, upload-time = "2026-10-14T09:54:44.839Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/37/b7/dc3ba9c904d165e8b6c4bdfd8a4285b4f4711955030d4b893b1f051a4071/railway_sdk-0.7.0-py3-none-any.whl", hash = "sha256:2cabab22864dd36ea4538a5d14bc6c41f871cbfd05344182ec1a8a98b836b06c", size = 13386, upload-time = "2026-10-14T09:54:43.642Z" },
 ]
 
 [[package]]
