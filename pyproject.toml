@@ -27,6 +27,7 @@ dependencies = [
 dev = [
     "import-linter>=2.15",
     "pytest>=7.0",
+    "railway-sdk>=0.7.0",
     "ruff>=0.17.0",
 ]
 
