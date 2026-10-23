@@ -77,3 +77,6 @@ logs/
 .installed.cfg
 lib/
 lib64/
+
+# Local Claude Code settings
+.claude/
