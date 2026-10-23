@@ -22,6 +22,7 @@ from uuid import uuid4
 from src.domains.macro_regime_v1.domain import MacroRegimeV1, get_variables
 from src.domains.macro_regime_v1.ingestion.pipeline import MacroRegimePipeline, compute_snapshot
 from src.engine.engine import ProbabilisticOntologyEngine
+from src.engine.model.doubt import DISCOUNT as DOUBT_DISCOUNT
 from src.engine.model.scoring import structure_entropy
 from src.engine.runtime.ingestion import ingest_and_learn
 from src.engine.schemas import OntologyCandidate
@@ -74,7 +75,13 @@ def run(history: dict, seed: int, start: date, end: date, credit: str = fh.CREDI
 
         async def fetch(_: date, record=record):
             return record
+        doubts = engine.doubt_events(DOMAIN)
         asyncio.run(ingest_and_learn(engine, DOMAIN, fetch, week))
+        # The baseline forgets as the candidates do (D17), so the comparison
+        # is structure against independence, not memory against memory.
+        if engine.doubt_events(DOMAIN) > doubts:
+            for cpt in engine.parameter_store.get_all_for_candidate(baseline.candidate_id).values():
+                cpt.discount(DOUBT_DISCOUNT)
         engine.learning_service.accumulate([record], baseline)
 
         for c in pop.candidates:
@@ -93,7 +100,10 @@ def run(history: dict, seed: int, start: date, end: date, credit: str = fh.CREDI
             "active_families": dict(sorted(Counter(family_of(str(c.candidate_id), parents, seeds)
                                                    for c in pop.active_candidates()).items())),
             "active": len(pop.active_candidates()),
+            "doubt": engine.doubt_events(DOMAIN) > doubts,
+            "population_ll": engine.epistemic_health(DOMAIN)["last_cycle"].get("population_ll"),
         })
+    rows[-1]["health"] = engine.epistemic_health(DOMAIN)
     return rows
 
 

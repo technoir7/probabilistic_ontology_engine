@@ -208,3 +208,137 @@ These are not changes made here; each would be a new replay.
   fickle in calm years.
 - **Clean the live record, and relearn it.** Rebuild the live macro
   population from this replay's evidence, after removing the blank records.
+
+## Replay 2: rivals kept until refuted
+
+*Plan, written before replay 2 ran.*
+
+The change (REFACTOR_SPEC D15): every candidate carries the seed explanation
+it descends from, its research programme, and pruning spares each
+programme's best candidate until the evidence for the leader over it is
+decisive, a Bayes factor above 100 on Jeffreys' scale. A programme can still
+be abandoned, but only when refuted, not for ranking low while the evidence
+is thin. Nothing else changes: same data, events, window, seeds and
+questions as above, written to `data/replay2/`.
+
+One question more:
+
+5. **Do the rivals survive, and do they ever lead?** The number of
+   programmes alive each year, and the weeks each one leads. If they
+   survive but never lead, the population keeps alternatives in mind
+   without ever finding the evidence to adopt one.
+
+A change in the fit gap (question 3) is reported but not expected: the
+leader is still the best-scoring candidate, so keeping rivals should not
+make it worse, unless it changes which lineage breeds.
+
+### Replay 2 results
+
+![Replay 2](../docs/replay2.svg)
+
+1. **Shifts and events: still none caught.** Three seeds changed family
+   twice, both times in the same two weeks of July 2005, when the AI-boom
+   programme led for one week; no event was followed by a family change.
+2. **Shifts away from events:** those two, in three seeds.
+3. **Fit gap:** 0.19 to 0.30 nats a week (median 0.24, as before). Through
+   COVID, three seeds still did worse than independence; two did not.
+4. **The story told at the time:** not matched; `T_null`'s line led
+   2008–09, 2022–23 and 2023–24 in every seed.
+5. **Rivals survived longer, then were refuted.** All five programmes were
+   alive in 2003; two in 2004 and 2005; by 2008, one in every seed. The
+   rivals were not lost for ranking low: by 2008 the evidence against each
+   passed 100 to 1.
+
+So the null lineage's win holds up under a fairer rule. One unfairness
+remains: variants are bred from the best-scoring candidates first, so a
+rival programme rarely gets offspring while the leading lineage keeps
+exploring. A programme judged without being allowed to revise its
+auxiliary hypotheses (in Lakatos's terms) has not had a fair trial.
+
+## Replay 3: a fair trial for rivals
+
+*Plan, written before replay 3 ran.*
+
+The change (REFACTOR_SPEC D16), on top of replay 2's: each round of breeding
+starts with a different programme's best candidate, so every surviving
+programme gets to revise itself. Same data, events, seeds and questions
+1–5, written to `data/replay3/`. If the rivals still fall by 2008, the null
+lineage's win is not an artefact of who was allowed to breed.
+
+## Replay 4: doubt in a crisis
+
+*Plan, written before replay 4 ran.*
+
+The change (REFACTOR_SPEC D17), on top of replay 3's: when the leading
+structure is more surprised by a week than its usual by two standard
+deviations (after a year of evidence), every candidate's learned counts and
+score window count for half before it learns that week. Ordinary weeks
+change nothing. Same data, events, seeds and questions 1–5, written to
+`data/replay4/`, and one more:
+
+6. **When does it doubt, and does doubt help?** The weeks it judged a
+   crisis, against the events; and the fit gap through COVID (2020–21),
+   where replays 1–3 did worse than independence in most seeds, and in
+   calm periods, where doubt could make it worse.
+
+### Replay 4 results
+
+![Replay 4](../docs/replay4.svg)
+
+Run twice: first with the independence baseline remembering everything
+while the candidates forgot in a crisis, which made structure look twice as
+good as it was; then, as the plan intended ("learned from the same
+evidence"), with the baseline forgetting on the same weeks. Only the second
+is reported.
+
+1–2. **Shifts and events: none caught.** One seed (4) changed family nine
+   times between 2005 and 2007, ending with the AI-boom programme leading
+   from September 2007 to the end; none of the changes followed an event.
+3. **Fit gap:** 0.13 to 0.24 nats a week (median 0.17), lower than replay
+   3's 0.27, because the independent baseline also gains from forgetting.
+   **Through COVID every seed now beats independence** (0.07 to 0.28),
+   where four of five fell below it before.
+4. **The story told at the time:** not matched.
+5. **Rivals:** one programme alive from 2008 in four seeds; two in seed 4
+   until 2020.
+6. **Doubt.** 21 to 38 crisis weeks per seed over 23 years, most of them in
+   2005–06, while the population was still settling; others in 2009, 2010–11,
+   2015–16 and 2018–19. They do not line up with the events either. Doubt
+   helps the believer: its own average log-likelihood per week rose from
+   −4.96 to −4.62 (median of seeds), from −5.33 to −4.41 through COVID, and
+   from −4.66 to −4.45 in 2010–19, so it did not make calm years worse.
+
+## Replay 5: calibration and humility
+
+*Plan, written before replay 5 ran.*
+
+The change (REFACTOR_SPEC D18) observes and learns nothing: before each
+week is learned, the engine records how well the whole population, each
+structure weighted by its posterior weight, predicted that week, and, for
+each signal, the probability the leader and the weighted population gave it
+being true given the week's other seven signals. Learning is replay 4's, so
+the leaders and crises are the same; written to `data/replay5/`.
+
+7. **Humility: does the weighted population explain the evidence better
+   than its leader?** Average log-likelihood per week, population against
+   leader.
+8. **Calibration: when it says 70%, is it right 70% of the time?** The
+   Brier score and the expected calibration error (ten bins) of the
+   leader's and the population's leave-one-out probabilities, against a
+   believer that always says each signal's base rate so far.
+
+### Replay 5 results
+
+7. **Humility gains nothing yet.** The weighted population predicted each
+   week as well as its leader and no better (−4.57 to −4.71 nats a week,
+   within 0.006 of the leader in every seed): with posterior weights taken
+   over a window of about 150 records, nearly all the weight sits on the
+   leader. The population is all but certain of its favourite.
+8. **Its confidence is informative but timid.** Over 9,824 judgements per
+   seed, its Brier score was 0.16 to 0.17 against 0.216 for a believer
+   saying each signal's base rate, so it knows a good deal about each
+   signal from the others. But its calibration error (0.07 to 0.10) is a
+   little worse than the base rate's (0.06), and in the direction of
+   diffidence: when it said 15% the signal was true 3% of the time; when it
+   said 84%, 97% (seed 0). It holds its beliefs more weakly than its
+   evidence warrants.

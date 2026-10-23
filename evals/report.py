@@ -2,9 +2,9 @@
 Scores the replay's five seeds against the questions in `evals/README.md`,
 and draws the leading family week by week.
 
-    uv run python -m evals.report
+    uv run python -m evals.report [--dir evals/data/replay2] [--svg docs/replay2.svg]
 
-Writes `evals/data/replay/results.json` and `docs/replay.svg`.
+Writes `results.json` beside the replay's rows, and the chart.
 """
 from __future__ import annotations
 
@@ -27,8 +27,8 @@ PERIODS = [("2003–07", date(2003, 1, 1), date(2007, 11, 30)), ("2007–09", da
            ("2022–23", date(2022, 1, 1), date(2023, 12, 31)), ("2024–26", date(2024, 1, 1), date(2026, 12, 31))]
 
 
-def load(seed: int) -> list[dict]:
-    return [json.loads(line) for line in (DATA / f"seed{seed}.jsonl").read_text().splitlines()]
+def load(seed: int, folder: Path = DATA) -> list[dict]:
+    return [json.loads(line) for line in (folder / f"seed{seed}.jsonl").read_text().splitlines()]
 
 
 def one_seed(rows: list[dict]) -> dict:
@@ -51,6 +51,9 @@ def one_seed(rows: list[dict]) -> dict:
         "expected": {name: {"expected": sorted(fams), "weeks": scoring.weeks_led(rows, a, b)}
                      for name, a, b, fams in scoring.EXPECTED},
         "leader_structures": len({tuple(r["edges"]) for r in rows}),
+        "programmes_alive_by_year": {yr: max(len(r["active_families"]) for r in rows if r["week"].startswith(yr))
+                                     for yr in sorted({r["week"][:4] for r in rows})},
+        "weeks_led_overall": scoring.weeks_led(rows, date(2000, 1, 1), date(2100, 1, 1)),
         "entropy_first_last": [round(rows[0]["entropy"], 3), round(rows[-1]["entropy"], 3)],
     }
 
@@ -150,8 +153,8 @@ def svg(all_rows: dict[int, list[dict]]) -> str:
     return "\n".join(out)
 
 
-def main() -> None:
-    all_rows = {s: load(s) for s in SEEDS}
+def main(folder: Path = DATA, chart: Path = DOCS / "replay.svg") -> None:
+    all_rows = {s: load(s, folder) for s in SEEDS}
     per_seed = {s: one_seed(rows) for s, rows in all_rows.items()}
     summary = {
         "median_family_changes": statistics.median(p["family_changes"] for p in per_seed.values()),
@@ -162,9 +165,9 @@ def main() -> None:
         "credit_stand_in_agreement": credit_agreement(fh.load()),
     }
     results = {"summary": summary, "per_seed": per_seed}
-    (DATA / "results.json").write_text(json.dumps(results, indent=1, default=str))
-    DOCS.mkdir(exist_ok=True)
-    (DOCS / "replay.svg").write_text(svg(all_rows))
+    (folder / "results.json").write_text(json.dumps(results, indent=1, default=str))
+    chart.parent.mkdir(exist_ok=True)
+    chart.write_text(svg(all_rows))
     print(json.dumps(summary, indent=1))
     for s, p in per_seed.items():
         print(f"seed {s}: {p['family_changes']} family changes, events caught {p['n_events_caught']}/"
@@ -173,4 +176,9 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dir", type=Path, default=DATA)
+    parser.add_argument("--svg", type=Path, default=DOCS / "replay.svg")
+    args = parser.parse_args()
+    main(args.dir, args.svg)
