@@ -2,6 +2,30 @@
 
 Backend for the Epistemic State Monitor: a probabilistic ontology engine for macro-financial and geopolitical regime analysis. The project is framed as an epistemic analysis tool, not a prediction engine. It maintains competing probabilistic ontology structures, learns from evidence, tracks edge uncertainty, and records paradigm shifts when the dominant explanatory structure changes.
 
+## What a 23-year replay showed
+
+Replayed week by week through 2003–2026 of real FRED data, from a fresh
+start, five times with different seeds ([plan, method and data](evals/README.md)):
+
+- **The structure it learns is worth believing, except when the world
+  breaks.** Each week, before learning it, its leading explanation gave the
+  eight macro signals more probability than treating them as unrelated, by
+  0.24 nats a week (median of seeds), most in the 2022–23 tightening cycle.
+  Through COVID (2020–21) every seed did worse than believing nothing
+  connected: the relationships it had learned broke, and it let go of them
+  too slowly.
+- **Its rival worldviews die young.** It starts with five competing
+  explanations (monetary, credit-first, AI boom, recession, and a null
+  baseline). In every seed, within two years every candidate descended from
+  the null baseline; what it records as paradigm shifts afterwards are one
+  lineage adding and removing an edge at a time, and they do not follow
+  2008, COVID or the 2022 hikes more often than chance.
+- **The replay found three bugs, now fixed:** an inverted dollar signal,
+  a CPI lookback that dropped inflation in about half of all weeks, and an
+  engine seed that never reached the code it was meant to seed.
+
+![The leading explanation, week by week](docs/replay.svg)
+
 ## Active Domains
 
 Eleven domains are live and registered in the API:
