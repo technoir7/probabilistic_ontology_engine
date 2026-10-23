@@ -15,7 +15,7 @@ from pathlib import Path
 
 from . import fred_history as fh
 from . import scoring
-from .replay import DATA, fridays
+from .replay import DATA, fridays, read_rows
 from src.domains.macro_regime_v1.ingestion.pipeline import compute_snapshot
 
 SEEDS = range(5)
@@ -28,7 +28,8 @@ PERIODS = [("2003–07", date(2003, 1, 1), date(2007, 11, 30)), ("2007–09", da
 
 
 def load(seed: int, folder: Path = DATA) -> list[dict]:
-    return [json.loads(line) for line in (folder / f"seed{seed}.jsonl").read_text().splitlines()]
+    gz = folder / f"seed{seed}.jsonl.gz"
+    return read_rows(gz if gz.exists() else folder / f"seed{seed}.jsonl")
 
 
 def one_seed(rows: list[dict]) -> dict:

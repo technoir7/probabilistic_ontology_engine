@@ -342,3 +342,79 @@ the leaders and crises are the same; written to `data/replay5/`.
    diffidence: when it said 15% the signal was true 3% of the time; when it
    said 84%, 97% (seed 0). It holds its beliefs more weakly than its
    evidence warrants.
+
+## Replay 6: beliefs about change
+
+*Plan, written before replay 6 ran.*
+
+The change (REFACTOR_SPEC D19), on top of replay 5's: each signal has a
+companion holding its value last week, which any structure may take as a
+parent and none may explain, and a sixth programme, `T_persistence`, holds
+that each signal follows its own last week and nothing else. Each week the
+leader's forecast is also recorded: the probability it gave this week's
+signals from last week's alone, before seeing any of them. Explanation
+still decides what is believed; the forecast is watched, not rewarded.
+Same data, events, seeds and questions 1–8, written to `data/replay6/`,
+and one more:
+
+9. **Is persistence the better worldview, and does believing in change
+   forecast better?** Which programmes lead and survive with persistence
+   available; the leader's forecast log-likelihood per week, against
+   replay 5's leader, which could only forecast from base rates (its
+   structure had nothing to go on but this week).
+
+### Replay 6 results
+
+![Replay 6](../docs/replay6.svg)
+
+1–4. **Shifts, events and the story: as before.** Every seed's first leader
+   was `T_persistence`, for five weeks; then the leader passed to another
+   programme and stayed (in four seeds `T_null`'s line; in seed 2, after
+   six changes in 2003–07, the AI-boom line). No event was followed by a
+   family change.
+5. **Rivals:** two programmes alive into 2004–08, one from 2015.
+7–8. **Humility and calibration:** much as in replay 5 (Brier 0.16 to
+   0.17; the population no better than its leader).
+9. **Persistence won by being absorbed.** It led only the first five
+   weeks, yet by 2003–05 every surviving programme's leader had taken links
+   from last week (3 to 8 of its 6 to 11 links by 2026), mostly a signal
+   following its own last week, and `T_persistence` was refuted as a rival
+   while its idea lived on in the others: a programme absorbing a rival's
+   content, in Lakatos's terms. With them the leader explains each week far
+   better than in replay 5 (−2.2 to −3.6 nats a week, from −4.6), and
+   forecasts each week from last week's signals alone at −3.8 to −4.1 nats,
+   against −4.8 for base rates. The fit gap over independence (question 3)
+   rose to 1.2 to 2.6 nats a week, but most of that is persistence, which
+   the independent baseline does not have.
+
+## Replay 7: as first published
+
+*Plan, written before replay 7 ran.*
+
+Replays 1–6 used today's revised CPI and unemployment, so each week could
+know a little more than it did at the time. Replay 7 is replay 6 with those
+two series as they were first published: for each week, the latest
+monthly ALFRED vintage taken on or before it (CPI on the 16th, after its
+mid-month release; unemployment on the 8th, after its first-Friday
+release), so a week may see a release a few days late but never one not yet
+made. The market series are not revised. Written to `data/replay7/`; the
+engine is replay 6's.
+
+10. **Does honesty about what was known change the beliefs?** Questions
+    1–9 as before, and how many weeks the inflation and labour-market
+    signals differ from replay 6.
+
+### Replay 7 results
+
+![Replay 7](../docs/replay7.svg)
+
+10. **Honesty about what was known changed little.** As first published,
+    InflationShock differed from replay 6 in 37 of 1,229 weeks and the
+    labour signal (EquityRiskOn) in 28. The beliefs barely moved: `T_null`'s
+    line led throughout in two seeds and almost throughout in the others,
+    where the AI-boom line led for 11 to 42 weeks; no event was followed by
+    a family change. The leader explained each week a little less well in
+    four seeds (it knew a little less) and better in one, forecast it from
+    last week at −3.6 to −4.1 nats against replay 6's −3.8 to −4.1, and was
+    as timid (Brier 0.14 to 0.17). So nothing in replays 1–6 rests on
+    hindsight; replay 7 is the honest baseline from here on.

@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import gzip
 import json
 from collections import Counter
 from datetime import date, timedelta
@@ -108,6 +109,20 @@ def run(history: dict, seed: int, start: date, end: date, credit: str = fh.CREDI
     return rows
 
 
+def write_rows(path: Path, rows: list[dict]) -> None:
+    """One JSON row a week, gzipped when the name ends in .gz."""
+    text = "".join(json.dumps(r) + "\n" for r in rows)
+    if path.suffix == ".gz":
+        path.write_bytes(gzip.compress(text.encode(), mtime=0))
+    else:
+        path.write_text(text)
+
+
+def read_rows(path: Path) -> list[dict]:
+    text = gzip.decompress(path.read_bytes()).decode() if path.suffix == ".gz" else path.read_text()
+    return [json.loads(line) for line in text.splitlines()]
+
+
 _NAMES = {str(v.variable_id): v.name for v in get_variables().values()}
 
 
@@ -131,6 +146,6 @@ if __name__ == "__main__":
     end = args.end or max(o.obs_date for o in fh.load()["WALCL"])
     rows = run(history, args.seed, args.start, end, args.credit)
     DATA.mkdir(parents=True, exist_ok=True)
-    out = Path(args.out) if args.out else DATA / f"seed{args.seed}.jsonl"
-    out.write_text("".join(json.dumps(r) + "\n" for r in rows))
+    out = Path(args.out) if args.out else DATA / f"seed{args.seed}.jsonl.gz"
+    write_rows(out, rows)
     print(f"{len(rows)} weeks, {rows[0]['week']} to {rows[-1]['week']} -> {out}")

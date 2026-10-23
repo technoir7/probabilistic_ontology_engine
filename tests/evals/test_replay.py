@@ -194,3 +194,9 @@ class TestExportForTheLiveApp:
                                                          date(2024, 6, 23), date(2024, 6, 30)]
         assert all(r.source_ref.endswith(f"week-ending-{r.timestamp.date()}") for r in records)
         assert all(len(r.observed_assignments) == 8 for r in records)
+
+
+def test_rows_round_trip_gzipped(tmp_path):
+    rows = [{"week": "2024-01-05", "family": "T_null"}, {"week": "2024-01-12", "family": "T_credit"}]
+    replay.write_rows(tmp_path / "seed0.jsonl.gz", rows)
+    assert replay.read_rows(tmp_path / "seed0.jsonl.gz") == rows

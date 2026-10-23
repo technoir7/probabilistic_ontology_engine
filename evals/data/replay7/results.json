@@ -1,0 +1,791 @@
+{
+ "summary": {
+  "median_family_changes": 3,
+  "median_events_caught": 0,
+  "median_chance_caught": 0.61,
+  "median_changes_away": 3,
+  "median_fit_gap_nats": 1.7583,
+  "credit_stand_in_agreement": {
+   "weeks": 104,
+   "same_state": 71
+  }
+ },
+ "per_seed": {
+  "0": {
+   "family_changes": 1,
+   "changes": [
+    {
+     "week": "2003-05-09",
+     "from": "T_persistence",
+     "to": "T_null"
+    }
+   ],
+   "events_caught": {
+    "2008 recession": false,
+    "Lehman Brothers fails": false,
+    "Taper tantrum": false,
+    "First hike after zero rates": false,
+    "Quantitative tightening begins": false,
+    "COVID crash": false,
+    "2022 hiking cycle": false,
+    "Quantitative tightening resumes": false,
+    "ChatGPT released": false,
+    "Silicon Valley Bank fails": false
+   },
+   "n_events_caught": 0,
+   "chance_mean_caught": 0.21,
+   "p_chance_catches_as_many": 1.0,
+   "changes_away_from_events": 1,
+   "fit_gap": {
+    "weeks": 1226,
+    "mean_gap_nats": 1.3343
+   },
+   "fit_gap_by_period": {
+    "2003\u201307": {
+     "weeks": 244,
+     "mean_gap_nats": 0.1188
+    },
+    "2007\u201309": {
+     "weeks": 108,
+     "mean_gap_nats": 0.9803
+    },
+    "2010\u201319": {
+     "weeks": 522,
+     "mean_gap_nats": 1.7284
+    },
+    "2020\u201321": {
+     "weeks": 105,
+     "mean_gap_nats": 1.4454
+    },
+    "2022\u201323": {
+     "weeks": 104,
+     "mean_gap_nats": 1.9564
+    },
+    "2024\u201326": {
+     "weeks": 143,
+     "mean_gap_nats": 1.703
+    }
+   },
+   "weeks_led": {
+    "2003\u201307": {
+     "T_persistence": 5,
+     "T_null": 239
+    },
+    "2007\u201309": {
+     "T_null": 108
+    },
+    "2010\u201319": {
+     "T_null": 522
+    },
+    "2020\u201321": {
+     "T_null": 105
+    },
+    "2022\u201323": {
+     "T_null": 104
+    },
+    "2024\u201326": {
+     "T_null": 146
+    }
+   },
+   "expected": {
+    "2008\u201309": {
+     "expected": [
+      "T_credit",
+      "T_recession"
+     ],
+     "weeks": {
+      "T_null": 104
+     }
+    },
+    "2022\u201323": {
+     "expected": [
+      "T_monetary",
+      "T_recession"
+     ],
+     "weeks": {
+      "T_null": 104
+     }
+    },
+    "2023\u201324": {
+     "expected": [
+      "T_ai_boom"
+     ],
+     "weeks": {
+      "T_null": 104
+     }
+    }
+   },
+   "leader_structures": 21,
+   "programmes_alive_by_year": {
+    "2003": 6,
+    "2004": 2,
+    "2005": 2,
+    "2006": 2,
+    "2007": 2,
+    "2008": 1,
+    "2009": 1,
+    "2010": 1,
+    "2011": 1,
+    "2012": 1,
+    "2013": 1,
+    "2014": 1,
+    "2015": 1,
+    "2016": 1,
+    "2017": 1,
+    "2018": 1,
+    "2019": 1,
+    "2020": 1,
+    "2021": 1,
+    "2022": 1,
+    "2023": 1,
+    "2024": 1,
+    "2025": 1,
+    "2026": 1
+   },
+   "weeks_led_overall": {
+    "T_persistence": 5,
+    "T_null": 1224
+   },
+   "entropy_first_last": [
+    0.999,
+    1.95
+   ]
+  },
+  "1": {
+   "family_changes": 7,
+   "changes": [
+    {
+     "week": "2003-05-09",
+     "from": "T_persistence",
+     "to": "T_null"
+    },
+    {
+     "week": "2005-09-16",
+     "from": "T_null",
+     "to": "T_ai_boom"
+    },
+    {
+     "week": "2005-09-30",
+     "from": "T_ai_boom",
+     "to": "T_null"
+    },
+    {
+     "week": "2005-10-07",
+     "from": "T_null",
+     "to": "T_ai_boom"
+    },
+    {
+     "week": "2005-10-14",
+     "from": "T_ai_boom",
+     "to": "T_null"
+    },
+    {
+     "week": "2006-04-21",
+     "from": "T_null",
+     "to": "T_ai_boom"
+    },
+    {
+     "week": "2006-10-27",
+     "from": "T_ai_boom",
+     "to": "T_null"
+    }
+   ],
+   "events_caught": {
+    "2008 recession": false,
+    "Lehman Brothers fails": false,
+    "Taper tantrum": false,
+    "First hike after zero rates": false,
+    "Quantitative tightening begins": false,
+    "COVID crash": false,
+    "2022 hiking cycle": false,
+    "Quantitative tightening resumes": false,
+    "ChatGPT released": false,
+    "Silicon Valley Bank fails": false
+   },
+   "n_events_caught": 0,
+   "chance_mean_caught": 1.37,
+   "p_chance_catches_as_many": 1.0,
+   "changes_away_from_events": 7,
+   "fit_gap": {
+    "weeks": 1226,
+    "mean_gap_nats": 1.7583
+   },
+   "fit_gap_by_period": {
+    "2003\u201307": {
+     "weeks": 244,
+     "mean_gap_nats": 0.3821
+    },
+    "2007\u201309": {
+     "weeks": 108,
+     "mean_gap_nats": 1.1453
+    },
+    "2010\u201319": {
+     "weeks": 522,
+     "mean_gap_nats": 2.171
+    },
+    "2020\u201321": {
+     "weeks": 105,
+     "mean_gap_nats": 2.0265
+    },
+    "2022\u201323": {
+     "weeks": 104,
+     "mean_gap_nats": 2.487
+    },
+    "2024\u201326": {
+     "weeks": 143,
+     "mean_gap_nats": 2.3361
+    }
+   },
+   "weeks_led": {
+    "2003\u201307": {
+     "T_persistence": 5,
+     "T_null": 209,
+     "T_ai_boom": 30
+    },
+    "2007\u201309": {
+     "T_null": 108
+    },
+    "2010\u201319": {
+     "T_null": 522
+    },
+    "2020\u201321": {
+     "T_null": 105
+    },
+    "2022\u201323": {
+     "T_null": 104
+    },
+    "2024\u201326": {
+     "T_null": 146
+    }
+   },
+   "expected": {
+    "2008\u201309": {
+     "expected": [
+      "T_credit",
+      "T_recession"
+     ],
+     "weeks": {
+      "T_null": 104
+     }
+    },
+    "2022\u201323": {
+     "expected": [
+      "T_monetary",
+      "T_recession"
+     ],
+     "weeks": {
+      "T_null": 104
+     }
+    },
+    "2023\u201324": {
+     "expected": [
+      "T_ai_boom"
+     ],
+     "weeks": {
+      "T_null": 104
+     }
+    }
+   },
+   "leader_structures": 21,
+   "programmes_alive_by_year": {
+    "2003": 6,
+    "2004": 2,
+    "2005": 2,
+    "2006": 2,
+    "2007": 2,
+    "2008": 1,
+    "2009": 1,
+    "2010": 1,
+    "2011": 1,
+    "2012": 1,
+    "2013": 1,
+    "2014": 1,
+    "2015": 1,
+    "2016": 1,
+    "2017": 1,
+    "2018": 1,
+    "2019": 1,
+    "2020": 1,
+    "2021": 1,
+    "2022": 1,
+    "2023": 1,
+    "2024": 1,
+    "2025": 1,
+    "2026": 1
+   },
+   "weeks_led_overall": {
+    "T_persistence": 5,
+    "T_null": 1194,
+    "T_ai_boom": 30
+   },
+   "entropy_first_last": [
+    0.985,
+    1.901
+   ]
+  },
+  "2": {
+   "family_changes": 3,
+   "changes": [
+    {
+     "week": "2003-05-09",
+     "from": "T_persistence",
+     "to": "T_null"
+    },
+    {
+     "week": "2004-09-10",
+     "from": "T_null",
+     "to": "T_ai_boom"
+    },
+    {
+     "week": "2004-11-26",
+     "from": "T_ai_boom",
+     "to": "T_null"
+    }
+   ],
+   "events_caught": {
+    "2008 recession": false,
+    "Lehman Brothers fails": false,
+    "Taper tantrum": false,
+    "First hike after zero rates": false,
+    "Quantitative tightening begins": false,
+    "COVID crash": false,
+    "2022 hiking cycle": false,
+    "Quantitative tightening resumes": false,
+    "ChatGPT released": false,
+    "Silicon Valley Bank fails": false
+   },
+   "n_events_caught": 0,
+   "chance_mean_caught": 0.61,
+   "p_chance_catches_as_many": 1.0,
+   "changes_away_from_events": 3,
+   "fit_gap": {
+    "weeks": 1226,
+    "mean_gap_nats": 1.8902
+   },
+   "fit_gap_by_period": {
+    "2003\u201307": {
+     "weeks": 244,
+     "mean_gap_nats": 0.1169
+    },
+    "2007\u201309": {
+     "weeks": 108,
+     "mean_gap_nats": 1.0649
+    },
+    "2010\u201319": {
+     "weeks": 522,
+     "mean_gap_nats": 2.1799
+    },
+    "2020\u201321": {
+     "weeks": 105,
+     "mean_gap_nats": 2.4125
+    },
+    "2022\u201323": {
+     "weeks": 104,
+     "mean_gap_nats": 3.3798
+    },
+    "2024\u201326": {
+     "weeks": 143,
+     "mean_gap_nats": 3.0153
+    }
+   },
+   "weeks_led": {
+    "2003\u201307": {
+     "T_persistence": 5,
+     "T_null": 228,
+     "T_ai_boom": 11
+    },
+    "2007\u201309": {
+     "T_null": 108
+    },
+    "2010\u201319": {
+     "T_null": 522
+    },
+    "2020\u201321": {
+     "T_null": 105
+    },
+    "2022\u201323": {
+     "T_null": 104
+    },
+    "2024\u201326": {
+     "T_null": 146
+    }
+   },
+   "expected": {
+    "2008\u201309": {
+     "expected": [
+      "T_credit",
+      "T_recession"
+     ],
+     "weeks": {
+      "T_null": 104
+     }
+    },
+    "2022\u201323": {
+     "expected": [
+      "T_monetary",
+      "T_recession"
+     ],
+     "weeks": {
+      "T_null": 104
+     }
+    },
+    "2023\u201324": {
+     "expected": [
+      "T_ai_boom"
+     ],
+     "weeks": {
+      "T_null": 104
+     }
+    }
+   },
+   "leader_structures": 25,
+   "programmes_alive_by_year": {
+    "2003": 6,
+    "2004": 2,
+    "2005": 2,
+    "2006": 2,
+    "2007": 2,
+    "2008": 2,
+    "2009": 1,
+    "2010": 1,
+    "2011": 1,
+    "2012": 1,
+    "2013": 1,
+    "2014": 1,
+    "2015": 1,
+    "2016": 1,
+    "2017": 1,
+    "2018": 1,
+    "2019": 1,
+    "2020": 1,
+    "2021": 1,
+    "2022": 1,
+    "2023": 1,
+    "2024": 1,
+    "2025": 1,
+    "2026": 1
+   },
+   "weeks_led_overall": {
+    "T_persistence": 5,
+    "T_null": 1213,
+    "T_ai_boom": 11
+   },
+   "entropy_first_last": [
+    0.985,
+    1.241
+   ]
+  },
+  "3": {
+   "family_changes": 7,
+   "changes": [
+    {
+     "week": "2003-05-09",
+     "from": "T_persistence",
+     "to": "T_null"
+    },
+    {
+     "week": "2006-03-24",
+     "from": "T_null",
+     "to": "T_ai_boom"
+    },
+    {
+     "week": "2006-12-15",
+     "from": "T_ai_boom",
+     "to": "T_null"
+    },
+    {
+     "week": "2007-10-12",
+     "from": "T_null",
+     "to": "T_ai_boom"
+    },
+    {
+     "week": "2007-10-19",
+     "from": "T_ai_boom",
+     "to": "T_null"
+    },
+    {
+     "week": "2007-10-26",
+     "from": "T_null",
+     "to": "T_ai_boom"
+    },
+    {
+     "week": "2007-11-16",
+     "from": "T_ai_boom",
+     "to": "T_null"
+    }
+   ],
+   "events_caught": {
+    "2008 recession": false,
+    "Lehman Brothers fails": false,
+    "Taper tantrum": false,
+    "First hike after zero rates": false,
+    "Quantitative tightening begins": false,
+    "COVID crash": false,
+    "2022 hiking cycle": false,
+    "Quantitative tightening resumes": false,
+    "ChatGPT released": false,
+    "Silicon Valley Bank fails": false
+   },
+   "n_events_caught": 0,
+   "chance_mean_caught": 1.37,
+   "p_chance_catches_as_many": 1.0,
+   "changes_away_from_events": 7,
+   "fit_gap": {
+    "weeks": 1226,
+    "mean_gap_nats": 1.7065
+   },
+   "fit_gap_by_period": {
+    "2003\u201307": {
+     "weeks": 244,
+     "mean_gap_nats": 0.2891
+    },
+    "2007\u201309": {
+     "weeks": 108,
+     "mean_gap_nats": 1.6515
+    },
+    "2010\u201319": {
+     "weeks": 522,
+     "mean_gap_nats": 1.8986
+    },
+    "2020\u201321": {
+     "weeks": 105,
+     "mean_gap_nats": 2.1783
+    },
+    "2022\u201323": {
+     "weeks": 104,
+     "mean_gap_nats": 2.6173
+    },
+    "2024\u201326": {
+     "weeks": 143,
+     "mean_gap_nats": 2.4562
+    }
+   },
+   "weeks_led": {
+    "2003\u201307": {
+     "T_persistence": 5,
+     "T_null": 197,
+     "T_ai_boom": 42
+    },
+    "2007\u201309": {
+     "T_null": 108
+    },
+    "2010\u201319": {
+     "T_null": 522
+    },
+    "2020\u201321": {
+     "T_null": 105
+    },
+    "2022\u201323": {
+     "T_null": 104
+    },
+    "2024\u201326": {
+     "T_null": 146
+    }
+   },
+   "expected": {
+    "2008\u201309": {
+     "expected": [
+      "T_credit",
+      "T_recession"
+     ],
+     "weeks": {
+      "T_null": 104
+     }
+    },
+    "2022\u201323": {
+     "expected": [
+      "T_monetary",
+      "T_recession"
+     ],
+     "weeks": {
+      "T_null": 104
+     }
+    },
+    "2023\u201324": {
+     "expected": [
+      "T_ai_boom"
+     ],
+     "weeks": {
+      "T_null": 104
+     }
+    }
+   },
+   "leader_structures": 16,
+   "programmes_alive_by_year": {
+    "2003": 6,
+    "2004": 2,
+    "2005": 2,
+    "2006": 2,
+    "2007": 2,
+    "2008": 2,
+    "2009": 1,
+    "2010": 1,
+    "2011": 1,
+    "2012": 1,
+    "2013": 1,
+    "2014": 1,
+    "2015": 1,
+    "2016": 1,
+    "2017": 1,
+    "2018": 1,
+    "2019": 1,
+    "2020": 1,
+    "2021": 1,
+    "2022": 1,
+    "2023": 1,
+    "2024": 1,
+    "2025": 1,
+    "2026": 1
+   },
+   "weeks_led_overall": {
+    "T_persistence": 5,
+    "T_null": 1182,
+    "T_ai_boom": 42
+   },
+   "entropy_first_last": [
+    0.984,
+    1.863
+   ]
+  },
+  "4": {
+   "family_changes": 1,
+   "changes": [
+    {
+     "week": "2003-05-09",
+     "from": "T_persistence",
+     "to": "T_null"
+    }
+   ],
+   "events_caught": {
+    "2008 recession": false,
+    "Lehman Brothers fails": false,
+    "Taper tantrum": false,
+    "First hike after zero rates": false,
+    "Quantitative tightening begins": false,
+    "COVID crash": false,
+    "2022 hiking cycle": false,
+    "Quantitative tightening resumes": false,
+    "ChatGPT released": false,
+    "Silicon Valley Bank fails": false
+   },
+   "n_events_caught": 0,
+   "chance_mean_caught": 0.21,
+   "p_chance_catches_as_many": 1.0,
+   "changes_away_from_events": 1,
+   "fit_gap": {
+    "weeks": 1226,
+    "mean_gap_nats": 2.6817
+   },
+   "fit_gap_by_period": {
+    "2003\u201307": {
+     "weeks": 244,
+     "mean_gap_nats": 0.6659
+    },
+    "2007\u201309": {
+     "weeks": 108,
+     "mean_gap_nats": 1.6306
+    },
+    "2010\u201319": {
+     "weeks": 522,
+     "mean_gap_nats": 2.9787
+    },
+    "2020\u201321": {
+     "weeks": 105,
+     "mean_gap_nats": 3.4424
+    },
+    "2022\u201323": {
+     "weeks": 104,
+     "mean_gap_nats": 4.3316
+    },
+    "2024\u201326": {
+     "weeks": 143,
+     "mean_gap_nats": 4.0723
+    }
+   },
+   "weeks_led": {
+    "2003\u201307": {
+     "T_persistence": 5,
+     "T_null": 239
+    },
+    "2007\u201309": {
+     "T_null": 108
+    },
+    "2010\u201319": {
+     "T_null": 522
+    },
+    "2020\u201321": {
+     "T_null": 105
+    },
+    "2022\u201323": {
+     "T_null": 104
+    },
+    "2024\u201326": {
+     "T_null": 146
+    }
+   },
+   "expected": {
+    "2008\u201309": {
+     "expected": [
+      "T_credit",
+      "T_recession"
+     ],
+     "weeks": {
+      "T_null": 104
+     }
+    },
+    "2022\u201323": {
+     "expected": [
+      "T_monetary",
+      "T_recession"
+     ],
+     "weeks": {
+      "T_null": 104
+     }
+    },
+    "2023\u201324": {
+     "expected": [
+      "T_ai_boom"
+     ],
+     "weeks": {
+      "T_null": 104
+     }
+    }
+   },
+   "leader_structures": 23,
+   "programmes_alive_by_year": {
+    "2003": 6,
+    "2004": 2,
+    "2005": 1,
+    "2006": 1,
+    "2007": 1,
+    "2008": 1,
+    "2009": 1,
+    "2010": 1,
+    "2011": 1,
+    "2012": 1,
+    "2013": 1,
+    "2014": 1,
+    "2015": 1,
+    "2016": 1,
+    "2017": 1,
+    "2018": 1,
+    "2019": 1,
+    "2020": 1,
+    "2021": 1,
+    "2022": 1,
+    "2023": 1,
+    "2024": 1,
+    "2025": 1,
+    "2026": 1
+   },
+   "weeks_led_overall": {
+    "T_persistence": 5,
+    "T_null": 1224
+   },
+   "entropy_first_last": [
+    0.98,
+    1.349
+   ]
+  }
+ }
+}

@@ -1,30 +1,78 @@
 # Probabilistic Ontology Engine
 
-Backend for the Epistemic State Monitor: a probabilistic ontology engine for macro-financial and geopolitical regime analysis. The project is framed as an epistemic analysis tool, not a prediction engine. It maintains competing probabilistic ontology structures, learns from evidence, tracks edge uncertainty, and records paradigm shifts when the dominant explanatory structure changes.
+A working argument about how beliefs should be held, revised and given up,
+written as software. The engine keeps several rival explanations of a domain
+(how inflation, credit, the dollar and the rest of the macro economy bear on
+each other, for instance), weighs each against the evidence as it arrives
+week by week, and changes its mind when the evidence says to. It is not a
+forecaster, and is not tuned to be one; it is meant to be legible as
+epistemology, and its forecasts are watched only as a check on its honesty.
 
-## What a 23-year replay showed
+It runs live over eleven domains fed by public data (FRED, EIA, SEC EDGAR,
+GDELT, CoinGecko, SF Open Data and others), behind the Epistemic State
+Monitor dashboard.
 
-Replayed week by week through 2003–2026 of real FRED data, from a fresh
-start, five times with different seeds ([plan, method and data](evals/README.md)):
+## How it holds beliefs
 
-- **The structure it learns is worth believing, except when the world
-  breaks.** Each week, before learning it, its leading explanation gave the
-  eight macro signals more probability than treating them as unrelated, by
-  0.24 nats a week (median of seeds), most in the 2022–23 tightening cycle.
-  Through COVID (2020–21) every seed did worse than believing nothing
-  connected: the relationships it had learned broke, and it let go of them
-  too slowly.
-- **Its rival worldviews die young.** It starts with five competing
-  explanations (monetary, credit-first, AI boom, recession, and a null
-  baseline). In every seed, within two years every candidate descended from
-  the null baseline; what it records as paradigm shifts afterwards are one
-  lineage adding and removing an edge at a time, and they do not follow
-  2008, COVID or the 2022 hikes more often than chance.
-- **The replay found three bugs, now fixed:** an inverted dollar signal,
-  a CPI lookback that dropped inflation in about half of all weeks, and an
+Belief lives at three levels (SPEC §3), each revised by Bayesian updating:
+
+- **How strong is a relationship?** Each explanation's conditional
+  probability tables, learned from the evidence.
+- **Does a relationship exist at all?** Every link carries a probability
+  of existing, raised or lowered by how much it helps explain the evidence.
+- **Which whole explanation do I hold?** A population of rival
+  explanations, scored on recent evidence; the best leads, the worst are
+  dropped, and variants of the survivors are tried. A change of leader is
+  recorded as a paradigm shift.
+
+Four rules, each added after a replay showed the engine needed it
+([what each replay found](evals/README.md)):
+
+- **Rivals live until refuted.** Every explanation belongs to a research
+  programme (the seed it grew from). A programme's best is kept until the
+  evidence for the leader over it is decisive, a Bayes factor above 100,
+  and programmes take turns to propose variants, so a rival gets to revise
+  itself before it is judged (Lakatos).
+- **Doubt in a crisis.** When the leading explanation is far more surprised
+  by a week than it usually is, everything learned so far counts for half,
+  so a world that has broken (COVID) loosens old certainties without making
+  calm years fickle.
+- **Beliefs about change.** Each signal's value last week is available as a
+  cause, and one programme holds that things simply persist.
+- **Know your own confidence.** Each week the engine records whether its
+  70% beliefs come true 70% of the time, and whether its whole population,
+  weighted by belief, explains the week better than its favourite.
+
+## What 23 years of evidence did to it
+
+Replayed week by week through 2003–2026 of real FRED data (macro domain,
+five seeds, each replay planned in writing before it ran):
+
+- **Its rival worldviews were refuted, not just outranked.** Of five
+  starting explanations (monetary, credit-first, AI boom, recession, and a
+  sparse baseline), the baseline's line came to lead in most seeds and the
+  AI-boom line in the rest. Given protection until refuted and a fair turn
+  at revising themselves, the others still fell to evidence of 100 to 1,
+  most by 2005–08.
+- **Persistence won by being absorbed.** Offered as a rival, "things stay
+  as they were" led for five weeks; then every surviving explanation took
+  last week's values as causes and it fell. With them, the leader explains
+  each week far better, and forecasts it from last week alone better than
+  base rates (−3.9 against −4.8 nats a week).
+- **Doubt fixed COVID.** Without it, the relationships learned over
+  seventeen years outlasted the world that produced them, and through
+  2020–21 the engine did worse than believing nothing connects; with it,
+  every seed did better.
+- **It is timid.** When it says 15% the signal comes true 3% of the time;
+  when it says 84%, 97%. It holds its beliefs more weakly than its evidence
+  warrants.
+- **Its paradigm shifts do not follow the headlines.** No change of leading
+  programme followed 2008, COVID or the 2022 hikes within six months.
+- **The replays found three bugs, now fixed**: an inverted dollar signal, a
+  CPI lookback that dropped inflation in about half of all weeks, and an
   engine seed that never reached the code it was meant to seed.
 
-![The leading explanation, week by week](docs/replay.svg)
+![The rival explanations die out; leader changes; the fit gap year by year](docs/replay6.svg)
 
 ## Active Domains
 
@@ -44,42 +92,7 @@ Eleven domains are live and registered in the API:
 | `sf` | `sf-urban-v1` | Weekly | SF Open Data + FRED |
 | `art` | `art_prestige_regime_v1` | Monthly | GDELT news coverage, Art Institute of Chicago acquisitions, hand-labelled reports |
 
-Most domains track eight Boolean variables across five seed candidate DAGs. The art domain tracks 25 Boolean variables across five seed candidate DAGs.
-
-## Domain Variables
-
-**`macro-regime-v1`**: `YieldCurveInverted`, `InflationShock`, `LiquidityStress`, `CreditSpreadStress`, `VolatilityShock`, `DollarStrength`, `EquityRiskOn`, `AIRiskOn`
-— FRED series: `T10Y2Y`, `CPIAUCSL`, `WALCL`, `BAMLH0A0HYM2`, `VIXCLS`, `DEXUSEU`, `UNRATE`, `NASDAQCOM`
-
-**`natural-gas-v1`**: `TempAnom`, `HeatingDem`, `StorageDraw`, `PriceUp`
-— NOAA weather API + EIA storage/price
-
-**`ai-regime-v1`**: `SemiconductorMomentum`, `MarketConcentrationExtreme`, `HyperscalerCapexAccelerating`, `TechValuationDetached`, `IPInvestmentRising`, `LaborProductivityImproving`, `BroadEconomicLift`, `AIRiskPremiumCompressed`
-— SEC EDGAR capex; yfinance `^SOX`, `QQQ`, `RSP`, `^VIX`; FRED quarterly IP/productivity/GDP
-
-**`sovereign-debt-v1`**: `USYieldSpiking`, `SpreadWidening`, `DollarStrengthening`, `FedBalanceSheetShrinking`, `EMStressElevated`, `FiscalDominanceRisk`, `CreditDefaultRisk`, `GlobalLiquidityContracting`
-— FRED: `DGS10`, `BAMLH0A0HYM2`, `DEXUSEU`, `WALCL`, `DTWEXBGS`, `GFDEBTN`, `M2SL`
-
-**`credit-cycle-v1`**: `HYSpreadElevated`, `LeveragedLoanStress`, `CorporateDefaultRisk`, `CreditImpulseNegative`, `BankLendingTightening`, `InvestmentGradeSpread`, `HighYieldIssuanceFalling`, `RefinancingStress`
-— FRED: `BAMLH0A0HYM2`, `DRTSCILM`, `TOTCI`, `BAMLC0A0CM`, `DGS5`
-
-**`energy-regime-v1`**: `OilPriceSurge`, `NatGasPriceSurge`, `EnergyEquityMomentum`, `OPECSupplyConstraint`, `RenewablesDisplacement`, `EnergyInflationPersistent`, `GeopoliticalRiskElevated`, `DemandDestructionRisk`
-— yfinance: `CL=F`, `NG=F`, `XLE`, `ICLN`
-
-**`labor-market-v1`**: `UnemploymentRising`, `WageInflationPersistent`, `JobOpeningsFalling`, `LayoffCycleBeginning`, `LaborProductivityWeak`, `ParticipationRateFalling`, `RealWageGrowthPositive`, `TightLaborMarket`
-— FRED: `UNRATE`, `CES0500000003`, `JTSJOL`, `ICSA`, `PRS85006092`, `CIVPART`, `CPIAUCSL`
-
-**`crypto-regime-v1`**: `BTCMomentumPositive`, `AltcoinSeasonActive`, `OnChainActivityElevated`, `StablecoinFlowPositive`, `CryptoVolatilityShock`, `RiskAssetCorrelation`, `NarrativeMomentum`, `DollarDebasementNarrative`
-— CoinGecko (no key); yfinance `BTC-USD`, `QQQ`, `GLD`
-
-**`geopolitics-v1`**: `ConflictIntensityElevated`, `TradeDisruptionRisk`, `SanctionsPressureElevated`, `DiplomaticTensionHigh`, `SupplyChainStress`, `CurrencyWarSignal`, `EnergyWeaponizationRisk`, `GlobalTradeVolumeWeak`
-— GDELT (no key); FRED: `DCOILWTICO`, `PPIACO`, `DTWEXBGS`, `INDPRO`
-
-**`sf-urban-v1`**: `TechHiringAccelerating`, `OfficeVacancyFalling`, `RetailClosureElevated`, `PermitActivityRising`, `CrimeIndexElevated`, `StartupFormationRising`, `FootTrafficRecovering`, `PopulationFlowPositive`
-— SF Open Data: permits (`i98e-djp9`), crime (`wg3w-h783`), businesses (`g8m3-pdis`); FRED: `SANF806INFO`, `SANF806LEIH`, `SANF806NA` (SF-Oakland-Fremont MSA, monthly SA)
-
-**`art_prestige_regime_v1`**: 25 art prestige regime variables (institutional, market, cultural) and five seed hypotheses, in `src/domains/art_prestige_regime_v1`.
-— Fetched monthly where a series measures the variable (see `ingestion/pipeline.py` `MEASURES`); hand-labelled reports in `report_files/` cover the rest under the rules in `reports.py`. Unmeasured variables are MISSING.
+Most domains track eight Boolean variables across five seed candidate DAGs; the macro domain also holds each one's value last week and a sixth, persistence, programme. The art domain tracks 25 Boolean variables. Every domain's variables and sources: [docs/domains.md](docs/domains.md).
 
 ## Architecture
 
