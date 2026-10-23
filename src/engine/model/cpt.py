@@ -92,6 +92,12 @@ class CPTData:
         """Copy of the raw counts for one parent configuration ({} if never seen)."""
         return dict(self.counts.get(self.config_key(parent_assignment), {}))
 
+    def discount(self, factor: float) -> None:
+        """Count every observation for `factor` of what it did (D17)."""
+        for row in self.counts.values():
+            for v in row:
+                row[v] *= factor
+
     def total_count(self) -> float:
         return sum(sum(row.values()) for row in self.counts.values())
 

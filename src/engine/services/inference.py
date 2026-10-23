@@ -9,6 +9,8 @@ model.scoring.score_weights.
 """
 from __future__ import annotations
 
+from typing import Any
+
 
 from pgmpy.inference import VariableElimination
 from pgmpy.models import DiscreteBayesianNetwork as BayesianNetwork
@@ -112,6 +114,22 @@ class InferenceService:
         if query.explain:
             result["explanations"] = self._explain(candidate, query, posteriors)
         return result
+
+    # ------------------------------------------------------------------
+    def leave_one_out(self, candidate: OntologyCandidate, observed: dict[str, Any]) -> dict[str, float]:
+        """P(each observed variable is true | every other observed one), one
+        model built for all of them (D18 calibration)."""
+        ve = VariableElimination(self._build_pgmpy_model(candidate))
+        out = {}
+        for name, _ in observed.items():
+            var = candidate.get_variable_by_name(name)
+            if var is None or True not in var.support:
+                continue
+            evidence = {n: encode_value(v, candidate.get_variable_by_name(n).support)
+                        for n, v in observed.items() if n != name and candidate.get_variable_by_name(n)}
+            q = ve.query([name], evidence=evidence, show_progress=False)
+            out[name] = float(q.values[var.support.index(True)])
+        return out
 
     # ------------------------------------------------------------------
     def _build_pgmpy_model(self, candidate: OntologyCandidate) -> BayesianNetwork:

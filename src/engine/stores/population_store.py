@@ -147,6 +147,7 @@ class PopulationStore:
                 pruned_at=datetime.fromisoformat(c["pruned_at"]) if c["pruned_at"] else None,
                 pruning_reason=c["pruning_reason"],
                 description=c["description"],
+                lineage=json.loads(c["metadata"] or "{}").get("lineage", ""),
             ))
         active_id = row["active_candidate_id"]
         pop = OntologyPopulation(
@@ -238,7 +239,7 @@ class PopulationStore:
                 cand.pruned_at.isoformat() if cand.pruned_at else None,
                 cand.pruning_reason,
                 cand.description,
-                "{}",
+                json.dumps({"lineage": cand.lineage}),
             ),
         )
         self._db.commit()

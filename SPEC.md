@@ -579,6 +579,7 @@ All variants must pass schema template validation before entering the population
 **Candidate pruning (Level 3):**
 - log_score in bottom quartile of population after minimum evidence_count threshold reached
 - Candidate has not improved relative rank in K consecutive learning cycles
+- Amendment (REFACTOR_SPEC D15): the best candidate of each research programme (the seed it descends from) is spared until the evidence for the dominant candidate over it is decisive (Bayes factor > 100), so rival worldviews are not lost while evidence is thin
 
 ---
 

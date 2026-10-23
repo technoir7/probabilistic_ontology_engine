@@ -183,6 +183,9 @@ class OntologyCandidate(BaseModel):
     pruned_at: Optional[datetime] = None
     pruning_reason: Optional[str] = None
     description: str = ""
+    # The seed explanation this candidate descends from: its research
+    # programme. Pruning keeps each programme's best (REFACTOR_SPEC D15).
+    lineage: str = ""
 
     # ---- helpers ----
 

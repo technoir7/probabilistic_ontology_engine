@@ -17,6 +17,7 @@ from uuid import UUID
 logger = logging.getLogger(__name__)
 
 from .model.domain import DomainModule
+from .model.doubt import DISCOUNT as DOUBT_DISCOUNT
 from .schemas import (
     EdgeExistenceThresholdConfig,
     EvidenceRecord,
@@ -26,6 +27,7 @@ from .schemas import (
     OntologyPopulation,
 )
 from .services.edge_existence import EdgeExistenceService
+from .services.health import EpistemicHealth
 from .services.inference import InferenceService
 from .services.learning import LearningService
 from .services.population_manager import PopulationManager
@@ -66,6 +68,7 @@ class ProbabilisticOntologyEngine:
         # existence_thresholds(); a single default-threshold service ignored them.
         self._edge_existence: dict[str, EdgeExistenceService] = {}
         self.inference_service = InferenceService(self.parameter_store)
+        self.health = EpistemicHealth(self.inference_service)
         self.population_manager = PopulationManager(
             parameter_store=self.parameter_store,
             population_store=self.population_store,
@@ -174,6 +177,7 @@ class ProbabilisticOntologyEngine:
             self.learning_service.initialize_candidate(cand, alpha=1.0)
         self.parameter_store.load_candidates([c.candidate_id for c in pop.candidates])
         self.population_manager.adopt(module_id, pop, admissible, state)
+        self.health.adopt(module_id, state.get("health"))
         self._batch_index[module_id] = state["batch_index"]
         logger.info(
             "Resumed population for '%s': generation=%d candidates=%d",
@@ -188,6 +192,7 @@ class ProbabilisticOntologyEngine:
             "candidate_ids": [str(c.candidate_id) for c in pop.candidates],
             "batch_index": self._batch_index.get(domain, 0),
             **self.population_manager.export_state(domain),
+            "health": self.health.state(domain),
         }
         self.population_store.save_population_state(pop, state, changed)
         self.parameter_store.save_candidates([c.candidate_id for c in changed], domain)
@@ -261,6 +266,7 @@ class ProbabilisticOntologyEngine:
             self.population_store.delete_domain(module_id)
             self.parameter_store.delete_domain(module_id, candidate_ids)
         self.population_manager.forget(module_id)
+        self.health.forget(module_id)
         for stats in (self._learn_call_count, self._learn_last_ts, self._learn_records_total):
             stats.pop(module_id, None)
         self.register_domain(domain_module)
@@ -351,14 +357,18 @@ class ProbabilisticOntologyEngine:
             domain, idx, n_records, len(pop.active_candidates()),
         )
 
+        # Score before learning from the batch (prequential). Scoring after
+        # rewards extra edges by about the BIC penalty, so spurious edges
+        # beat the true graph (REFACTOR_SPEC D8, D14).
+        scores = {c.candidate_id: self.learning_service.compute_log_likelihood(batch, c)
+                  for c in pop.active_candidates()}
+        self.health.observe(domain, pop.active_candidates(), self.population_manager.dominant(domain), scores, batch)
+        self._doubt_if_surprised(domain, scores, n_records)
+
         for candidate in pop.active_candidates():
             prev_ec = candidate.evidence_count
             prev_ls = candidate.log_score
-
-            # Score before learning from the batch (prequential). Scoring after
-            # rewards extra edges by about the BIC penalty, so spurious edges
-            # beat the true graph (REFACTOR_SPEC D8, D14).
-            log_lik = self.learning_service.compute_log_likelihood(batch, candidate)
+            log_lik = scores[candidate.candidate_id]
 
             # Level 1 — parameter update
             logger.debug(
@@ -425,6 +435,26 @@ class ProbabilisticOntologyEngine:
         self._persist_population(domain, list(changed.values()))
 
         return self._make_snapshot(domain, batch, summary)
+
+    def _doubt_if_surprised(self, domain: str, scores: dict, n_records: int) -> None:
+        """A crisis (D17): the leader far more surprised than usual. Every
+        candidate's counts and score window then count for half, before it
+        learns this batch."""
+        leader = self.population_manager.dominant(domain)
+        if leader is None or not n_records or leader.candidate_id not in scores:
+            return
+        if self.population_manager.surprise(domain).observe(-scores[leader.candidate_id] / n_records, n_records):
+            for c in self.population_manager.get_population(domain).active_candidates():
+                for cpt in self.parameter_store.get_all_for_candidate(c.candidate_id).values():
+                    cpt.discount(DOUBT_DISCOUNT)
+            self.population_manager.doubt(domain, DOUBT_DISCOUNT)
+
+    def doubt_events(self, domain: str) -> int:
+        return self.population_manager.surprise(domain).events
+
+    def epistemic_health(self, domain: str) -> dict:
+        """Calibration and humility so far (D18)."""
+        return {**self.health.report(domain), "doubt_events": self.doubt_events(domain)}
 
     # ------------------------------------------------------------------
     # Inference

@@ -12,11 +12,13 @@ Responsibilities:
 """
 from __future__ import annotations
 
+import math
 import random
 from datetime import datetime
 from uuid import UUID, uuid4
 
 
+from ..model.doubt import Surprise
 from ..model.scoring import add_to_window, candidate_score
 from ..model.scoring import dominant as best_candidate
 from ..schemas import (
@@ -33,6 +35,28 @@ from ..stores.population_store import PopulationStore
 
 # Pruning starts once any candidate has scored this many evidence records.
 _MIN_RECORDS_FOR_PRUNING = 3
+# Jeffreys' "decisive": a Bayes factor above 100 for the leader over a rival.
+_DECISIVE_LOG_BAYES_FACTOR = math.log(100)
+
+
+def _breeding_order(ranked: list[OntologyCandidate], turn: int) -> list[OntologyCandidate]:
+    """Each programme's best, best programme first and rotated by `turn`,
+    then everyone else by score."""
+    champions: dict[str, OntologyCandidate] = {}
+    for c in ranked:
+        champions.setdefault(c.lineage, c)
+    order = list(champions.values())
+    if order:
+        k = turn % len(order)
+        order = order[k:] + order[:k]
+    return order + [c for c in ranked if c not in order]
+
+
+def _refuted(candidate: OntologyCandidate, leader: OntologyCandidate) -> bool:
+    """Is the evidence for the leader over this candidate decisive? Log Bayes
+    factor approximated as each one's window total less its BIC penalty."""
+    gap = leader.window_evidence * candidate_score(leader) - candidate.window_evidence * candidate_score(candidate)
+    return gap > _DECISIVE_LOG_BAYES_FACTOR
 
 
 class PopulationManager:
@@ -56,6 +80,10 @@ class PopulationManager:
         # Mutation-cycle diagnostics from the most recent introduce_variants() call
         # {domain_module_id: {total_attempts, dag_violations, duplicate_rejections, introduced}}
         self._last_mutation_stats: dict[str, dict[str, int]] = {}
+        # Whose turn it is to breed first, per domain (D16).
+        self._breed_turn: dict[str, int] = {}
+        # The leader's usual surprise, per domain (D17).
+        self._surprise: dict[str, Surprise] = {}
 
     # ------------------------------------------------------------------
     # Initialization
@@ -72,6 +100,9 @@ class PopulationManager:
         if thresholds:
             self.thresholds = thresholds
 
+        for c in initial_candidates:
+            if not c.lineage:
+                c.lineage = c.description.split(":")[0].strip() or str(c.candidate_id)
         pop = OntologyPopulation(
             domain_module_id=domain_module_id,
             max_population_size=max_population_size,
@@ -96,6 +127,8 @@ class PopulationManager:
         self._populations[domain_module_id] = population
         self._admissible_edges[domain_module_id] = admissible_edges
         self._last_mutation_stats[domain_module_id] = dict(state.get("mutation_stats", {}))
+        self._breed_turn[domain_module_id] = int(state.get("breed_turn", 0))
+        self._surprise[domain_module_id] = Surprise.from_state(state.get("surprise"))
         version, internal, gauss_next = state["rng_state"]
         self.rng.setstate((version, tuple(internal), gauss_next))
 
@@ -104,12 +137,16 @@ class PopulationManager:
         self._populations.pop(domain_module_id, None)
         self._admissible_edges.pop(domain_module_id, None)
         self._last_mutation_stats.pop(domain_module_id, None)
+        self._breed_turn.pop(domain_module_id, None)
+        self._surprise.pop(domain_module_id, None)
 
     def export_state(self, domain_module_id: str) -> dict:
         """What adopt() needs besides the population itself (JSON-serializable)."""
         version, internal, gauss_next = self.rng.getstate()
         return {
             "rng_state": [version, list(internal), gauss_next],
+            "breed_turn": self._breed_turn.get(domain_module_id, 0),
+            "surprise": self.surprise(domain_module_id).state(),
             "mutation_stats": self.last_mutation_stats(domain_module_id),
         }
 
@@ -119,6 +156,15 @@ class PopulationManager:
 
     def get_population(self, domain_module_id: str) -> OntologyPopulation:
         return self._populations[domain_module_id]
+
+    def surprise(self, domain_module_id: str) -> Surprise:
+        return self._surprise.setdefault(domain_module_id, Surprise())
+
+    def doubt(self, domain_module_id: str, factor: float) -> None:
+        """Count every active candidate's score window for `factor` (D17)."""
+        for c in self._populations[domain_module_id].active_candidates():
+            c.window_log_score *= factor
+            c.window_evidence *= factor
 
     def dominant(self, domain_module_id: str) -> OntologyCandidate | None:
         """Return highest average-score active candidate (fair to late-arrivals)."""
@@ -184,10 +230,20 @@ class PopulationManager:
         ranked = sorted(active, key=candidate_score)
         n_prune = max(1, len(active) // 4)
 
+        # Each research programme keeps its best candidate until the evidence
+        # against it is decisive, so a rival worldview is not lost for ranking
+        # low while the evidence is thin, and a shift between them stays
+        # possible (D15).
+        leader = ranked[-1]
+        champions = {}
+        for c in reversed(ranked):
+            champions.setdefault(c.lineage, c)
+        spared = {c.candidate_id for c in champions.values() if not _refuted(c, leader)}
+
         pruned = []
         for c in ranked[:n_prune]:
-            # Don't prune the dominant candidate
-            if c.candidate_id == pop.active_candidate_id:
+            # Don't prune the dominant candidate or a programme's best
+            if c.candidate_id == pop.active_candidate_id or c.candidate_id in spared:
                 continue
             c.status = CandidateStatus.PRUNED
             c.pruned_at = datetime.utcnow()
@@ -217,7 +273,12 @@ class PopulationManager:
 
         # Best first by the same score that decides dominance and pruning; raw
         # log_score mostly measures how much evidence a candidate has seen.
-        survivors = sorted(active, key=candidate_score, reverse=True)
+        # Each research programme's best goes first in turn, so a rival gets
+        # to revise itself and is not judged unrevised (D16); with one
+        # programme this is plain best-first.
+        survivors = _breeding_order(sorted(active, key=candidate_score, reverse=True),
+                                    self._breed_turn.get(domain_module_id, 0))
+        self._breed_turn[domain_module_id] = self._breed_turn.get(domain_module_id, 0) + 1
         admissible = self._admissible_edges.get(domain_module_id, set())
 
         new_candidates: list[OntologyCandidate] = []
@@ -372,6 +433,7 @@ class PopulationManager:
             window_evidence=parent.window_evidence,
             status=CandidateStatus.ACTIVE,
             description=description,
+            lineage=parent.lineage,
         )
         return variant
 
