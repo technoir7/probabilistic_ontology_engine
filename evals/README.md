@@ -334,7 +334,8 @@ the leaders and crises are the same; written to `data/replay5/`.
    within 0.006 of the leader in every seed): with posterior weights taken
    over a window of about 150 records, nearly all the weight sits on the
    leader. The population is all but certain of its favourite.
-8. **Its confidence is informative but timid.** Over 9,824 judgements per
+8. **Its confidence is informative but timid** (replay 9 found the timidity
+   was in the measure, not the engine). Over 9,824 judgements per
    seed, its Brier score was 0.16 to 0.17 against 0.216 for a believer
    saying each signal's base rate, so it knows a good deal about each
    signal from the others. But its calibration error (0.07 to 0.10) is a
@@ -462,3 +463,43 @@ replay 7 is made where they agree:
     order (an ordinal model needs a few numbers per cause, not 20). The
     engine went back to yes/no signals; the levels are in commit 1290d1c6,
     to try again with ordinal tables.
+
+## Replay 9: timid, or judged unfairly?
+
+*Plan, written before replay 9 ran.*
+
+Replays 5 to 8 judged the engine's beliefs against each signal rounded to
+true or false. But the engine learns from soft evidence: on the weeks a
+signal rounds to true, the evidence itself puts it at 0.75 on average (and
+at 0.20 on the weeks it rounds to false; 9,914 judgements as first
+published). A belief learned faithfully from that evidence says about 75%
+on weeks that score as 100% true, and looks timid by construction.
+
+The change (REFACTOR_SPEC D21) measures, alongside the old score, the
+leader's calibration against the probability the evidence gave each signal.
+Nothing the engine learns changes. Same data as first published, seeds and
+events as replay 7, written to `data/replay9/`:
+
+12. **Is the timidity in the engine or in the measure?** If in the measure,
+    the leader's calibration error against the evidence will be far below
+    its error against the rounded signal (replay 7: 0.066 to 0.119), and
+    in each bin what it says will be near what the evidence says. If the
+    error against the evidence stays near replay 7's, the engine is timid
+    and the cause is still to be found.
+
+### Replay 9 results
+
+12. **The timidity was in the measure.** Against the probability the
+    evidence gave each signal, the leader's calibration error was 0.010 to
+    0.014 across the five seeds, against 0.066 to 0.119 against the signal
+    rounded (unchanged from replay 7, as it should be: nothing learned
+    changed). In no bin did what it said differ from what the evidence said
+    by more than 0.043; seed 0 said 0.15 where the evidence said 0.12, 0.74
+    where it said 0.73, 0.84 where it said 0.85. Its Brier score against the
+    evidence was 0.037 to 0.052. Replays 5 to 8 called it timid; it was
+    holding its beliefs exactly as firmly as its evidence did, and being
+    scored against a certainty the evidence never had.
+
+    One distortion remains: each judgement conditions on the week's other
+    signals rounded to true or false, so the engine is asked a slightly
+    sharper question than its evidence supports. It did not show here.

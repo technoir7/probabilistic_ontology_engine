@@ -42,8 +42,10 @@ Four rules, each added after a replay showed the engine needed it
 - **Beliefs about change.** Each signal's value last week is available as a
   cause, and one programme holds that things simply persist.
 - **Know your own confidence.** Each week the engine records whether its
-  70% beliefs come true 70% of the time, and whether its whole population,
-  weighted by belief, explains the week better than its favourite.
+  70% beliefs come true 70% of the time, judged both against each signal
+  rounded and against the probability the evidence gave it, and whether its
+  whole population, weighted by belief, explains the week better than its
+  favourite.
 
 ## What 23 years of evidence did to it
 
@@ -65,9 +67,12 @@ five seeds, each replay planned in writing before it ran):
   seventeen years outlasted the world that produced them, and through
   2020–21 the engine did worse than believing nothing connects; with it,
   every seed did better.
-- **It is timid.** When it says 15% the signal comes true 3% of the time;
-  when it says 84%, 97%. It holds its beliefs more weakly than its evidence
-  warrants.
+- **It believes as firmly as its evidence, no more.** Judged against each
+  signal rounded to true or false, it looked timid: when it said 15%, the
+  signal came true 3% of the time. But the evidence itself is soft (on weeks
+  that round to true, it puts the signal at 0.75 on average), and judged
+  against what the evidence said, it is calibrated to within 1 to 1.4
+  points. The timidity was in the measure.
 - **Its paradigm shifts do not follow the headlines.** No change of leading
   programme followed 2008, COVID or the 2022 hikes within six months.
 - **Nothing rests on hindsight.** Replayed again with each figure as it was

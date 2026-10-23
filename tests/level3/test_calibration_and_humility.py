@@ -59,3 +59,41 @@ def test_the_engine_tracks_both_every_cycle():
     assert health["last_cycle"]["population_ll"] <= 0 and health["last_cycle"]["leader_ll"] <= 0
     assert health["leader_calibration"]["n"] == 5 * 5   # 5 variables, every cycle after the first
     assert health["population_calibration"]["n"] == 5 * 5
+
+
+def test_an_outcome_may_itself_be_uncertain():
+    # Soft evidence says how likely a signal is, not whether it was: saying
+    # 70% of a signal the evidence puts at 70% is calibrated against it.
+    c = Calibration()
+    for _ in range(20):
+        c.observe(0.7, 0.7)
+    s = c.summary()
+    assert abs(s["calibration_error"]) < 1e-9 and abs(s["brier"]) < 1e-9
+
+
+def test_with_hard_evidence_both_measures_agree():
+    engine = ProbabilisticOntologyEngine(db_path=":memory:", random_seed=0)
+    engine.register_domain(TestDomainV1())
+    engine.activate_domain("test-domain-v1")
+    gen = SyntheticDataGenerator(graph="T*", random_seed=1)
+    for _ in range(6):
+        engine.learn(gen.sample(20))
+    health = engine.epistemic_health("test-domain-v1")
+    assert health["leader_calibration_vs_evidence"] == health["leader_calibration"]
+
+
+def test_soft_evidence_is_judged_against_its_own_probability():
+    from datetime import date, timedelta
+    from tests.fakes import soft_record
+
+    domain = TestDomainV1()
+    engine = ProbabilisticOntologyEngine(db_path=":memory:", random_seed=0)
+    engine.register_domain(domain)
+    engine.activate_domain("test-domain-v1")
+    variables = domain.initial_candidates()[0].variables
+    for week in range(6):
+        engine.learn([soft_record(variables, date(2024, 1, 7) + timedelta(weeks=week), seed=3)])
+    health = engine.epistemic_health("test-domain-v1")
+    vs_evidence, rounded = health["leader_calibration_vs_evidence"], health["leader_calibration"]
+    assert vs_evidence["n"] == rounded["n"] == 5 * 5
+    assert vs_evidence["brier"] != rounded["brier"]

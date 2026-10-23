@@ -4,7 +4,9 @@ Calibration and humility (SPEC §13.1, REFACTOR_SPEC D18).
 Calibration: of the times the engine said a variable was true with
 probability about p (given the week's other signals, before learning it),
 how often was it true? Reported as the Brier score and the expected
-calibration error over ten equal bins. Humility: the probability the whole
+calibration error over ten equal bins. The outcome may itself be a
+probability: soft evidence says how likely a signal was, not whether it was,
+and a belief learned from it is judged fairly only against it. Humility: the probability the whole
 population, each structure weighted by its posterior weight, gave a batch,
 against the leader's alone.
 """
@@ -28,15 +30,17 @@ def mixture_log_likelihood(log_likelihoods: Sequence[float], weights: Sequence[f
 class Calibration:
     n: list[int] = field(default_factory=lambda: [0] * BINS)
     said: list[float] = field(default_factory=lambda: [0.0] * BINS)   # sum of stated probabilities
-    true: list[int] = field(default_factory=lambda: [0] * BINS)       # how many came true
+    true: list[float] = field(default_factory=lambda: [0.0] * BINS)   # how many came true (expected, if uncertain)
     brier: float = 0.0
 
-    def observe(self, p_true: float, outcome: bool) -> None:
+    def observe(self, p_true: float, outcome: bool | float) -> None:
+        """OUTCOME: whether it came true, or the probability the evidence gives it."""
+        o = float(outcome)
         b = min(int(p_true * BINS), BINS - 1)
         self.n[b] += 1
         self.said[b] += p_true
-        self.true[b] += bool(outcome)
-        self.brier += (p_true - float(bool(outcome))) ** 2
+        self.true[b] += o
+        self.brier += (p_true - o) ** 2
 
     def summary(self) -> dict:
         total = sum(self.n)
