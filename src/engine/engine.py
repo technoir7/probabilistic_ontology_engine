@@ -5,6 +5,8 @@ Implements the pseudocode from SPEC §17.
 """
 from __future__ import annotations
 
+import random
+
 import hashlib
 import json
 import logging
@@ -67,6 +69,7 @@ class ProbabilisticOntologyEngine:
         self.population_manager = PopulationManager(
             parameter_store=self.parameter_store,
             population_store=self.population_store,
+            rng=random.Random(random_seed),
         )
 
         # Active domain
