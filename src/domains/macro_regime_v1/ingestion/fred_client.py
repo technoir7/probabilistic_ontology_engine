@@ -75,7 +75,7 @@ FRED_SERIES = {
 
 FETCH_LOOKBACK_DAYS: dict[str, int] = {
     "T10Y2Y":        35,    # 5 weeks of daily data for weekly median
-    "CPIAUCSL":      430,   # 14 months for 12m YoY + safety
+    "CPIAUCSL":      480,   # 13 published months for 12m YoY: CPI comes out ~45 days after its month
     "WALCL":         140,   # 20 weeks for 13w % change + safety
     "BAMLH0A0HYM2":  400,   # 52+ weeks of daily for z-score
     "VIXCLS":        120,   # 90-day rolling percentile + safety

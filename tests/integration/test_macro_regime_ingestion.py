@@ -841,3 +841,10 @@ def test_a_weak_dollar_is_not_dollar_strength():
     snap = compute_snapshot(obs, _TARGET_DATE)
     assert snap.p_dollar_strength < 0.4 and not snap.dollar_strength
 
+
+def test_the_cpi_lookback_holds_13_published_months():
+    from src.domains.macro_regime_v1.ingestion.fred_client import FETCH_LOOKBACK_DAYS
+    """CPI for a month is published about 45 days after it begins, so the
+    lookback must reach 13 months back from the newest published one, or
+    InflationShock is MISSING for part of every month."""
+    assert FETCH_LOOKBACK_DAYS["CPIAUCSL"] >= 12 * 31 + 45 + 31

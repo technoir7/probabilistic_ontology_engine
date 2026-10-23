@@ -190,7 +190,7 @@
    "file_type": "json",
    "limit": "500",
    "observation_end": "2026-03-06",
-   "observation_start": "2024-12-31",
+   "observation_start": "2024-11-11",
    "path": "/fred/series/observations",
    "series_id": "CPIAUCSL",
    "sort_order": "desc"
