@@ -94,3 +94,35 @@ def test_replace_refuses_what_is_not_a_list_of_records():
         resp = client.post("/v1/ingest/replace", params={"domain": "mr"}, json={"not": "records"},
                            headers={"Authorization": f"Bearer {ADMIN_TOKEN}"})
     assert resp.status_code == 422
+
+
+def test_soft_evidence_survives_the_trip_through_json():
+    """JSON has only string keys, so a soft observation's {True: p, False: q}
+    arrives as {"true": p, "false": q}; it must be read back as booleans, or
+    learning mixes str and bool keys (found replacing the live macro history)."""
+    import json
+    import uuid
+    from src.engine.schemas import ObservedAssignment
+    a = ObservedAssignment(variable_id=uuid.uuid4(), observed_value=True, missingness="SOFT_OBSERVED",
+                           probabilities={True: 0.7, False: 0.3})
+    back = ObservedAssignment.model_validate(json.loads(json.dumps(a.model_dump(mode="json"))))
+    assert back.probabilities == {True: 0.7, False: 0.3}
+
+
+def test_replace_learns_soft_evidence():
+    from datetime import datetime, timedelta, timezone
+    from src.domains.macro_regime_v1.domain import get_variables
+    from src.engine.schemas import EvidenceRecord, ObservedAssignment
+
+    v = get_variables()
+    records = [EvidenceRecord(
+        timestamp=datetime(2024, 1, 7, tzinfo=timezone.utc) + timedelta(weeks=i),
+        observed_assignments=[ObservedAssignment(variable_id=x.variable_id, observed_value=True,
+                                                 missingness="SOFT_OBSERVED", probabilities={True: 0.6, False: 0.4})
+                              for x in v.values()],
+    ).model_dump(mode="json") for i in range(3)]
+    with TestClient(api_app.app) as client:
+        resp = client.post("/v1/ingest/replace", params={"domain": "mr"}, json=records,
+                           headers={"Authorization": f"Bearer {ADMIN_TOKEN}"})
+    assert resp.status_code == 200, resp.text
+    assert resp.json()["records_learned"] == 3

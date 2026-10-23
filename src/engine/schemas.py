@@ -10,7 +10,7 @@ from typing import Any, Optional
 from uuid import UUID, uuid4
 
 import networkx as nx
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from .model import scoring
 
@@ -95,6 +95,9 @@ class DependencyEdge(BaseModel):
     enabled: bool = True        # False once pruned below threshold
 
 
+_JSON_BOOLS = {"true": True, "false": False, "True": True, "False": False}
+
+
 class ObservedAssignment(BaseModel):
     variable_id: UUID
     observed_value: Any
@@ -118,6 +121,15 @@ class ObservedAssignment(BaseModel):
 
         probabilities={True: 0.64, False: 0.36}
     """
+
+    @field_validator("probabilities", mode="before")
+    @classmethod
+    def _boolean_keys_from_json(cls, value):
+        """JSON keys are strings, so {True: p} arrives as {"true": p}; read
+        it back as a boolean, as the evidence store does."""
+        if isinstance(value, dict):
+            return {_JSON_BOOLS.get(k, k) if isinstance(k, str) else k: p for k, p in value.items()}
+        return value
 
     @model_validator(mode="after")
     def _validate_probabilities(self) -> "ObservedAssignment":
