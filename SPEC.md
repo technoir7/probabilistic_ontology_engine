@@ -282,6 +282,11 @@ After each learning cycle, candidates are ranked by log_score. Candidates in the
 
 ### 5.2 Explore-exploit for edge discovery
 
+> **Superseded 2026-10-23 (REFACTOR_SPEC D3).** No service proposes edges
+> from the evidence. New relationships enter only as conjectures, in
+> variants that add an admissible edge, and the evidence then judges them.
+> The service below was built and tested but never used, and was removed.
+
 The engine allocates attention to candidate edges it has not yet resolved. An unresolved edge is one whose existence_probability is near 0.5 — the engine does not yet have a confident belief about whether this relationship is real.
 
 The explore_weight field on DependencyEdge controls how much of each evidence batch is used to evaluate that edge's existence. High explore_weight edges receive more focused statistical testing. As existence_probability converges toward 0 or 1, explore_weight decays.
@@ -543,7 +548,7 @@ function LEARN(evidence_batch):
       validate proposed candidates against schema constraints
       introduce accepted candidates with existence priors from parent
 
-  ExploreExploitService:
+  ExploreExploitService:   # superseded, see §5.2
     propose new candidate edges from admissible space
     score proposals against recent evidence
     introduce high-scoring proposals into candidate graphs

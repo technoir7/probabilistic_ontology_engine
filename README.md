@@ -121,7 +121,6 @@ Core services:
 - `EdgeExistenceService`: BIC-style edge existence updates and pruning.
 - `PopulationManager`: candidate scoring, pruning, mutation, paradigm-shift tracking.
 - `InferenceService`: pgmpy-backed Bayesian inference.
-- `ExploreExploitService`: empirical mutual information — implemented and tested, not yet used by the learning loop (REFACTOR_SPEC D3).
 
 Variable identity is deterministic via `stable_variable_id(domain_module_id, variable_name)`, preserving evidence continuity across restarts.
 
@@ -216,4 +215,5 @@ POE_UPDATE_GOLDEN=1 uv run pytest tests/golden
 `tests/golden/` pins engine, API, domain and calendar behaviour as committed
 JSON snapshots; see `REFACTOR_SPEC.md` §7 Phase 0.
 
-See `SNAPSHOT.md` for the full current-state handoff and `NEXT.md` for the active priority queue.
+Open problems, and what the replays suggest about each: [NEXT.md](NEXT.md). Design decisions
+and their reasons: `REFACTOR_SPEC.md` §8.
