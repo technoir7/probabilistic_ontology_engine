@@ -64,7 +64,10 @@ def _replies(*responses):
 
     def handler(request):
         sent_at.append(clock.now)
-        return queue.pop(0)
+        reply = queue.pop(0)
+        if isinstance(reply, Exception):
+            raise reply
+        return reply
 
     limiter = RateLimiter(5.0, clock=clock.monotonic, sleep=clock.sleep)
     return _client(handler, limiter), sent_at
@@ -95,6 +98,24 @@ def test_a_longer_retry_after_is_honoured():
 
 def test_gives_up_with_an_empty_result_after_the_last_backoff():
     client, sent_at = _replies(*[httpx.Response(429)] * 4)
+    assert _fetch(client) == []
+    assert len(sent_at) == 4
+
+
+def _dropped():
+    return httpx.RemoteProtocolError("Server disconnected without sending a response.")
+
+
+def test_a_dropped_connection_is_retried_like_a_throttle():
+    # The live test of every domain (2026-10-23): GDELT closed the connection
+    # without answering, and geopolitics lost three of its eight signals.
+    client, sent_at = _replies(_dropped(), httpx.Response(200, json=REAL_RESPONSE))
+    assert len(_fetch(client)) == 3
+    assert len(sent_at) == 2 and sent_at[1] - sent_at[0] >= 30.0
+
+
+def test_gives_up_on_a_connection_that_keeps_dropping():
+    client, sent_at = _replies(*[_dropped()] * 4)
     assert _fetch(client) == []
     assert len(sent_at) == 4
 

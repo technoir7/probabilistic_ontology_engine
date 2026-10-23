@@ -357,14 +357,22 @@ def test_gdelt_client_returns_empty_on_http_error():
     """GDELTClient gracefully handles HTTP errors by returning empty list."""
     import httpx
 
+    from src.domains.sources.gdelt import RateLimiter, TimelineCache
+
     http_mock = AsyncMock()
     http_mock.get = AsyncMock(side_effect=httpx.ConnectError("connection refused"))
+    elapsed = [0.0]
 
-    client = GDELTClient(client=http_mock)
+    async def sleep(seconds: float) -> None:  # the retries' backoffs, without the wait
+        elapsed[0] += max(0.0, seconds)
+
+    limiter = RateLimiter(5.0, clock=lambda: elapsed[0], sleep=sleep)
+    client = GDELTClient(client=http_mock, rate_limit=limiter, cache=TimelineCache())
     result = asyncio.run(client.fetch_timeline("conflict war", "conflict"))
 
-    # Should return empty list, not raise
+    # Retried like a throttle, then empty, not raised.
     assert result == []
+    assert http_mock.get.await_count == 4
 
 
 # ---------------------------------------------------------------------------

@@ -13,7 +13,8 @@ each open their own clients, and each fetch opens new ones.
 
 In practice GDELT throttles harder than its stated rule: live runs from a dev
 machine and from Railway (2026-10-16) had most requests answered 429 even at
-one per 5 s. A throttled request is retried after THROTTLE_BACKOFF_S, and the
+one per 5 s, and some connections closed without an answer (2026-10-23). A
+throttled or dropped request is retried after THROTTLE_BACKOFF_S, and the
 backoff holds every client on the shared limiter, since the penalty is the IP's.
 
 On any other failure, or once the backoffs run out, fetch_timeline returns []
@@ -172,7 +173,7 @@ class GDELTClient:
         try:
             resp = await self._get_unthrottled(params, label)
             if resp is None:
-                logger.warning("GDELT fetch_timeline(%s) still throttled after %d attempts", label, len(self._backoff_s) + 1)
+                logger.warning("GDELT fetch_timeline(%s) still throttled or dropped after %d attempts", label, len(self._backoff_s) + 1)
                 return []
             resp.raise_for_status()
             timeline = resp.json().get("timeline") or []
@@ -202,16 +203,22 @@ class GDELTClient:
         return result
 
     async def _get_unthrottled(self, params: dict[str, str], label: str) -> httpx.Response | None:
-        """The first response that is not a throttle, or None once every backoff is spent."""
+        """The first response that is not a throttle, or None once every backoff is spent.
+        A dropped connection counts as a throttle: GDELT sheds load that way too."""
         for backoff in (*self._backoff_s, None):
             await self._rate_limit.wait()
-            resp = await self._client.get(self.BASE_URL, params=params)
-            if not _throttled(resp):
-                return resp
+            try:
+                resp = await self._client.get(self.BASE_URL, params=params)
+            except httpx.TransportError as exc:
+                resp, reason, retry_after = None, f"dropped ({exc})", 0.0
+            else:
+                if not _throttled(resp):
+                    return resp
+                reason, retry_after = "throttled", _retry_after_s(resp)
             if backoff is None:
                 return None
-            delay = max(backoff, _retry_after_s(resp))
-            logger.info("GDELT throttled %s; retrying in %.0f s", label, delay)
+            delay = max(backoff, retry_after)
+            logger.info("GDELT %s %s; retrying in %.0f s", reason, label, delay)
             self._rate_limit.defer(delay)
         return None
 
