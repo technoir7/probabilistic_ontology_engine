@@ -36,8 +36,9 @@ VolatilityShock
     Signal: equity-implied volatility elevated; systemic risk-off sentiment
 
 DollarStrength
-    True  = USD/EUR rate (DEXUSEU) above its 52-week mean by ≥ 0.5 z-score
-    False = dollar below recent trend
+    True  = DEXUSEU (dollars per euro) below its 52-week mean: the dollar
+            stronger than its recent trend
+    False = dollar at or weaker than its recent trend
     Signal: global capital flows favouring dollar; often accompanies risk-off
 
 EquityRiskOn

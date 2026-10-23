@@ -823,3 +823,21 @@ def test_all_edges_have_existence_prior():
                 f"All initial edges should be enabled"
             assert edge.learnable is True, \
                 f"All initial edges should be learnable"
+
+
+# ---------------------------------------------------------------------------
+# DollarStrength reads DEXUSEU the right way round: dollars per euro, so a
+# LOWER rate is a STRONGER dollar (as the sovereign-debt and crypto domains read it).
+# ---------------------------------------------------------------------------
+
+def test_a_strong_dollar_is_dollar_strength():
+    obs = _make_full_observations(dexuseu_current=0.95, dexuseu_mean=1.15)
+    snap = compute_snapshot(obs, _TARGET_DATE)
+    assert snap.p_dollar_strength > 0.6 and snap.dollar_strength
+
+
+def test_a_weak_dollar_is_not_dollar_strength():
+    obs = _make_full_observations(dexuseu_current=1.35, dexuseu_mean=1.15)
+    snap = compute_snapshot(obs, _TARGET_DATE)
+    assert snap.p_dollar_strength < 0.4 and not snap.dollar_strength
+

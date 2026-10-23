@@ -328,7 +328,7 @@ def _compute_dollar_signal(
     """
     Compute DollarStrength signal from DEXUSEU observations.
 
-    52-week rolling z-score.  Higher DEXUSEU = more USD per EUR = stronger USD.
+    Inverted 52-week z-score: DEXUSEU is dollars per euro, so lower = stronger USD.
 
     Returns (signal, confidence).
     """
@@ -337,7 +337,7 @@ def _compute_dollar_signal(
 
     current = obs[0].value
     values = _values_from_obs(obs[:260])  # ~52 weeks
-    signal = _zscore(current, values)
+    signal = -_zscore(current, values)
     return signal, 1.0
 
 
