@@ -44,6 +44,10 @@ addopts = "-m 'not live'"
 markers = [
     "live: hit real external APIs — skip in CI, run manually with -m live",
 ]
+filterwarnings = [
+    # Raised inside pgmpy 1.1 by its own imports, not by ours.
+    "ignore:`pgmpy.estimators.StructureScore` is deprecated:FutureWarning",
+]
 
 # ── Guardrails (REFACTOR_SPEC §6): not style rules ─────────────────────────────
 [tool.ruff]

@@ -6,7 +6,6 @@ the candidate variable IDs.
 """
 from __future__ import annotations
 
-from datetime import datetime
 from uuid import uuid4
 
 import numpy as np
@@ -27,6 +26,7 @@ from .domain import (
     CPT_E,
     get_variables,
 )
+from ...engine.model.clock import naive_utc_now
 
 
 class SyntheticDataGenerator:
@@ -74,7 +74,7 @@ class SyntheticDataGenerator:
             val = bool(self.rng.random() < p_true)
             records.append(EvidenceRecord(
                 evidence_id=uuid4(),
-                timestamp=datetime.utcnow(),
+                timestamp=naive_utc_now(),
                 observed_assignments=[
                     ObservedAssignment(
                         variable_id=var.variable_id,
@@ -121,7 +121,7 @@ class SyntheticDataGenerator:
 
         return EvidenceRecord(
             evidence_id=uuid4(),
-            timestamp=datetime.utcnow(),
+            timestamp=naive_utc_now(),
             observed_assignments=assignments,
             source_type=SourceType.SIMULATION,
         )

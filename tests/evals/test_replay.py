@@ -88,12 +88,14 @@ def synthetic_history(weeks: int) -> dict:
     return out
 
 
+@pytest.fixture(scope="module")
+def rows():
+    history = synthetic_history(12)
+    end = date(2024, 6, 28)
+    return replay.run(history, seed=0, start=end - timedelta(days=7 * 11), end=end)
+
+
 class TestTheRun:
-    @pytest.fixture(scope="class")
-    def rows(self):
-        history = synthetic_history(12)
-        end = date(2024, 6, 28)
-        return replay.run(history, seed=0, start=end - timedelta(days=7 * 11), end=end)
 
     def test_learns_one_week_at_a_time(self, rows):
         assert len(rows) == 12

@@ -13,6 +13,7 @@ import networkx as nx
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 from .model import scoring
+from .model.clock import naive_utc_now
 
 
 # ---------------------------------------------------------------------------
@@ -145,7 +146,7 @@ class ObservedAssignment(BaseModel):
 
 class EvidenceRecord(BaseModel):
     evidence_id: UUID = Field(default_factory=uuid4)
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=naive_utc_now)
     observed_assignments: list[ObservedAssignment]
     source_type: SourceType = SourceType.SIMULATION
     source_ref: str = ""
@@ -166,7 +167,7 @@ class ParadigmShiftEvent(BaseModel):
     shift_id: UUID = Field(default_factory=uuid4)
     domain_module_id: str
     generation: int
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=naive_utc_now)
     previous_dominant_id: UUID
     previous_dominant_name: str = ""
     new_dominant_id: UUID
@@ -194,7 +195,7 @@ class OntologyCandidate(BaseModel):
     window_log_score: float = 0.0
     window_evidence: float = 0.0
     status: CandidateStatus = CandidateStatus.ACTIVE
-    introduced_at: datetime = Field(default_factory=datetime.utcnow)
+    introduced_at: datetime = Field(default_factory=naive_utc_now)
     pruned_at: Optional[datetime] = None
     pruning_reason: Optional[str] = None
     description: str = ""
@@ -368,5 +369,5 @@ class ModelSnapshot(BaseModel):
     evidence_window_start: Optional[datetime] = None
     evidence_window_end: Optional[datetime] = None
     random_seed: int = 0
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=naive_utc_now)
     metrics: dict = Field(default_factory=dict)

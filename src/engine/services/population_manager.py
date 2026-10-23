@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import math
 import random
-from datetime import datetime
 from uuid import UUID, uuid4
 
 
@@ -31,6 +30,7 @@ from ..schemas import (
 )
 from ..stores.parameter_store import ParameterStore
 from ..stores.population_store import PopulationStore
+from ..model.clock import naive_utc_now
 
 
 # Pruning starts once any candidate has scored this many evidence records.
@@ -246,7 +246,7 @@ class PopulationManager:
             if c.candidate_id == pop.active_candidate_id or c.candidate_id in spared:
                 continue
             c.status = CandidateStatus.PRUNED
-            c.pruned_at = datetime.utcnow()
+            c.pruned_at = naive_utc_now()
             c.pruning_reason = "bottom_quartile_log_score"
             self.pop_store.mark_pruned(c.candidate_id, c.pruning_reason)
             pruned.append(c)

@@ -20,6 +20,7 @@ from ..schemas import (
     Variable,
 )
 from .database import Database
+from ..model.clock import naive_utc_now
 
 
 class PopulationStore:
@@ -55,7 +56,7 @@ class PopulationStore:
                 str(pop.active_candidate_id) if pop.active_candidate_id else None,
                 pop.generation,
                 pop.paradigm_shift_count,
-                datetime.utcnow().isoformat(),
+                naive_utc_now().isoformat(),
             ),
         )
         self._db.commit()
@@ -273,7 +274,7 @@ class PopulationStore:
             SET status='PRUNED', pruned_at=?, pruning_reason=?
             WHERE candidate_id=?
             """,
-            (datetime.utcnow().isoformat(), reason, str(candidate_id)),
+            (naive_utc_now().isoformat(), reason, str(candidate_id)),
         )
         self._db.commit()
 
@@ -292,7 +293,7 @@ class PopulationStore:
             (
                 str(uuid4()),
                 str(candidate_id),
-                datetime.utcnow().isoformat(),
+                naive_utc_now().isoformat(),
                 log_likelihood,
                 batch_index,
             ),
@@ -329,7 +330,7 @@ class PopulationStore:
                 str(uuid4()),
                 domain_module_id,
                 generation,
-                datetime.utcnow().isoformat(),
+                naive_utc_now().isoformat(),
                 str(prev_dominant_id),
                 prev_dominant_name,
                 str(new_dominant_id),
