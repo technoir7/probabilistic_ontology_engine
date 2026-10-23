@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 from .model.domain import DomainModule
 from .model.doubt import DISCOUNT as DOUBT_DISCOUNT
+from .model.temporal import lagged
 from .schemas import (
     EdgeExistenceThresholdConfig,
     EvidenceRecord,
@@ -69,6 +70,8 @@ class ProbabilisticOntologyEngine:
         self._edge_existence: dict[str, EdgeExistenceService] = {}
         self.inference_service = InferenceService(self.parameter_store)
         self.health = EpistemicHealth(self.inference_service)
+        # The last record learned per domain, for last period's values (D19).
+        self._previous: dict[str, EvidenceRecord] = {}
         self.population_manager = PopulationManager(
             parameter_store=self.parameter_store,
             population_store=self.population_store,
@@ -126,6 +129,9 @@ class ProbabilisticOntologyEngine:
         # Determine admissible edges from domain schema
         admissible = _derive_admissible_edges(initial_candidates)
         self._batch_index[module_id] = 0
+        latest = self.evidence_store.load_latest(module_id, 1)
+        if latest:
+            self._previous[module_id] = latest[0]
 
         if initial_candidates and self._resume_population(
             module_id, initial_candidates[0].variables, admissible
@@ -214,6 +220,7 @@ class ProbabilisticOntologyEngine:
             return  # first startup or in-memory mode; nothing to restore
 
         pop = self.population_manager.get_population(domain_module_id)
+        records = lagged(records, None, pop.candidates[0].variables)
         active = pop.active_candidates()
         if not active:
             return
@@ -267,6 +274,7 @@ class ProbabilisticOntologyEngine:
             self.parameter_store.delete_domain(module_id, candidate_ids)
         self.population_manager.forget(module_id)
         self.health.forget(module_id)
+        self._previous.pop(module_id, None)
         for stats in (self._learn_call_count, self._learn_last_ts, self._learn_records_total):
             stats.pop(module_id, None)
         self.register_domain(domain_module)
@@ -346,6 +354,9 @@ class ProbabilisticOntologyEngine:
         assert domain, "No active domain"
 
         pop = self.population_manager.get_population(domain)
+        observed, batch = batch, lagged(batch, self._previous.get(domain), pop.candidates[0].variables)
+        if observed:
+            self._previous[domain] = observed[-1]
         # Candidates pruned this cycle still changed this cycle, so save them too.
         active_at_start = list(pop.active_candidates())
         edge_existence = self._edge_existence[domain]
@@ -550,9 +561,12 @@ def _derive_admissible_edges(
     """
     edges: set[tuple[str, str]] = set()
     var_names: set[str] = set()
+    lags: set[str] = set()
     for cand in candidates:
         for v in cand.variables:
             var_names.add(v.name)
+            if v.lag_of:
+                lags.add(v.name)
         for e in cand.edges:
             pv = cand.get_variable_by_id(e.parent_variable_id)
             cv = cand.get_variable_by_id(e.child_variable_id)
@@ -560,8 +574,9 @@ def _derive_admissible_edges(
                 edges.add((pv.name, cv.name))
     # Add all variable pairs as potentially admissible
     # (in a real system this would be schema-constrained)
+    # Last period's values are inputs only: nothing points into them (D19).
     for a in var_names:
         for b in var_names:
-            if a != b:
+            if a != b and b not in lags:
                 edges.add((a, b))
-    return edges
+    return {(a, b) for a, b in edges if b not in lags}

@@ -102,6 +102,7 @@ def run(history: dict, seed: int, start: date, end: date, credit: str = fh.CREDI
             "active": len(pop.active_candidates()),
             "doubt": engine.doubt_events(DOMAIN) > doubts,
             "population_ll": engine.epistemic_health(DOMAIN)["last_cycle"].get("population_ll"),
+            "forecast_ll": engine.epistemic_health(DOMAIN)["last_cycle"].get("forecast_ll"),
         })
     rows[-1]["health"] = engine.epistemic_health(DOMAIN)
     return rows
@@ -121,9 +122,13 @@ if __name__ == "__main__":
     parser.add_argument("--end", type=date.fromisoformat, default=None)
     parser.add_argument("--credit", default=fh.CREDIT_STAND_IN, choices=[fh.CREDIT_STAND_IN, fh.CREDIT])
     parser.add_argument("--out", default=None)
+    parser.add_argument("--as-published", action="store_true",
+                        help="CPI and unemployment as first published (ALFRED vintages), not as revised")
     args = parser.parse_args()
     history = fh.load()
-    end = args.end or max(o.obs_date for o in history["WALCL"])
+    if args.as_published:
+        history = fh.as_first_published(history, fh.load_vintages())
+    end = args.end or max(o.obs_date for o in fh.load()["WALCL"])
     rows = run(history, args.seed, args.start, end, args.credit)
     DATA.mkdir(parents=True, exist_ok=True)
     out = Path(args.out) if args.out else DATA / f"seed{args.seed}.jsonl"

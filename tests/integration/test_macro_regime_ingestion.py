@@ -263,9 +263,12 @@ def test_all_candidates_are_dags():
 # ---------------------------------------------------------------------------
 
 def test_all_candidates_share_variable_set():
-    """All candidates must contain exactly the same 8 canonical variables."""
-    expected_names = set(get_variables().keys())
-    expected_ids = {v.variable_id for v in get_variables().values()}
+    """All candidates hold the same 8 canonical variables and their values
+    last week (REFACTOR_SPEC D19)."""
+    from src.domains.macro_regime_v1.domain import get_variables_with_lags
+    expected_names = set(get_variables_with_lags().keys())
+    expected_ids = {v.variable_id for v in get_variables_with_lags().values()}
+    assert len(expected_names) == 16
 
     factories = [
         make_monetary_chain_candidate,
@@ -769,7 +772,7 @@ def test_domain_registers_in_engine():
 
     pop = engine.get_population(domain.module_id())
     assert pop is not None
-    assert len(pop.active_candidates()) == 5
+    assert len(pop.active_candidates()) == 6  # five narratives and persistence (D19)
 
     # Ingest one evidence record
     observations = _make_full_observations()

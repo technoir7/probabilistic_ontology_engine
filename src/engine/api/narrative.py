@@ -60,7 +60,8 @@ def build_snapshot(
     # Matches RegimeStatePanel: call inference for each variable and use the
     # real posterior P(var=True) rather than raw soft-evidence weights.
     regime_state: list[NarrativeRegimeVariableOut] = []
-    variables = pop.candidates[0].variables if pop.candidates else []
+    # The regime is this period's signals; last period's are inputs (D19).
+    variables = [v for v in pop.candidates[0].variables if not v.lag_of] if pop.candidates else []
 
     if evidence_count == 0 or not variables:
         # No evidence yet — list variables as unobserved so the LLM knows

@@ -76,6 +76,9 @@ class Variable(BaseModel):
     support: list[Any]          # e.g. [True, False] for BOOLEAN
     time_indexed: bool = False
     hidden: bool = False
+    # Name of the variable this one holds last period's value of (D19):
+    # an input only, never a child, never scored.
+    lag_of: Optional[str] = None
 
 
 class DependencyEdge(BaseModel):

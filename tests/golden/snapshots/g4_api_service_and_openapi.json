@@ -687,6 +687,29 @@
      "title": "IngestBackfillOut",
      "type": "object"
     },
+    "IngestReplaceOut": {
+     "properties": {
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "records_learned": {
+       "title": "Records Learned",
+       "type": "integer"
+      },
+      "records_supplied": {
+       "title": "Records Supplied",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "domain",
+      "records_supplied",
+      "records_learned"
+     ],
+     "title": "IngestReplaceOut",
+     "type": "object"
+    },
     "IngestTriggerOut": {
      "properties": {
       "domain": {
@@ -2285,6 +2308,62 @@
       }
      },
      "summary": "Ingest Backfill"
+    }
+   },
+   "/v1/ingest/replace": {
+    "post": {
+     "description": "Forget everything learned for *domain* and relearn it from the evidence\nrecords in the body (a JSON list), oldest first: for replacing a history\nwith a clean one built elsewhere, such as a replay as first published.",
+     "operationId": "ingest_replace_v1_ingest_replace_post",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "domain",
+       "required": true,
+       "schema": {
+        "title": "Domain",
+        "type": "string"
+       }
+      },
+      {
+       "in": "header",
+       "name": "authorization",
+       "required": false,
+       "schema": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Authorization"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/IngestReplaceOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Ingest Replace"
     }
    },
    "/v1/ingest/trigger": {

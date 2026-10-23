@@ -20,6 +20,7 @@ ADMIN_ROUTES = [
     ("POST", "/v1/ingest/art/manual", {"path": "missing.json"}),
     ("POST", "/v1/ingest/art/rebuild", {"months": 1}),
     ("GET", "/v1/ingest/art/rebuild", {}),
+    ("POST", "/v1/ingest/replace", {"domain": "mr"}),
 ]
 
 
@@ -63,3 +64,33 @@ def test_cors_origins_come_from_the_environment():
     assert Settings.from_env({"POE_CORS_ORIGINS": "https://a.vercel.app, http://localhost:3000"}).cors_origins == (
         "https://a.vercel.app", "http://localhost:3000",
     )
+
+
+def test_replace_relearns_a_domain_from_the_records_supplied():
+    """An operator can replace a domain's evidence with records built
+    elsewhere (a clean history, as first published) and relearn from scratch."""
+    from datetime import datetime, timedelta, timezone
+    from src.domains.macro_regime_v1.domain import get_variables
+    from src.engine.schemas import EvidenceRecord, ObservedAssignment
+
+    v = get_variables()
+    records = [EvidenceRecord(
+        timestamp=datetime(2024, 1, 7, tzinfo=timezone.utc) + timedelta(weeks=i),
+        source_ref=f"replay@week-ending-{i}",
+        observed_assignments=[ObservedAssignment(variable_id=x.variable_id, observed_value=(i + k) % 2 == 0)
+                              for k, x in enumerate(v.values())],
+    ).model_dump(mode="json") for i in range(3)]
+    with TestClient(api_app.app) as client:
+        headers = {"Authorization": f"Bearer {ADMIN_TOKEN}"}
+        resp = client.post("/v1/ingest/replace", params={"domain": "mr"}, json=records, headers=headers)
+        assert resp.status_code == 200, resp.text
+        assert resp.json()["records_supplied"] == 3 and resp.json()["records_learned"] == 3
+        again = client.post("/v1/ingest/replace", params={"domain": "mr"}, json=records[:1], headers=headers)
+        assert again.json()["records_learned"] == 1  # forgot the first three
+
+
+def test_replace_refuses_what_is_not_a_list_of_records():
+    with TestClient(api_app.app) as client:
+        resp = client.post("/v1/ingest/replace", params={"domain": "mr"}, json={"not": "records"},
+                           headers={"Authorization": f"Bearer {ADMIN_TOKEN}"})
+    assert resp.status_code == 422

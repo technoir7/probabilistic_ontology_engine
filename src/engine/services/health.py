@@ -39,6 +39,7 @@ class EpistemicHealth:
         names = {str(v.variable_id): v.name for v in leader.variables}
         seen = {names[str(a.variable_id)]: a.observed_value for a in record.observed_assignments
                 if a.missingness.value in _SEEN and str(a.variable_id) in names}
+        self._last[domain]["forecast_ll"] = self.inference.forecast_log_prob(leader, seen)
         lead = self.inference.leave_one_out(leader, seen)
         heavy = [(c, w) for c, w in zip(candidates, weights) if w > _NEGLIGIBLE_WEIGHT]
         total = sum(w for _, w in heavy)
@@ -47,6 +48,8 @@ class EpistemicHealth:
             for name, p in self.inference.leave_one_out(c, seen).items():
                 mixed[name] = mixed.get(name, 0.0) + w / total * p
         for name, value in seen.items():
+            if name not in lead:
+                continue  # last period's values are not judged (D19)
             self.leader_calibration(domain).observe(lead[name], bool(value))
             self.population_calibration(domain).observe(mixed[name], bool(value))
 

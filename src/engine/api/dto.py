@@ -221,6 +221,12 @@ class IngestTriggerOut(BaseModel):
     population_status: PopStatusOut
 
 
+class IngestReplaceOut(BaseModel):
+    domain: str
+    records_supplied: int
+    records_learned: int
+
+
 class IngestBackfillOut(BaseModel):
     domain: str
     days_requested: int

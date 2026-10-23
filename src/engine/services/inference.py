@@ -9,6 +9,7 @@ model.scoring.score_weights.
 """
 from __future__ import annotations
 
+import math
 from typing import Any
 
 
@@ -123,13 +124,28 @@ class InferenceService:
         out = {}
         for name, _ in observed.items():
             var = candidate.get_variable_by_name(name)
-            if var is None or True not in var.support:
+            if var is None or var.lag_of or True not in var.support:
                 continue
             evidence = {n: encode_value(v, candidate.get_variable_by_name(n).support)
                         for n, v in observed.items() if n != name and candidate.get_variable_by_name(n)}
             q = ve.query([name], evidence=evidence, show_progress=False)
             out[name] = float(q.values[var.support.index(True)])
         return out
+
+    def forecast_log_prob(self, candidate: OntologyCandidate, observed: dict[str, Any]) -> float | None:
+        """log P(this period's observed values | last period's values only):
+        what the candidate would have forecast before seeing the period (D19).
+        None if it has no last-period values to go on."""
+        lags = {n: v for n, v in observed.items() if (var := candidate.get_variable_by_name(n)) and var.lag_of}
+        now = {n: v for n, v in observed.items() if n not in lags and candidate.get_variable_by_name(n)}
+        if not lags or not now:
+            return None
+        ve = VariableElimination(self._build_pgmpy_model(candidate))
+        evidence = {n: encode_value(v, candidate.get_variable_by_name(n).support) for n, v in lags.items()}
+        joint = ve.query(list(now), evidence=evidence, joint=True, show_progress=False)
+        state = {n: encode_value(v, candidate.get_variable_by_name(n).support) for n, v in now.items()}
+        p = float(joint.get_value(**state))
+        return math.log(max(p, 1e-300))
 
     # ------------------------------------------------------------------
     def _build_pgmpy_model(self, candidate: OntologyCandidate) -> BayesianNetwork:

@@ -89,7 +89,7 @@ from __future__ import annotations
 
 from uuid import uuid4
 
-from ..sources.structure import boolean_variables, seed_edge
+from ..sources.structure import boolean_variables, seed_edge, with_lags
 from ...engine.schemas import (
     DependencyEdge,
     EdgeExistenceThresholdConfig,
@@ -120,6 +120,8 @@ _VAR_NAMES = [
 ]
 
 _VARIABLE_DEFS: dict[str, Variable] = boolean_variables(_MODULE_ID, _VAR_NAMES)
+# Each signal and its value last week (REFACTOR_SPEC D19); candidates hold both.
+_WITH_LAGS: dict[str, Variable] = with_lags(_MODULE_ID, _VARIABLE_DEFS)
 
 
 def get_variables() -> dict[str, Variable]:
@@ -127,12 +129,17 @@ def get_variables() -> dict[str, Variable]:
     return _VARIABLE_DEFS
 
 
+def get_variables_with_lags() -> dict[str, Variable]:
+    """Every signal and its value last week, as the candidates hold them."""
+    return _WITH_LAGS
+
+
 def _var(name: str) -> Variable:
-    return _VARIABLE_DEFS[name]
+    return _WITH_LAGS[name]
 
 
 def _var_list() -> list[Variable]:
-    return list(_VARIABLE_DEFS.values())
+    return list(_WITH_LAGS.values())
 
 
 # ---------------------------------------------------------------------------
@@ -140,7 +147,7 @@ def _var_list() -> list[Variable]:
 # ---------------------------------------------------------------------------
 
 def _edge(parent: str, child: str, prior: float = 0.60, label: str = "") -> DependencyEdge:
-    return seed_edge(_VARIABLE_DEFS, parent, child, prior, label)
+    return seed_edge(_WITH_LAGS, parent, child, prior, label)
 
 
 # ---------------------------------------------------------------------------
@@ -311,6 +318,26 @@ def make_null_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
     )
 
 
+def make_persistence_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
+    """
+    T_persistence — Things stay as they were (REFACTOR_SPEC D19).
+
+    Hypothesis: each signal this week follows from its own value last week,
+    and from nothing else. A rival to every causal story: if regimes are
+    mostly inertia, explanations in terms of each other add little.
+
+        X_prev → X   for each of the eight signals
+    """
+    return OntologyCandidate(
+        candidate_id=uuid4(),
+        domain_module_id=module_id,
+        generation=0,
+        variables=_var_list(),
+        edges=[_edge(f"{name}_prev", name, prior=0.60, label=f"{name} persists") for name in _VAR_NAMES],
+        description="T_persistence: each signal follows its own last week",
+    )
+
+
 # ---------------------------------------------------------------------------
 # Domain module class
 # ---------------------------------------------------------------------------
@@ -334,6 +361,7 @@ class MacroRegimeV1:
             make_ai_boom_candidate(self._MODULE_ID),
             make_recessionary_tightening_candidate(self._MODULE_ID),
             make_null_candidate(self._MODULE_ID),
+            make_persistence_candidate(self._MODULE_ID),
         ]
 
     def existence_thresholds(self) -> EdgeExistenceThresholdConfig:

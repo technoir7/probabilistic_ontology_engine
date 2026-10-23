@@ -252,8 +252,8 @@ class LearningService:
                 # MISSING / IMPUTED / REDACTED → not added; skipped below
 
             for var in candidate.variables:
-                if var.name not in var_dists:
-                    continue
+                if var.lag_of or var.name not in var_dists:
+                    continue  # last period's values were scored last period (D19)
                 if not self.ps.has(candidate.candidate_id, var.name):
                     continue
                 cpt_data = self.ps.get(candidate.candidate_id, var.name)

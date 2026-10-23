@@ -20,7 +20,7 @@ def engine_for(domain, seed=0):
 def test_seeds_name_their_programme():
     engine = engine_for(MacroRegimeV1())
     pop = engine.population_manager.get_population("macro-regime-v1")
-    assert {c.lineage for c in pop.candidates} == {"T_monetary", "T_credit", "T_ai_boom", "T_recession", "T_null"}
+    assert {c.lineage for c in pop.candidates} == {"T_monetary", "T_credit", "T_ai_boom", "T_recession", "T_null", "T_persistence"}
 
 
 def test_variants_inherit_their_parents_programme():

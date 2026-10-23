@@ -25,6 +25,17 @@ def boolean_variables(module_id: str, names: Iterable[str]) -> dict[str, Variabl
     }
 
 
+def with_lags(module_id: str, variables: Mapping[str, Variable]) -> dict[str, Variable]:
+    """The variables and, for each, a companion holding last period's value
+    (REFACTOR_SPEC D19), with an id as stable as the variable's."""
+    out = dict(variables)
+    for name, v in variables.items():
+        lag = f"{name}_prev"
+        out[lag] = Variable(variable_id=stable_variable_id(module_id, lag), name=lag,
+                            domain_type=v.domain_type, support=list(v.support), time_indexed=True, lag_of=name)
+    return out
+
+
 def seed_edge(
     variables: Mapping[str, Variable], parent: str, child: str, prior: float, label: str = ""
 ) -> DependencyEdge:

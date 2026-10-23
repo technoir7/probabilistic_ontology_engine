@@ -21,6 +21,7 @@ from ..auth import require_admin
 from ..dto import (
     IngestTriggerOut,
     IngestBackfillOut,
+    IngestReplaceOut,
     ArtReportIngestOut,
     ArtRebuildOut,
 )
@@ -94,6 +95,28 @@ async def ingest_backfill(
         days_requested=days,
         days_successfully_ingested=successes,
     )
+
+
+@router.post("/v1/ingest/replace", response_model=IngestReplaceOut, dependencies=[Depends(require_admin)])
+async def ingest_replace(request: Request, domain: str = Query(...)) -> IngestReplaceOut:
+    """
+    Forget everything learned for *domain* and relearn it from the evidence
+    records in the body (a JSON list), oldest first: for replacing a history
+    with a clean one built elsewhere, such as a replay as first published.
+    """
+    domain_key = domain.lower()
+    engine, domain_id, display_name = context.resolve_domain(domain_key, request.app.state)
+    body = await request.json()
+    if not isinstance(body, list):
+        raise HTTPException(status_code=422, detail="the body must be a JSON list of evidence records")
+    try:
+        records = [EvidenceRecord.model_validate(r) for r in body]
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    async with context.ingest_lock(request.app.state, domain_key):
+        engine.reset_domain(domain_id)
+        learned = learn_new_records(engine, domain_id, records)
+    return IngestReplaceOut(domain=display_name, records_supplied=len(records), records_learned=learned)
 
 
 @router.post("/v1/ingest/art/manual", response_model=ArtReportIngestOut, dependencies=[Depends(require_admin)])

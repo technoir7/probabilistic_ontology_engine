@@ -100,7 +100,7 @@ class TestTheRun:
         assert [r["week"] for r in rows] == sorted(r["week"] for r in rows)
 
     def test_records_the_leader_and_its_family(self, rows):
-        families = {"T_monetary", "T_credit", "T_ai_boom", "T_recession", "T_null"}
+        families = {"T_monetary", "T_credit", "T_ai_boom", "T_recession", "T_null", "T_persistence"}
         assert all(r["family"] in families for r in rows)
 
     def test_counts_the_active_candidates_of_each_family(self, rows):
@@ -156,3 +156,41 @@ class TestScoring:
     def test_weeks_each_family_led_in_a_period(self):
         rows = rows_with(["A", "A", "B"])
         assert scoring.weeks_led(rows, date(2007, 1, 1), date(2007, 12, 31)) == {"A": 2, "B": 1}
+
+
+class TestAsFirstPublished:
+    def test_parses_an_alfred_vintage(self):
+        text = "observation_date,CPIAUCSL_20100115\n2009-11-01,217.250\n2009-12-01,217.541\n"
+        assert [(o.obs_date, o.value) for o in fh.parse_csv(text, "CPIAUCSL")] == [
+            (date(2009, 11, 1), 217.25), (date(2009, 12, 1), 217.541)]
+
+    def test_a_week_uses_the_latest_vintage_taken_by_then(self):
+        vintages = {"CPIAUCSL": {
+            "2010-01-16": [["2009-11-01", 217.25], ["2009-12-01", 217.541]],
+            "2010-02-16": [["2009-12-01", 217.6], ["2010-01-01", 218.0]],
+        }}
+        history = fh.as_first_published({"CPIAUCSL": []}, vintages)
+        seen = fh.observations_at(history, "CPIAUCSL", date(2010, 2, 5))
+        assert [(o.obs_date, o.value) for o in seen] == [(date(2009, 12, 1), 217.541), (date(2009, 11, 1), 217.25)]
+        later = fh.observations_at(history, "CPIAUCSL", date(2010, 2, 19))
+        assert later[0].value == 218.0 and later[1].value == 217.6
+
+    def test_before_the_first_vintage_nothing_is_known(self):
+        history = fh.as_first_published({"CPIAUCSL": []}, {"CPIAUCSL": {"2010-01-16": [["2009-12-01", 1.0]]}})
+        assert fh.observations_at(history, "CPIAUCSL", date(2010, 1, 8)) == []
+
+    def test_unrevised_series_are_untouched(self):
+        plain = {"T10Y2Y": [obs("T10Y2Y", date(2010, 1, 4), 2.0)]}
+        assert fh.as_first_published(plain, {})["T10Y2Y"] == plain["T10Y2Y"]
+
+
+class TestExportForTheLiveApp:
+    def test_one_sunday_stamped_record_a_week_built_by_the_live_pipeline(self):
+        from evals import export
+        history = synthetic_history(4)
+        records = export.weekly_records(history, date(2024, 6, 1), date(2024, 6, 30))
+        assert [r.timestamp.date().weekday() for r in records] == [6] * len(records)
+        assert [r.timestamp.date() for r in records] == [date(2024, 6, 2), date(2024, 6, 9), date(2024, 6, 16),
+                                                         date(2024, 6, 23), date(2024, 6, 30)]
+        assert all(r.source_ref.endswith(f"week-ending-{r.timestamp.date()}") for r in records)
+        assert all(len(r.observed_assignments) == 8 for r in records)
