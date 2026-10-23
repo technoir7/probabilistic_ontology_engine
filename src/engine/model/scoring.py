@@ -69,6 +69,23 @@ def candidate_score(candidate: OntologyCandidate, *, bic_multiplier: float = 1.0
     return average_log_likelihood(candidate) - bic_penalty(candidate) * bic_multiplier
 
 
+def log_bayes_factor(leader: OntologyCandidate, rival: OntologyCandidate) -> float:
+    """The evidence for LEADER over RIVAL, as a log Bayes factor: the gap in
+    average log-likelihood over the records both have been scored on.
+
+    No BIC penalty (D22). Each record is scored before it is learned, from
+    tables that start even, so the window already charges a complex
+    structure for the parameters it must learn; BIC would charge it again,
+    and in the replays that second charge alone refuted every rival within
+    weeks. BIC still ranks candidates (candidate_score), keeping structures
+    small; it does not refute them. Approximate: the windows of candidates
+    introduced at different times hold different records."""
+    shared = min(leader.window_evidence, rival.window_evidence)
+    if shared <= 0:
+        return 0.0
+    return shared * (average_log_likelihood(leader) - average_log_likelihood(rival))
+
+
 def dominant(candidates: Sequence[OntologyCandidate]) -> Optional[OntologyCandidate]:
     """Highest-scoring candidate; the first one wins ties."""
     return max(candidates, key=candidate_score) if candidates else None

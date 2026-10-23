@@ -2009,6 +2009,86 @@
       true,
       true,
       "credit stress \u2192 equity risk-off"
+     ],
+     [
+      "YieldCurveInverted_prev->YieldCurveInverted",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "YieldCurveInverted persists"
+     ],
+     [
+      "InflationShock_prev->InflationShock",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "InflationShock persists"
+     ],
+     [
+      "LiquidityStress_prev->LiquidityStress",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "LiquidityStress persists"
+     ],
+     [
+      "CreditSpreadStress_prev->CreditSpreadStress",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "CreditSpreadStress persists"
+     ],
+     [
+      "VolatilityShock_prev->VolatilityShock",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "VolatilityShock persists"
+     ],
+     [
+      "DollarStrength_prev->DollarStrength",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "DollarStrength persists"
+     ],
+     [
+      "EquityRiskOn_prev->EquityRiskOn",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "EquityRiskOn persists"
+     ],
+     [
+      "AIRiskOn_prev->AIRiskOn",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "AIRiskOn persists"
      ]
     ]
    },
@@ -2054,6 +2134,86 @@
       true,
       true,
       "credit stress \u2192 equity risk-off"
+     ],
+     [
+      "YieldCurveInverted_prev->YieldCurveInverted",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "YieldCurveInverted persists"
+     ],
+     [
+      "InflationShock_prev->InflationShock",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "InflationShock persists"
+     ],
+     [
+      "LiquidityStress_prev->LiquidityStress",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "LiquidityStress persists"
+     ],
+     [
+      "CreditSpreadStress_prev->CreditSpreadStress",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "CreditSpreadStress persists"
+     ],
+     [
+      "VolatilityShock_prev->VolatilityShock",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "VolatilityShock persists"
+     ],
+     [
+      "DollarStrength_prev->DollarStrength",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "DollarStrength persists"
+     ],
+     [
+      "EquityRiskOn_prev->EquityRiskOn",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "EquityRiskOn persists"
+     ],
+     [
+      "AIRiskOn_prev->AIRiskOn",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "AIRiskOn persists"
      ]
     ]
    },
@@ -2089,6 +2249,86 @@
       true,
       true,
       "equity appetite \u2194 vol regime"
+     ],
+     [
+      "YieldCurveInverted_prev->YieldCurveInverted",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "YieldCurveInverted persists"
+     ],
+     [
+      "InflationShock_prev->InflationShock",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "InflationShock persists"
+     ],
+     [
+      "LiquidityStress_prev->LiquidityStress",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "LiquidityStress persists"
+     ],
+     [
+      "CreditSpreadStress_prev->CreditSpreadStress",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "CreditSpreadStress persists"
+     ],
+     [
+      "VolatilityShock_prev->VolatilityShock",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "VolatilityShock persists"
+     ],
+     [
+      "DollarStrength_prev->DollarStrength",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "DollarStrength persists"
+     ],
+     [
+      "EquityRiskOn_prev->EquityRiskOn",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "EquityRiskOn persists"
+     ],
+     [
+      "AIRiskOn_prev->AIRiskOn",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "AIRiskOn persists"
      ]
     ]
    },
@@ -2154,6 +2394,86 @@
       true,
       true,
       "credit stress \u2192 vol spike"
+     ],
+     [
+      "YieldCurveInverted_prev->YieldCurveInverted",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "YieldCurveInverted persists"
+     ],
+     [
+      "InflationShock_prev->InflationShock",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "InflationShock persists"
+     ],
+     [
+      "LiquidityStress_prev->LiquidityStress",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "LiquidityStress persists"
+     ],
+     [
+      "CreditSpreadStress_prev->CreditSpreadStress",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "CreditSpreadStress persists"
+     ],
+     [
+      "VolatilityShock_prev->VolatilityShock",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "VolatilityShock persists"
+     ],
+     [
+      "DollarStrength_prev->DollarStrength",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "DollarStrength persists"
+     ],
+     [
+      "EquityRiskOn_prev->EquityRiskOn",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "EquityRiskOn persists"
+     ],
+     [
+      "AIRiskOn_prev->AIRiskOn",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "AIRiskOn persists"
      ]
     ]
    },
@@ -2179,6 +2499,86 @@
       true,
       true,
       "vol \u2192 equity risk-off"
+     ],
+     [
+      "YieldCurveInverted_prev->YieldCurveInverted",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "YieldCurveInverted persists"
+     ],
+     [
+      "InflationShock_prev->InflationShock",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "InflationShock persists"
+     ],
+     [
+      "LiquidityStress_prev->LiquidityStress",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "LiquidityStress persists"
+     ],
+     [
+      "CreditSpreadStress_prev->CreditSpreadStress",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "CreditSpreadStress persists"
+     ],
+     [
+      "VolatilityShock_prev->VolatilityShock",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "VolatilityShock persists"
+     ],
+     [
+      "DollarStrength_prev->DollarStrength",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "DollarStrength persists"
+     ],
+     [
+      "EquityRiskOn_prev->EquityRiskOn",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "EquityRiskOn persists"
+     ],
+     [
+      "AIRiskOn_prev->AIRiskOn",
+      0.6,
+      0.6,
+      1.0,
+      "DIRECTED_CONDITIONAL",
+      true,
+      true,
+      "AIRiskOn persists"
      ]
     ]
    },

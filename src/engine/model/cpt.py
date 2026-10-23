@@ -116,6 +116,19 @@ class CPTData:
         p = self.get_probability(value, parent_assignment)
         return math.log(max(p, 1e-12))
 
+    def get_probability_given(self, value: Any, known: Mapping[str, Any]) -> float:
+        """Smoothed P(variable=value | the parents in KNOWN), the others
+        unknown: the rows that agree with KNOWN, pooled, so each unknown
+        parent is averaged over as often as the data has seen its values.
+        With every parent known, this is get_probability."""
+        known = {p: v for p, v in known.items() if p in self.parents}
+        if len(known) == len(self.parents):
+            return self.get_probability(value, known)
+        rows = [row for key, row in self.counts.items() if all(dict(key)[p] == v for p, v in known.items())]
+        n_q = sum(sum(row.values()) for row in rows)
+        n_qk = sum(row.get(value, 0) for row in rows)
+        return (n_qk + self.alpha) / (n_q + self.alpha * len(self.support))
+
     def mle_log_likelihood(self) -> float:
         """Log-likelihood of all data under MLE (no smoothing)."""
         ll = 0.0

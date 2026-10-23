@@ -128,3 +128,31 @@ def test_every_surviving_programme_gets_offspring():
     alive = {c.lineage for c in pop.active_candidates()}
     bred = {c.lineage for c in pop.candidates if c.generation > 0}
     assert alive <= bred
+
+
+def by_complexity():
+    from src.engine.model.scoring import free_parameter_count
+    ordered = sorted(seeds(), key=free_parameter_count)
+    assert free_parameter_count(ordered[-1]) - free_parameter_count(ordered[0]) >= 2
+    return ordered
+
+
+def test_complexity_alone_does_not_refute():
+    # The replays: rivals that predicted as well as the leader died within
+    # weeks, refuted by the BIC penalty rather than by the evidence. Occam's
+    # razor ranks conjectures; only evidence refutes them (D22).
+    simple, *middle, complex_ = by_complexity()
+    pm = manager_with([scored(simple, "A", -3.00), scored(middle[0], "A", -3.01),
+                       scored(middle[1], "A", -3.02), scored(complex_, "B", -3.00)])
+    assert complex_ not in pm.prune_low_scorers("test-domain-v1")
+
+
+def test_evidence_is_compared_over_the_records_both_were_judged_on():
+    # A rival scored on twice as many records has twice the total
+    # log-likelihood to lose; that is not evidence against it.
+    a, b, c, d = seeds()
+    pm = manager_with([scored(a, "A", -3.00, n=300.0), scored(b, "A", -3.01, n=300.0), scored(c, "A", -3.00),
+                       scored(d, "B", -3.025, n=300.0)])
+    # The leader (c) has seen 150 records. Over those, d trails by 3.75 nats,
+    # short of 4.6; window totals would have put it 482 nats behind.
+    assert d not in pm.prune_low_scorers("test-domain-v1")

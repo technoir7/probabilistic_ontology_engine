@@ -333,9 +333,24 @@ def make_persistence_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate
         domain_module_id=module_id,
         generation=0,
         variables=_var_list(),
-        edges=[_edge(f"{name}_prev", name, prior=0.60, label=f"{name} persists") for name in _VAR_NAMES],
+        edges=_persistence_edges(),
         description="T_persistence: each signal follows its own last week",
     )
+
+
+def _persistence_edges() -> list[DependencyEdge]:
+    return [_edge(f"{name}_prev", name, prior=0.60, label=f"{name} persists") for name in _VAR_NAMES]
+
+
+def _assuming_persistence(candidate: OntologyCandidate) -> OntologyCandidate:
+    """CANDIDATE with each signal also following its own last week.
+
+    Replay 10 refuted every causal programme within weeks for not knowing
+    that signals persist, which none of them denies; so persistence is their
+    shared auxiliary hypothesis, and they compete on their own claims
+    (REFACTOR_SPEC D23). T_persistence, persistence and nothing else, is the
+    baseline they must beat."""
+    return candidate.model_copy(update={"edges": [*candidate.edges, *_persistence_edges()]})
 
 
 # ---------------------------------------------------------------------------
@@ -355,14 +370,14 @@ class MacroRegimeV1:
         return self._MODULE_ID
 
     def initial_candidates(self) -> list[OntologyCandidate]:
-        return [
+        causal = [
             make_monetary_chain_candidate(self._MODULE_ID),
             make_credit_first_candidate(self._MODULE_ID),
             make_ai_boom_candidate(self._MODULE_ID),
             make_recessionary_tightening_candidate(self._MODULE_ID),
             make_null_candidate(self._MODULE_ID),
-            make_persistence_candidate(self._MODULE_ID),
         ]
+        return [*map(_assuming_persistence, causal), make_persistence_candidate(self._MODULE_ID)]
 
     def existence_thresholds(self) -> EdgeExistenceThresholdConfig:
         """

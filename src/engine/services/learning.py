@@ -9,6 +9,7 @@ children, so dependencies weaken when parents are missing (REFACTOR_SPEC B20).
 from __future__ import annotations
 
 from itertools import product
+import math
 from typing import Any
 
 from ..schemas import EvidenceRecord, MissingnessType, OntologyCandidate
@@ -223,8 +224,9 @@ class LearningService:
 
         For hard parents the exact parent configuration is used.
         For soft parents the MAP value (argmax of the observation distribution)
-        is used as a first-order approximation.  For missing parents the
-        contribution of that variable is skipped (zero contribution, no crash).
+        is used as a first-order approximation. A missing parent is averaged
+        over as the data has seen it (CPTData.get_probability_given, D23):
+        skipping the variable would score it as certain.
 
         Uses Laplace-smoothed CPT probabilities.
         """
@@ -259,24 +261,13 @@ class LearningService:
                 cpt_data = self.ps.get(candidate.candidate_id, var.name)
                 parent_vars = candidate.get_parents(var.variable_id)
 
-                parent_assignment: dict[str, Any] = {}
-                all_obs = True
-                for pv in parent_vars:
-                    if pv.name not in var_dists:
-                        # Parent missing → skip this variable's contribution
-                        all_obs = False
-                        break
-                    pv_dist = var_dists[pv.name]
-                    # Use MAP value for parent (exact for hard; approx for soft)
-                    parent_assignment[pv.name] = max(
-                        pv_dist.items(), key=lambda kv: kv[1]
-                    )[0]
-                if not all_obs:
-                    continue
+                # Observed parents at their MAP value (exact for hard; approx for soft).
+                known = {pv.name: max(var_dists[pv.name].items(), key=lambda kv: kv[1])[0]
+                         for pv in parent_vars if pv.name in var_dists}
 
                 # Expected log-likelihood: Σ_x P_obs(x) * log P_model(x | Pa)
                 for val, p_obs in var_dists[var.name].items():
                     if p_obs > 1e-12:
-                        total_ll += p_obs * cpt_data.log_prob(val, parent_assignment)
+                        total_ll += p_obs * math.log(max(cpt_data.get_probability_given(val, known), 1e-12))
 
         return total_ll

@@ -64,18 +64,6 @@ def test_the_macro_domain_has_a_persistence_programme():
         (f"{n}_prev", n) for n in get_variables()}
 
 
-def test_last_periods_values_are_never_scored():
-    engine = ProbabilisticOntologyEngine(db_path=":memory:", random_seed=0)
-    engine.register_domain(MacroRegimeV1())
-    leader = engine.population_manager.dominant("macro-regime-v1")
-    v = get_variables_with_lags()
-    current = {n: True for n in v if not n.endswith("_prev")}
-    without = record(v, current, 0)
-    with_prev = record(v, {**current, **{f"{n}_prev": False for n in current}}, 0)
-    ls = engine.learning_service
-    assert ls.compute_log_likelihood([without], leader) == ls.compute_log_likelihood([with_prev], leader)
-
-
 def test_the_engine_learns_with_last_periods_values():
     engine = ProbabilisticOntologyEngine(db_path=":memory:", random_seed=0)
     engine.register_domain(MacroRegimeV1())
@@ -89,3 +77,19 @@ def test_the_engine_learns_with_last_periods_values():
     cpt = engine.parameter_store.get(persistence.candidate_id, "InflationShock")
     assert cpt.parents == ["InflationShock_prev"] and cpt.total_count() >= 5
     assert engine.epistemic_health("macro-regime-v1")["last_cycle"]["forecast_ll"] <= 0
+
+
+def test_every_causal_programme_assumes_persistence():
+    # Replay 10: without it, every causal programme was refuted within weeks
+    # for not knowing that signals persist, a claim none of them denies.
+    # Persistence is their shared auxiliary; they compete on their cores.
+    from src.domains.macro_regime_v1.domain import MacroRegimeV1, get_variables_with_lags
+    v = get_variables_with_lags()
+    persists = {(v[f"{n}_prev"].variable_id, v[n].variable_id) for n in v if not n.endswith("_prev")}
+    for c in MacroRegimeV1().initial_candidates():
+        edges = {(e.parent_variable_id, e.child_variable_id) for e in c.edges}
+        assert persists <= edges, c.description
+        if c.description.startswith("T_persistence"):
+            assert edges == persists
+        else:
+            assert edges - persists, f"{c.description} must still claim something of its own"

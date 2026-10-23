@@ -18,7 +18,7 @@ from uuid import UUID, uuid4
 
 
 from ..model.doubt import Surprise
-from ..model.scoring import add_to_window, candidate_score
+from ..model.scoring import add_to_window, candidate_score, log_bayes_factor
 from ..model.scoring import dominant as best_candidate
 from ..schemas import (
     CandidateStatus,
@@ -53,10 +53,8 @@ def _breeding_order(ranked: list[OntologyCandidate], turn: int) -> list[Ontology
 
 
 def _refuted(candidate: OntologyCandidate, leader: OntologyCandidate) -> bool:
-    """Is the evidence for the leader over this candidate decisive? Log Bayes
-    factor approximated as each one's window total less its BIC penalty."""
-    gap = leader.window_evidence * candidate_score(leader) - candidate.window_evidence * candidate_score(candidate)
-    return gap > _DECISIVE_LOG_BAYES_FACTOR
+    """Is the evidence, not the leader's simplicity, decisive against it? (D22)"""
+    return log_bayes_factor(leader, candidate) > _DECISIVE_LOG_BAYES_FACTOR
 
 
 class PopulationManager:

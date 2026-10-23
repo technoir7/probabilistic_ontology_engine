@@ -6,90 +6,86 @@
     [
      "T*",
      "ACTIVE",
-     -58.224363167,
+     -75.553042681,
      30,
      "A->C,B->C,B->D,C->E,D->E"
     ],
     [
      "T_alt",
      "ACTIVE",
-     -58.917510348,
+     -75.553042681,
      30,
      "A->C,A->D,B->C,C->E,D->E"
     ],
     [
      "null",
      "ACTIVE",
-     -70.701012417,
+     -75.553042681,
      30,
      "C->E"
     ],
     [
      "variant_add_A->B",
      "ACTIVE",
-     -58.224363167,
+     -75.553042681,
      30,
-     "A->B,A->C,B->C,B->D,C->E,D->E"
+     "A->B,C->E"
     ],
     [
      "variant_add_B->A",
      "ACTIVE",
-     -70.701012417,
+     -75.553042681,
      30,
-     "B->A,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "ACTIVE",
-     -58.224363167,
-     30,
-     "A->C,B->C,B->D,C->E,D->C,D->E"
-    ],
-    [
-     "variant_add_D->B",
-     "ACTIVE",
-     -58.917510348,
-     30,
-     "A->C,A->D,B->C,C->E,D->B,D->E"
+     "A->C,A->D,B->A,B->C,C->E,D->E"
     ],
     [
      "variant_add_A->D",
      "ACTIVE",
-     -58.224363167,
+     -75.553042681,
      30,
-     "A->C,A->D,B->C,B->D,C->E,D->E"
+     "A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "ACTIVE",
+     -75.553042681,
+     30,
+     "A->C,B->A,B->C,B->D,C->E,D->E"
     ],
     [
      "variant_add_D->B",
      "ACTIVE",
-     -70.701012417,
+     -75.553042681,
      30,
      "C->E,D->B"
     ],
     [
-     "variant_add_D->A",
+     "variant_add_D->C",
      "ACTIVE",
-     -58.224363167,
+     -75.553042681,
      30,
-     "A->C,B->C,B->D,C->E,D->A,D->E"
+     "A->C,B->C,B->D,C->E,D->C,D->E"
+    ],
+    [
+     "variant_add_C->A",
+     "ACTIVE",
+     -75.553042681,
+     30,
+     "C->A,C->E"
     ]
    ],
    "dominant_signature": [
-    "A->C",
-    "B->C",
-    "B->D",
-    "C->E",
-    "D->E"
+    "C->E"
    ],
    "generation": 7,
    "mutation_stats": {
-    "dag_violations": 8,
-    "duplicate_rejections": 10,
+    "dag_violations": 11,
+    "duplicate_rejections": 19,
     "introduced": 7,
-    "total_attempts": 25
+    "total_attempts": 37
    },
-   "paradigm_shift_count": 0,
-   "structure_entropy": 1.549954951
+   "paradigm_shift_count": 1,
+   "structure_entropy": 1.266599706
   },
   {
    "active_candidates": 10,
@@ -97,105 +93,100 @@
     [
      "T*",
      "ACTIVE",
-     -129.556839615,
+     -159.135151907,
      60,
      "A->C,B->C,B->D,C->E,D->E"
     ],
     [
      "T_alt",
      "ACTIVE",
-     -131.277535016,
+     -161.1485015,
      60,
      "A->C,A->D,B->C,C->E,D->E"
     ],
     [
      "null",
-     "PRUNED",
-     -156.592481268,
+     "ACTIVE",
+     -163.481884421,
      60,
      "C->E"
     ],
     [
      "variant_add_A->B",
      "ACTIVE",
-     -127.382127911,
+     -163.386614259,
      60,
-     "A->B,A->C,B->C,B->D,C->E,D->E"
+     "A->B,C->E"
     ],
     [
      "variant_add_B->A",
      "PRUNED",
-     -153.572268793,
+     -160.900877747,
      60,
-     "B->A,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "ACTIVE",
-     -127.388016422,
-     60,
-     "A->C,B->C,B->D,C->E,D->C,D->E"
-    ],
-    [
-     "variant_add_D->B",
-     "ACTIVE",
-     -126.33023459,
-     60,
-     "A->C,A->D,B->C,C->E,D->B,D->E"
+     "A->C,A->D,B->A,B->C,C->E,D->E"
     ],
     [
      "variant_add_A->D",
      "ACTIVE",
-     -129.106769947,
+     -162.618962543,
      60,
-     "A->C,A->D,B->C,B->D,C->E,D->E"
-    ],
-    [
-     "variant_add_D->B",
-     "ACTIVE",
-     -151.645180843,
-     60,
-     "C->E,D->B"
-    ],
-    [
-     "variant_add_D->A",
-     "ACTIVE",
-     -123.070891237,
-     60,
-     "A->C,B->C,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "ACTIVE",
-     -129.106769947,
-     60,
-     "A->C,A->D,B->C,B->D,C->D,C->E,D->E"
+     "A->D,C->E"
     ],
     [
      "variant_add_B->A",
      "ACTIVE",
-     -129.106769947,
+     -158.887528155,
      60,
-     "A->C,A->D,B->A,B->C,B->D,C->E,D->E"
+     "A->C,B->A,B->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -163.386614259,
+     60,
+     "C->E,D->B"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -160.974896038,
+     60,
+     "A->C,B->C,B->D,C->E,D->C,D->E"
+    ],
+    [
+     "variant_add_C->A",
+     "ACTIVE",
+     -163.234260668,
+     60,
+     "C->A,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "ACTIVE",
+     -163.481884421,
+     60,
+     "B->C,C->E"
+    ],
+    [
+     "variant_add_A->C",
+     "ACTIVE",
+     -163.386614259,
+     60,
+     "A->C,C->E,D->B"
     ]
    ],
    "dominant_signature": [
-    "A->C",
-    "B->C",
-    "B->D",
-    "C->E",
-    "D->A",
-    "D->E"
+    "C->E"
    ],
    "generation": 9,
    "mutation_stats": {
-    "dag_violations": 6,
-    "duplicate_rejections": 7,
+    "dag_violations": 2,
+    "duplicate_rejections": 3,
     "introduced": 2,
-    "total_attempts": 15
+    "total_attempts": 7
    },
    "paradigm_shift_count": 1,
-   "structure_entropy": 0.313802351
+   "structure_entropy": 1.483978037
   },
   {
    "active_candidates": 10,
@@ -203,119 +194,440 @@
     [
      "T*",
      "ACTIVE",
-     -197.916012539,
+     -240.615281293,
      90,
      "A->C,B->C,B->D,C->E,D->E"
     ],
     [
      "T_alt",
      "ACTIVE",
-     -199.015018987,
+     -244.07584065,
      90,
      "A->C,A->D,B->C,C->E,D->E"
     ],
     [
      "null",
-     "PRUNED",
-     -156.592481268,
-     60,
+     "ACTIVE",
+     -248.499272417,
+     90,
      "C->E"
     ],
     [
      "variant_add_A->B",
      "ACTIVE",
-     -192.618480748,
+     -248.912910546,
      90,
-     "A->B,A->C,B->C,B->D,C->E,D->E"
+     "A->B,C->E"
     ],
     [
      "variant_add_B->A",
      "PRUNED",
-     -153.572268793,
+     -160.900877747,
      60,
-     "B->A,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "ACTIVE",
-     -192.476353134,
-     90,
-     "A->C,B->C,B->D,C->E,D->C,D->E"
-    ],
-    [
-     "variant_add_D->B",
-     "ACTIVE",
-     -187.692813208,
-     90,
-     "A->C,A->D,B->C,C->E,D->B,D->E"
+     "A->C,A->D,B->A,B->C,C->E,D->E"
     ],
     [
      "variant_add_A->D",
      "ACTIVE",
-     -194.674887252,
+     -248.747616865,
      90,
-     "A->C,A->D,B->C,B->D,C->E,D->E"
+     "A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -241.759175064,
+     90,
+     "A->C,B->A,B->C,B->D,C->E,D->E"
     ],
     [
      "variant_add_D->B",
-     "PRUNED",
-     -223.831286759,
+     "ACTIVE",
+     -247.475288234,
      90,
      "C->E,D->B"
     ],
     [
-     "variant_add_D->A",
-     "ACTIVE",
-     -187.477624167,
-     90,
-     "A->C,B->C,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "PRUNED",
-     -193.344609446,
-     90,
-     "A->C,A->D,B->C,B->D,C->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "ACTIVE",
-     -192.471959778,
-     90,
-     "A->C,A->D,B->A,B->C,B->D,C->E,D->E"
-    ],
-    [
      "variant_add_D->C",
-     "ACTIVE",
-     -187.692813208,
-     90,
-     "A->C,A->D,B->C,C->E,D->B,D->C,D->E"
+     "PRUNED",
+     -160.974896038,
+     60,
+     "A->C,B->C,B->D,C->E,D->C,D->E"
     ],
     [
-     "variant_add_A->E",
+     "variant_add_C->A",
      "ACTIVE",
-     -187.477624167,
+     -247.68112914,
      90,
-     "A->C,A->E,B->C,B->D,C->E,D->A,D->E"
+     "C->A,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "ACTIVE",
+     -248.349573368,
+     90,
+     "B->C,C->E"
+    ],
+    [
+     "variant_add_A->C",
+     "ACTIVE",
+     -247.325589185,
+     90,
+     "A->C,C->E,D->B"
+    ],
+    [
+     "variant_add_E->D",
+     "ACTIVE",
+     -248.912910546,
+     90,
+     "A->B,C->E,E->D"
     ]
    ],
    "dominant_signature": [
-    "A->C",
-    "A->D",
-    "B->C",
+    "C->E"
+   ],
+   "generation": 10,
+   "mutation_stats": {
+    "dag_violations": 1,
+    "duplicate_rejections": 6,
+    "introduced": 1,
+    "total_attempts": 8
+   },
+   "paradigm_shift_count": 1,
+   "structure_entropy": 1.46832241
+  },
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "ACTIVE",
+     -323.082415609,
+     120,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "ACTIVE",
+     -328.058235898,
+     120,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "null",
+     "ACTIVE",
+     -333.441787319,
+     120,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -333.974641756,
+     120,
+     "A->B,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -160.900877747,
+     60,
+     "A->C,A->D,B->A,B->C,C->E,D->E"
+    ],
+    [
+     "variant_add_A->D",
+     "ACTIVE",
+     -334.504610546,
+     120,
+     "A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -241.759175064,
+     90,
+     "A->C,B->A,B->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -331.103889352,
+     120,
+     "C->E,D->B"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -160.974896038,
+     60,
+     "A->C,B->C,B->D,C->E,D->C,D->E"
+    ],
+    [
+     "variant_add_C->A",
+     "ACTIVE",
+     -331.876072854,
+     120,
+     "C->A,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "ACTIVE",
+     -333.294698644,
+     120,
+     "B->C,C->E"
+    ],
+    [
+     "variant_add_A->C",
+     "ACTIVE",
+     -330.465685567,
+     120,
+     "A->C,C->E,D->B"
+    ],
+    [
+     "variant_add_E->D",
+     "ACTIVE",
+     -334.252983536,
+     120,
+     "A->B,C->E,E->D"
+    ]
+   ],
+   "dominant_signature": [
+    "C->E"
+   ],
+   "generation": 10,
+   "mutation_stats": {
+    "dag_violations": 1,
+    "duplicate_rejections": 6,
+    "introduced": 1,
+    "total_attempts": 8
+   },
+   "paradigm_shift_count": 1,
+   "structure_entropy": 1.50284547
+  },
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "ACTIVE",
+     -403.467339707,
+     150,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "ACTIVE",
+     -411.207157841,
+     150,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "null",
+     "ACTIVE",
+     -415.346258487,
+     150,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -415.974537937,
+     150,
+     "A->B,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -160.900877747,
+     60,
+     "A->C,A->D,B->A,B->C,C->E,D->E"
+    ],
+    [
+     "variant_add_A->D",
+     "ACTIVE",
+     -416.382938317,
+     150,
+     "A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -241.759175064,
+     90,
+     "A->C,B->A,B->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -411.717110205,
+     150,
+     "C->E,D->B"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -160.974896038,
+     60,
+     "A->C,B->C,B->D,C->E,D->C,D->E"
+    ],
+    [
+     "variant_add_C->A",
+     "ACTIVE",
+     -412.448924048,
+     150,
+     "C->A,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "ACTIVE",
+     -414.487720401,
+     150,
+     "B->C,C->E"
+    ],
+    [
+     "variant_add_A->C",
+     "ACTIVE",
+     -409.878051551,
+     150,
+     "A->C,C->E,D->B"
+    ],
+    [
+     "variant_add_E->D",
+     "ACTIVE",
+     -416.278994555,
+     150,
+     "A->B,C->E,E->D"
+    ]
+   ],
+   "dominant_signature": [
     "C->E",
-    "D->B",
-    "D->E"
+    "D->B"
+   ],
+   "generation": 10,
+   "mutation_stats": {
+    "dag_violations": 1,
+    "duplicate_rejections": 6,
+    "introduced": 1,
+    "total_attempts": 8
+   },
+   "paradigm_shift_count": 2,
+   "structure_entropy": 1.541994911
+  },
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "ACTIVE",
+     -485.776751586,
+     180,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "ACTIVE",
+     -495.929306093,
+     180,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "null",
+     "ACTIVE",
+     -501.42779546,
+     180,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -501.984283104,
+     180,
+     "A->B,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -160.900877747,
+     60,
+     "A->C,A->D,B->A,B->C,C->E,D->E"
+    ],
+    [
+     "variant_add_A->D",
+     "ACTIVE",
+     -502.714004785,
+     180,
+     "A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -241.759175064,
+     90,
+     "A->C,B->A,B->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -497.277480903,
+     180,
+     "C->E,D->B"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -160.974896038,
+     60,
+     "A->C,B->C,B->D,C->E,D->C,D->E"
+    ],
+    [
+     "variant_add_C->A",
+     "ACTIVE",
+     -495.825747088,
+     180,
+     "C->A,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "ACTIVE",
+     -501.306025625,
+     180,
+     "B->C,C->E"
+    ],
+    [
+     "variant_add_A->C",
+     "ACTIVE",
+     -493.280912414,
+     180,
+     "A->C,C->E,D->B"
+    ],
+    [
+     "variant_add_E->D",
+     "PRUNED",
+     -501.693906085,
+     180,
+     "A->B,C->E,E->D"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -495.929306093,
+     180,
+     "A->C,A->D,B->D,C->E"
+    ]
+   ],
+   "dominant_signature": [
+    "C->A",
+    "C->E"
    ],
    "generation": 11,
    "mutation_stats": {
-    "dag_violations": 4,
-    "duplicate_rejections": 12,
-    "introduced": 2,
-    "total_attempts": 18
+    "dag_violations": 0,
+    "duplicate_rejections": 2,
+    "introduced": 1,
+    "total_attempts": 3
    },
-   "paradigm_shift_count": 2,
-   "structure_entropy": 0.698363565
+   "paradigm_shift_count": 3,
+   "structure_entropy": 1.140557938
   },
   {
    "active_candidates": 10,
@@ -323,1727 +635,863 @@
     [
      "T*",
      "ACTIVE",
-     -265.652014949,
-     120,
+     -564.681864034,
+     210,
      "A->C,B->D,C->E,D->E"
     ],
     [
      "T_alt",
-     "PRUNED",
-     -270.246546703,
-     120,
+     "ACTIVE",
+     -575.195116698,
+     210,
      "A->C,A->D,C->E"
     ],
     [
      "null",
-     "PRUNED",
-     -156.592481268,
-     60,
+     "ACTIVE",
+     -582.471034791,
+     210,
      "C->E"
     ],
     [
      "variant_add_A->B",
      "ACTIVE",
-     -259.125924824,
-     120,
-     "A->B,A->C,B->C,B->D,C->E,D->E"
+     -582.851607892,
+     210,
+     "A->B,C->E"
     ],
     [
      "variant_add_B->A",
      "PRUNED",
-     -153.572268793,
+     -160.900877747,
      60,
-     "B->A,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -258.144275216,
-     120,
-     "A->C,B->C,B->D,C->E,D->C,D->E"
-    ],
-    [
-     "variant_add_D->B",
-     "ACTIVE",
-     -254.832720604,
-     120,
-     "A->C,A->D,C->E,D->B"
+     "A->C,A->D,B->A,B->C,C->E,D->E"
     ],
     [
      "variant_add_A->D",
      "ACTIVE",
-     -261.788288732,
-     120,
+     -584.053959325,
+     210,
+     "A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -241.759175064,
+     90,
+     "A->C,B->A,B->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -578.951689857,
+     210,
+     "C->E,D->B"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -160.974896038,
+     60,
+     "A->C,B->C,B->D,C->E,D->C,D->E"
+    ],
+    [
+     "variant_add_C->A",
+     "ACTIVE",
+     -575.357693668,
+     210,
+     "C->A,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "ACTIVE",
+     -582.635282068,
+     210,
+     "B->C,C->E"
+    ],
+    [
+     "variant_add_A->C",
+     "ACTIVE",
+     -573.472395175,
+     210,
+     "A->C,C->E,D->B"
+    ],
+    [
+     "variant_add_E->D",
+     "PRUNED",
+     -501.693906085,
+     180,
+     "A->B,C->E,E->D"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -575.464139493,
+     210,
      "A->C,A->D,B->D,C->E"
     ],
     [
-     "variant_add_D->B",
-     "PRUNED",
-     -223.831286759,
-     90,
-     "C->E,D->B"
-    ],
-    [
-     "variant_add_D->A",
+     "variant_add_B->C",
      "ACTIVE",
-     -253.017033766,
-     120,
-     "A->C,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "PRUNED",
-     -193.344609446,
-     90,
-     "A->C,A->D,B->C,B->D,C->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "ACTIVE",
-     -258.110268657,
-     120,
-     "A->C,A->D,B->A,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "ACTIVE",
-     -252.961965928,
-     120,
-     "A->C,A->D,B->C,C->E,D->B,D->C"
-    ],
-    [
-     "variant_add_A->E",
-     "ACTIVE",
-     -252.151074437,
-     120,
-     "A->C,A->E,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "ACTIVE",
-     -258.110268657,
-     120,
-     "A->C,A->D,B->A,B->D,C->D,C->E"
-    ],
-    [
-     "variant_add_C->D",
-     "ACTIVE",
-     -254.832720604,
-     120,
-     "A->C,A->D,C->D,C->E,D->B"
+     -575.195116698,
+     210,
+     "A->C,A->D,B->C,C->E"
     ]
    ],
    "dominant_signature": [
-    "A->C",
-    "B->D",
-    "C->E",
-    "D->A",
-    "D->E"
+    "C->A",
+    "C->E"
+   ],
+   "generation": 12,
+   "mutation_stats": {
+    "dag_violations": 0,
+    "duplicate_rejections": 1,
+    "introduced": 1,
+    "total_attempts": 2
+   },
+   "paradigm_shift_count": 3,
+   "structure_entropy": 0.759774874
+  },
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "ACTIVE",
+     -637.377322994,
+     240,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "ACTIVE",
+     -648.395066302,
+     240,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "null",
+     "ACTIVE",
+     -657.600707037,
+     240,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -658.040393851,
+     240,
+     "A->B,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -160.900877747,
+     60,
+     "A->C,A->D,B->A,B->C,C->E,D->E"
+    ],
+    [
+     "variant_add_A->D",
+     "ACTIVE",
+     -659.07487341,
+     240,
+     "A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -241.759175064,
+     90,
+     "A->C,B->A,B->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -653.811471719,
+     240,
+     "C->E,D->B"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -160.974896038,
+     60,
+     "A->C,B->C,B->D,C->E,D->C,D->E"
+    ],
+    [
+     "variant_add_C->A",
+     "ACTIVE",
+     -648.934199812,
+     240,
+     "C->A,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "ACTIVE",
+     -657.822279932,
+     240,
+     "B->C,C->E"
+    ],
+    [
+     "variant_add_A->C",
+     "ACTIVE",
+     -647.048928521,
+     240,
+     "A->C,C->E,D->B"
+    ],
+    [
+     "variant_add_E->D",
+     "PRUNED",
+     -501.693906085,
+     180,
+     "A->B,C->E,E->D"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -575.464139493,
+     210,
+     "A->C,A->D,B->D,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "PRUNED",
+     -649.707799853,
+     240,
+     "A->C,A->D,B->C,C->E"
+    ],
+    [
+     "variant_add_B->E",
+     "ACTIVE",
+     -648.395066302,
+     240,
+     "A->C,A->D,B->E,C->E"
+    ]
+   ],
+   "dominant_signature": [
+    "C->A",
+    "C->E"
    ],
    "generation": 13,
    "mutation_stats": {
-    "dag_violations": 3,
-    "duplicate_rejections": 4,
-    "introduced": 2,
-    "total_attempts": 9
+    "dag_violations": 0,
+    "duplicate_rejections": 0,
+    "introduced": 1,
+    "total_attempts": 1
    },
    "paradigm_shift_count": 3,
-   "structure_entropy": 0.614755226
+   "structure_entropy": 0.62661839
   },
   {
    "active_candidates": 10,
    "candidates": [
     [
      "T*",
-     "PRUNED",
-     -332.852052184,
-     150,
+     "ACTIVE",
+     -717.878110585,
+     270,
      "A->C,B->D,C->E,D->E"
     ],
     [
      "T_alt",
-     "PRUNED",
-     -270.246546703,
-     120,
+     "ACTIVE",
+     -729.749029399,
+     270,
      "A->C,A->D,C->E"
     ],
     [
      "null",
-     "PRUNED",
-     -156.592481268,
-     60,
+     "ACTIVE",
+     -741.403216225,
+     270,
      "C->E"
     ],
     [
      "variant_add_A->B",
      "ACTIVE",
-     -318.05863148,
-     150,
-     "A->B,A->C,B->D,C->E,D->E"
+     -741.943246599,
+     270,
+     "A->B,C->E"
     ],
     [
      "variant_add_B->A",
      "PRUNED",
-     -153.572268793,
+     -160.900877747,
      60,
-     "B->A,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -258.144275216,
-     120,
-     "A->C,B->C,B->D,C->E,D->C,D->E"
-    ],
-    [
-     "variant_add_D->B",
-     "ACTIVE",
-     -320.226836267,
-     150,
-     "A->C,A->D,C->E,D->B"
+     "A->C,A->D,B->A,B->C,C->E,D->E"
     ],
     [
      "variant_add_A->D",
      "ACTIVE",
-     -326.059484692,
-     150,
-     "A->C,B->D,C->E"
-    ],
-    [
-     "variant_add_D->B",
-     "PRUNED",
-     -223.831286759,
-     90,
-     "C->E,D->B"
-    ],
-    [
-     "variant_add_D->A",
-     "ACTIVE",
-     -318.869941587,
-     150,
-     "A->C,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "PRUNED",
-     -193.344609446,
-     90,
-     "A->C,A->D,B->C,B->D,C->D,C->E,D->E"
+     -742.82690966,
+     270,
+     "A->D,C->E"
     ],
     [
      "variant_add_B->A",
+     "PRUNED",
+     -241.759175064,
+     90,
+     "A->C,B->A,B->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
      "ACTIVE",
-     -318.831840402,
-     150,
-     "A->C,B->A,B->D,C->E"
+     -737.487534559,
+     270,
+     "C->E,D->B"
     ],
     [
      "variant_add_D->C",
-     "ACTIVE",
-     -315.364167656,
-     150,
-     "A->C,A->D,B->C,C->E,D->B,D->C"
-    ],
-    [
-     "variant_add_A->E",
-     "ACTIVE",
-     -314.846342074,
-     150,
-     "A->C,A->E,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
      "PRUNED",
-     -318.260774905,
-     150,
-     "A->C,A->D,B->A,B->D,C->D,C->E"
+     -160.974896038,
+     60,
+     "A->C,B->C,B->D,C->E,D->C,D->E"
     ],
     [
-     "variant_add_C->D",
+     "variant_add_C->A",
      "ACTIVE",
-     -316.567752632,
-     150,
-     "A->C,A->D,C->D,C->E,D->B"
+     -730.941669663,
+     270,
+     "C->A,C->E"
     ],
     [
      "variant_add_B->C",
      "ACTIVE",
-     -326.059484692,
-     150,
-     "A->C,B->C,B->D,C->E"
+     -741.530706191,
+     270,
+     "B->C,C->E"
     ],
     [
-     "variant_add_D->C",
+     "variant_add_A->C",
      "ACTIVE",
-     -320.226836267,
-     150,
-     "A->C,A->D,C->E,D->B,D->C"
+     -729.048618714,
+     270,
+     "A->C,C->E,D->B"
+    ],
+    [
+     "variant_add_E->D",
+     "PRUNED",
+     -501.693906085,
+     180,
+     "A->B,C->E,E->D"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -575.464139493,
+     210,
+     "A->C,A->D,B->D,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "PRUNED",
+     -649.707799853,
+     240,
+     "A->C,A->D,B->C,C->E"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -730.548625631,
+     270,
+     "A->C,A->D,B->E,C->E"
+    ],
+    [
+     "variant_add_A->E",
+     "ACTIVE",
+     -741.403216225,
+     270,
+     "A->E,C->E"
     ]
    ],
    "dominant_signature": [
-    "A->B",
-    "A->C",
-    "B->D",
-    "C->E",
-    "D->E"
+    "C->A",
+    "C->E"
+   ],
+   "generation": 14,
+   "mutation_stats": {
+    "dag_violations": 0,
+    "duplicate_rejections": 4,
+    "introduced": 1,
+    "total_attempts": 5
+   },
+   "paradigm_shift_count": 3,
+   "structure_entropy": 0.514796687
+  },
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "ACTIVE",
+     -800.12999639,
+     300,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "ACTIVE",
+     -810.865300357,
+     300,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "null",
+     "ACTIVE",
+     -823.628966167,
+     300,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -824.065633167,
+     300,
+     "A->B,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -160.900877747,
+     60,
+     "A->C,A->D,B->A,B->C,C->E,D->E"
+    ],
+    [
+     "variant_add_A->D",
+     "ACTIVE",
+     -824.808538153,
+     300,
+     "A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -241.759175064,
+     90,
+     "A->C,B->A,B->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -820.152299045,
+     300,
+     "C->E,D->B"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -160.974896038,
+     60,
+     "A->C,B->C,B->D,C->E,D->C,D->E"
+    ],
+    [
+     "variant_add_C->A",
+     "ACTIVE",
+     -812.541534622,
+     300,
+     "C->A,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "ACTIVE",
+     -823.415658195,
+     300,
+     "B->C,C->E"
+    ],
+    [
+     "variant_add_A->C",
+     "ACTIVE",
+     -810.990381414,
+     300,
+     "A->C,C->E,D->B"
+    ],
+    [
+     "variant_add_E->D",
+     "PRUNED",
+     -501.693906085,
+     180,
+     "A->B,C->E,E->D"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -575.464139493,
+     210,
+     "A->C,A->D,B->D,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "PRUNED",
+     -649.707799853,
+     240,
+     "A->C,A->D,B->C,C->E"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -730.548625631,
+     270,
+     "A->C,A->D,B->E,C->E"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -824.654201518,
+     300,
+     "A->E,C->E"
+    ],
+    [
+     "variant_add_C->B",
+     "ACTIVE",
+     -820.152299045,
+     300,
+     "C->B,C->E,D->B"
+    ]
+   ],
+   "dominant_signature": [
+    "C->A",
+    "C->E"
    ],
    "generation": 15,
    "mutation_stats": {
-    "dag_violations": 3,
-    "duplicate_rejections": 5,
-    "introduced": 2,
-    "total_attempts": 10
+    "dag_violations": 1,
+    "duplicate_rejections": 4,
+    "introduced": 1,
+    "total_attempts": 6
    },
-   "paradigm_shift_count": 4,
-   "structure_entropy": 0.330597092
+   "paradigm_shift_count": 3,
+   "structure_entropy": 0.485477981
   },
   {
    "active_candidates": 10,
    "candidates": [
     [
      "T*",
-     "PRUNED",
-     -332.852052184,
-     150,
+     "ACTIVE",
+     -874.028022406,
+     330,
      "A->C,B->D,C->E,D->E"
     ],
     [
      "T_alt",
-     "PRUNED",
-     -270.246546703,
-     120,
+     "ACTIVE",
+     -883.771836124,
+     330,
      "A->C,A->D,C->E"
     ],
     [
      "null",
-     "PRUNED",
-     -156.592481268,
-     60,
+     "ACTIVE",
+     -898.114149,
+     330,
      "C->E"
     ],
     [
      "variant_add_A->B",
      "ACTIVE",
-     -390.648387052,
-     180,
-     "A->B,A->C,B->D,C->E,D->E"
+     -898.416649372,
+     330,
+     "A->B,C->E"
     ],
     [
      "variant_add_B->A",
      "PRUNED",
-     -153.572268793,
+     -160.900877747,
      60,
-     "B->A,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -258.144275216,
-     120,
-     "A->C,B->C,B->D,C->E,D->C,D->E"
-    ],
-    [
-     "variant_add_D->B",
-     "ACTIVE",
-     -397.039322657,
-     180,
-     "A->C,A->D,C->E,D->B"
+     "A->C,A->D,B->A,B->C,C->E,D->E"
     ],
     [
      "variant_add_A->D",
      "ACTIVE",
-     -402.814607095,
-     180,
-     "A->C,B->D,C->E"
-    ],
-    [
-     "variant_add_D->B",
-     "PRUNED",
-     -223.831286759,
-     90,
-     "C->E,D->B"
-    ],
-    [
-     "variant_add_D->A",
-     "ACTIVE",
-     -389.313127858,
-     180,
-     "A->C,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "PRUNED",
-     -193.344609446,
-     90,
-     "A->C,A->D,B->C,B->D,C->D,C->E,D->E"
+     -898.358309123,
+     330,
+     "A->D,C->E"
     ],
     [
      "variant_add_B->A",
+     "PRUNED",
+     -241.759175064,
+     90,
+     "A->C,B->A,B->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
      "ACTIVE",
-     -390.983976719,
-     180,
-     "A->C,B->A,B->D,C->E"
+     -895.30572966,
+     330,
+     "C->E,D->B"
     ],
     [
      "variant_add_D->C",
-     "ACTIVE",
-     -389.475313583,
-     180,
-     "A->C,A->D,B->C,C->E,D->B,D->C"
-    ],
-    [
-     "variant_add_A->E",
-     "ACTIVE",
-     -384.659640566,
-     180,
-     "A->C,A->E,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
      "PRUNED",
-     -318.260774905,
-     150,
-     "A->C,A->D,B->A,B->D,C->D,C->E"
+     -160.974896038,
+     60,
+     "A->C,B->C,B->D,C->E,D->C,D->E"
     ],
     [
-     "variant_add_C->D",
+     "variant_add_C->A",
      "ACTIVE",
-     -391.805021274,
+     -886.42459775,
+     330,
+     "C->A,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "ACTIVE",
+     -897.971699717,
+     330,
+     "B->C,C->E"
+    ],
+    [
+     "variant_add_A->C",
+     "ACTIVE",
+     -885.575272122,
+     330,
+     "A->C,C->E,D->B"
+    ],
+    [
+     "variant_add_E->D",
+     "PRUNED",
+     -501.693906085,
      180,
-     "A->C,A->D,C->D,C->E,D->B"
+     "A->B,C->E,E->D"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -575.464139493,
+     210,
+     "A->C,A->D,B->D,C->E"
     ],
     [
      "variant_add_B->C",
      "PRUNED",
-     -401.726251378,
-     180,
-     "A->C,B->C,B->D,C->E"
+     -649.707799853,
+     240,
+     "A->C,A->D,B->C,C->E"
     ],
     [
-     "variant_add_D->C",
+     "variant_add_B->E",
      "PRUNED",
-     -398.030408481,
-     180,
-     "A->C,A->D,C->E,D->B,D->C"
+     -730.548625631,
+     270,
+     "A->C,A->D,B->E,C->E"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -824.654201518,
+     300,
+     "A->E,C->E"
+    ],
+    [
+     "variant_add_C->B",
+     "PRUNED",
+     -894.64031999,
+     330,
+     "C->B,C->E,D->B"
+    ],
+    [
+     "variant_add_B->D",
+     "ACTIVE",
+     -883.771836124,
+     330,
+     "A->C,A->D,B->D,C->E"
+    ]
+   ],
+   "dominant_signature": [
+    "C->A",
+    "C->E"
+   ],
+   "generation": 16,
+   "mutation_stats": {
+    "dag_violations": 0,
+    "duplicate_rejections": 0,
+    "introduced": 1,
+    "total_attempts": 1
+   },
+   "paradigm_shift_count": 3,
+   "structure_entropy": 0.479511784
+  },
+  {
+   "active_candidates": 10,
+   "candidates": [
+    [
+     "T*",
+     "ACTIVE",
+     -958.640973704,
+     360,
+     "A->C,B->D,C->E,D->E"
+    ],
+    [
+     "T_alt",
+     "ACTIVE",
+     -967.964752079,
+     360,
+     "A->C,A->D,C->E"
+    ],
+    [
+     "null",
+     "ACTIVE",
+     -985.504875215,
+     360,
+     "C->E"
+    ],
+    [
+     "variant_add_A->B",
+     "ACTIVE",
+     -985.900767373,
+     360,
+     "A->B,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -160.900877747,
+     60,
+     "A->C,A->D,B->A,B->C,C->E,D->E"
     ],
     [
      "variant_add_A->D",
      "ACTIVE",
-     -390.983976719,
+     -984.848353485,
+     360,
+     "A->D,C->E"
+    ],
+    [
+     "variant_add_B->A",
+     "PRUNED",
+     -241.759175064,
+     90,
+     "A->C,B->A,B->C,B->D,C->E,D->E"
+    ],
+    [
+     "variant_add_D->B",
+     "ACTIVE",
+     -982.792981512,
+     360,
+     "C->E,D->B"
+    ],
+    [
+     "variant_add_D->C",
+     "PRUNED",
+     -160.974896038,
+     60,
+     "A->C,B->C,B->D,C->E,D->C,D->E"
+    ],
+    [
+     "variant_add_C->A",
+     "ACTIVE",
+     -971.837407941,
+     360,
+     "C->A,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "ACTIVE",
+     -985.258893881,
+     360,
+     "B->C,C->E"
+    ],
+    [
+     "variant_add_A->C",
+     "ACTIVE",
+     -971.116108765,
+     360,
+     "A->C,C->E,D->B"
+    ],
+    [
+     "variant_add_E->D",
+     "PRUNED",
+     -501.693906085,
      180,
-     "A->C,A->D,B->A,B->D,C->E"
+     "A->B,C->E,E->D"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -575.464139493,
+     210,
+     "A->C,A->D,B->D,C->E"
+    ],
+    [
+     "variant_add_B->C",
+     "PRUNED",
+     -649.707799853,
+     240,
+     "A->C,A->D,B->C,C->E"
+    ],
+    [
+     "variant_add_B->E",
+     "PRUNED",
+     -730.548625631,
+     270,
+     "A->C,A->D,B->E,C->E"
+    ],
+    [
+     "variant_add_A->E",
+     "PRUNED",
+     -824.654201518,
+     300,
+     "A->E,C->E"
+    ],
+    [
+     "variant_add_C->B",
+     "PRUNED",
+     -894.64031999,
+     330,
+     "C->B,C->E,D->B"
+    ],
+    [
+     "variant_add_B->D",
+     "PRUNED",
+     -969.043787951,
+     360,
+     "A->C,A->D,B->D,C->E"
     ],
     [
      "variant_add_D->C",
      "ACTIVE",
-     -384.659640566,
-     180,
-     "A->C,A->E,B->D,C->E,D->A,D->C,D->E"
+     -971.116108765,
+     360,
+     "A->C,C->E,D->B,D->C"
     ]
    ],
    "dominant_signature": [
-    "A->B",
-    "A->C",
-    "B->D",
-    "C->E",
-    "D->E"
+    "C->A",
+    "C->E"
    ],
    "generation": 17,
    "mutation_stats": {
     "dag_violations": 1,
     "duplicate_rejections": 2,
-    "introduced": 2,
-    "total_attempts": 5
+    "introduced": 1,
+    "total_attempts": 4
    },
-   "paradigm_shift_count": 4,
-   "structure_entropy": 0.702278719
-  },
-  {
-   "active_candidates": 10,
-   "candidates": [
-    [
-     "T*",
-     "PRUNED",
-     -332.852052184,
-     150,
-     "A->C,B->D,C->E,D->E"
-    ],
-    [
-     "T_alt",
-     "PRUNED",
-     -270.246546703,
-     120,
-     "A->C,A->D,C->E"
-    ],
-    [
-     "null",
-     "PRUNED",
-     -156.592481268,
-     60,
-     "C->E"
-    ],
-    [
-     "variant_add_A->B",
-     "ACTIVE",
-     -451.515458746,
-     210,
-     "A->B,A->C,B->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "PRUNED",
-     -153.572268793,
-     60,
-     "B->A,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -258.144275216,
-     120,
-     "A->C,B->C,B->D,C->E,D->C,D->E"
-    ],
-    [
-     "variant_add_D->B",
-     "ACTIVE",
-     -460.878861505,
-     210,
-     "A->C,A->D,C->E,D->B"
-    ],
-    [
-     "variant_add_A->D",
-     "PRUNED",
-     -471.067534154,
-     210,
-     "A->C,B->D,C->E"
-    ],
-    [
-     "variant_add_D->B",
-     "PRUNED",
-     -223.831286759,
-     90,
-     "C->E,D->B"
-    ],
-    [
-     "variant_add_D->A",
-     "ACTIVE",
-     -452.025881246,
-     210,
-     "A->C,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "PRUNED",
-     -193.344609446,
-     90,
-     "A->C,A->D,B->C,B->D,C->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "ACTIVE",
-     -457.051557004,
-     210,
-     "A->C,B->A,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "ACTIVE",
-     -451.549550963,
-     210,
-     "A->C,A->D,B->C,C->E,D->B,D->C"
-    ],
-    [
-     "variant_add_A->E",
-     "ACTIVE",
-     -445.955456566,
-     210,
-     "A->C,A->E,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "PRUNED",
-     -318.260774905,
-     150,
-     "A->C,A->D,B->A,B->D,C->D,C->E"
-    ],
-    [
-     "variant_add_C->D",
-     "ACTIVE",
-     -451.447832874,
-     210,
-     "A->C,A->D,C->D,C->E,D->B"
-    ],
-    [
-     "variant_add_B->C",
-     "PRUNED",
-     -401.726251378,
-     180,
-     "A->C,B->C,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -398.030408481,
-     180,
-     "A->C,A->D,C->E,D->B,D->C"
-    ],
-    [
-     "variant_add_A->D",
-     "PRUNED",
-     -454.975808601,
-     210,
-     "A->C,A->D,B->A,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "ACTIVE",
-     -445.721552331,
-     210,
-     "A->C,A->E,B->D,C->E,D->A,D->C,D->E"
-    ],
-    [
-     "variant_add_A->E",
-     "ACTIVE",
-     -451.515458746,
-     210,
-     "A->B,A->C,A->E,B->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "ACTIVE",
-     -452.025881246,
-     210,
-     "A->C,B->A,B->D,C->E,D->A,D->E"
-    ]
-   ],
-   "dominant_signature": [
-    "A->B",
-    "A->C",
-    "B->D",
-    "C->E",
-    "D->E"
-   ],
-   "generation": 19,
-   "mutation_stats": {
-    "dag_violations": 1,
-    "duplicate_rejections": 8,
-    "introduced": 2,
-    "total_attempts": 11
-   },
-   "paradigm_shift_count": 4,
-   "structure_entropy": 0.342640344
-  },
-  {
-   "active_candidates": 10,
-   "candidates": [
-    [
-     "T*",
-     "PRUNED",
-     -332.852052184,
-     150,
-     "A->C,B->D,C->E,D->E"
-    ],
-    [
-     "T_alt",
-     "PRUNED",
-     -270.246546703,
-     120,
-     "A->C,A->D,C->E"
-    ],
-    [
-     "null",
-     "PRUNED",
-     -156.592481268,
-     60,
-     "C->E"
-    ],
-    [
-     "variant_add_A->B",
-     "ACTIVE",
-     -503.90241298,
-     240,
-     "A->B,A->C,B->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "PRUNED",
-     -153.572268793,
-     60,
-     "B->A,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -258.144275216,
-     120,
-     "A->C,B->C,B->D,C->E,D->C,D->E"
-    ],
-    [
-     "variant_add_D->B",
-     "ACTIVE",
-     -514.328750625,
-     240,
-     "A->C,A->D,C->E,D->B"
-    ],
-    [
-     "variant_add_A->D",
-     "PRUNED",
-     -471.067534154,
-     210,
-     "A->C,B->D,C->E"
-    ],
-    [
-     "variant_add_D->B",
-     "PRUNED",
-     -223.831286759,
-     90,
-     "C->E,D->B"
-    ],
-    [
-     "variant_add_D->A",
-     "ACTIVE",
-     -505.926687263,
-     240,
-     "A->C,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "PRUNED",
-     -193.344609446,
-     90,
-     "A->C,A->D,B->C,B->D,C->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "PRUNED",
-     -514.136766207,
-     240,
-     "A->C,B->A,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "ACTIVE",
-     -500.168174538,
-     240,
-     "A->D,B->C,C->E,D->B,D->C"
-    ],
-    [
-     "variant_add_A->E",
-     "ACTIVE",
-     -496.509708181,
-     240,
-     "A->C,A->E,B->D,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "PRUNED",
-     -318.260774905,
-     150,
-     "A->C,A->D,B->A,B->D,C->D,C->E"
-    ],
-    [
-     "variant_add_C->D",
-     "ACTIVE",
-     -502.797856124,
-     240,
-     "A->C,C->D,C->E,D->B"
-    ],
-    [
-     "variant_add_B->C",
-     "PRUNED",
-     -401.726251378,
-     180,
-     "A->C,B->C,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -398.030408481,
-     180,
-     "A->C,A->D,C->E,D->B,D->C"
-    ],
-    [
-     "variant_add_A->D",
-     "PRUNED",
-     -454.975808601,
-     210,
-     "A->C,A->D,B->A,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -494.180886749,
-     240,
-     "A->C,A->E,B->D,D->A,D->C,D->E"
-    ],
-    [
-     "variant_add_A->E",
-     "ACTIVE",
-     -502.002500699,
-     240,
-     "A->B,A->C,A->E,B->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "ACTIVE",
-     -502.513064871,
-     240,
-     "A->C,B->A,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_A->D",
-     "ACTIVE",
-     -502.002500699,
-     240,
-     "A->B,A->C,A->D,A->E,B->D,C->E,D->E"
-    ],
-    [
-     "variant_add_C->B",
-     "ACTIVE",
-     -502.797856124,
-     240,
-     "A->C,C->B,C->D,C->E,D->B"
-    ]
-   ],
-   "dominant_signature": [
-    "A->B",
-    "A->C",
-    "B->D",
-    "C->E",
-    "D->E"
-   ],
-   "generation": 21,
-   "mutation_stats": {
-    "dag_violations": 6,
-    "duplicate_rejections": 1,
-    "introduced": 2,
-    "total_attempts": 9
-   },
-   "paradigm_shift_count": 4,
-   "structure_entropy": 0.26768604
-  },
-  {
-   "active_candidates": 10,
-   "candidates": [
-    [
-     "T*",
-     "PRUNED",
-     -332.852052184,
-     150,
-     "A->C,B->D,C->E,D->E"
-    ],
-    [
-     "T_alt",
-     "PRUNED",
-     -270.246546703,
-     120,
-     "A->C,A->D,C->E"
-    ],
-    [
-     "null",
-     "PRUNED",
-     -156.592481268,
-     60,
-     "C->E"
-    ],
-    [
-     "variant_add_A->B",
-     "ACTIVE",
-     -565.233512407,
-     270,
-     "A->B,A->C,B->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "PRUNED",
-     -153.572268793,
-     60,
-     "B->A,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -258.144275216,
-     120,
-     "A->C,B->C,B->D,C->E,D->C,D->E"
-    ],
-    [
-     "variant_add_D->B",
-     "PRUNED",
-     -580.814573025,
-     270,
-     "A->C,A->D,C->E,D->B"
-    ],
-    [
-     "variant_add_A->D",
-     "PRUNED",
-     -471.067534154,
-     210,
-     "A->C,B->D,C->E"
-    ],
-    [
-     "variant_add_D->B",
-     "PRUNED",
-     -223.831286759,
-     90,
-     "C->E,D->B"
-    ],
-    [
-     "variant_add_D->A",
-     "ACTIVE",
-     -567.591770476,
-     270,
-     "A->C,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "PRUNED",
-     -193.344609446,
-     90,
-     "A->C,A->D,B->C,B->D,C->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "PRUNED",
-     -514.136766207,
-     240,
-     "A->C,B->A,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "ACTIVE",
-     -563.456782669,
-     270,
-     "A->D,B->C,C->E,D->B,D->C"
-    ],
-    [
-     "variant_add_A->E",
-     "ACTIVE",
-     -560.54138176,
-     270,
-     "A->C,A->E,B->D,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "PRUNED",
-     -318.260774905,
-     150,
-     "A->C,A->D,B->A,B->D,C->D,C->E"
-    ],
-    [
-     "variant_add_C->D",
-     "ACTIVE",
-     -568.887302927,
-     270,
-     "A->C,C->D,C->E,D->B"
-    ],
-    [
-     "variant_add_B->C",
-     "PRUNED",
-     -401.726251378,
-     180,
-     "A->C,B->C,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -398.030408481,
-     180,
-     "A->C,A->D,C->E,D->B,D->C"
-    ],
-    [
-     "variant_add_A->D",
-     "PRUNED",
-     -454.975808601,
-     210,
-     "A->C,A->D,B->A,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -494.180886749,
-     240,
-     "A->C,A->E,B->D,D->A,D->C,D->E"
-    ],
-    [
-     "variant_add_A->E",
-     "ACTIVE",
-     -561.240288137,
-     270,
-     "A->B,A->C,A->E,B->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "ACTIVE",
-     -558.676009758,
-     270,
-     "A->C,B->A,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_A->D",
-     "ACTIVE",
-     -559.158294645,
-     270,
-     "A->B,A->C,A->D,A->E,B->D,C->E,D->E"
-    ],
-    [
-     "variant_add_C->B",
-     "PRUNED",
-     -565.485566871,
-     270,
-     "A->C,C->B,C->D,C->E,D->B"
-    ],
-    [
-     "variant_add_E->D",
-     "ACTIVE",
-     -568.887302927,
-     270,
-     "A->C,C->D,C->E,D->B,E->D"
-    ],
-    [
-     "variant_add_C->B",
-     "ACTIVE",
-     -565.233512407,
-     270,
-     "A->B,A->C,B->D,C->B,C->E,D->E"
-    ]
-   ],
-   "dominant_signature": [
-    "A->C",
-    "B->A",
-    "B->D",
-    "C->E",
-    "D->A",
-    "D->E"
-   ],
-   "generation": 23,
-   "mutation_stats": {
-    "dag_violations": 4,
-    "duplicate_rejections": 5,
-    "introduced": 2,
-    "total_attempts": 11
-   },
-   "paradigm_shift_count": 5,
-   "structure_entropy": 0.790013918
-  },
-  {
-   "active_candidates": 10,
-   "candidates": [
-    [
-     "T*",
-     "PRUNED",
-     -332.852052184,
-     150,
-     "A->C,B->D,C->E,D->E"
-    ],
-    [
-     "T_alt",
-     "PRUNED",
-     -270.246546703,
-     120,
-     "A->C,A->D,C->E"
-    ],
-    [
-     "null",
-     "PRUNED",
-     -156.592481268,
-     60,
-     "C->E"
-    ],
-    [
-     "variant_add_A->B",
-     "ACTIVE",
-     -636.866036949,
-     300,
-     "A->B,A->C,B->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "PRUNED",
-     -153.572268793,
-     60,
-     "B->A,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -258.144275216,
-     120,
-     "A->C,B->C,B->D,C->E,D->C,D->E"
-    ],
-    [
-     "variant_add_D->B",
-     "PRUNED",
-     -580.814573025,
-     270,
-     "A->C,A->D,C->E,D->B"
-    ],
-    [
-     "variant_add_A->D",
-     "PRUNED",
-     -471.067534154,
-     210,
-     "A->C,B->D,C->E"
-    ],
-    [
-     "variant_add_D->B",
-     "PRUNED",
-     -223.831286759,
-     90,
-     "C->E,D->B"
-    ],
-    [
-     "variant_add_D->A",
-     "ACTIVE",
-     -637.499030129,
-     300,
-     "A->C,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "PRUNED",
-     -193.344609446,
-     90,
-     "A->C,A->D,B->C,B->D,C->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "PRUNED",
-     -514.136766207,
-     240,
-     "A->C,B->A,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "ACTIVE",
-     -633.697388978,
-     300,
-     "A->D,B->C,C->E,D->B,D->C"
-    ],
-    [
-     "variant_add_A->E",
-     "PRUNED",
-     -633.221435872,
-     300,
-     "A->C,A->E,B->D,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "PRUNED",
-     -318.260774905,
-     150,
-     "A->C,A->D,B->A,B->D,C->D,C->E"
-    ],
-    [
-     "variant_add_C->D",
-     "ACTIVE",
-     -639.379271883,
-     300,
-     "A->C,C->D,C->E,D->B"
-    ],
-    [
-     "variant_add_B->C",
-     "PRUNED",
-     -401.726251378,
-     180,
-     "A->C,B->C,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -398.030408481,
-     180,
-     "A->C,A->D,C->E,D->B,D->C"
-    ],
-    [
-     "variant_add_A->D",
-     "PRUNED",
-     -454.975808601,
-     210,
-     "A->C,A->D,B->A,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -494.180886749,
-     240,
-     "A->C,A->E,B->D,D->A,D->C,D->E"
-    ],
-    [
-     "variant_add_A->E",
-     "ACTIVE",
-     -632.198717385,
-     300,
-     "A->B,A->C,A->E,B->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "ACTIVE",
-     -627.007294856,
-     300,
-     "A->C,B->A,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_A->D",
-     "ACTIVE",
-     -626.698683252,
-     300,
-     "A->B,A->C,A->D,A->E,B->D,C->E,D->E"
-    ],
-    [
-     "variant_add_C->B",
-     "PRUNED",
-     -565.485566871,
-     270,
-     "A->C,C->B,C->D,C->E,D->B"
-    ],
-    [
-     "variant_add_E->D",
-     "PRUNED",
-     -635.398703034,
-     300,
-     "A->C,C->D,C->E,D->B,E->D"
-    ],
-    [
-     "variant_add_C->B",
-     "ACTIVE",
-     -633.51008442,
-     300,
-     "A->B,A->C,B->D,C->B,C->E,D->E"
-    ],
-    [
-     "variant_add_B->C",
-     "ACTIVE",
-     -627.007294856,
-     300,
-     "A->C,B->A,B->C,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_A->D",
-     "ACTIVE",
-     -639.379271883,
-     300,
-     "A->C,A->D,C->D,C->E,D->B"
-    ]
-   ],
-   "dominant_signature": [
-    "A->C",
-    "B->A",
-    "B->D",
-    "C->E",
-    "D->A",
-    "D->E"
-   ],
-   "generation": 25,
-   "mutation_stats": {
-    "dag_violations": 3,
-    "duplicate_rejections": 4,
-    "introduced": 2,
-    "total_attempts": 9
-   },
-   "paradigm_shift_count": 5,
-   "structure_entropy": 0.453477726
-  },
-  {
-   "active_candidates": 10,
-   "candidates": [
-    [
-     "T*",
-     "PRUNED",
-     -332.852052184,
-     150,
-     "A->C,B->D,C->E,D->E"
-    ],
-    [
-     "T_alt",
-     "PRUNED",
-     -270.246546703,
-     120,
-     "A->C,A->D,C->E"
-    ],
-    [
-     "null",
-     "PRUNED",
-     -156.592481268,
-     60,
-     "C->E"
-    ],
-    [
-     "variant_add_A->B",
-     "ACTIVE",
-     -689.902182032,
-     330,
-     "A->B,A->C,B->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "PRUNED",
-     -153.572268793,
-     60,
-     "B->A,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -258.144275216,
-     120,
-     "A->C,B->C,B->D,C->E,D->C,D->E"
-    ],
-    [
-     "variant_add_D->B",
-     "PRUNED",
-     -580.814573025,
-     270,
-     "A->C,A->D,C->E,D->B"
-    ],
-    [
-     "variant_add_A->D",
-     "PRUNED",
-     -471.067534154,
-     210,
-     "A->C,B->D,C->E"
-    ],
-    [
-     "variant_add_D->B",
-     "PRUNED",
-     -223.831286759,
-     90,
-     "C->E,D->B"
-    ],
-    [
-     "variant_add_D->A",
-     "ACTIVE",
-     -688.686580853,
-     330,
-     "A->C,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "PRUNED",
-     -193.344609446,
-     90,
-     "A->C,A->D,B->C,B->D,C->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "PRUNED",
-     -514.136766207,
-     240,
-     "A->C,B->A,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -686.000531933,
-     330,
-     "A->D,B->C,C->E,D->B,D->C"
-    ],
-    [
-     "variant_add_A->E",
-     "PRUNED",
-     -633.221435872,
-     300,
-     "A->C,A->E,B->D,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "PRUNED",
-     -318.260774905,
-     150,
-     "A->C,A->D,B->A,B->D,C->D,C->E"
-    ],
-    [
-     "variant_add_C->D",
-     "ACTIVE",
-     -691.335417884,
-     330,
-     "A->C,C->D,C->E,D->B"
-    ],
-    [
-     "variant_add_B->C",
-     "PRUNED",
-     -401.726251378,
-     180,
-     "A->C,B->C,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -398.030408481,
-     180,
-     "A->C,A->D,C->E,D->B,D->C"
-    ],
-    [
-     "variant_add_A->D",
-     "PRUNED",
-     -454.975808601,
-     210,
-     "A->C,A->D,B->A,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -494.180886749,
-     240,
-     "A->C,A->E,B->D,D->A,D->C,D->E"
-    ],
-    [
-     "variant_add_A->E",
-     "ACTIVE",
-     -684.123970125,
-     330,
-     "A->B,A->C,A->E,B->D,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "ACTIVE",
-     -675.165303327,
-     330,
-     "A->C,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_A->D",
-     "ACTIVE",
-     -674.434830762,
-     330,
-     "A->B,A->C,A->D,A->E,B->D,D->E"
-    ],
-    [
-     "variant_add_C->B",
-     "PRUNED",
-     -565.485566871,
-     270,
-     "A->C,C->B,C->D,C->E,D->B"
-    ],
-    [
-     "variant_add_E->D",
-     "PRUNED",
-     -635.398703034,
-     300,
-     "A->C,C->D,C->E,D->B,E->D"
-    ],
-    [
-     "variant_add_C->B",
-     "ACTIVE",
-     -680.308185509,
-     330,
-     "A->B,A->C,B->D,C->B,C->E,D->E"
-    ],
-    [
-     "variant_add_B->C",
-     "ACTIVE",
-     -673.70995597,
-     330,
-     "A->C,B->C,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_A->D",
-     "PRUNED",
-     -688.898388309,
-     330,
-     "A->C,A->D,C->D,C->E,D->B"
-    ],
-    [
-     "variant_add_C->E",
-     "ACTIVE",
-     -674.434830762,
-     330,
-     "A->B,A->C,A->D,A->E,B->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->E",
-     "ACTIVE",
-     -680.308185509,
-     330,
-     "A->B,A->C,B->D,B->E,C->B,C->E,D->E"
-    ]
-   ],
-   "dominant_signature": [
-    "A->C",
-    "B->D",
-    "C->E",
-    "D->A",
-    "D->E"
-   ],
-   "generation": 27,
-   "mutation_stats": {
-    "dag_violations": 3,
-    "duplicate_rejections": 6,
-    "introduced": 2,
-    "total_attempts": 11
-   },
-   "paradigm_shift_count": 5,
-   "structure_entropy": 0.41522287
-  },
-  {
-   "active_candidates": 10,
-   "candidates": [
-    [
-     "T*",
-     "PRUNED",
-     -332.852052184,
-     150,
-     "A->C,B->D,C->E,D->E"
-    ],
-    [
-     "T_alt",
-     "PRUNED",
-     -270.246546703,
-     120,
-     "A->C,A->D,C->E"
-    ],
-    [
-     "null",
-     "PRUNED",
-     -156.592481268,
-     60,
-     "C->E"
-    ],
-    [
-     "variant_add_A->B",
-     "ACTIVE",
-     -763.496377791,
-     360,
-     "A->B,A->C,B->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "PRUNED",
-     -153.572268793,
-     60,
-     "B->A,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -258.144275216,
-     120,
-     "A->C,B->C,B->D,C->E,D->C,D->E"
-    ],
-    [
-     "variant_add_D->B",
-     "PRUNED",
-     -580.814573025,
-     270,
-     "A->C,A->D,C->E,D->B"
-    ],
-    [
-     "variant_add_A->D",
-     "PRUNED",
-     -471.067534154,
-     210,
-     "A->C,B->D,C->E"
-    ],
-    [
-     "variant_add_D->B",
-     "PRUNED",
-     -223.831286759,
-     90,
-     "C->E,D->B"
-    ],
-    [
-     "variant_add_D->A",
-     "ACTIVE",
-     -757.852120915,
-     360,
-     "A->C,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "PRUNED",
-     -193.344609446,
-     90,
-     "A->C,A->D,B->C,B->D,C->D,C->E,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "PRUNED",
-     -514.136766207,
-     240,
-     "A->C,B->A,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -686.000531933,
-     330,
-     "A->D,B->C,C->E,D->B,D->C"
-    ],
-    [
-     "variant_add_A->E",
-     "PRUNED",
-     -633.221435872,
-     300,
-     "A->C,A->E,B->D,D->A,D->E"
-    ],
-    [
-     "variant_add_C->D",
-     "PRUNED",
-     -318.260774905,
-     150,
-     "A->C,A->D,B->A,B->D,C->D,C->E"
-    ],
-    [
-     "variant_add_C->D",
-     "ACTIVE",
-     -765.769789224,
-     360,
-     "A->C,C->D,C->E,D->B"
-    ],
-    [
-     "variant_add_B->C",
-     "PRUNED",
-     -401.726251378,
-     180,
-     "A->C,B->C,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -398.030408481,
-     180,
-     "A->C,A->D,C->E,D->B,D->C"
-    ],
-    [
-     "variant_add_A->D",
-     "PRUNED",
-     -454.975808601,
-     210,
-     "A->C,A->D,B->A,B->D,C->E"
-    ],
-    [
-     "variant_add_D->C",
-     "PRUNED",
-     -494.180886749,
-     240,
-     "A->C,A->E,B->D,D->A,D->C,D->E"
-    ],
-    [
-     "variant_add_A->E",
-     "PRUNED",
-     -762.095325245,
-     360,
-     "A->B,A->C,A->E,B->D,D->E"
-    ],
-    [
-     "variant_add_B->A",
-     "ACTIVE",
-     -745.230157606,
-     360,
-     "A->C,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_A->D",
-     "ACTIVE",
-     -750.761343785,
-     360,
-     "A->B,A->C,A->D,A->E,D->E"
-    ],
-    [
-     "variant_add_C->B",
-     "PRUNED",
-     -565.485566871,
-     270,
-     "A->C,C->B,C->D,C->E,D->B"
-    ],
-    [
-     "variant_add_E->D",
-     "PRUNED",
-     -635.398703034,
-     300,
-     "A->C,C->D,C->E,D->B,E->D"
-    ],
-    [
-     "variant_add_C->B",
-     "ACTIVE",
-     -753.206965066,
-     360,
-     "A->B,A->C,B->D,C->B,C->E,D->E"
-    ],
-    [
-     "variant_add_B->C",
-     "ACTIVE",
-     -743.58173733,
-     360,
-     "A->C,B->C,B->D,C->E,D->A,D->E"
-    ],
-    [
-     "variant_add_A->D",
-     "PRUNED",
-     -688.898388309,
-     330,
-     "A->C,A->D,C->D,C->E,D->B"
-    ],
-    [
-     "variant_add_C->E",
-     "PRUNED",
-     -748.681902244,
-     360,
-     "A->B,A->C,A->D,A->E,C->E,D->E"
-    ],
-    [
-     "variant_add_B->E",
-     "ACTIVE",
-     -754.118391287,
-     360,
-     "A->B,A->C,B->D,B->E,C->B,C->E,D->E"
-    ],
-    [
-     "variant_add_A->D",
-     "ACTIVE",
-     -765.769789224,
-     360,
-     "A->C,A->D,C->D,C->E,D->B"
-    ],
-    [
-     "variant_add_E->C",
-     "ACTIVE",
-     -750.761343785,
-     360,
-     "A->B,A->C,A->D,A->E,D->E,E->C"
-    ]
-   ],
-   "dominant_signature": [
-    "A->C",
-    "B->D",
-    "C->E",
-    "D->A",
-    "D->E"
-   ],
-   "generation": 29,
-   "mutation_stats": {
-    "dag_violations": 3,
-    "duplicate_rejections": 2,
-    "introduced": 2,
-    "total_attempts": 7
-   },
-   "paradigm_shift_count": 5,
-   "structure_entropy": 0.412741958
+   "paradigm_shift_count": 3,
+   "structure_entropy": 0.34261605
   }
  ],
  "phase_end": {
   "T*": {
    "dominant_cpts": {
     "A": {
-     "()": 0.511266561
+     "C=False": 0.381242921,
+     "C=True": 0.616925809
     },
     "B": {
-     "A=False": 0.512279242,
-     "A=True": 0.482748637
+     "()": 0.492321203
     },
     "C": {
-     "A=False": 0.341088564,
-     "A=True": 0.669750579
+     "()": 0.534771909
     },
     "D": {
-     "B=False": 0.357510655,
-     "B=True": 0.555243295
+     "()": 0.457244495
     },
     "E": {
-     "C=False,D=False": 0.38892089,
-     "C=False,D=True": 0.542204344,
-     "C=True,D=False": 0.558793232,
-     "C=True,D=True": 0.67003391
+     "C=False": 0.460437637,
+     "C=True": 0.612733271
     }
    },
    "marginals": {
@@ -2051,24 +1499,24 @@
      "error": null,
      "posteriors": {
       "A": {
-       "False": 0.488733439,
-       "True": 0.511266561
+       "False": 0.492720491,
+       "True": 0.507279509
       },
       "B": {
-       "False": 0.502818769,
-       "True": 0.497181231
+       "False": 0.507678797,
+       "True": 0.492321203
       },
       "C": {
-       "False": 0.490877538,
-       "True": 0.509122462
+       "False": 0.465228091,
+       "True": 0.534771909
       },
       "D": {
-       "False": 0.544180388,
-       "True": 0.455819612
+       "False": 0.542755505,
+       "True": 0.457244495
       },
       "E": {
-       "False": 0.464460302,
-       "True": 0.535539698
+       "False": 0.458118936,
+       "True": 0.541881064
       }
      }
     },
@@ -2076,24 +1524,24 @@
      "error": null,
      "posteriors": {
       "A": {
-       "False": 0.490366282,
-       "True": 0.509633718
+       "False": 0.491002746,
+       "True": 0.508997254
       },
       "B": {
-       "False": 0.504650789,
-       "True": 0.495349211
+       "False": 0.508994851,
+       "True": 0.491005149
       },
       "C": {
-       "False": 0.479030743,
-       "True": 0.520969257
+       "False": 0.455732594,
+       "True": 0.544267406
       },
       "D": {
-       "False": 0.544467794,
-       "True": 0.455532206
+       "False": 0.542755505,
+       "True": 0.457244495
       },
       "E": {
-       "False": 0.462652693,
-       "True": 0.537347307
+       "False": 0.457092988,
+       "True": 0.542907012
       }
      }
     },
@@ -2101,24 +1549,24 @@
      "error": null,
      "posteriors": {
       "A": {
-       "False": 0.490368971,
-       "True": 0.509631029
+       "False": 0.490859326,
+       "True": 0.509140674
       },
       "B": {
-       "False": 0.504658251,
-       "True": 0.495341749
+       "False": 0.508894367,
+       "True": 0.491105633
       },
       "C": {
-       "False": 0.478990276,
-       "True": 0.521009724
+       "False": 0.456144596,
+       "True": 0.543855404
       },
       "D": {
-       "False": 0.544460277,
-       "True": 0.455539723
+       "False": 0.542711549,
+       "True": 0.457288451
       },
       "E": {
-       "False": 0.462669495,
-       "True": 0.537330505
+       "False": 0.457140359,
+       "True": 0.542859641
       }
      }
     }
@@ -2137,9 +1585,9 @@
       "edges": {
        "A->C": {
         "enabled": true,
-        "existence_probability": 0.460161417,
-        "existence_update_count": 5,
-        "explore_weight": 0.792318781
+        "existence_probability": 0.812979676,
+        "existence_update_count": 6,
+        "explore_weight": 0.643530976
        },
        "B->C": {
         "enabled": false,
@@ -2149,30 +1597,30 @@
        },
        "B->D": {
         "enabled": true,
-        "existence_probability": 0.881292619,
-        "existence_update_count": 5,
-        "explore_weight": 0.594031702
+        "existence_probability": 0.883966491,
+        "existence_update_count": 6,
+        "explore_weight": 0.457178741
        },
        "C->E": {
         "enabled": true,
-        "existence_probability": 0.07571109,
-        "existence_update_count": 5,
-        "explore_weight": 0.229402524
+        "existence_probability": 0.116190278,
+        "existence_update_count": 6,
+        "explore_weight": 0.176574373
        },
        "D->E": {
         "enabled": true,
-        "existence_probability": 0.054168568,
-        "existence_update_count": 5,
-        "explore_weight": 0.218003043
+        "existence_probability": 0.070018997,
+        "existence_update_count": 6,
+        "explore_weight": 0.161760743
        }
       },
-      "evidence_count": 150,
+      "evidence_count": 180,
       "generation": 0,
-      "log_score": -332.852052184,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 103.29505094,
-      "window_log_score": -230.888755949
+      "log_score": -485.776751586,
+      "pruning_reason": null,
+      "status": "ACTIVE",
+      "window_evidence": 113.901652658,
+      "window_log_score": -308.767657907
      },
      {
       "active_signature": [
@@ -2184,15 +1632,15 @@
       "edges": {
        "A->C": {
         "enabled": true,
-        "existence_probability": 0.306948648,
-        "existence_update_count": 4,
-        "explore_weight": 0.754589315
+        "existence_probability": 0.812979676,
+        "existence_update_count": 6,
+        "explore_weight": 0.643530976
        },
        "A->D": {
         "enabled": true,
-        "existence_probability": 0.083688055,
-        "existence_update_count": 4,
-        "explore_weight": 0.353535701
+        "existence_probability": 0.069739062,
+        "existence_update_count": 6,
+        "explore_weight": 0.195470217
        },
        "B->C": {
         "enabled": false,
@@ -2202,9 +1650,9 @@
        },
        "C->E": {
         "enabled": true,
-        "existence_probability": 0.074098146,
-        "existence_update_count": 4,
-        "explore_weight": 0.308034521
+        "existence_probability": 0.433112471,
+        "existence_update_count": 6,
+        "explore_weight": 0.33960806
        },
        "D->E": {
         "enabled": false,
@@ -2213,13 +1661,13 @@
         "explore_weight": 0.294846034
        }
       },
-      "evidence_count": 120,
+      "evidence_count": 180,
       "generation": 0,
-      "log_score": -270.246546703,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 90.23679249,
-      "window_log_score": -205.564385916
+      "log_score": -495.929306093,
+      "pruning_reason": null,
+      "status": "ACTIVE",
+      "window_evidence": 113.901652658,
+      "window_log_score": -316.077059367
      },
      {
       "active_signature": [
@@ -2229,26 +1677,23 @@
       "edges": {
        "C->E": {
         "enabled": true,
-        "existence_probability": 0.174425765,
-        "existence_update_count": 2,
-        "explore_weight": 0.663810282
+        "existence_probability": 0.3998177,
+        "existence_update_count": 6,
+        "explore_weight": 0.421866972
        }
       },
-      "evidence_count": 60,
+      "evidence_count": 180,
       "generation": 0,
-      "log_score": -156.592481268,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 54.367571891,
-      "window_log_score": -143.318535612
+      "log_score": -501.42779546,
+      "pruning_reason": null,
+      "status": "ACTIVE",
+      "window_evidence": 113.901652658,
+      "window_log_score": -319.194776056
      },
      {
       "active_signature": [
        "A->B",
-       "A->C",
-       "B->D",
-       "C->E",
-       "D->E"
+       "C->E"
       ],
       "description": "variant_add_A->B",
       "edges": {
@@ -2258,72 +1703,188 @@
         "existence_update_count": 5,
         "explore_weight": 0.26177757
        },
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.782251599,
-        "existence_update_count": 6,
-        "explore_weight": 0.65824248
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.019891967,
-        "existence_update_count": 5,
-        "explore_weight": 0.19509487
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.879052763,
-        "existence_update_count": 6,
-        "explore_weight": 0.465230656
-       },
        "C->E": {
         "enabled": true,
-        "existence_probability": 0.114815424,
+        "existence_probability": 0.3998177,
         "existence_update_count": 6,
-        "explore_weight": 0.176336065
-       },
-       "D->E": {
-        "enabled": true,
-        "existence_probability": 0.070071013,
-        "existence_update_count": 6,
-        "explore_weight": 0.161734955
+        "explore_weight": 0.421866972
        }
       },
       "evidence_count": 180,
       "generation": 1,
-      "log_score": -390.648387052,
+      "log_score": -501.984283104,
       "pruning_reason": null,
       "status": "ACTIVE",
       "window_evidence": 113.901652658,
-      "window_log_score": -249.98391949
+      "window_log_score": -319.51039533
      },
      {
       "active_signature": [
+       "A->C",
+       "A->D",
        "B->A",
-       "C->E"
+       "B->C",
+       "C->E",
+       "D->E"
       ],
       "description": "variant_add_B->A",
       "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.245887685,
+        "existence_update_count": 2,
+        "explore_weight": 0.684778363
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.117154835,
+        "existence_update_count": 2,
+        "explore_weight": 0.621174801
+       },
        "B->A": {
         "enabled": true,
         "existence_probability": 0.154768088,
         "existence_update_count": 1,
         "explore_weight": 0.792860853
        },
+       "B->C": {
+        "enabled": true,
+        "existence_probability": 0.037821288,
+        "existence_update_count": 2,
+        "explore_weight": 0.537470511
+       },
        "C->E": {
         "enabled": true,
-        "existence_probability": 0.174425765,
+        "existence_probability": 0.060993221,
         "existence_update_count": 2,
-        "explore_weight": 0.663810282
+        "explore_weight": 0.561331971
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.065002509,
+        "existence_update_count": 2,
+        "explore_weight": 0.554224869
        }
       },
       "evidence_count": 60,
       "generation": 1,
-      "log_score": -153.572268793,
+      "log_score": -160.900877747,
       "pruning_reason": "bottom_quartile_log_score",
       "status": "PRUNED",
       "window_evidence": 54.367571891,
-      "window_log_score": -140.298323137
+      "window_log_score": -146.715975036
+     },
+     {
+      "active_signature": [
+       "A->D",
+       "C->E"
+      ],
+      "description": "variant_add_A->D",
+      "edges": {
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.078620449,
+        "existence_update_count": 5,
+        "explore_weight": 0.265955665
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.3998177,
+        "existence_update_count": 6,
+        "explore_weight": 0.421866972
+       }
+      },
+      "evidence_count": 180,
+      "generation": 1,
+      "log_score": -502.714004785,
+      "pruning_reason": null,
+      "status": "ACTIVE",
+      "window_evidence": 113.901652658,
+      "window_log_score": -320.180330425
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "B->A",
+       "B->C",
+       "B->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_B->A",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.322842886,
+        "existence_update_count": 3,
+        "explore_weight": 0.719017281
+       },
+       "B->A": {
+        "enabled": true,
+        "existence_probability": 0.119341682,
+        "existence_update_count": 2,
+        "explore_weight": 0.611775406
+       },
+       "B->C": {
+        "enabled": true,
+        "existence_probability": 0.025525652,
+        "existence_update_count": 3,
+        "explore_weight": 0.384460929
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.728713507,
+        "existence_update_count": 3,
+        "explore_weight": 0.951206015
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.061688825,
+        "existence_update_count": 3,
+        "explore_weight": 0.4135549
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.055529858,
+        "existence_update_count": 3,
+        "explore_weight": 0.407316411
+       }
+      },
+      "evidence_count": 90,
+      "generation": 1,
+      "log_score": -241.759175064,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED",
+      "window_evidence": 74.160190552,
+      "window_log_score": -200.406701185
+     },
+     {
+      "active_signature": [
+       "C->E",
+       "D->B"
+      ],
+      "description": "variant_add_D->B",
+      "edges": {
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.3998177,
+        "existence_update_count": 6,
+        "explore_weight": 0.421866972
+       },
+       "D->B": {
+        "enabled": true,
+        "existence_probability": 0.629113812,
+        "existence_update_count": 5,
+        "explore_weight": 1.057997533
+       }
+      },
+      "evidence_count": 180,
+      "generation": 1,
+      "log_score": -497.277480903,
+      "pruning_reason": null,
+      "status": "ACTIVE",
+      "window_evidence": 113.901652658,
+      "window_log_score": -316.218774534
      },
      {
       "active_signature": [
@@ -2338,110 +1899,183 @@
       "edges": {
        "A->C": {
         "enabled": true,
-        "existence_probability": 0.002301232,
-        "existence_update_count": 4,
-        "explore_weight": 0.28035735
+        "existence_probability": 0.007175055,
+        "existence_update_count": 2,
+        "explore_weight": 0.569055209
        },
        "B->C": {
         "enabled": true,
-        "existence_probability": 0.000371901,
-        "existence_update_count": 4,
-        "explore_weight": 0.255905027
+        "existence_probability": 0.002676597,
+        "existence_update_count": 2,
+        "explore_weight": 0.521788133
        },
        "B->D": {
         "enabled": true,
-        "existence_probability": 0.817073076,
-        "existence_update_count": 4,
-        "explore_weight": 0.770244925
+        "existence_probability": 0.604348982,
+        "existence_update_count": 2,
+        "explore_weight": 1.1025
        },
        "C->E": {
         "enabled": true,
-        "existence_probability": 0.073346031,
-        "existence_update_count": 4,
-        "explore_weight": 0.307826911
+        "existence_probability": 0.061109901,
+        "existence_update_count": 2,
+        "explore_weight": 0.561144373
        },
        "D->C": {
         "enabled": true,
-        "existence_probability": 0.000132846,
-        "existence_update_count": 3,
-        "explore_weight": 0.343475373
+        "existence_probability": 0.001194416,
+        "existence_update_count": 1,
+        "explore_weight": 0.70071665
        },
        "D->E": {
         "enabled": true,
-        "existence_probability": 0.051063609,
-        "existence_update_count": 4,
-        "explore_weight": 0.29753272
+        "existence_probability": 0.067155775,
+        "existence_update_count": 2,
+        "explore_weight": 0.555421673
        }
       },
-      "evidence_count": 120,
+      "evidence_count": 60,
       "generation": 1,
-      "log_score": -258.144275216,
+      "log_score": -160.974896038,
       "pruning_reason": "bottom_quartile_log_score",
       "status": "PRUNED",
-      "window_evidence": 90.23679249,
-      "window_log_score": -195.368737013
+      "window_evidence": 54.367571891,
+      "window_log_score": -146.789993327
+     },
+     {
+      "active_signature": [
+       "C->A",
+       "C->E"
+      ],
+      "description": "variant_add_C->A",
+      "edges": {
+       "C->A": {
+        "enabled": true,
+        "existence_probability": 0.870322042,
+        "existence_update_count": 5,
+        "explore_weight": 0.945428996
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.3998177,
+        "existence_update_count": 6,
+        "explore_weight": 0.421866972
+       }
+      },
+      "evidence_count": 180,
+      "generation": 1,
+      "log_score": -495.825747088,
+      "pruning_reason": null,
+      "status": "ACTIVE",
+      "window_evidence": 113.901652658,
+      "window_log_score": -314.501719218
+     },
+     {
+      "active_signature": [
+       "B->C",
+       "C->E"
+      ],
+      "description": "variant_add_B->C",
+      "edges": {
+       "B->C": {
+        "enabled": true,
+        "existence_probability": 0.126025525,
+        "existence_update_count": 4,
+        "explore_weight": 0.39800541
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.402644536,
+        "existence_update_count": 6,
+        "explore_weight": 0.417855856
+       }
+      },
+      "evidence_count": 180,
+      "generation": 1,
+      "log_score": -501.306025625,
+      "pruning_reason": null,
+      "status": "ACTIVE",
+      "window_evidence": 113.901652658,
+      "window_log_score": -319.275168288
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "C->E",
+       "D->B"
+      ],
+      "description": "variant_add_A->C",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.695910184,
+        "existence_update_count": 4,
+        "explore_weight": 0.767854548
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.420943117,
+        "existence_update_count": 6,
+        "explore_weight": 0.423559702
+       },
+       "D->B": {
+        "enabled": true,
+        "existence_probability": 0.629113812,
+        "existence_update_count": 5,
+        "explore_weight": 1.057997533
+       }
+      },
+      "evidence_count": 180,
+      "generation": 2,
+      "log_score": -493.280912414,
+      "pruning_reason": null,
+      "status": "ACTIVE",
+      "window_evidence": 113.901652658,
+      "window_log_score": -312.683352789
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "C->E",
+       "E->D"
+      ],
+      "description": "variant_add_E->D",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.080438575,
+        "existence_update_count": 5,
+        "explore_weight": 0.26177757
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.3998177,
+        "existence_update_count": 6,
+        "explore_weight": 0.421866972
+       },
+       "E->D": {
+        "enabled": true,
+        "existence_probability": 0.188230392,
+        "existence_update_count": 3,
+        "explore_weight": 0.516357115
+       }
+      },
+      "evidence_count": 180,
+      "generation": 2,
+      "log_score": -501.693906085,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED",
+      "window_evidence": 113.901652658,
+      "window_log_score": -319.120410623
      },
      {
       "active_signature": [
        "A->C",
        "A->D",
-       "C->E",
-       "D->B"
-      ],
-      "description": "variant_add_D->B",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.812979676,
-        "existence_update_count": 6,
-        "explore_weight": 0.643583318
-       },
-       "A->D": {
-        "enabled": true,
-        "existence_probability": 0.069739062,
-        "existence_update_count": 6,
-        "explore_weight": 0.195470217
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.020964267,
-        "existence_update_count": 4,
-        "explore_weight": 0.273951544
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.433112471,
-        "existence_update_count": 6,
-        "explore_weight": 0.339592492
-       },
-       "D->B": {
-        "enabled": true,
-        "existence_probability": 0.62644984,
-        "existence_update_count": 5,
-        "explore_weight": 1.057513774
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.045845734,
-        "existence_update_count": 4,
-        "explore_weight": 0.294850777
-       }
-      },
-      "evidence_count": 180,
-      "generation": 1,
-      "log_score": -397.039322657,
-      "pruning_reason": null,
-      "status": "ACTIVE",
-      "window_evidence": 113.901652658,
-      "window_log_score": -257.281802771
-     },
-     {
-      "active_signature": [
-       "A->C",
        "B->D",
        "C->E"
       ],
-      "description": "variant_add_A->D",
+      "description": "variant_add_B->D",
       "edges": {
        "A->C": {
         "enabled": true,
@@ -2450,10 +2084,10 @@
         "explore_weight": 0.643530976
        },
        "A->D": {
-        "enabled": false,
-        "existence_probability": 0.009626197,
-        "existence_update_count": 4,
-        "explore_weight": 0.255352961
+        "enabled": true,
+        "existence_probability": 0.069739062,
+        "existence_update_count": 6,
+        "explore_weight": 0.195470217
        },
        "B->C": {
         "enabled": false,
@@ -2463,776 +2097,65 @@
        },
        "B->D": {
         "enabled": true,
-        "existence_probability": 0.345443877,
-        "existence_update_count": 6,
-        "explore_weight": 0.510311229
+        "existence_probability": 0.5,
+        "existence_update_count": 0,
+        "explore_weight": 1.0
        },
        "C->E": {
         "enabled": true,
         "existence_probability": 0.433112471,
         "existence_update_count": 6,
-        "explore_weight": 0.33992801
+        "explore_weight": 0.33960806
        },
        "D->E": {
         "enabled": false,
-        "existence_probability": 0.049853283,
+        "existence_probability": 0.045837481,
         "existence_update_count": 4,
-        "explore_weight": 0.296510588
+        "explore_weight": 0.294846034
        }
       },
       "evidence_count": 180,
       "generation": 1,
-      "log_score": -402.814607095,
+      "log_score": -495.929306093,
       "pruning_reason": null,
       "status": "ACTIVE",
       "window_evidence": 113.901652658,
-      "window_log_score": -259.81375207
-     },
-     {
-      "active_signature": [
-       "C->E",
-       "D->B"
-      ],
-      "description": "variant_add_D->B",
-      "edges": {
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.198126859,
-        "existence_update_count": 3,
-        "explore_weight": 0.543578385
-       },
-       "D->B": {
-        "enabled": true,
-        "existence_probability": 0.373622728,
-        "existence_update_count": 2,
-        "explore_weight": 0.913938048
-       }
-      },
-      "evidence_count": 90,
-      "generation": 1,
-      "log_score": -223.831286759,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 74.160190552,
-      "window_log_score": -184.578473283
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "B->D",
-       "C->E",
-       "D->A",
-       "D->E"
-      ],
-      "description": "variant_add_D->A",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.812234289,
-        "existence_update_count": 6,
-        "explore_weight": 0.536961978
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.021427361,
-        "existence_update_count": 4,
-        "explore_weight": 0.27409421
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.883966491,
-        "existence_update_count": 6,
-        "explore_weight": 0.457178741
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.115865794,
-        "existence_update_count": 6,
-        "explore_weight": 0.17648122
-       },
-       "D->A": {
-        "enabled": true,
-        "existence_probability": 0.077446343,
-        "existence_update_count": 5,
-        "explore_weight": 0.262248118
-       },
-       "D->E": {
-        "enabled": true,
-        "existence_probability": 0.07004708,
-        "existence_update_count": 6,
-        "explore_weight": 0.161769992
-       }
-      },
-      "evidence_count": 180,
-      "generation": 1,
-      "log_score": -389.313127858,
-      "pruning_reason": null,
-      "status": "ACTIVE",
-      "window_evidence": 113.901652658,
-      "window_log_score": -250.498478536
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "A->D",
-       "B->C",
-       "B->D",
-       "C->D",
-       "C->E",
-       "D->E"
-      ],
-      "description": "variant_add_C->D",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.323280469,
-        "existence_update_count": 3,
-        "explore_weight": 0.718656491
-       },
-       "A->D": {
-        "enabled": true,
-        "existence_probability": 0.001135006,
-        "existence_update_count": 2,
-        "explore_weight": 0.504184172
-       },
-       "B->C": {
-        "enabled": true,
-        "existence_probability": 0.025445588,
-        "existence_update_count": 3,
-        "explore_weight": 0.384393683
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.004936934,
-        "existence_update_count": 3,
-        "explore_weight": 0.585445959
-       },
-       "C->D": {
-        "enabled": true,
-        "existence_probability": 0.001225947,
-        "existence_update_count": 1,
-        "explore_weight": 0.700735568
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.062635687,
-        "existence_update_count": 3,
-        "explore_weight": 0.414045269
-       },
-       "D->E": {
-        "enabled": true,
-        "existence_probability": 0.053960173,
-        "existence_update_count": 3,
-        "explore_weight": 0.406354887
-       }
-      },
-      "evidence_count": 90,
-      "generation": 2,
-      "log_score": -193.344609446,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 74.160190552,
-      "window_log_score": -160.225998165
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "B->A",
-       "B->D",
-       "C->E"
-      ],
-      "description": "variant_add_B->A",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.807023965,
-        "existence_update_count": 6,
-        "explore_weight": 0.646362269
-       },
-       "A->D": {
-        "enabled": false,
-        "existence_probability": 0.009921323,
-        "existence_update_count": 4,
-        "explore_weight": 0.255539611
-       },
-       "B->A": {
-        "enabled": true,
-        "existence_probability": 0.085272067,
-        "existence_update_count": 4,
-        "explore_weight": 0.346707166
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.021535269,
-        "existence_update_count": 4,
-        "explore_weight": 0.274032413
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.345443877,
-        "existence_update_count": 6,
-        "explore_weight": 0.51047493
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.43227707,
-        "existence_update_count": 6,
-        "explore_weight": 0.339864868
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.049837092,
-        "existence_update_count": 4,
-        "explore_weight": 0.29651494
-       }
-      },
-      "evidence_count": 180,
-      "generation": 2,
-      "log_score": -390.983976719,
-      "pruning_reason": null,
-      "status": "ACTIVE",
-      "window_evidence": 113.901652658,
-      "window_log_score": -250.173857428
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "A->D",
-       "B->C",
-       "C->E",
-       "D->B",
-       "D->C"
-      ],
-      "description": "variant_add_D->C",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.00389352,
-        "existence_update_count": 6,
-        "explore_weight": 0.248429382
-       },
-       "A->D": {
-        "enabled": true,
-        "existence_probability": 0.069739062,
-        "existence_update_count": 6,
-        "explore_weight": 0.195470217
-       },
-       "B->C": {
-        "enabled": true,
-        "existence_probability": 0.000459083,
-        "existence_update_count": 6,
-        "explore_weight": 0.13257597
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.430067543,
-        "existence_update_count": 6,
-        "explore_weight": 0.338674755
-       },
-       "D->B": {
-        "enabled": true,
-        "existence_probability": 0.62644984,
-        "existence_update_count": 5,
-        "explore_weight": 1.057513774
-       },
-       "D->C": {
-        "enabled": true,
-        "existence_probability": 0.000143145,
-        "existence_update_count": 3,
-        "explore_weight": 0.34349431
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.046082709,
-        "existence_update_count": 4,
-        "explore_weight": 0.294908403
-       }
-      },
-      "evidence_count": 180,
-      "generation": 2,
-      "log_score": -389.475313583,
-      "pruning_reason": null,
-      "status": "ACTIVE",
-      "window_evidence": 113.901652658,
-      "window_log_score": -250.916035248
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "A->E",
-       "B->D",
-       "C->E",
-       "D->A",
-       "D->E"
-      ],
-      "description": "variant_add_A->E",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.812234289,
-        "existence_update_count": 6,
-        "explore_weight": 0.536961978
-       },
-       "A->E": {
-        "enabled": true,
-        "existence_probability": 0.000252575,
-        "existence_update_count": 3,
-        "explore_weight": 0.343623226
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.021427361,
-        "existence_update_count": 4,
-        "explore_weight": 0.27409421
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.883966491,
-        "existence_update_count": 6,
-        "explore_weight": 0.457178741
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.000784962,
-        "existence_update_count": 6,
-        "explore_weight": 0.142626857
-       },
-       "D->A": {
-        "enabled": true,
-        "existence_probability": 0.077446343,
-        "existence_update_count": 5,
-        "explore_weight": 0.262248118
-       },
-       "D->E": {
-        "enabled": true,
-        "existence_probability": 0.000947146,
-        "existence_update_count": 6,
-        "explore_weight": 0.140372038
-       }
-      },
-      "evidence_count": 180,
-      "generation": 2,
-      "log_score": -384.659640566,
-      "pruning_reason": null,
-      "status": "ACTIVE",
-      "window_evidence": 113.901652658,
-      "window_log_score": -246.732469858
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "A->D",
-       "B->A",
-       "B->D",
-       "C->D",
-       "C->E"
-      ],
-      "description": "variant_add_C->D",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.452013575,
-        "existence_update_count": 5,
-        "explore_weight": 0.792318781
-       },
-       "A->D": {
-        "enabled": true,
-        "existence_probability": 0.001190405,
-        "existence_update_count": 4,
-        "explore_weight": 0.253643369
-       },
-       "B->A": {
-        "enabled": true,
-        "existence_probability": 0.096033912,
-        "existence_update_count": 3,
-        "explore_weight": 0.461560347
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.021535269,
-        "existence_update_count": 4,
-        "explore_weight": 0.274032413
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.00444653,
-        "existence_update_count": 5,
-        "explore_weight": 0.391550602
-       },
-       "C->D": {
-        "enabled": true,
-        "existence_probability": 0.001304679,
-        "existence_update_count": 1,
-        "explore_weight": 0.700782807
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.33976306,
-        "existence_update_count": 5,
-        "explore_weight": 0.323680826
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.049837092,
-        "existence_update_count": 4,
-        "explore_weight": 0.29651494
-       }
-      },
-      "evidence_count": 150,
-      "generation": 3,
-      "log_score": -318.260774905,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 103.29505094,
-      "window_log_score": -218.599381902
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "A->D",
-       "C->D",
-       "C->E",
-       "D->B"
-      ],
-      "description": "variant_add_C->D",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.812979676,
-        "existence_update_count": 6,
-        "explore_weight": 0.643583318
-       },
-       "A->D": {
-        "enabled": true,
-        "existence_probability": 0.017236086,
-        "existence_update_count": 6,
-        "explore_weight": 0.180829226
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.020964267,
-        "existence_update_count": 4,
-        "explore_weight": 0.273951544
-       },
-       "C->D": {
-        "enabled": true,
-        "existence_probability": 0.021700342,
-        "existence_update_count": 2,
-        "explore_weight": 0.516039609
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.433112471,
-        "existence_update_count": 6,
-        "explore_weight": 0.339592492
-       },
-       "D->B": {
-        "enabled": true,
-        "existence_probability": 0.618767801,
-        "existence_update_count": 5,
-        "explore_weight": 1.057513774
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.045845734,
-        "existence_update_count": 4,
-        "explore_weight": 0.294850777
-       }
-      },
-      "evidence_count": 180,
-      "generation": 2,
-      "log_score": -391.805021274,
-      "pruning_reason": null,
-      "status": "ACTIVE",
-      "window_evidence": 113.901652658,
-      "window_log_score": -252.734485572
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "B->C",
-       "B->D",
-       "C->E"
-      ],
-      "description": "variant_add_B->C",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.386413195,
-        "existence_update_count": 6,
-        "explore_weight": 0.83193472
-       },
-       "A->D": {
-        "enabled": false,
-        "existence_probability": 0.009626197,
-        "existence_update_count": 4,
-        "explore_weight": 0.255352961
-       },
-       "B->C": {
-        "enabled": true,
-        "existence_probability": 0.032508663,
-        "existence_update_count": 1,
-        "explore_weight": 0.719505198
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.345443877,
-        "existence_update_count": 6,
-        "explore_weight": 0.510311229
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.427432388,
-        "existence_update_count": 6,
-        "explore_weight": 0.33992801
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.049853283,
-        "existence_update_count": 4,
-        "explore_weight": 0.296510588
-       }
-      },
-      "evidence_count": 180,
-      "generation": 2,
-      "log_score": -401.726251378,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 113.901652658,
-      "window_log_score": -258.725396352
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "A->D",
-       "C->E",
-       "D->B",
-       "D->C"
-      ],
-      "description": "variant_add_D->C",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.381662016,
-        "existence_update_count": 6,
-        "explore_weight": 0.832002387
-       },
-       "A->D": {
-        "enabled": true,
-        "existence_probability": 0.069739062,
-        "existence_update_count": 6,
-        "explore_weight": 0.195470217
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.020964267,
-        "existence_update_count": 4,
-        "explore_weight": 0.273951544
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.427160179,
-        "existence_update_count": 6,
-        "explore_weight": 0.339592492
-       },
-       "D->B": {
-        "enabled": true,
-        "existence_probability": 0.62644984,
-        "existence_update_count": 5,
-        "explore_weight": 1.057513774
-       },
-       "D->C": {
-        "enabled": true,
-        "existence_probability": 0.034000438,
-        "existence_update_count": 1,
-        "explore_weight": 0.720400263
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.045845734,
-        "existence_update_count": 4,
-        "explore_weight": 0.294850777
-       }
-      },
-      "evidence_count": 180,
-      "generation": 2,
-      "log_score": -398.030408481,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 113.901652658,
-      "window_log_score": -258.272888596
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "A->D",
-       "B->A",
-       "B->D",
-       "C->E"
-      ],
-      "description": "variant_add_A->D",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.807023965,
-        "existence_update_count": 6,
-        "explore_weight": 0.646362269
-       },
-       "A->D": {
-        "enabled": true,
-        "existence_probability": 0.5,
-        "existence_update_count": 0,
-        "explore_weight": 1.0
-       },
-       "B->A": {
-        "enabled": true,
-        "existence_probability": 0.085272067,
-        "existence_update_count": 4,
-        "explore_weight": 0.346707166
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.021535269,
-        "existence_update_count": 4,
-        "explore_weight": 0.274032413
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.345443877,
-        "existence_update_count": 6,
-        "explore_weight": 0.51047493
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.43227707,
-        "existence_update_count": 6,
-        "explore_weight": 0.339864868
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.049837092,
-        "existence_update_count": 4,
-        "explore_weight": 0.29651494
-       }
-      },
-      "evidence_count": 180,
-      "generation": 3,
-      "log_score": -390.983976719,
-      "pruning_reason": null,
-      "status": "ACTIVE",
-      "window_evidence": 113.901652658,
-      "window_log_score": -250.173857428
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "A->E",
-       "B->D",
-       "C->E",
-       "D->A",
-       "D->C",
-       "D->E"
-      ],
-      "description": "variant_add_D->C",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.812234289,
-        "existence_update_count": 6,
-        "explore_weight": 0.536961978
-       },
-       "A->E": {
-        "enabled": true,
-        "existence_probability": 0.000252575,
-        "existence_update_count": 3,
-        "explore_weight": 0.343623226
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.021427361,
-        "existence_update_count": 4,
-        "explore_weight": 0.27409421
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.883966491,
-        "existence_update_count": 6,
-        "explore_weight": 0.457178741
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.000784962,
-        "existence_update_count": 6,
-        "explore_weight": 0.142626857
-       },
-       "D->A": {
-        "enabled": true,
-        "existence_probability": 0.077446343,
-        "existence_update_count": 5,
-        "explore_weight": 0.262248118
-       },
-       "D->C": {
-        "enabled": true,
-        "existence_probability": 0.5,
-        "existence_update_count": 0,
-        "explore_weight": 1.0
-       },
-       "D->E": {
-        "enabled": true,
-        "existence_probability": 0.000947146,
-        "existence_update_count": 6,
-        "explore_weight": 0.140372038
-       }
-      },
-      "evidence_count": 180,
-      "generation": 3,
-      "log_score": -384.659640566,
-      "pruning_reason": null,
-      "status": "ACTIVE",
-      "window_evidence": 113.901652658,
-      "window_log_score": -246.732469858
+      "window_log_score": -316.077059367
      }
     ],
     "dominant_signature": [
-     "A->B",
-     "A->C",
-     "B->D",
-     "C->E",
-     "D->E"
+     "C->A",
+     "C->E"
     ],
-    "generation": 17,
+    "generation": 11,
     "mutation_stats": {
-     "dag_violations": 1,
+     "dag_violations": 0,
      "duplicate_rejections": 2,
-     "introduced": 2,
-     "total_attempts": 5
+     "introduced": 1,
+     "total_attempts": 3
     },
-    "paradigm_shift_count": 4,
-    "structure_entropy": 0.702278719
+    "paradigm_shift_count": 3,
+    "structure_entropy": 1.140557938
    }
   },
   "T_alt": {
    "dominant_cpts": {
     "A": {
-     "D=False": 0.370020749,
-     "D=True": 0.608637353
+     "C=False": 0.374964491,
+     "C=True": 0.591281901
     },
     "B": {
      "()": 0.494243835
     },
     "C": {
-     "A=False": 0.402043422,
-     "A=True": 0.631194656
+     "()": 0.520860438
     },
     "D": {
-     "B=False": 0.402001775,
-     "B=True": 0.504783434
+     "()": 0.453244262
     },
     "E": {
-     "C=False,D=False": 0.355663309,
-     "C=False,D=True": 0.519446274,
-     "C=True,D=False": 0.554754241,
-     "C=True,D=True": 0.679828619
+     "C=False": 0.430915293,
+     "C=True": 0.613268787
     }
    },
    "marginals": {
@@ -3240,24 +2163,24 @@
      "error": null,
      "posteriors": {
       "A": {
-       "False": 0.52193342,
-       "True": 0.47806658
+       "False": 0.512364328,
+       "True": 0.487635672
       },
       "B": {
        "False": 0.505756165,
        "True": 0.494243835
       },
       "C": {
-       "False": 0.488407031,
-       "True": 0.511592969
+       "False": 0.479139562,
+       "True": 0.520860438
       },
       "D": {
-       "False": 0.547199023,
-       "True": 0.452800977
+       "False": 0.546755738,
+       "True": 0.453244262
       },
       "E": {
-       "False": 0.477813344,
-       "True": 0.522186656
+       "False": 0.474103986,
+       "True": 0.525896014
       }
      }
     },
@@ -3265,24 +2188,24 @@
      "error": null,
      "posteriors": {
       "A": {
-       "False": 0.520758485,
-       "True": 0.479241515
+       "False": 0.512129087,
+       "True": 0.487870913
       },
       "B": {
-       "False": 0.505931404,
-       "True": 0.494068596
+       "False": 0.505814124,
+       "True": 0.494185876
       },
       "C": {
-       "False": 0.488273239,
-       "True": 0.511726761
+       "False": 0.478713814,
+       "True": 0.521286186
       },
       "D": {
-       "False": 0.54721685,
-       "True": 0.45278315
+       "False": 0.546755738,
+       "True": 0.453244262
       },
       "E": {
-       "False": 0.477750279,
-       "True": 0.522249721
+       "False": 0.474068779,
+       "True": 0.525931221
       }
      }
     },
@@ -3290,24 +2213,24 @@
      "error": null,
      "posteriors": {
       "A": {
-       "False": 0.520752566,
-       "True": 0.479247434
+       "False": 0.51208461,
+       "True": 0.48791539
       },
       "B": {
-       "False": 0.505929822,
-       "True": 0.494070178
+       "False": 0.505811275,
+       "True": 0.494188725
       },
       "C": {
-       "False": 0.488281972,
-       "True": 0.511718028
+       "False": 0.478693989,
+       "True": 0.521306011
       },
       "D": {
-       "False": 0.547216728,
-       "True": 0.452783272
+       "False": 0.546664151,
+       "True": 0.453335849
       },
       "E": {
-       "False": 0.477751322,
-       "True": 0.522248678
+       "False": 0.474068451,
+       "True": 0.525931549
       }
      }
     }
@@ -3326,9 +2249,9 @@
       "edges": {
        "A->C": {
         "enabled": true,
-        "existence_probability": 0.460161417,
-        "existence_update_count": 5,
-        "explore_weight": 0.792318781
+        "existence_probability": 0.98868725,
+        "existence_update_count": 12,
+        "explore_weight": 0.099162166
        },
        "B->C": {
         "enabled": false,
@@ -3338,30 +2261,30 @@
        },
        "B->D": {
         "enabled": true,
-        "existence_probability": 0.881292619,
-        "existence_update_count": 5,
-        "explore_weight": 0.594031702
+        "existence_probability": 0.467255632,
+        "existence_update_count": 12,
+        "explore_weight": 0.297727019
        },
        "C->E": {
         "enabled": true,
-        "existence_probability": 0.07571109,
-        "existence_update_count": 5,
-        "explore_weight": 0.229402524
+        "existence_probability": 0.790585835,
+        "existence_update_count": 12,
+        "explore_weight": 0.142045378
        },
        "D->E": {
         "enabled": true,
-        "existence_probability": 0.054168568,
-        "existence_update_count": 5,
-        "explore_weight": 0.218003043
+        "existence_probability": 0.264518414,
+        "existence_update_count": 12,
+        "explore_weight": 0.05
        }
       },
-      "evidence_count": 150,
+      "evidence_count": 360,
       "generation": 0,
-      "log_score": -332.852052184,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 103.29505094,
-      "window_log_score": -230.888755949
+      "log_score": -958.640973704,
+      "pruning_reason": null,
+      "status": "ACTIVE",
+      "window_evidence": 146.611312917,
+      "window_log_score": -390.252042533
      },
      {
       "active_signature": [
@@ -3373,15 +2296,15 @@
       "edges": {
        "A->C": {
         "enabled": true,
-        "existence_probability": 0.306948648,
-        "existence_update_count": 4,
-        "explore_weight": 0.754589315
+        "existence_probability": 0.98868725,
+        "existence_update_count": 12,
+        "explore_weight": 0.099162166
        },
        "A->D": {
         "enabled": true,
-        "existence_probability": 0.083688055,
-        "existence_update_count": 4,
-        "explore_weight": 0.353535701
+        "existence_probability": 0.33532869,
+        "existence_update_count": 12,
+        "explore_weight": 0.055612927
        },
        "B->C": {
         "enabled": false,
@@ -3391,9 +2314,9 @@
        },
        "C->E": {
         "enabled": true,
-        "existence_probability": 0.074098146,
-        "existence_update_count": 4,
-        "explore_weight": 0.308034521
+        "existence_probability": 0.979267595,
+        "existence_update_count": 12,
+        "explore_weight": 0.085090657
        },
        "D->E": {
         "enabled": false,
@@ -3402,13 +2325,13 @@
         "explore_weight": 0.294846034
        }
       },
-      "evidence_count": 120,
+      "evidence_count": 360,
       "generation": 0,
-      "log_score": -270.246546703,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 90.23679249,
-      "window_log_score": -205.564385916
+      "log_score": -967.964752079,
+      "pruning_reason": null,
+      "status": "ACTIVE",
+      "window_evidence": 146.611312917,
+      "window_log_score": -391.180838627
      },
      {
       "active_signature": [
@@ -3418,26 +2341,23 @@
       "edges": {
        "C->E": {
         "enabled": true,
-        "existence_probability": 0.174425765,
-        "existence_update_count": 2,
-        "explore_weight": 0.663810282
+        "existence_probability": 0.961338309,
+        "existence_update_count": 12,
+        "explore_weight": 0.121576444
        }
       },
-      "evidence_count": 60,
+      "evidence_count": 360,
       "generation": 0,
-      "log_score": -156.592481268,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 54.367571891,
-      "window_log_score": -143.318535612
+      "log_score": -985.504875215,
+      "pruning_reason": null,
+      "status": "ACTIVE",
+      "window_evidence": 146.611312917,
+      "window_log_score": -400.068740786
      },
      {
       "active_signature": [
        "A->B",
-       "A->C",
-       "B->D",
-       "C->E",
-       "D->E"
+       "C->E"
       ],
       "description": "variant_add_A->B",
       "edges": {
@@ -3447,72 +2367,188 @@
         "existence_update_count": 11,
         "explore_weight": 0.05
        },
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.978959311,
-        "existence_update_count": 12,
-        "explore_weight": 0.117742535
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.019891967,
-        "existence_update_count": 5,
-        "explore_weight": 0.19509487
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.452573837,
-        "existence_update_count": 12,
-        "explore_weight": 0.308842265
-       },
        "C->E": {
         "enabled": true,
-        "existence_probability": 0.796978687,
+        "existence_probability": 0.961338309,
         "existence_update_count": 12,
-        "explore_weight": 0.14151765
-       },
-       "D->E": {
-        "enabled": true,
-        "existence_probability": 0.264063771,
-        "existence_update_count": 12,
-        "explore_weight": 0.05
+        "explore_weight": 0.121576444
        }
       },
       "evidence_count": 360,
       "generation": 1,
-      "log_score": -763.496377791,
+      "log_score": -985.900767373,
       "pruning_reason": null,
       "status": "ACTIVE",
       "window_evidence": 146.611312917,
-      "window_log_score": -312.9108306
+      "window_log_score": -400.092907184
      },
      {
       "active_signature": [
+       "A->C",
+       "A->D",
        "B->A",
-       "C->E"
+       "B->C",
+       "C->E",
+       "D->E"
       ],
       "description": "variant_add_B->A",
       "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.245887685,
+        "existence_update_count": 2,
+        "explore_weight": 0.684778363
+       },
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.117154835,
+        "existence_update_count": 2,
+        "explore_weight": 0.621174801
+       },
        "B->A": {
         "enabled": true,
         "existence_probability": 0.154768088,
         "existence_update_count": 1,
         "explore_weight": 0.792860853
        },
+       "B->C": {
+        "enabled": true,
+        "existence_probability": 0.037821288,
+        "existence_update_count": 2,
+        "explore_weight": 0.537470511
+       },
        "C->E": {
         "enabled": true,
-        "existence_probability": 0.174425765,
+        "existence_probability": 0.060993221,
         "existence_update_count": 2,
-        "explore_weight": 0.663810282
+        "explore_weight": 0.561331971
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.065002509,
+        "existence_update_count": 2,
+        "explore_weight": 0.554224869
        }
       },
       "evidence_count": 60,
       "generation": 1,
-      "log_score": -153.572268793,
+      "log_score": -160.900877747,
       "pruning_reason": "bottom_quartile_log_score",
       "status": "PRUNED",
       "window_evidence": 54.367571891,
-      "window_log_score": -140.298323137
+      "window_log_score": -146.715975036
+     },
+     {
+      "active_signature": [
+       "A->D",
+       "C->E"
+      ],
+      "description": "variant_add_A->D",
+      "edges": {
+       "A->D": {
+        "enabled": true,
+        "existence_probability": 0.260929568,
+        "existence_update_count": 11,
+        "explore_weight": 0.057276657
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.961338309,
+        "existence_update_count": 12,
+        "explore_weight": 0.121576444
+       }
+      },
+      "evidence_count": 360,
+      "generation": 1,
+      "log_score": -984.848353485,
+      "pruning_reason": null,
+      "status": "ACTIVE",
+      "window_evidence": 146.611312917,
+      "window_log_score": -398.560751636
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "B->A",
+       "B->C",
+       "B->D",
+       "C->E",
+       "D->E"
+      ],
+      "description": "variant_add_B->A",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.322842886,
+        "existence_update_count": 3,
+        "explore_weight": 0.719017281
+       },
+       "B->A": {
+        "enabled": true,
+        "existence_probability": 0.119341682,
+        "existence_update_count": 2,
+        "explore_weight": 0.611775406
+       },
+       "B->C": {
+        "enabled": true,
+        "existence_probability": 0.025525652,
+        "existence_update_count": 3,
+        "explore_weight": 0.384460929
+       },
+       "B->D": {
+        "enabled": true,
+        "existence_probability": 0.728713507,
+        "existence_update_count": 3,
+        "explore_weight": 0.951206015
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.061688825,
+        "existence_update_count": 3,
+        "explore_weight": 0.4135549
+       },
+       "D->E": {
+        "enabled": true,
+        "existence_probability": 0.055529858,
+        "existence_update_count": 3,
+        "explore_weight": 0.407316411
+       }
+      },
+      "evidence_count": 90,
+      "generation": 1,
+      "log_score": -241.759175064,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED",
+      "window_evidence": 74.160190552,
+      "window_log_score": -200.406701185
+     },
+     {
+      "active_signature": [
+       "C->E",
+       "D->B"
+      ],
+      "description": "variant_add_D->B",
+      "edges": {
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.961338309,
+        "existence_update_count": 12,
+        "explore_weight": 0.121576444
+       },
+       "D->B": {
+        "enabled": true,
+        "existence_probability": 0.176574202,
+        "existence_update_count": 11,
+        "explore_weight": 0.852024875
+       }
+      },
+      "evidence_count": 360,
+      "generation": 1,
+      "log_score": -982.792981512,
+      "pruning_reason": null,
+      "status": "ACTIVE",
+      "window_evidence": 146.611312917,
+      "window_log_score": -400.18090577
      },
      {
       "active_signature": [
@@ -3527,110 +2563,183 @@
       "edges": {
        "A->C": {
         "enabled": true,
-        "existence_probability": 0.002301232,
-        "existence_update_count": 4,
-        "explore_weight": 0.28035735
+        "existence_probability": 0.007175055,
+        "existence_update_count": 2,
+        "explore_weight": 0.569055209
        },
        "B->C": {
         "enabled": true,
-        "existence_probability": 0.000371901,
-        "existence_update_count": 4,
-        "explore_weight": 0.255905027
+        "existence_probability": 0.002676597,
+        "existence_update_count": 2,
+        "explore_weight": 0.521788133
        },
        "B->D": {
         "enabled": true,
-        "existence_probability": 0.817073076,
-        "existence_update_count": 4,
-        "explore_weight": 0.770244925
+        "existence_probability": 0.604348982,
+        "existence_update_count": 2,
+        "explore_weight": 1.1025
        },
        "C->E": {
         "enabled": true,
-        "existence_probability": 0.073346031,
-        "existence_update_count": 4,
-        "explore_weight": 0.307826911
+        "existence_probability": 0.061109901,
+        "existence_update_count": 2,
+        "explore_weight": 0.561144373
        },
        "D->C": {
         "enabled": true,
-        "existence_probability": 0.000132846,
-        "existence_update_count": 3,
-        "explore_weight": 0.343475373
+        "existence_probability": 0.001194416,
+        "existence_update_count": 1,
+        "explore_weight": 0.70071665
        },
        "D->E": {
         "enabled": true,
-        "existence_probability": 0.051063609,
-        "existence_update_count": 4,
-        "explore_weight": 0.29753272
+        "existence_probability": 0.067155775,
+        "existence_update_count": 2,
+        "explore_weight": 0.555421673
        }
       },
-      "evidence_count": 120,
+      "evidence_count": 60,
       "generation": 1,
-      "log_score": -258.144275216,
+      "log_score": -160.974896038,
       "pruning_reason": "bottom_quartile_log_score",
       "status": "PRUNED",
-      "window_evidence": 90.23679249,
-      "window_log_score": -195.368737013
+      "window_evidence": 54.367571891,
+      "window_log_score": -146.789993327
+     },
+     {
+      "active_signature": [
+       "C->A",
+       "C->E"
+      ],
+      "description": "variant_add_C->A",
+      "edges": {
+       "C->A": {
+        "enabled": true,
+        "existence_probability": 0.993749971,
+        "existence_update_count": 11,
+        "explore_weight": 0.128584178
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.961338309,
+        "existence_update_count": 12,
+        "explore_weight": 0.121576444
+       }
+      },
+      "evidence_count": 360,
+      "generation": 1,
+      "log_score": -971.837407941,
+      "pruning_reason": null,
+      "status": "ACTIVE",
+      "window_evidence": 146.611312917,
+      "window_log_score": -393.668779577
+     },
+     {
+      "active_signature": [
+       "B->C",
+       "C->E"
+      ],
+      "description": "variant_add_B->C",
+      "edges": {
+       "B->C": {
+        "enabled": true,
+        "existence_probability": 0.125099678,
+        "existence_update_count": 10,
+        "explore_weight": 0.082634675
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.960087329,
+        "existence_update_count": 12,
+        "explore_weight": 0.120684479
+       }
+      },
+      "evidence_count": 360,
+      "generation": 1,
+      "log_score": -985.258893881,
+      "pruning_reason": null,
+      "status": "ACTIVE",
+      "window_evidence": 146.611312917,
+      "window_log_score": -399.896664644
+     },
+     {
+      "active_signature": [
+       "A->C",
+       "C->E",
+       "D->B"
+      ],
+      "description": "variant_add_A->C",
+      "edges": {
+       "A->C": {
+        "enabled": true,
+        "existence_probability": 0.986443284,
+        "existence_update_count": 10,
+        "explore_weight": 0.131801336
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.979215691,
+        "existence_update_count": 12,
+        "explore_weight": 0.106690391
+       },
+       "D->B": {
+        "enabled": true,
+        "existence_probability": 0.176574202,
+        "existence_update_count": 11,
+        "explore_weight": 0.852024875
+       }
+      },
+      "evidence_count": 360,
+      "generation": 2,
+      "log_score": -971.116108765,
+      "pruning_reason": null,
+      "status": "ACTIVE",
+      "window_evidence": 146.611312917,
+      "window_log_score": -394.299270995
+     },
+     {
+      "active_signature": [
+       "A->B",
+       "C->E",
+       "E->D"
+      ],
+      "description": "variant_add_E->D",
+      "edges": {
+       "A->B": {
+        "enabled": true,
+        "existence_probability": 0.080438575,
+        "existence_update_count": 5,
+        "explore_weight": 0.26177757
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.3998177,
+        "existence_update_count": 6,
+        "explore_weight": 0.421866972
+       },
+       "E->D": {
+        "enabled": true,
+        "existence_probability": 0.188230392,
+        "existence_update_count": 3,
+        "explore_weight": 0.516357115
+       }
+      },
+      "evidence_count": 180,
+      "generation": 2,
+      "log_score": -501.693906085,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED",
+      "window_evidence": 113.901652658,
+      "window_log_score": -319.120410623
      },
      {
       "active_signature": [
        "A->C",
        "A->D",
-       "C->E",
-       "D->B"
-      ],
-      "description": "variant_add_D->B",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.960660605,
-        "existence_update_count": 9,
-        "explore_weight": 0.269788488
-       },
-       "A->D": {
-        "enabled": true,
-        "existence_probability": 0.104141132,
-        "existence_update_count": 9,
-        "explore_weight": 0.08251928
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.020964267,
-        "existence_update_count": 4,
-        "explore_weight": 0.273951544
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.897141594,
-        "existence_update_count": 9,
-        "explore_weight": 0.223754764
-       },
-       "D->B": {
-        "enabled": true,
-        "existence_probability": 0.416423076,
-        "existence_update_count": 8,
-        "explore_weight": 1.224204383
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.045845734,
-        "existence_update_count": 4,
-        "explore_weight": 0.294850777
-       }
-      },
-      "evidence_count": 270,
-      "generation": 1,
-      "log_score": -580.814573025,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 135.198574881,
-      "window_log_score": -289.89291549
-     },
-     {
-      "active_signature": [
-       "A->C",
        "B->D",
        "C->E"
       ],
-      "description": "variant_add_A->D",
+      "description": "variant_add_B->D",
       "edges": {
        "A->C": {
         "enabled": true,
@@ -3639,10 +2748,10 @@
         "explore_weight": 0.499059543
        },
        "A->D": {
-        "enabled": false,
-        "existence_probability": 0.009626197,
-        "existence_update_count": 4,
-        "explore_weight": 0.255352961
+        "enabled": true,
+        "existence_probability": 0.056498676,
+        "existence_update_count": 7,
+        "explore_weight": 0.143455437
        },
        "B->C": {
         "enabled": false,
@@ -3652,1497 +2761,278 @@
        },
        "B->D": {
         "enabled": true,
-        "existence_probability": 0.249223086,
-        "existence_update_count": 7,
-        "explore_weight": 0.433526664
+        "existence_probability": 0.032355563,
+        "existence_update_count": 1,
+        "explore_weight": 0.719413338
        },
        "C->E": {
         "enabled": true,
         "existence_probability": 0.556169205,
         "existence_update_count": 7,
-        "explore_weight": 0.356924411
+        "explore_weight": 0.356588463
        },
        "D->E": {
         "enabled": false,
-        "existence_probability": 0.049853283,
+        "existence_probability": 0.045837481,
         "existence_update_count": 4,
-        "explore_weight": 0.296510588
+        "explore_weight": 0.294846034
        }
       },
       "evidence_count": 210,
       "generation": 1,
-      "log_score": -471.067534154,
+      "log_score": -575.464139493,
       "pruning_reason": "bottom_quartile_log_score",
       "status": "PRUNED",
       "window_evidence": 122.51689032,
-      "window_log_score": -279.287269784
-     },
-     {
-      "active_signature": [
-       "C->E",
-       "D->B"
-      ],
-      "description": "variant_add_D->B",
-      "edges": {
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.198126859,
-        "existence_update_count": 3,
-        "explore_weight": 0.543578385
-       },
-       "D->B": {
-        "enabled": true,
-        "existence_probability": 0.373622728,
-        "existence_update_count": 2,
-        "explore_weight": 0.913938048
-       }
-      },
-      "evidence_count": 90,
-      "generation": 1,
-      "log_score": -223.831286759,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 74.160190552,
-      "window_log_score": -184.578473283
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "B->D",
-       "C->E",
-       "D->A",
-       "D->E"
-      ],
-      "description": "variant_add_D->A",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.989189456,
-        "existence_update_count": 12,
-        "explore_weight": 0.082672164
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.021427361,
-        "existence_update_count": 4,
-        "explore_weight": 0.27409421
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.467255632,
-        "existence_update_count": 12,
-        "explore_weight": 0.297727019
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.790625883,
-        "existence_update_count": 12,
-        "explore_weight": 0.141913034
-       },
-       "D->A": {
-        "enabled": true,
-        "existence_probability": 0.272462187,
-        "existence_update_count": 11,
-        "explore_weight": 0.057624932
-       },
-       "D->E": {
-        "enabled": true,
-        "existence_probability": 0.264447404,
-        "existence_update_count": 12,
-        "explore_weight": 0.05
-       }
-      },
-      "evidence_count": 360,
-      "generation": 1,
-      "log_score": -757.852120915,
-      "pruning_reason": null,
-      "status": "ACTIVE",
-      "window_evidence": 146.611312917,
-      "window_log_score": -307.480634414
+      "window_log_score": -336.269182304
      },
      {
       "active_signature": [
        "A->C",
        "A->D",
        "B->C",
-       "B->D",
-       "C->D",
-       "C->E",
-       "D->E"
-      ],
-      "description": "variant_add_C->D",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.323280469,
-        "existence_update_count": 3,
-        "explore_weight": 0.718656491
-       },
-       "A->D": {
-        "enabled": true,
-        "existence_probability": 0.001135006,
-        "existence_update_count": 2,
-        "explore_weight": 0.504184172
-       },
-       "B->C": {
-        "enabled": true,
-        "existence_probability": 0.025445588,
-        "existence_update_count": 3,
-        "explore_weight": 0.384393683
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.004936934,
-        "existence_update_count": 3,
-        "explore_weight": 0.585445959
-       },
-       "C->D": {
-        "enabled": true,
-        "existence_probability": 0.001225947,
-        "existence_update_count": 1,
-        "explore_weight": 0.700735568
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.062635687,
-        "existence_update_count": 3,
-        "explore_weight": 0.414045269
-       },
-       "D->E": {
-        "enabled": true,
-        "existence_probability": 0.053960173,
-        "existence_update_count": 3,
-        "explore_weight": 0.406354887
-       }
-      },
-      "evidence_count": 90,
-      "generation": 2,
-      "log_score": -193.344609446,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 74.160190552,
-      "window_log_score": -160.225998165
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "B->A",
-       "B->D",
-       "C->E"
-      ],
-      "description": "variant_add_B->A",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.918981166,
-        "existence_update_count": 8,
-        "explore_weight": 0.376185439
-       },
-       "A->D": {
-        "enabled": false,
-        "existence_probability": 0.009921323,
-        "existence_update_count": 4,
-        "explore_weight": 0.255539611
-       },
-       "B->A": {
-        "enabled": true,
-        "existence_probability": 0.074096443,
-        "existence_update_count": 6,
-        "explore_weight": 0.193642296
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.021535269,
-        "existence_update_count": 4,
-        "explore_weight": 0.274032413
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.225586421,
-        "existence_update_count": 8,
-        "explore_weight": 0.362263474
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.792424966,
-        "existence_update_count": 8,
-        "explore_weight": 0.294245578
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.049837092,
-        "existence_update_count": 4,
-        "explore_weight": 0.29651494
-       }
-      },
-      "evidence_count": 240,
-      "generation": 2,
-      "log_score": -514.136766207,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 129.514637757,
-      "window_log_score": -275.801951583
-     },
-     {
-      "active_signature": [
-       "A->D",
-       "B->C",
-       "C->E",
-       "D->B",
-       "D->C"
-      ],
-      "description": "variant_add_D->C",
-      "edges": {
-       "A->C": {
-        "enabled": false,
-        "existence_probability": 0.004784509,
-        "existence_update_count": 8,
-        "explore_weight": 0.122644948
-       },
-       "A->D": {
-        "enabled": true,
-        "existence_probability": 0.208233719,
-        "existence_update_count": 11,
-        "explore_weight": 0.052964693
-       },
-       "B->C": {
-        "enabled": true,
-        "existence_probability": 0.037069323,
-        "existence_update_count": 11,
-        "explore_weight": 0.05
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.944450906,
-        "existence_update_count": 11,
-        "explore_weight": 0.12352123
-       },
-       "D->B": {
-        "enabled": true,
-        "existence_probability": 0.201388196,
-        "existence_update_count": 10,
-        "explore_weight": 1.055110618
-       },
-       "D->C": {
-        "enabled": true,
-        "existence_probability": 0.024054649,
-        "existence_update_count": 8,
-        "explore_weight": 0.062550209
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.046082709,
-        "existence_update_count": 4,
-        "explore_weight": 0.294908403
-       }
-      },
-      "evidence_count": 330,
-      "generation": 2,
-      "log_score": -686.000531933,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 143.565366431,
-      "window_log_score": -292.896824738
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "A->E",
-       "B->D",
-       "D->A",
-       "D->E"
-      ],
-      "description": "variant_add_A->E",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.964014004,
-        "existence_update_count": 10,
-        "explore_weight": 0.162626072
-       },
-       "A->E": {
-        "enabled": true,
-        "existence_probability": 0.0278085,
-        "existence_update_count": 7,
-        "explore_weight": 0.08734857
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.021427361,
-        "existence_update_count": 4,
-        "explore_weight": 0.27409421
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.668613663,
-        "existence_update_count": 10,
-        "explore_weight": 0.270047183
-       },
-       "C->E": {
-        "enabled": false,
-        "existence_probability": 0.001180376,
-        "existence_update_count": 8,
-        "explore_weight": 0.070002874
-       },
-       "D->A": {
-        "enabled": true,
-        "existence_probability": 0.108105768,
-        "existence_update_count": 9,
-        "explore_weight": 0.083320886
-       },
-       "D->E": {
-        "enabled": true,
-        "existence_probability": 0.051541293,
-        "existence_update_count": 10,
-        "explore_weight": 0.05
-       }
-      },
-      "evidence_count": 300,
-      "generation": 2,
-      "log_score": -633.221435872,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 139.815366431,
-      "window_log_score": -298.28746167
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "A->D",
-       "B->A",
-       "B->D",
-       "C->D",
-       "C->E"
-      ],
-      "description": "variant_add_C->D",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.452013575,
-        "existence_update_count": 5,
-        "explore_weight": 0.792318781
-       },
-       "A->D": {
-        "enabled": true,
-        "existence_probability": 0.001190405,
-        "existence_update_count": 4,
-        "explore_weight": 0.253643369
-       },
-       "B->A": {
-        "enabled": true,
-        "existence_probability": 0.096033912,
-        "existence_update_count": 3,
-        "explore_weight": 0.461560347
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.021535269,
-        "existence_update_count": 4,
-        "explore_weight": 0.274032413
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.00444653,
-        "existence_update_count": 5,
-        "explore_weight": 0.391550602
-       },
-       "C->D": {
-        "enabled": true,
-        "existence_probability": 0.001304679,
-        "existence_update_count": 1,
-        "explore_weight": 0.700782807
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.33976306,
-        "existence_update_count": 5,
-        "explore_weight": 0.323680826
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.049837092,
-        "existence_update_count": 4,
-        "explore_weight": 0.29651494
-       }
-      },
-      "evidence_count": 150,
-      "generation": 3,
-      "log_score": -318.260774905,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 103.29505094,
-      "window_log_score": -218.599381902
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "C->D",
-       "C->E",
-       "D->B"
-      ],
-      "description": "variant_add_C->D",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.98868725,
-        "existence_update_count": 12,
-        "explore_weight": 0.099170232
-       },
-       "A->D": {
-        "enabled": false,
-        "existence_probability": 0.01048491,
-        "existence_update_count": 8,
-        "explore_weight": 0.090366334
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.020964267,
-        "existence_update_count": 4,
-        "explore_weight": 0.273951544
-       },
-       "C->D": {
-        "enabled": true,
-        "existence_probability": 0.227154398,
-        "existence_update_count": 8,
-        "explore_weight": 0.120733891
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.979267595,
-        "existence_update_count": 12,
-        "explore_weight": 0.085086757
-       },
-       "D->B": {
-        "enabled": true,
-        "existence_probability": 0.180298862,
-        "existence_update_count": 11,
-        "explore_weight": 0.855280717
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.045845734,
-        "existence_update_count": 4,
-        "explore_weight": 0.294850777
-       }
-      },
-      "evidence_count": 360,
-      "generation": 2,
-      "log_score": -765.769789224,
-      "pruning_reason": null,
-      "status": "ACTIVE",
-      "window_evidence": 146.611312917,
-      "window_log_score": -314.57692445
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "B->C",
-       "B->D",
        "C->E"
       ],
       "description": "variant_add_B->C",
       "edges": {
        "A->C": {
         "enabled": true,
-        "existence_probability": 0.386413195,
-        "existence_update_count": 6,
-        "explore_weight": 0.83193472
-       },
-       "A->D": {
-        "enabled": false,
-        "existence_probability": 0.009626197,
-        "existence_update_count": 4,
-        "explore_weight": 0.255352961
-       },
-       "B->C": {
-        "enabled": true,
-        "existence_probability": 0.032508663,
-        "existence_update_count": 1,
-        "explore_weight": 0.719505198
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.345443877,
-        "existence_update_count": 6,
-        "explore_weight": 0.510311229
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.427432388,
-        "existence_update_count": 6,
-        "explore_weight": 0.33992801
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.049853283,
-        "existence_update_count": 4,
-        "explore_weight": 0.296510588
-       }
-      },
-      "evidence_count": 180,
-      "generation": 2,
-      "log_score": -401.726251378,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 113.901652658,
-      "window_log_score": -258.725396352
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "A->D",
-       "C->E",
-       "D->B",
-       "D->C"
-      ],
-      "description": "variant_add_D->C",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.381662016,
-        "existence_update_count": 6,
-        "explore_weight": 0.832002387
+        "existence_probability": 0.135487428,
+        "existence_update_count": 8,
+        "explore_weight": 0.389911456
        },
        "A->D": {
         "enabled": true,
-        "existence_probability": 0.069739062,
-        "existence_update_count": 6,
-        "explore_weight": 0.195470217
+        "existence_probability": 0.075021519,
+        "existence_update_count": 8,
+        "explore_weight": 0.108224182
        },
        "B->C": {
-        "enabled": false,
-        "existence_probability": 0.020964267,
-        "existence_update_count": 4,
-        "explore_weight": 0.273951544
-       },
-       "C->E": {
         "enabled": true,
-        "existence_probability": 0.427160179,
-        "existence_update_count": 6,
-        "explore_weight": 0.339592492
-       },
-       "D->B": {
-        "enabled": true,
-        "existence_probability": 0.62644984,
-        "existence_update_count": 5,
-        "explore_weight": 1.057513774
-       },
-       "D->C": {
-        "enabled": true,
-        "existence_probability": 0.034000438,
+        "existence_probability": 0.054073102,
         "existence_update_count": 1,
-        "explore_weight": 0.720400263
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.045845734,
-        "existence_update_count": 4,
-        "explore_weight": 0.294850777
-       }
-      },
-      "evidence_count": 180,
-      "generation": 2,
-      "log_score": -398.030408481,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 113.901652658,
-      "window_log_score": -258.272888596
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "A->D",
-       "B->A",
-       "B->D",
-       "C->E"
-      ],
-      "description": "variant_add_A->D",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.870925204,
-        "existence_update_count": 7,
-        "explore_weight": 0.502511035
-       },
-       "A->D": {
-        "enabled": true,
-        "existence_probability": 0.055957988,
-        "existence_update_count": 1,
-        "explore_weight": 0.733574793
-       },
-       "B->A": {
-        "enabled": true,
-        "existence_probability": 0.083724888,
-        "existence_update_count": 5,
-        "explore_weight": 0.260111827
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.021535269,
-        "existence_update_count": 4,
-        "explore_weight": 0.274032413
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.072363438,
-        "existence_update_count": 7,
-        "explore_weight": 0.379496284
+        "explore_weight": 0.732443861
        },
        "C->E": {
         "enabled": true,
-        "existence_probability": 0.555616726,
-        "existence_update_count": 7,
-        "explore_weight": 0.356858111
+        "existence_probability": 0.801673256,
+        "existence_update_count": 8,
+        "explore_weight": 0.292044541
        },
        "D->E": {
         "enabled": false,
-        "existence_probability": 0.049837092,
+        "existence_probability": 0.045837481,
         "existence_update_count": 4,
-        "explore_weight": 0.29651494
-       }
-      },
-      "evidence_count": 210,
-      "generation": 3,
-      "log_score": -454.975808601,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 122.51689032,
-      "window_log_score": -267.196147084
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "A->E",
-       "B->D",
-       "D->A",
-       "D->C",
-       "D->E"
-      ],
-      "description": "variant_add_D->C",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.110303214,
-        "existence_update_count": 8,
-        "explore_weight": 0.318413902
-       },
-       "A->E": {
-        "enabled": true,
-        "existence_probability": 0.000130473,
-        "existence_update_count": 5,
-        "explore_weight": 0.168419515
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.021427361,
-        "existence_update_count": 4,
-        "explore_weight": 0.27409421
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.799723807,
-        "existence_update_count": 8,
-        "explore_weight": 0.306809546
-       },
-       "C->E": {
-        "enabled": false,
-        "existence_probability": 0.001187686,
-        "existence_update_count": 8,
-        "explore_weight": 0.070003353
-       },
-       "D->A": {
-        "enabled": true,
-        "existence_probability": 0.070442469,
-        "existence_update_count": 7,
-        "explore_weight": 0.144493385
-       },
-       "D->C": {
-        "enabled": true,
-        "existence_probability": 0.031051379,
-        "existence_update_count": 2,
-        "explore_weight": 0.522491935
-       },
-       "D->E": {
-        "enabled": true,
-        "existence_probability": 0.000654848,
-        "existence_update_count": 8,
-        "explore_weight": 0.068874591
+        "explore_weight": 0.294846034
        }
       },
       "evidence_count": 240,
-      "generation": 3,
-      "log_score": -494.180886749,
+      "generation": 1,
+      "log_score": -649.707799853,
       "pruning_reason": "bottom_quartile_log_score",
       "status": "PRUNED",
       "window_evidence": 129.514637757,
-      "window_log_score": -260.839741487
+      "window_log_score": -347.429617892
      },
      {
       "active_signature": [
-       "A->B",
-       "A->C",
-       "A->E",
-       "B->D",
-       "D->E"
-      ],
-      "description": "variant_add_A->E",
-      "edges": {
-       "A->B": {
-        "enabled": true,
-        "existence_probability": 0.063997634,
-        "existence_update_count": 11,
-        "explore_weight": 0.05
-       },
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.978959311,
-        "existence_update_count": 12,
-        "explore_weight": 0.117742535
-       },
-       "A->E": {
-        "enabled": true,
-        "existence_probability": 0.056402161,
-        "existence_update_count": 5,
-        "explore_weight": 0.176508278
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.019891967,
-        "existence_update_count": 5,
-        "explore_weight": 0.19509487
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.452573837,
-        "existence_update_count": 12,
-        "explore_weight": 0.308842265
-       },
-       "C->E": {
-        "enabled": false,
-        "existence_probability": 0.001639188,
-        "existence_update_count": 11,
-        "explore_weight": 0.05
-       },
-       "D->E": {
-        "enabled": true,
-        "existence_probability": 0.100933627,
-        "existence_update_count": 12,
-        "explore_weight": 0.05
-       }
-      },
-      "evidence_count": 360,
-      "generation": 2,
-      "log_score": -762.095325245,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 146.611312917,
-      "window_log_score": -313.992164983
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "B->D",
-       "C->E",
-       "D->A",
-       "D->E"
-      ],
-      "description": "variant_add_B->A",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.990788801,
-        "existence_update_count": 12,
-        "explore_weight": 0.081418663
-       },
-       "B->A": {
-        "enabled": false,
-        "existence_probability": 0.009331725,
-        "existence_update_count": 4,
-        "explore_weight": 0.254860592
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.021427361,
-        "existence_update_count": 4,
-        "explore_weight": 0.27409421
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.467255632,
-        "existence_update_count": 12,
-        "explore_weight": 0.297727019
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.792220025,
-        "existence_update_count": 12,
-        "explore_weight": 0.141748628
-       },
-       "D->A": {
-        "enabled": true,
-        "existence_probability": 0.354687523,
-        "existence_update_count": 11,
-        "explore_weight": 0.061154159
-       },
-       "D->E": {
-        "enabled": true,
-        "existence_probability": 0.264117761,
-        "existence_update_count": 12,
-        "explore_weight": 0.05
-       }
-      },
-      "evidence_count": 360,
-      "generation": 2,
-      "log_score": -745.230157606,
-      "pruning_reason": null,
-      "status": "ACTIVE",
-      "window_evidence": 146.611312917,
-      "window_log_score": -300.445051859
-     },
-     {
-      "active_signature": [
-       "A->B",
        "A->C",
        "A->D",
-       "A->E",
-       "D->E"
+       "B->E",
+       "C->E"
       ],
-      "description": "variant_add_A->D",
-      "edges": {
-       "A->B": {
-        "enabled": true,
-        "existence_probability": 0.063997634,
-        "existence_update_count": 11,
-        "explore_weight": 0.05
-       },
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.978959311,
-        "existence_update_count": 12,
-        "explore_weight": 0.117742535
-       },
-       "A->D": {
-        "enabled": true,
-        "existence_probability": 0.327850682,
-        "existence_update_count": 4,
-        "explore_weight": 0.456835606
-       },
-       "A->E": {
-        "enabled": true,
-        "existence_probability": 0.055536259,
-        "existence_update_count": 5,
-        "explore_weight": 0.176381633
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.019891967,
-        "existence_update_count": 5,
-        "explore_weight": 0.19509487
-       },
-       "B->D": {
-        "enabled": false,
-        "existence_probability": 0.019854294,
-        "existence_update_count": 12,
-        "explore_weight": 0.086526988
-       },
-       "C->E": {
-        "enabled": false,
-        "existence_probability": 0.001646431,
-        "existence_update_count": 11,
-        "explore_weight": 0.05
-       },
-       "D->E": {
-        "enabled": true,
-        "existence_probability": 0.097792629,
-        "existence_update_count": 12,
-        "explore_weight": 0.05
-       }
-      },
-      "evidence_count": 360,
-      "generation": 3,
-      "log_score": -750.761343785,
-      "pruning_reason": null,
-      "status": "ACTIVE",
-      "window_evidence": 146.611312917,
-      "window_log_score": -305.573933606
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "C->B",
-       "C->D",
-       "C->E",
-       "D->B"
-      ],
-      "description": "variant_add_C->B",
+      "description": "variant_add_B->E",
       "edges": {
        "A->C": {
         "enabled": true,
         "existence_probability": 0.960660605,
         "existence_update_count": 9,
-        "explore_weight": 0.269788488
+        "explore_weight": 0.269766546
        },
        "A->D": {
-        "enabled": false,
-        "existence_probability": 0.01048491,
-        "existence_update_count": 8,
-        "explore_weight": 0.090366334
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.020964267,
-        "existence_update_count": 4,
-        "explore_weight": 0.273951544
-       },
-       "C->B": {
         "enabled": true,
-        "existence_probability": 0.037645396,
-        "existence_update_count": 1,
-        "explore_weight": 0.722587237
-       },
-       "C->D": {
-        "enabled": true,
-        "existence_probability": 0.215584878,
-        "existence_update_count": 5,
-        "explore_weight": 0.216343707
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.897141594,
+        "existence_probability": 0.104141132,
         "existence_update_count": 9,
-        "explore_weight": 0.223754764
-       },
-       "D->B": {
-        "enabled": true,
-        "existence_probability": 0.032410042,
-        "existence_update_count": 8,
-        "explore_weight": 0.83880855
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.045845734,
-        "existence_update_count": 4,
-        "explore_weight": 0.294850777
-       }
-      },
-      "evidence_count": 270,
-      "generation": 3,
-      "log_score": -565.485566871,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 135.198574881,
-      "window_log_score": -279.1835284
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "C->D",
-       "C->E",
-       "D->B",
-       "E->D"
-      ],
-      "description": "variant_add_E->D",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.963459811,
-        "existence_update_count": 10,
-        "explore_weight": 0.194766815
-       },
-       "A->D": {
-        "enabled": false,
-        "existence_probability": 0.01048491,
-        "existence_update_count": 8,
-        "explore_weight": 0.090366334
+        "explore_weight": 0.08251928
        },
        "B->C": {
         "enabled": false,
-        "existence_probability": 0.020964267,
+        "existence_probability": 0.021463406,
         "existence_update_count": 4,
-        "explore_weight": 0.273951544
-       },
-       "C->D": {
-        "enabled": true,
-        "existence_probability": 0.036581018,
-        "existence_update_count": 6,
-        "explore_weight": 0.156189039
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.937661508,
-        "existence_update_count": 10,
-        "explore_weight": 0.164997456
-       },
-       "D->B": {
-        "enabled": true,
-        "existence_probability": 0.319208449,
-        "existence_update_count": 9,
-        "explore_weight": 1.285414602
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.045845734,
-        "existence_update_count": 4,
-        "explore_weight": 0.294850777
-       },
-       "E->D": {
-        "enabled": true,
-        "existence_probability": 0.033297647,
-        "existence_update_count": 1,
-        "explore_weight": 0.719978588
-       }
-      },
-      "evidence_count": 300,
-      "generation": 3,
-      "log_score": -635.398703034,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 139.815366431,
-      "window_log_score": -296.041958337
-     },
-     {
-      "active_signature": [
-       "A->B",
-       "A->C",
-       "B->D",
-       "C->B",
-       "C->E",
-       "D->E"
-      ],
-      "description": "variant_add_C->B",
-      "edges": {
-       "A->B": {
-        "enabled": true,
-        "existence_probability": 0.014325235,
-        "existence_update_count": 11,
-        "explore_weight": 0.05
-       },
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.978959311,
-        "existence_update_count": 12,
-        "explore_weight": 0.117742535
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.019891967,
-        "existence_update_count": 5,
-        "explore_weight": 0.19509487
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.452102917,
-        "existence_update_count": 12,
-        "explore_weight": 0.308842265
-       },
-       "C->B": {
-        "enabled": true,
-        "existence_probability": 0.013357006,
-        "existence_update_count": 3,
-        "explore_weight": 0.363670552
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.79694327,
-        "existence_update_count": 12,
-        "explore_weight": 0.141521309
-       },
-       "D->E": {
-        "enabled": true,
-        "existence_probability": 0.264128363,
-        "existence_update_count": 12,
-        "explore_weight": 0.05
-       }
-      },
-      "evidence_count": 360,
-      "generation": 2,
-      "log_score": -753.206965066,
-      "pruning_reason": null,
-      "status": "ACTIVE",
-      "window_evidence": 146.611312917,
-      "window_log_score": -304.93444526
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "B->C",
-       "B->D",
-       "C->E",
-       "D->A",
-       "D->E"
-      ],
-      "description": "variant_add_B->C",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.114535893,
-        "existence_update_count": 12,
-        "explore_weight": 0.093184399
-       },
-       "B->A": {
-        "enabled": false,
-        "existence_probability": 0.009331725,
-        "existence_update_count": 4,
-        "explore_weight": 0.254860592
-       },
-       "B->C": {
-        "enabled": true,
-        "existence_probability": 0.018105263,
-        "existence_update_count": 2,
-        "explore_weight": 0.511838983
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.467255632,
-        "existence_update_count": 12,
-        "explore_weight": 0.297727019
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.773766806,
-        "existence_update_count": 12,
-        "explore_weight": 0.143651735
-       },
-       "D->A": {
-        "enabled": true,
-        "existence_probability": 0.354687523,
-        "existence_update_count": 11,
-        "explore_weight": 0.061154159
-       },
-       "D->E": {
-        "enabled": true,
-        "existence_probability": 0.272151862,
-        "existence_update_count": 12,
-        "explore_weight": 0.05
-       }
-      },
-      "evidence_count": 360,
-      "generation": 3,
-      "log_score": -743.58173733,
-      "pruning_reason": null,
-      "status": "ACTIVE",
-      "window_evidence": 146.611312917,
-      "window_log_score": -299.069869562
-     },
-     {
-      "active_signature": [
-       "A->C",
-       "A->D",
-       "C->D",
-       "C->E",
-       "D->B"
-      ],
-      "description": "variant_add_A->D",
-      "edges": {
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.965989745,
-        "existence_update_count": 11,
-        "explore_weight": 0.140311212
-       },
-       "A->D": {
-        "enabled": true,
-        "existence_probability": 0.068487881,
-        "existence_update_count": 1,
-        "explore_weight": 0.741092729
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.020964267,
-        "existence_update_count": 4,
-        "explore_weight": 0.273951544
-       },
-       "C->D": {
-        "enabled": true,
-        "existence_probability": 0.039975886,
-        "existence_update_count": 7,
-        "explore_weight": 0.126853213
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.96028281,
-        "existence_update_count": 11,
-        "explore_weight": 0.11943016
-       },
-       "D->B": {
-        "enabled": true,
-        "existence_probability": 0.214467345,
-        "existence_update_count": 10,
-        "explore_weight": 1.065197895
-       },
-       "D->E": {
-        "enabled": false,
-        "existence_probability": 0.045845734,
-        "existence_update_count": 4,
-        "explore_weight": 0.294850777
-       }
-      },
-      "evidence_count": 330,
-      "generation": 3,
-      "log_score": -688.898388309,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 143.565366431,
-      "window_log_score": -293.213133094
-     },
-     {
-      "active_signature": [
-       "A->B",
-       "A->C",
-       "A->D",
-       "A->E",
-       "C->E",
-       "D->E"
-      ],
-      "description": "variant_add_C->E",
-      "edges": {
-       "A->B": {
-        "enabled": true,
-        "existence_probability": 0.063997634,
-        "existence_update_count": 11,
-        "explore_weight": 0.05
-       },
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.978959311,
-        "existence_update_count": 12,
-        "explore_weight": 0.117742535
-       },
-       "A->D": {
-        "enabled": true,
-        "existence_probability": 0.327850682,
-        "existence_update_count": 4,
-        "explore_weight": 0.456835606
-       },
-       "A->E": {
-        "enabled": true,
-        "existence_probability": 0.001653077,
-        "existence_update_count": 5,
-        "explore_weight": 0.168605508
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.019891967,
-        "existence_update_count": 5,
-        "explore_weight": 0.19509487
-       },
-       "B->D": {
-        "enabled": false,
-        "existence_probability": 0.019854294,
-        "existence_update_count": 12,
-        "explore_weight": 0.086526988
-       },
-       "C->E": {
-        "enabled": true,
-        "existence_probability": 0.001724604,
-        "existence_update_count": 1,
-        "explore_weight": 0.701034763
-       },
-       "D->E": {
-        "enabled": true,
-        "existence_probability": 0.003524032,
-        "existence_update_count": 12,
-        "explore_weight": 0.05
-       }
-      },
-      "evidence_count": 360,
-      "generation": 4,
-      "log_score": -748.681902244,
-      "pruning_reason": "bottom_quartile_log_score",
-      "status": "PRUNED",
-      "window_evidence": 146.611312917,
-      "window_log_score": -303.494492064
-     },
-     {
-      "active_signature": [
-       "A->B",
-       "A->C",
-       "B->D",
-       "B->E",
-       "C->B",
-       "C->E",
-       "D->E"
-      ],
-      "description": "variant_add_B->E",
-      "edges": {
-       "A->B": {
-        "enabled": true,
-        "existence_probability": 0.014325235,
-        "existence_update_count": 11,
-        "explore_weight": 0.05
-       },
-       "A->C": {
-        "enabled": true,
-        "existence_probability": 0.978959311,
-        "existence_update_count": 12,
-        "explore_weight": 0.117742535
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.019891967,
-        "existence_update_count": 5,
-        "explore_weight": 0.19509487
-       },
-       "B->D": {
-        "enabled": true,
-        "existence_probability": 0.452102917,
-        "existence_update_count": 12,
-        "explore_weight": 0.308842265
+        "explore_weight": 0.274025817
        },
        "B->E": {
         "enabled": true,
-        "existence_probability": 0.001783533,
+        "existence_probability": 0.033065633,
         "existence_update_count": 1,
-        "explore_weight": 0.70107012
-       },
-       "C->B": {
-        "enabled": true,
-        "existence_probability": 0.013357006,
-        "existence_update_count": 3,
-        "explore_weight": 0.363670552
+        "explore_weight": 0.71983938
        },
        "C->E": {
         "enabled": true,
-        "existence_probability": 0.004537245,
-        "existence_update_count": 12,
-        "explore_weight": 0.12101006
+        "existence_probability": 0.133652949,
+        "existence_update_count": 9,
+        "explore_weight": 0.229192832
        },
        "D->E": {
-        "enabled": true,
-        "existence_probability": 0.004536075,
-        "existence_update_count": 12,
-        "explore_weight": 0.05
+        "enabled": false,
+        "existence_probability": 0.045837481,
+        "existence_update_count": 4,
+        "explore_weight": 0.294846034
        }
       },
-      "evidence_count": 360,
-      "generation": 3,
-      "log_score": -754.118391287,
-      "pruning_reason": null,
-      "status": "ACTIVE",
-      "window_evidence": 146.611312917,
-      "window_log_score": -305.845871481
+      "evidence_count": 270,
+      "generation": 1,
+      "log_score": -730.548625631,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED",
+      "window_evidence": 135.198574881,
+      "window_log_score": -363.287828055
+     },
+     {
+      "active_signature": [
+       "A->E",
+       "C->E"
+      ],
+      "description": "variant_add_A->E",
+      "edges": {
+       "A->E": {
+        "enabled": true,
+        "existence_probability": 0.036518497,
+        "existence_update_count": 1,
+        "explore_weight": 0.721911098
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.047823036,
+        "existence_update_count": 10,
+        "explore_weight": 0.217471334
+       }
+      },
+      "evidence_count": 300,
+      "generation": 1,
+      "log_score": -824.654201518,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED",
+      "window_evidence": 139.815366431,
+      "window_log_score": -383.254465297
+     },
+     {
+      "active_signature": [
+       "C->B",
+       "C->E",
+       "D->B"
+      ],
+      "description": "variant_add_C->B",
+      "edges": {
+       "C->B": {
+        "enabled": true,
+        "existence_probability": 0.034631698,
+        "existence_update_count": 1,
+        "explore_weight": 0.720779019
+       },
+       "C->E": {
+        "enabled": true,
+        "existence_probability": 0.929001106,
+        "existence_update_count": 11,
+        "explore_weight": 0.168109716
+       },
+       "D->B": {
+        "enabled": true,
+        "existence_probability": 0.041705336,
+        "existence_update_count": 10,
+        "explore_weight": 0.932381732
+       }
+      },
+      "evidence_count": 330,
+      "generation": 2,
+      "log_score": -894.64031999,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED",
+      "window_evidence": 143.565366431,
+      "window_log_score": -384.30563544
      },
      {
       "active_signature": [
        "A->C",
        "A->D",
-       "C->D",
-       "C->E",
-       "D->B"
+       "B->D",
+       "C->E"
       ],
-      "description": "variant_add_A->D",
+      "description": "variant_add_B->D",
       "edges": {
        "A->C": {
         "enabled": true,
         "existence_probability": 0.98868725,
         "existence_update_count": 12,
-        "explore_weight": 0.099170232
+        "explore_weight": 0.099162166
        },
        "A->D": {
         "enabled": true,
-        "existence_probability": 0.5,
-        "existence_update_count": 0,
-        "explore_weight": 1.0
+        "existence_probability": 0.095774311,
+        "existence_update_count": 12,
+        "explore_weight": 0.05
        },
        "B->C": {
         "enabled": false,
-        "existence_probability": 0.020964267,
+        "existence_probability": 0.021463406,
         "existence_update_count": 4,
-        "explore_weight": 0.273951544
+        "explore_weight": 0.274025817
        },
-       "C->D": {
+       "B->D": {
         "enabled": true,
-        "existence_probability": 0.227154398,
-        "existence_update_count": 8,
-        "explore_weight": 0.120733891
+        "existence_probability": 0.032675198,
+        "existence_update_count": 1,
+        "explore_weight": 0.719605119
        },
        "C->E": {
         "enabled": true,
         "existence_probability": 0.979267595,
         "existence_update_count": 12,
-        "explore_weight": 0.085086757
-       },
-       "D->B": {
-        "enabled": true,
-        "existence_probability": 0.180298862,
-        "existence_update_count": 11,
-        "explore_weight": 0.855280717
+        "explore_weight": 0.085090657
        },
        "D->E": {
         "enabled": false,
-        "existence_probability": 0.045845734,
+        "existence_probability": 0.045837481,
         "existence_update_count": 4,
-        "explore_weight": 0.294850777
+        "explore_weight": 0.294846034
        }
       },
       "evidence_count": 360,
-      "generation": 3,
-      "log_score": -765.769789224,
-      "pruning_reason": null,
-      "status": "ACTIVE",
+      "generation": 1,
+      "log_score": -969.043787951,
+      "pruning_reason": "bottom_quartile_log_score",
+      "status": "PRUNED",
       "window_evidence": 146.611312917,
-      "window_log_score": -314.57692445
+      "window_log_score": -392.259874499
      },
      {
       "active_signature": [
-       "A->B",
        "A->C",
-       "A->D",
-       "A->E",
-       "D->E",
-       "E->C"
+       "C->E",
+       "D->B",
+       "D->C"
       ],
-      "description": "variant_add_E->C",
+      "description": "variant_add_D->C",
       "edges": {
-       "A->B": {
-        "enabled": true,
-        "existence_probability": 0.063997634,
-        "existence_update_count": 11,
-        "explore_weight": 0.05
-       },
        "A->C": {
         "enabled": true,
-        "existence_probability": 0.978959311,
-        "existence_update_count": 12,
-        "explore_weight": 0.117742535
-       },
-       "A->D": {
-        "enabled": true,
-        "existence_probability": 0.327850682,
-        "existence_update_count": 4,
-        "explore_weight": 0.456835606
-       },
-       "A->E": {
-        "enabled": true,
-        "existence_probability": 0.055536259,
-        "existence_update_count": 5,
-        "explore_weight": 0.176381633
-       },
-       "B->C": {
-        "enabled": false,
-        "existence_probability": 0.019891967,
-        "existence_update_count": 5,
-        "explore_weight": 0.19509487
-       },
-       "B->D": {
-        "enabled": false,
-        "existence_probability": 0.019854294,
-        "existence_update_count": 12,
-        "explore_weight": 0.086526988
+        "existence_probability": 0.986443284,
+        "existence_update_count": 10,
+        "explore_weight": 0.131801336
        },
        "C->E": {
-        "enabled": false,
-        "existence_probability": 0.001646431,
-        "existence_update_count": 11,
-        "explore_weight": 0.05
-       },
-       "D->E": {
         "enabled": true,
-        "existence_probability": 0.097792629,
+        "existence_probability": 0.979215691,
         "existence_update_count": 12,
-        "explore_weight": 0.05
+        "explore_weight": 0.106690391
        },
-       "E->C": {
+       "D->B": {
+        "enabled": true,
+        "existence_probability": 0.176574202,
+        "existence_update_count": 11,
+        "explore_weight": 0.852024875
+       },
+       "D->C": {
         "enabled": true,
         "existence_probability": 0.5,
         "existence_update_count": 0,
@@ -5150,30 +3040,27 @@
        }
       },
       "evidence_count": 360,
-      "generation": 4,
-      "log_score": -750.761343785,
+      "generation": 3,
+      "log_score": -971.116108765,
       "pruning_reason": null,
       "status": "ACTIVE",
       "window_evidence": 146.611312917,
-      "window_log_score": -305.573933606
+      "window_log_score": -394.299270995
      }
     ],
     "dominant_signature": [
-     "A->C",
-     "B->D",
-     "C->E",
-     "D->A",
-     "D->E"
+     "C->A",
+     "C->E"
     ],
-    "generation": 29,
+    "generation": 17,
     "mutation_stats": {
-     "dag_violations": 3,
+     "dag_violations": 1,
      "duplicate_rejections": 2,
-     "introduced": 2,
-     "total_attempts": 7
+     "introduced": 1,
+     "total_attempts": 4
     },
-    "paradigm_shift_count": 5,
-    "structure_entropy": 0.412741958
+    "paradigm_shift_count": 3,
+    "structure_entropy": 0.34261605
    }
   }
  }
