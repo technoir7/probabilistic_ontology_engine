@@ -503,3 +503,73 @@ events as replay 7, written to `data/replay9/`:
     One distortion remains: each judgement conditions on the week's other
     signals rounded to true or false, so the engine is asked a slightly
     sharper question than its evidence supports. It did not show here.
+
+## Replay 10: a fair trial for rival worldviews
+
+*Plan, written before replay 10 ran, and after diagnostic runs of seed 0
+that found the three faults below.*
+
+Replays 3 to 9 found every rival programme refuted by 2005–08, and none
+ever revised: each died holding every link it was founded with. Recording
+each programme's best candidate week by week showed why:
+
+- **Refuted by the razor.** For their first eight weeks the six seeds
+  explained the evidence within half a nat of each other; the BIC penalty,
+  not the evidence, put the rivals past the refutation line. The windowed
+  score is prequential from even tables, so it already charges a complex
+  structure for the parameters it must learn; BIC charged it again.
+- **Refuted on a free week.** A variable whose parent was not observed was
+  not scored, which scored it as certain. In the first week nobody has a
+  last week, so persistence scored zero log-loss where every other seed
+  lost 5.5 nats, more than the refutation line.
+- **Refuted for a claim no rival denied.** With the first two fixed, the
+  causal programmes died within four weeks for not knowing that signals
+  persist, before any had a turn to add it.
+
+The changes (REFACTOR_SPEC D22, D23): refutation compares average
+log-likelihood over the records both candidates were scored on, without
+BIC (which still ranks them); a missing parent is averaged over as the
+data has seen it; every causal seed assumes persistence as a shared
+auxiliary, and `T_persistence`, persistence alone, is the baseline they
+must beat. Same data as first published, seeds and events as before,
+written to `data/replay10/`:
+
+13. **Do rivals now live until the evidence refutes them, and does any
+    programme displace another?** Weeks each programme survives and leads;
+    whether any rival is revised (holds a link it was not founded with)
+    before it dies; leader changes against the events; calibration against
+    the evidence, fit gap and forecast against replay 9.
+
+### Replay 10 results
+
+![Replay 10](../docs/replay10.svg)
+
+13. **Rivals now live until the evidence refutes them, and none displaces
+    persistence.** Monetary lived 386 weeks (to 2010) in every seed,
+    recession 373 (to 2010), credit 696 (to 2016); AI boom and the sparse
+    baseline lived to 2014–15 in some seeds and to the end in others. Most
+    revised themselves before dying (AI boom and the sparse baseline in
+    four seeds of five, credit and monetary in one; recession never). Where
+    replays 3 to 9 refuted them within weeks, these are refutations by
+    evidence, after years of it. But persistence alone led every week of
+    every seed: given that each signal follows its own last week, no
+    worldview's further claims explained the weeks better. No leading
+    programme changed, so no event was followed by a change.
+
+    Persistence explains each week 0.56 to 0.57 nats better than
+    independent signals and forecasts it from last week alone at −3.35 to
+    −3.37 nats (base rates: −4.8). Calibration against the evidence is
+    0.046 to 0.048, worse than replay 9's 0.010 to 0.014: in the middle it
+    is unsure, saying 0.56 where the evidence says 0.65. Each judgement
+    conditions on last week's values rounded to true or false, which is the
+    likely cause.
+
+    **A correction to replays 6 to 9.** Their fit gap scored the leader on
+    each week's record before last week's values were attached, and a
+    variable whose parent was missing was skipped, which scored it as
+    certain. Every leader holding last week's values as causes was credited
+    with those variables free, so their fit gaps (and replay 6's "explains
+    each week far better") are overstated. Their forecasts, calibration,
+    survival and leaders came from the engine's own scoring and stand,
+    except as the skipped-variable fault touched the engine too (replay 10's
+    second fault).

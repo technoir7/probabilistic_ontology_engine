@@ -32,7 +32,8 @@ Four rules, each added after a replay showed the engine needed it
 
 - **Rivals live until refuted.** Every explanation belongs to a research
   programme (the seed it grew from). A programme's best is kept until the
-  evidence for the leader over it is decisive, a Bayes factor above 100,
+  evidence for the leader over it is decisive, a Bayes factor above 100
+  from fit alone (simplicity ranks explanations but refutes none),
   and programmes take turns to propose variants, so a rival gets to revise
   itself before it is judged (Lakatos).
 - **Doubt in a crisis.** When the leading explanation is far more surprised
@@ -40,7 +41,8 @@ Four rules, each added after a replay showed the engine needed it
   so a world that has broken (COVID) loosens old certainties without making
   calm years fickle.
 - **Beliefs about change.** Each signal's value last week is available as a
-  cause, and one programme holds that things simply persist.
+  cause. Every causal programme assumes signals persist, so they compete on
+  what else they claim; one programme claims nothing else.
 - **Know your own confidence.** Each week the engine records whether its
   70% beliefs come true 70% of the time, judged both against each signal
   rounded and against the probability the evidence gave it, and whether its
@@ -52,17 +54,20 @@ Four rules, each added after a replay showed the engine needed it
 Replayed week by week through 2003–2026 of real FRED data (macro domain,
 five seeds, each replay planned in writing before it ran):
 
-- **Its rival worldviews were refuted, not just outranked.** Of five
-  starting explanations (monetary, credit-first, AI boom, recession, and a
-  sparse baseline), the baseline's line came to lead in most seeds and the
-  AI-boom line in the rest. Given protection until refuted and a fair turn
-  at revising themselves, the others still fell to evidence of 100 to 1,
-  most by 2005–08.
-- **Persistence won by being absorbed.** Offered as a rival, "things stay
-  as they were" led for five weeks; then every surviving explanation took
-  last week's values as causes and it fell. With them, the leader explains
-  each week far better, and forecasts it from last week alone better than
-  base rates (−3.9 against −4.8 nats a week).
+- **Its rivals were first refuted unfairly.** Through replay 9 every rival
+  worldview (monetary, credit-first, AI boom, recession) died by 2005–08,
+  most within weeks, none ever revised. Replay 10 found why: the complexity
+  penalty was charged twice, a week with no "last week" was scored as a
+  free pass, and the rivals were judged on persistence, which none of them
+  denies. With refutation by evidence alone, missing values averaged over,
+  and persistence a shared assumption, they live until the evidence
+  refutes them: monetary and recession to 2010, credit to 2016, AI boom
+  and the sparse baseline to 2014–2026, most revising themselves first.
+- **No causal story beats persistence.** Given that every signal follows
+  its own last week, none of the four worldviews explained the weeks better
+  than persistence alone, in any seed, in 23 years. Persistence explains
+  each week 0.56 nats better than "nothing connects" and forecasts it from
+  last week alone at −3.4 nats against −4.8 for base rates.
 - **Doubt fixed COVID.** Without it, the relationships learned over
   seventeen years outlasted the world that produced them, and through
   2020–21 the engine did worse than believing nothing connects; with it,
@@ -71,8 +76,10 @@ five seeds, each replay planned in writing before it ran):
   signal rounded to true or false, it looked timid: when it said 15%, the
   signal came true 3% of the time. But the evidence itself is soft (on weeks
   that round to true, it puts the signal at 0.75 on average), and judged
-  against what the evidence said, it is calibrated to within 1 to 1.4
-  points. The timidity was in the measure.
+  against what the evidence said, it was calibrated to within 1 to 1.4
+  points (replay 9). The timidity was in the measure. Leading with
+  persistence (replay 10) it is within 4.7 points, slightly unsure in the
+  middle: it says 56% where the evidence says 65%.
 - **Its paradigm shifts do not follow the headlines.** No change of leading
   programme followed 2008, COVID or the 2022 hikes within six months.
 - **Nothing rests on hindsight.** Replayed again with each figure as it was
@@ -85,11 +92,14 @@ five seeds, each replay planned in writing before it ran):
   (BIC) left the leader 2–3 links where it had held 8–13. The engine went
   back to yes/no; ordinal tables, which price a relationship by its order,
   are the next thing to try.
-- **The replays found three bugs, now fixed**: an inverted dollar signal, a
-  CPI lookback that dropped inflation in about half of all weeks, and an
-  engine seed that never reached the code it was meant to seed.
+- **The replays found six bugs, now fixed**: an inverted dollar signal, a
+  CPI lookback that dropped inflation in about half of all weeks, an engine
+  seed that never reached the code it was meant to seed, the double
+  complexity charge and the free first week above, and a replay measure that
+  scored the leader without last week's values, which overstated replays
+  6–9's fit gap.
 
-![The rival explanations die out; leader changes; the fit gap year by year](docs/replay6.svg)
+![Rival explanations surviving; leader changes against the events; the fit gap year by year](docs/replay10.svg)
 
 ## Active Domains
 

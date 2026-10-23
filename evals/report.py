@@ -21,7 +21,7 @@ from src.domains.macro_regime_v1.ingestion.pipeline import compute_snapshot
 SEEDS = range(5)
 DOCS = Path(__file__).parents[1] / "docs"
 COLOURS = {"T_monetary": "#3b6fb6", "T_credit": "#c8553d", "T_ai_boom": "#6a994e",
-           "T_recession": "#8e5ea2", "T_null": "#9a9a9a", "unknown": "#000000"}
+           "T_recession": "#8e5ea2", "T_null": "#9a9a9a", "T_persistence": "#d4a017", "unknown": "#000000"}
 PERIODS = [("2003–07", date(2003, 1, 1), date(2007, 11, 30)), ("2007–09", date(2007, 12, 1), date(2009, 12, 31)),
            ("2010–19", date(2010, 1, 1), date(2019, 12, 31)), ("2020–21", date(2020, 1, 1), date(2021, 12, 31)),
            ("2022–23", date(2022, 1, 1), date(2023, 12, 31)), ("2024–26", date(2024, 1, 1), date(2026, 12, 31))]
@@ -75,7 +75,7 @@ def credit_agreement(history: dict) -> dict:
 
 
 def svg(all_rows: dict[int, list[dict]]) -> str:
-    """Three panels: rival explanations dying out (seed 0, 2003–06); every
+    """Three panels: the candidates of each programme (seed 0, 2003–06); every
     seed's leader changes against the events; the yearly fit gap."""
     W, L, R = 1000, 70, 20
     out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="660" viewBox="0 0 {W} 660" '
@@ -85,8 +85,8 @@ def svg(all_rows: dict[int, list[dict]]) -> str:
     # Panel 1: active candidates by family, seed 0, first three years.
     rows = [r for r in all_rows[0] if r["week"] < "2006-06-30"]
     top, h = 40, 150
-    out.append(f'<text x="{L}" y="{top - 12}" font-size="13">1. The rival explanations die out: active candidates by '
-               f'the seed they descend from (seed 0, 2003–06)</text>')
+    out.append(f'<text x="{L}" y="{top - 12}" font-size="13">1. Active candidates by the programme they descend '
+               f'from (seed 0, 2003–06)</text>')
     xs = lambda i, n: L + (W - L - R) * i / max(n - 1, 1)
     for i, r in enumerate(rows):
         y = top + h
@@ -101,8 +101,8 @@ def svg(all_rows: dict[int, list[dict]]) -> str:
         i = next(k for k, r in enumerate(rows) if r["week"].startswith(str(year)))
         out.append(f'<text x="{xs(i, len(rows)):.1f}" y="{top + h + 14}" text-anchor="middle">{year}</text>')
     for k, fam in enumerate(families):
-        out.append(f'<rect x="{L + k * 170}" y="{top + h + 24}" width="11" height="11" fill="{COLOURS[fam]}"/>'
-                   f'<text x="{L + k * 170 + 16}" y="{top + h + 34}">{fam}</text>')
+        out.append(f'<rect x="{L + k * 150}" y="{top + h + 24}" width="11" height="11" fill="{COLOURS[fam]}"/>'
+                   f'<text x="{L + k * 150 + 16}" y="{top + h + 34}">{fam}</text>')
 
     # Panel 2: leader changes per seed, with the events.
     top2, band = 280, 22

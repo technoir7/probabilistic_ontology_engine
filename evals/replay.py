@@ -24,7 +24,8 @@ from src.domains.macro_regime_v1.domain import MacroRegimeV1, get_variables
 from src.domains.macro_regime_v1.ingestion.pipeline import MacroRegimePipeline, compute_snapshot
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.model.doubt import DISCOUNT as DOUBT_DISCOUNT
-from src.engine.model.scoring import structure_entropy
+from src.engine.model.scoring import log_bayes_factor, structure_entropy
+from src.engine.model.temporal import lagged
 from src.engine.runtime.ingestion import ingest_and_learn
 from src.engine.schemas import OntologyCandidate
 
@@ -63,15 +64,20 @@ def run(history: dict, seed: int, start: date, end: date, credit: str = fh.CREDI
     engine.activate_domain(DOMAIN)
     pop = engine.population_manager.get_population(DOMAIN)
     seeds = {str(c.candidate_id): c.description.split(":")[0] for c in pop.candidates}
+    founding = {seeds[str(c.candidate_id)]: {(e.parent_variable_id, e.child_variable_id) for e in c.edges}
+                for c in pop.candidates}
     parents: dict[str, str | None] = {}
     baseline = _independent()
     engine.learning_service.initialize_candidate(baseline)
 
     rows = []
+    previous = None
     for week in fridays(start, end):
         record = MacroRegimePipeline.build_evidence_record(compute_snapshot(fh.week_inputs(history, week, credit), week))
         leader = engine.population_manager.dominant(DOMAIN)
-        leader_ll = engine.learning_service.compute_log_likelihood([record], leader)
+        # Scored as the engine scores it: with last week's values attached.
+        leader_ll = engine.learning_service.compute_log_likelihood(lagged([record], previous, leader.variables), leader)
+        previous = record
         independent_ll = engine.learning_service.compute_log_likelihood([record], baseline)
 
         async def fetch(_: date, record=record):
@@ -104,9 +110,28 @@ def run(history: dict, seed: int, start: date, end: date, credit: str = fh.CREDI
             "doubt": engine.doubt_events(DOMAIN) > doubts,
             "population_ll": engine.epistemic_health(DOMAIN)["last_cycle"].get("population_ll"),
             "forecast_ll": engine.epistemic_health(DOMAIN)["last_cycle"].get("forecast_ll"),
+            "programmes": programmes(pop.active_candidates(), now, parents, seeds, founding),
         })
     rows[-1]["health"] = engine.epistemic_health(DOMAIN)
     return rows
+
+
+def programmes(active: list[OntologyCandidate], leader: OntologyCandidate, parents: dict, seeds: dict,
+               founding: dict) -> dict:
+    """Each surviving programme's best candidate: the evidence for the leader
+    over it (what pruning judges), its links, the evidence it has been scored
+    on, and the share of its founding links it still holds."""
+    best: dict[str, OntologyCandidate] = {}
+    for c in sorted(active, key=lambda c: log_bayes_factor(leader, c)):
+        best.setdefault(family_of(str(c.candidate_id), parents, seeds), c)
+    out = {}
+    for family, c in sorted(best.items()):
+        edges = {(e.parent_variable_id, e.child_variable_id) for e in c.edges}
+        core = founding.get(family, set())
+        out[family] = {"log_bf": round(log_bayes_factor(leader, c), 3), "edges": len(edges),
+                       "window": round(c.window_evidence, 1),
+                       "core_kept": round(len(edges & core) / len(core), 2) if core else None}
+    return out
 
 
 def write_rows(path: Path, rows: list[dict]) -> None:
