@@ -25,6 +25,7 @@ from ..schemas import (
 from ..model.errors import InferenceFailed
 from ..model.scoring import candidate_score, score_weights
 from ..stores.parameter_store import ParameterStore
+from ..model.levels import LEVELS, p_past
 from .bn_model import build_network, encode_value
 
 _NEGLIGIBLE_WEIGHT = 1e-9
@@ -118,18 +119,22 @@ class InferenceService:
 
     # ------------------------------------------------------------------
     def leave_one_out(self, candidate: OntologyCandidate, observed: dict[str, Any]) -> dict[str, float]:
-        """P(each observed variable is true | every other observed one), one
-        model built for all of them (D18 calibration)."""
+        """P(each observed variable is true | every other observed one), or for
+        five levels P(past the threshold); one model built for all of them
+        (D18 calibration, D20)."""
         ve = VariableElimination(self._build_pgmpy_model(candidate))
         out = {}
         for name, _ in observed.items():
             var = candidate.get_variable_by_name(name)
-            if var is None or var.lag_of or True not in var.support:
+            if var is None or var.lag_of or not (True in var.support or tuple(var.support) == LEVELS):
                 continue
             evidence = {n: encode_value(v, candidate.get_variable_by_name(n).support)
                         for n, v in observed.items() if n != name and candidate.get_variable_by_name(n)}
             q = ve.query([name], evidence=evidence, show_progress=False)
-            out[name] = float(q.values[var.support.index(True)])
+            if True in var.support:
+                out[name] = float(q.values[var.support.index(True)])
+            else:  # five levels: P(past the threshold) (D20)
+                out[name] = p_past({level: float(q.values[i]) for i, level in enumerate(var.support)})
         return out
 
     def forecast_log_prob(self, candidate: OntologyCandidate, observed: dict[str, Any]) -> float | None:

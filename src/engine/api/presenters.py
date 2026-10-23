@@ -3,6 +3,8 @@ View logic: how engine state is labelled and scaled for the dashboard.
 """
 from __future__ import annotations
 
+from ..model.levels import LEVELS, p_past
+
 import math
 from datetime import datetime, timezone
 from typing import Callable, Literal
@@ -190,5 +192,8 @@ def candidate_name(c: OntologyCandidate) -> str:
 
 
 def p_true(dist: dict) -> float:
-    """P(True) from a posterior keyed by str(value); the first value for non-boolean variables."""
+    """P(True) from a posterior keyed by str(value); for five levels, P(past the
+    threshold) (D20); otherwise the first value."""
+    if set(dist) <= set(LEVELS) and dist:
+        return p_past(dist)
     return float(dist.get("True", dist.get("true", next(iter(dist.values()), 0.5))))

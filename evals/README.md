@@ -418,3 +418,46 @@ engine is replay 6's.
     last week at −3.6 to −4.1 nats against replay 6's −3.8 to −4.1, and was
     as timid (Brier 0.14 to 0.17). So nothing in replays 1–6 rests on
     hindsight; replay 7 is the honest baseline from here on.
+
+## Replay 8: five levels
+
+*Plan, written before replay 8 ran.*
+
+The change (REFACTOR_SPEC D20), on top of replay 7's: each macro signal is
+recorded in five ordered levels, from well below its threshold to far past
+it, cut from the same evidence (the three levels past the threshold sum to
+the old probability of "true"). Same data as first published, events,
+seeds and questions as replay 7, written to `data/replay8/`. Log-likelihoods
+over five levels and over two are not on one scale, so the comparison with
+replay 7 is made where they agree:
+
+11. **Does believing in degrees make it a better believer?** The Brier
+    score and calibration error of its belief that each signal is past its
+    threshold, given the others (the same event replay 7 judged), against
+    replay 7; which programmes lead; how many links the leader holds; and,
+    within each replay, the fit gap over independent signals and the
+    forecast from last week against base rates.
+
+### Replay 8 results
+
+![Replay 8](../docs/replay8.svg)
+
+11. **Degrees made it more careful and less knowing.** Judged on the same
+    event as replay 7 (is each signal past its threshold, given the
+    others), its calibration error fell (0.060 to 0.078 against replay 7's
+    0.066 to 0.119; it is less timid) but its Brier score rose (0.19
+    against 0.14 to 0.17; it knows less from the other signals). Its
+    leader held 2 or 3 links where replay 7's held 8 to 13, and its gain
+    over independent signals fell to 0.04 to 0.26 nats a week. The cause
+    is the price of a relationship: explaining a five-level signal by a
+    five-level cause takes 20 numbers where a boolean pair took 2, and the
+    BIC penalty, the engine's Occam's razor, finds that 23 years of weekly
+    evidence support few relationships at that resolution. Persistence was
+    worth more: from last week alone it forecast each week 1.6 nats better
+    than base rates (replay 7: 0.8, on its own scale). `T_null`'s line led
+    every week in every seed; no event was followed by a change.
+
+    A finer instrument asks for more evidence per belief. Levels would pay
+    for relationships with more data, or with tables that use the levels'
+    order (an ordinal model needs a few numbers per cause, not 20), and the
+    live macro domain stays boolean until one of those is tried.

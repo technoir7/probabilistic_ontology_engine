@@ -89,7 +89,7 @@ from __future__ import annotations
 
 from uuid import uuid4
 
-from ..sources.structure import boolean_variables, seed_edge, with_lags
+from ..sources.structure import level_variables, seed_edge, with_lags
 from ...engine.schemas import (
     DependencyEdge,
     EdgeExistenceThresholdConfig,
@@ -119,7 +119,8 @@ _VAR_NAMES = [
     "AIRiskOn",
 ]
 
-_VARIABLE_DEFS: dict[str, Variable] = boolean_variables(_MODULE_ID, _VAR_NAMES)
+# Five ordered levels each, from well below the threshold to far past it (D20).
+_VARIABLE_DEFS: dict[str, Variable] = level_variables(_MODULE_ID, _VAR_NAMES)
 # Each signal and its value last week (REFACTOR_SPEC D19); candidates hold both.
 _WITH_LAGS: dict[str, Variable] = with_lags(_MODULE_ID, _VARIABLE_DEFS)
 

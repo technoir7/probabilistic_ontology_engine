@@ -69,9 +69,9 @@ def test_last_periods_values_are_never_scored():
     engine.register_domain(MacroRegimeV1())
     leader = engine.population_manager.dominant("macro-regime-v1")
     v = get_variables_with_lags()
-    current = {n: True for n in v if not n.endswith("_prev")}
+    current = {n: "past" for n in v if not n.endswith("_prev")}
     without = record(v, current, 0)
-    with_prev = record(v, {**current, **{f"{n}_prev": False for n in current}}, 0)
+    with_prev = record(v, {**current, **{f"{n}_prev": "below" for n in current}}, 0)
     ls = engine.learning_service
     assert ls.compute_log_likelihood([without], leader) == ls.compute_log_likelihood([with_prev], leader)
 
@@ -82,8 +82,9 @@ def test_the_engine_learns_with_last_periods_values():
     engine.activate_domain("macro-regime-v1")
     v = get_variables_with_lags()
     names = [n for n in v if not n.endswith("_prev")]
+    levels = v[names[0]].support
     for week in range(6):
-        engine.learn([record(v, {n: (week + i) % 2 == 0 for i, n in enumerate(names)}, 7 * week)])
+        engine.learn([record(v, {n: levels[(week + i) % len(levels)] for i, n in enumerate(names)}, 7 * week)])
     pop = engine.population_manager.get_population("macro-regime-v1")
     [persistence] = [c for c in pop.candidates if c.lineage == "T_persistence" and c.generation == 0]
     cpt = engine.parameter_store.get(persistence.candidate_id, "InflationShock")
