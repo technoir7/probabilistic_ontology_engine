@@ -331,6 +331,87 @@
      "title": "CandidatesOut",
      "type": "object"
     },
+    "DomainRebuildOut": {
+     "properties": {
+      "days_requested": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Days Requested"
+      },
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "error": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Error"
+      },
+      "finished_at": {
+       "anyOf": [
+        {
+         "format": "date-time",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Finished At"
+      },
+      "records_learned": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Records Learned"
+      },
+      "started_at": {
+       "anyOf": [
+        {
+         "format": "date-time",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Started At"
+      },
+      "state": {
+       "enum": [
+        "idle",
+        "running",
+        "done",
+        "failed"
+       ],
+       "title": "State",
+       "type": "string"
+      }
+     },
+     "required": [
+      "domain",
+      "state"
+     ],
+     "title": "DomainRebuildOut",
+     "type": "object"
+    },
     "DominantHypothesis": {
      "properties": {
       "candidate_id": {
@@ -2308,6 +2389,127 @@
       }
      },
      "summary": "Ingest Backfill"
+    }
+   },
+   "/v1/ingest/rebuild": {
+    "get": {
+     "operationId": "domain_rebuild_status_v1_ingest_rebuild_get",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "domain",
+       "required": true,
+       "schema": {
+        "title": "Domain",
+        "type": "string"
+       }
+      },
+      {
+       "in": "header",
+       "name": "authorization",
+       "required": false,
+       "schema": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Authorization"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/DomainRebuildOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Domain Rebuild Status"
+    },
+    "post": {
+     "description": "Start forgetting everything learned for *domain* and relearning it from\n*days* of history refetched from its own sources with the current code,\nin the background; GET this route for progress. For histories written\nbefore unavailable inputs were recorded as MISSING (D10). Art has its own\nrebuild, which adds its reports. 409 while one is running.",
+     "operationId": "rebuild_domain_v1_ingest_rebuild_post",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "domain",
+       "required": true,
+       "schema": {
+        "title": "Domain",
+        "type": "string"
+       }
+      },
+      {
+       "in": "query",
+       "name": "days",
+       "required": false,
+       "schema": {
+        "default": 730,
+        "maximum": 1825,
+        "minimum": 1,
+        "title": "Days",
+        "type": "integer"
+       }
+      },
+      {
+       "in": "header",
+       "name": "authorization",
+       "required": false,
+       "schema": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Authorization"
+       }
+      }
+     ],
+     "responses": {
+      "202": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/DomainRebuildOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Rebuild Domain"
     }
    },
    "/v1/ingest/replace": {

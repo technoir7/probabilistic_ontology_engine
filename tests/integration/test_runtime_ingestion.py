@@ -113,3 +113,20 @@ def test_rebuild_relearns_fetched_and_supplied_evidence_in_date_order():
 
 async def _no_sleep(_s):
     return None
+
+
+def test_a_rebuild_that_fetches_nothing_keeps_the_domain():
+    """If every fetch fails there is nothing to replace the domain with, so
+    it is kept rather than reset to empty."""
+    import pytest
+    engine = _engine()
+    kept = soft_record(get_variables().values(), date(2025, 1, 5), seed="kept")
+    engine.ingest(kept)
+    engine.learn([kept], DOMAIN_ID)
+
+    async def fetch(day):
+        raise EvidenceUnavailable("upstream down")
+
+    with pytest.raises(RuntimeError, match="nothing fetched"):
+        asyncio.run(rebuild(engine, DOMAIN_ID, fetch, [date(2026, 3, 1)], [], pause_s=0, sleep=_no_sleep))
+    assert engine.evidence_store.count(DOMAIN_ID) == 1

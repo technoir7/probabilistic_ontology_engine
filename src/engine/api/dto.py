@@ -227,6 +227,16 @@ class IngestReplaceOut(BaseModel):
     records_learned: int
 
 
+class DomainRebuildOut(BaseModel):
+    domain: str
+    state: Literal["idle", "running", "done", "failed"]
+    days_requested: Optional[int] = None
+    started_at: Optional[datetime] = None
+    finished_at: Optional[datetime] = None
+    records_learned: Optional[int] = None
+    error: Optional[str] = None
+
+
 class IngestBackfillOut(BaseModel):
     domain: str
     days_requested: int

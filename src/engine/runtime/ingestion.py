@@ -149,6 +149,10 @@ async def rebuild(
         except Exception as exc:  # noqa: BLE001 — one bad period must not stop a rebuild
             logger.error("%s rebuild: fetch failed for %s: %s", domain_id, target, exc, exc_info=True)
         await sleep(pause_s)
+    supplied = list(supplied)
+    if not fetched and not supplied:
+        # Nothing to replace it with: keep what the domain has.
+        raise RuntimeError(f"{domain_id} rebuild: nothing fetched, domain kept as it was")
     engine.reset_domain(domain_id)
     return learn_new_records(engine, domain_id, [*fetched, *supplied])
 

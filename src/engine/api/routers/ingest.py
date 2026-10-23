@@ -22,6 +22,7 @@ from ..dto import (
     IngestTriggerOut,
     IngestBackfillOut,
     IngestReplaceOut,
+    DomainRebuildOut,
     ArtReportIngestOut,
     ArtRebuildOut,
 )
@@ -117,6 +118,74 @@ async def ingest_replace(request: Request, domain: str = Query(...)) -> IngestRe
         engine.reset_domain(domain_id)
         learned = learn_new_records(engine, domain_id, records)
     return IngestReplaceOut(domain=display_name, records_supplied=len(records), records_learned=learned)
+
+
+@dataclass
+class _DomainRebuild:
+    days_requested: int
+    started_at: datetime
+    finished_at: Optional[datetime] = None
+    records_learned: Optional[int] = None
+    error: Optional[str] = None
+    state: Literal["running", "done", "failed"] = "running"
+
+    def out(self, display_name: str) -> DomainRebuildOut:
+        return DomainRebuildOut(domain=display_name, state=self.state, days_requested=self.days_requested,
+                                started_at=self.started_at, finished_at=self.finished_at,
+                                records_learned=self.records_learned, error=self.error)
+
+
+@router.post("/v1/ingest/rebuild", response_model=DomainRebuildOut, status_code=202,
+             dependencies=[Depends(require_admin)])
+async def rebuild_domain(request: Request, domain: str = Query(...),
+                         days: int = Query(730, ge=1, le=1825)) -> DomainRebuildOut:
+    """
+    Start forgetting everything learned for *domain* and relearning it from
+    *days* of history refetched from its own sources with the current code,
+    in the background; GET this route for progress. For histories written
+    before unavailable inputs were recorded as MISSING (D10). Art has its own
+    rebuild, which adds its reports. 409 while one is running.
+    """
+    domain_key = domain.lower()
+    if domain_key == "art":
+        raise HTTPException(status_code=400, detail="art rebuilds with its reports: use /v1/ingest/art/rebuild")
+    state = request.app.state
+    engine, domain_id, display_name = context.resolve_domain(domain_key, state)
+    current = state.rebuilds.get(domain_key)
+    if current is not None and current.finished_at is None:
+        raise HTTPException(status_code=409, detail=f"a {domain_key} rebuild started at {current.started_at} is still running")
+    reg = BY_KEY[domain_key]
+    targets = reg.cadence.window_targets(days, context.utcnow().date())
+    job = _DomainRebuild(days_requested=days, started_at=context.utcnow())
+    state.rebuilds[domain_key] = job
+
+    async def run() -> None:
+        try:
+            async with context.ingest_lock(state, domain_key):
+                job.records_learned = await rebuild(engine, domain_id, context.fetcher(domain_key), targets, [],
+                                                    pause_s=reg.backfill_pause_s)
+            job.state = "done"
+        except asyncio.CancelledError:
+            job.error, job.state = "cancelled: the service stopped", "failed"
+            raise
+        except Exception as exc:  # noqa: BLE001 — no caller to raise to; reported by the status route
+            logger.error("%s rebuild failed: %s", domain_key, exc, exc_info=True)
+            job.error, job.state = f"{type(exc).__name__}: {exc}", "failed"
+        finally:
+            job.finished_at = context.utcnow()
+
+    task = asyncio.create_task(run(), name=f"{domain_key}-rebuild")
+    state.background_tasks.append(task)
+    task.add_done_callback(state.background_tasks.remove)
+    return job.out(display_name)
+
+
+@router.get("/v1/ingest/rebuild", response_model=DomainRebuildOut, dependencies=[Depends(require_admin)])
+async def domain_rebuild_status(request: Request, domain: str = Query(...)) -> DomainRebuildOut:
+    domain_key = domain.lower()
+    _, _, display_name = context.resolve_domain(domain_key, request.app.state)
+    job = request.app.state.rebuilds.get(domain_key)
+    return DomainRebuildOut(domain=display_name, state="idle") if job is None else job.out(display_name)
 
 
 @router.post("/v1/ingest/art/manual", response_model=ArtReportIngestOut, dependencies=[Depends(require_admin)])

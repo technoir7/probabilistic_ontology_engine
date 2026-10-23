@@ -46,6 +46,7 @@ async def lifespan(app: FastAPI):
     # Operator jobs that outlive their request (the art rebuild); cancelled on shutdown.
     app.state.background_tasks: list[asyncio.Task] = []
     app.state.art_rebuild = None
+    app.state.rebuilds = {}
 
     if scheduler_enabled:
         tasks = []
