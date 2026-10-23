@@ -13,7 +13,6 @@ from uuid import NAMESPACE_URL, UUID, uuid5
 import numpy as np
 
 from ...engine.model.errors import EvidenceUnavailable
-from ...engine.model.levels import levels_from_p
 from ...engine.schemas import EvidenceRecord, MissingnessType, ObservedAssignment, SourceType, Variable
 
 
@@ -54,19 +53,6 @@ def evidence_id_for(module_id: str, timestamp: datetime, source_ref: str) -> UUI
     return uuid5(NAMESPACE_URL, f"probabilistic-ontology-engine:evidence:{module_id}:{timestamp.isoformat()}:{source_ref}")
 
 
-def _soft(variable_id, observed: bool, p_true: float, confidence: float, levels: bool) -> ObservedAssignment:
-    """A soft observation: P(true) as a boolean, or the same evidence cut into
-    five levels (D20), whose MAP is the observed value."""
-    probabilities = levels_from_p(p_true) if levels else {True: p_true, False: 1.0 - p_true}
-    return ObservedAssignment(
-        variable_id=variable_id,
-        observed_value=max(probabilities, key=probabilities.get) if levels else observed,
-        missingness=MissingnessType.SOFT_OBSERVED,
-        confidence=confidence,
-        probabilities=probabilities,
-    )
-
-
 def build_soft_record(
     *,
     module_id: str,
@@ -77,7 +63,6 @@ def build_soft_record(
     source_ref: str,
     missing: Iterable[str] = (),
     source_type: SourceType = SourceType.API,
-    levels: bool = False,
 ) -> EvidenceRecord:
     """
     One record dated midnight UTC of *target_date*.
@@ -102,7 +87,13 @@ def build_soft_record(
             confidence=confidence.get(name, 1.0),
         )
         if name in missing
-        else _soft(variables[name].variable_id, observed, p_true, confidence.get(name, 1.0), levels)
+        else ObservedAssignment(
+            variable_id=variables[name].variable_id,
+            observed_value=observed,
+            missingness=MissingnessType.SOFT_OBSERVED,
+            confidence=confidence.get(name, 1.0),
+            probabilities={True: p_true, False: 1.0 - p_true},
+        )
         for name, observed, p_true in states
     ]
     timestamp = datetime(target_date.year, target_date.month, target_date.day, tzinfo=timezone.utc)

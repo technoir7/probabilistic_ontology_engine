@@ -621,7 +621,7 @@ class MacroRegimePipeline:
             ],
             confidence=snapshot.confidence,
             missing=snapshot.missing,
-            target_date=target_date, levels=True,
+            target_date=target_date,
             source_ref="FRED:T10Y2Y+CPIAUCSL+WALCL+BAMLH0A0HYM2"
             "+VIXCLS+DEXUSEU+UNRATE+NASDAQCOM"
             f"@week-ending-{target_date}",

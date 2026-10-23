@@ -459,5 +459,6 @@ replay 7 is made where they agree:
 
     A finer instrument asks for more evidence per belief. Levels would pay
     for relationships with more data, or with tables that use the levels'
-    order (an ordinal model needs a few numbers per cause, not 20), and the
-    live macro domain stays boolean until one of those is tried.
+    order (an ordinal model needs a few numbers per cause, not 20). The
+    engine went back to yes/no signals; the levels are in commit 1290d1c6,
+    to try again with ordinal tables.

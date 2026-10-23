@@ -9,7 +9,6 @@ from __future__ import annotations
 from uuid import UUID
 
 from ..model.calibration import Calibration, mixture_log_likelihood
-from ..model.levels import LEVELS, PAST
 from ..model.scoring import score_weights
 from ..schemas import EvidenceRecord, OntologyCandidate
 from .inference import InferenceService
@@ -51,10 +50,8 @@ class EpistemicHealth:
         for name, value in seen.items():
             if name not in lead:
                 continue  # last period's values are not judged (D19)
-            # A level is judged as past the threshold or not (D20).
-            outcome = value in PAST if value in LEVELS else bool(value)
-            self.leader_calibration(domain).observe(lead[name], outcome)
-            self.population_calibration(domain).observe(mixed[name], outcome)
+            self.leader_calibration(domain).observe(lead[name], bool(value))
+            self.population_calibration(domain).observe(mixed[name], bool(value))
 
     def leader_calibration(self, domain: str) -> Calibration:
         return self._leader.setdefault(domain, Calibration())

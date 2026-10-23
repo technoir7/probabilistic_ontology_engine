@@ -9,7 +9,6 @@ from typing import Iterable, Mapping
 from uuid import uuid4
 
 from ...engine.schemas import DependencyEdge, DependencyKind, DomainType, Variable
-from ...engine.model.levels import LEVELS
 from ...engine.variable_identity import stable_variable_id
 
 
@@ -21,19 +20,6 @@ def boolean_variables(module_id: str, names: Iterable[str]) -> dict[str, Variabl
             name=name,
             domain_type=DomainType.BOOLEAN,
             support=[True, False],
-        )
-        for name in names
-    }
-
-
-def level_variables(module_id: str, names: Iterable[str]) -> dict[str, Variable]:
-    """Name → ORDINAL Variable over the five levels (REFACTOR_SPEC D20)."""
-    return {
-        name: Variable(
-            variable_id=stable_variable_id(module_id, name),
-            name=name,
-            domain_type=DomainType.ORDINAL,
-            support=list(LEVELS),
         )
         for name in names
     }

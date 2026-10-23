@@ -14,7 +14,6 @@ from typing import Awaitable, Callable, Iterable
 
 from src.engine.api import app as api_app
 from src.engine.api import context as api_context
-from src.engine.model.levels import levels_from_p
 from src.engine.schemas import (
     EvidenceRecord,
     MissingnessType,
@@ -36,15 +35,11 @@ def soft_record(variables: Iterable[Variable], target_date: date, *, seed: int |
     assignments = []
     for var in variables:
         p = round(rng.uniform(0.05, 0.95), 4)
-        if True in var.support:
-            probabilities = {True: p, False: round(1.0 - p, 4)}
-        else:  # five levels (D20): the same evidence, cut finer
-            probabilities = levels_from_p(p)
         assignments.append(ObservedAssignment(
             variable_id=var.variable_id,
-            observed_value=max(probabilities, key=probabilities.get),
+            observed_value=p > 0.5,
             missingness=MissingnessType.SOFT_OBSERVED,
-            probabilities=probabilities,
+            probabilities={True: p, False: round(1.0 - p, 4)},
         ))
     return EvidenceRecord(
         timestamp=datetime(target_date.year, target_date.month, target_date.day, tzinfo=timezone.utc),

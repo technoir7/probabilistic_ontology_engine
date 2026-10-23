@@ -42,8 +42,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 import pytest
 
-from src.engine.model.levels import LEVELS, p_past
-
 from src.domains.sources.soft_evidence import sigmoid as _sigmoid
 from src.domains.macro_regime_v1.domain import (
     MacroRegimeV1,
@@ -468,10 +466,13 @@ def test_build_evidence_record_all_soft_observed():
         )
         assert a.probabilities is not None, \
             f"Assignment for {a.variable_id} missing probabilities dict"
-        # Five levels (D20), whose past-threshold share is the old P(True).
-        assert set(a.probabilities.keys()) == set(LEVELS)
-        assert 0.01 - 1e-9 <= p_past(a.probabilities) <= 0.99 + 1e-9
-        assert abs(sum(a.probabilities.values()) - 1.0) < 0.01, "Probabilities do not sum to 1.0"
+        assert set(a.probabilities.keys()) == {True, False}, \
+            f"Probabilities keys must be {{True, False}}"
+        p_true = a.probabilities[True]
+        assert 0.01 <= p_true <= 0.99, \
+            f"P(True)={p_true} outside [0.01, 0.99]"
+        assert abs(a.probabilities[True] + a.probabilities[False] - 1.0) < 0.01, \
+            f"Probabilities do not sum to 1.0"
 
 
 # ---------------------------------------------------------------------------
@@ -740,15 +741,15 @@ def test_fetch_evidence_full_pipeline_mocked():
     amap = {a.variable_id: a for a in record.observed_assignments}
 
     yci_assignment = amap[variables["YieldCurveInverted"].variable_id]
-    assert p_past(yci_assignment.probabilities) > 0.5, \
+    assert yci_assignment.probabilities[True] > 0.5, \
         "Inverted T10Y2Y should yield P(YieldCurveInverted=True) > 0.5"
 
     is_assignment = amap[variables["InflationShock"].variable_id]
-    assert p_past(is_assignment.probabilities) > 0.5, \
+    assert is_assignment.probabilities[True] > 0.5, \
         "6% CPI YoY should yield P(InflationShock=True) > 0.5"
 
     ls_assignment = amap[variables["LiquidityStress"].variable_id]
-    assert p_past(ls_assignment.probabilities) > 0.5, \
+    assert ls_assignment.probabilities[True] > 0.5, \
         "Balance sheet contraction should yield P(LiquidityStress=True) > 0.5"
 
     # fetch_all_series was called once

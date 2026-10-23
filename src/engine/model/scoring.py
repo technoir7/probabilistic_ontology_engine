@@ -17,8 +17,7 @@ if TYPE_CHECKING:
 
 def free_parameter_count(candidate: OntologyCandidate) -> int:
     """
-    k for the BIC penalty: (values − 1) × parent configurations per variable,
-    which is 2**(number of parents) for a BOOLEAN one (D20 generalised it).
+    k for the BIC penalty: 2**(number of parents) per BOOLEAN variable.
 
     Counts ALL edges, including disabled (pruned) ones. This penalizes a
     candidate that explored extra edges even after pruning them, so a
@@ -26,13 +25,9 @@ def free_parameter_count(candidate: OntologyCandidate) -> int:
     spurious edges.
     """
     k = 0
-    support = {v.variable_id: len(v.support) for v in candidate.variables}
     for v in candidate.variables:
-        rows = 1
-        for e in candidate.edges:
-            if e.child_variable_id == v.variable_id:
-                rows *= support.get(e.parent_variable_id, 2)
-        k += (len(v.support) - 1) * rows  # 2**parents for a boolean, as before
+        n_parents = sum(1 for e in candidate.edges if e.child_variable_id == v.variable_id)
+        k += 2 ** n_parents
     return k
 
 

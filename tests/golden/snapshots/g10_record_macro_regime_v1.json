@@ -2,225 +2,129 @@
  "assignments": [
   [
    "YieldCurveInverted",
-   "well_past",
+   true,
    "SOFT_OBSERVED",
    0.5,
    [
     [
-     "below",
-     0.07342616
+     "False",
+     0.086
     ],
     [
-     "extreme",
-     0.16293959
-    ],
-    [
-     "past",
-     0.324116626
-    ],
-    [
-     "well_below",
-     0.01257384
-    ],
-    [
-     "well_past",
-     0.426943785
+     "True",
+     0.914
     ]
    ]
   ],
   [
    "InflationShock",
-   "below",
+   false,
    "SOFT_OBSERVED",
    0.55,
    [
     [
-     "below",
-     0.450016009
+     "False",
+     0.653
     ],
     [
-     "extreme",
-     0.009638998
-    ],
-    [
-     "past",
-     0.279908662
-    ],
-    [
-     "well_below",
-     0.202983991
-    ],
-    [
-     "well_past",
-     0.05745234
+     "True",
+     0.347
     ]
    ]
   ],
   [
    "LiquidityStress",
-   "past",
+   true,
    "SOFT_OBSERVED",
    0.6,
    [
     [
-     "below",
-     0.260126014
+     "False",
+     0.32
     ],
     [
-     "extreme",
-     0.037462659
-    ],
-    [
-     "past",
-     0.456646261
-    ],
-    [
-     "well_below",
-     0.059873986
-    ],
-    [
-     "well_past",
-     0.18589108
+     "True",
+     0.68
     ]
    ]
   ],
   [
    "CreditSpreadStress",
-   "well_below",
+   false,
    "SOFT_OBSERVED",
    0.65,
    [
     [
-     "below",
-     0.371890311
+     "False",
+     0.887
     ],
     [
-     "extreme",
-     0.002327902
-    ],
-    [
-     "past",
-     0.096051083
-    ],
-    [
-     "well_below",
-     0.515109689
-    ],
-    [
-     "well_past",
-     0.014621015
+     "True",
+     0.113
     ]
    ]
   ],
   [
    "VolatilityShock",
-   "below",
+   false,
    "SOFT_OBSERVED",
    0.7,
    [
     [
-     "below",
-     0.410085917
+     "False",
+     0.554
     ],
     [
-     "extreme",
-     0.014530823
-    ],
-    [
-     "past",
-     0.347752097
-    ],
-    [
-     "well_below",
-     0.143914083
-    ],
-    [
-     "well_past",
-     0.08371708
+     "True",
+     0.446
     ]
    ]
   ],
   [
    "DollarStrength",
-   "past",
+   true,
    "SOFT_OBSERVED",
    0.75,
    [
     [
-     "below",
-     0.184025391
+     "False",
+     0.221
     ],
     [
-     "extreme",
-     0.060645263
-    ],
-    [
-     "past",
-     0.456029018
-    ],
-    [
-     "well_below",
-     0.036974609
-    ],
-    [
-     "well_past",
-     0.262325718
+     "True",
+     0.779
     ]
    ]
   ],
   [
    "EquityRiskOn",
-   "below",
+   false,
    "SOFT_OBSERVED",
    0.8,
    [
     [
-     "below",
-     0.453318866
+     "False",
+     0.788
     ],
     [
-     "extreme",
-     0.004903396
-    ],
-    [
-     "past",
-     0.176869115
-    ],
-    [
-     "well_below",
-     0.334681134
-    ],
-    [
-     "well_past",
-     0.030227489
+     "True",
+     0.212
     ]
    ]
   ],
   [
    "AIRiskOn",
-   "past",
+   true,
    "SOFT_OBSERVED",
    0.85,
    [
     [
-     "below",
-     0.353483626
+     "False",
+     0.455
     ],
     [
-     "extreme",
-     0.021467546
-    ],
-    [
-     "past",
-     0.405507516
-    ],
-    [
-     "well_below",
-     0.101516374
-    ],
-    [
-     "well_past",
-     0.118024938
+     "True",
+     0.545
     ]
    ]
   ]

@@ -79,7 +79,7 @@ def test_replace_relearns_a_domain_from_the_records_supplied():
     records = [EvidenceRecord(
         timestamp=datetime(2024, 1, 7, tzinfo=timezone.utc) + timedelta(weeks=i),
         source_ref=f"replay@week-ending-{i}",
-        observed_assignments=[ObservedAssignment(variable_id=x.variable_id, observed_value=x.support[(i + k) % len(x.support)])
+        observed_assignments=[ObservedAssignment(variable_id=x.variable_id, observed_value=(i + k) % 2 == 0)
                               for k, x in enumerate(v.values())],
     ).model_dump(mode="json") for i in range(3)]
     with TestClient(api_app.app) as client:
@@ -114,14 +114,13 @@ def test_soft_evidence_survives_the_trip_through_json():
 def test_replace_learns_soft_evidence():
     from datetime import datetime, timedelta, timezone
     from src.domains.macro_regime_v1.domain import get_variables
-    from src.engine.model.levels import levels_from_p
     from src.engine.schemas import EvidenceRecord, ObservedAssignment
 
     v = get_variables()
     records = [EvidenceRecord(
         timestamp=datetime(2024, 1, 7, tzinfo=timezone.utc) + timedelta(weeks=i),
-        observed_assignments=[ObservedAssignment(variable_id=x.variable_id, observed_value="past",
-                                                 missingness="SOFT_OBSERVED", probabilities=levels_from_p(0.6))
+        observed_assignments=[ObservedAssignment(variable_id=x.variable_id, observed_value=True,
+                                                 missingness="SOFT_OBSERVED", probabilities={True: 0.6, False: 0.4})
                               for x in v.values()],
     ).model_dump(mode="json") for i in range(3)]
     with TestClient(api_app.app) as client:

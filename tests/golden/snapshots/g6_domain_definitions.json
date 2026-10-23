@@ -2279,208 +2279,160 @@
   "variables": [
    [
     "YieldCurveInverted",
-    "ORDINAL",
+    "BOOLEAN",
     [
-     "well_below",
-     "below",
-     "past",
-     "well_past",
-     "extreme"
+     true,
+     false
     ],
     false,
     false
    ],
    [
     "InflationShock",
-    "ORDINAL",
+    "BOOLEAN",
     [
-     "well_below",
-     "below",
-     "past",
-     "well_past",
-     "extreme"
+     true,
+     false
     ],
     false,
     false
    ],
    [
     "LiquidityStress",
-    "ORDINAL",
+    "BOOLEAN",
     [
-     "well_below",
-     "below",
-     "past",
-     "well_past",
-     "extreme"
+     true,
+     false
     ],
     false,
     false
    ],
    [
     "CreditSpreadStress",
-    "ORDINAL",
+    "BOOLEAN",
     [
-     "well_below",
-     "below",
-     "past",
-     "well_past",
-     "extreme"
+     true,
+     false
     ],
     false,
     false
    ],
    [
     "VolatilityShock",
-    "ORDINAL",
+    "BOOLEAN",
     [
-     "well_below",
-     "below",
-     "past",
-     "well_past",
-     "extreme"
+     true,
+     false
     ],
     false,
     false
    ],
    [
     "DollarStrength",
-    "ORDINAL",
+    "BOOLEAN",
     [
-     "well_below",
-     "below",
-     "past",
-     "well_past",
-     "extreme"
+     true,
+     false
     ],
     false,
     false
    ],
    [
     "EquityRiskOn",
-    "ORDINAL",
+    "BOOLEAN",
     [
-     "well_below",
-     "below",
-     "past",
-     "well_past",
-     "extreme"
+     true,
+     false
     ],
     false,
     false
    ],
    [
     "AIRiskOn",
-    "ORDINAL",
+    "BOOLEAN",
     [
-     "well_below",
-     "below",
-     "past",
-     "well_past",
-     "extreme"
+     true,
+     false
     ],
     false,
     false
    ],
    [
     "YieldCurveInverted_prev",
-    "ORDINAL",
+    "BOOLEAN",
     [
-     "well_below",
-     "below",
-     "past",
-     "well_past",
-     "extreme"
+     true,
+     false
     ],
     true,
     false
    ],
    [
     "InflationShock_prev",
-    "ORDINAL",
+    "BOOLEAN",
     [
-     "well_below",
-     "below",
-     "past",
-     "well_past",
-     "extreme"
+     true,
+     false
     ],
     true,
     false
    ],
    [
     "LiquidityStress_prev",
-    "ORDINAL",
+    "BOOLEAN",
     [
-     "well_below",
-     "below",
-     "past",
-     "well_past",
-     "extreme"
+     true,
+     false
     ],
     true,
     false
    ],
    [
     "CreditSpreadStress_prev",
-    "ORDINAL",
+    "BOOLEAN",
     [
-     "well_below",
-     "below",
-     "past",
-     "well_past",
-     "extreme"
+     true,
+     false
     ],
     true,
     false
    ],
    [
     "VolatilityShock_prev",
-    "ORDINAL",
+    "BOOLEAN",
     [
-     "well_below",
-     "below",
-     "past",
-     "well_past",
-     "extreme"
+     true,
+     false
     ],
     true,
     false
    ],
    [
     "DollarStrength_prev",
-    "ORDINAL",
+    "BOOLEAN",
     [
-     "well_below",
-     "below",
-     "past",
-     "well_past",
-     "extreme"
+     true,
+     false
     ],
     true,
     false
    ],
    [
     "EquityRiskOn_prev",
-    "ORDINAL",
+    "BOOLEAN",
     [
-     "well_below",
-     "below",
-     "past",
-     "well_past",
-     "extreme"
+     true,
+     false
     ],
     true,
     false
    ],
    [
     "AIRiskOn_prev",
-    "ORDINAL",
+    "BOOLEAN",
     [
-     "well_below",
-     "below",
-     "past",
-     "well_past",
-     "extreme"
+     true,
+     false
     ],
     true,
     false
