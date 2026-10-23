@@ -12,6 +12,8 @@ It runs live over eleven domains fed by public data (FRED, EIA, SEC EDGAR,
 GDELT, CoinGecko, SF Open Data and others), behind the Epistemic State
 Monitor dashboard.
 
+![The Epistemic State Monitor: the macro domain's leading explanation, its belief graph, current regime and paradigm-shift history](docs/dashboard.png)
+
 ## How it holds beliefs
 
 Belief lives at three levels (SPEC §3), each revised by Bayesian updating:
@@ -68,6 +70,16 @@ five seeds, each replay planned in writing before it ran):
   warrants.
 - **Its paradigm shifts do not follow the headlines.** No change of leading
   programme followed 2008, COVID or the 2022 hikes within six months.
+- **Nothing rests on hindsight.** Replayed again with each figure as it was
+  first published (ALFRED vintages, before revisions), the beliefs barely
+  moved: inflation read differently in 37 of 1,229 weeks, and the same
+  programme led.
+- **Finer evidence bought fewer beliefs.** Reading each signal in five
+  ordered levels instead of yes/no made the engine better calibrated, but a
+  five-level relationship costs ten times the parameters, and Occam's razor
+  (BIC) left the leader 2–3 links where it had held 8–13. The engine went
+  back to yes/no; ordinal tables, which price a relationship by its order,
+  are the next thing to try.
 - **The replays found three bugs, now fixed**: an inverted dollar signal, a
   CPI lookback that dropped inflation in about half of all weeks, and an
   engine seed that never reached the code it was meant to seed.
