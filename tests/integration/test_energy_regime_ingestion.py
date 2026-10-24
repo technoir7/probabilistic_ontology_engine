@@ -300,6 +300,7 @@ def test_fetch_evidence_full_pipeline_mocked():
 
 def test_fred_client_skips_missing_values():
     resp = MagicMock()
+    resp.status_code = 200
     resp.raise_for_status = MagicMock()
     resp.json = MagicMock(return_value={
         "observations": [

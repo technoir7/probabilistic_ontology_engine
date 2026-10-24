@@ -126,15 +126,7 @@
    ]
   ]
  },
- "fetch_all_series_when_every_series_fails": {
-  "BAMLH0A0HYM2": 0,
-  "DEXUSEU": 0,
-  "DGS10": 0,
-  "DTWEXBGS": 0,
-  "GFDEBTN": 0,
-  "M2SL": 0,
-  "WALCL": 0
- },
+ "fetch_all_series_when_every_series_fails": "FredHTTPError",
  "fetch_series_explicit_window": [
   [
    "2026-03-01",

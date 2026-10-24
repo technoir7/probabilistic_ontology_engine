@@ -307,6 +307,7 @@ def test_build_evidence_record_all_soft_observed():
 
 def test_fred_client_fetch_series_returns_observations():
     resp = MagicMock()
+    resp.status_code = 200
     resp.raise_for_status = MagicMock()
     resp.json = MagicMock(return_value={
         "observations": [
@@ -330,6 +331,7 @@ def test_fred_client_fetch_series_returns_observations():
 
 def test_fred_client_skips_missing_values():
     resp = MagicMock()
+    resp.status_code = 200
     resp.raise_for_status = MagicMock()
     resp.json = MagicMock(return_value={
         "observations": [

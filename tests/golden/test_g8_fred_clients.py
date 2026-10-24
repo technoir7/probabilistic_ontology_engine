@@ -35,7 +35,7 @@ def _canned(series_id: str) -> dict:
 
 def _client(module, handler):
     http = httpx.AsyncClient(transport=httpx.MockTransport(handler))
-    return module.FREDClient(api_key="test-key", client=http)
+    return module.FREDClient(api_key="test-key", client=http, retry_backoff_s=(0.0, 0.0))
 
 
 def _run(module) -> dict:
@@ -71,8 +71,11 @@ def _run(module) -> dict:
             except Exception as exc:  # noqa: BLE001 — recording what is raised
                 failures[name] = type(exc).__name__
         out["failures"] = failures
-        partial = await _client(module, lambda r: httpx.Response(500)).fetch_all_series(end_date=END)
-        out["fetch_all_series_when_every_series_fails"] = {sid: len(v) for sid, v in sorted(partial.items())}
+        try:
+            await _client(module, lambda r: httpx.Response(500)).fetch_all_series(end_date=END)
+            out["fetch_all_series_when_every_series_fails"] = "no error"
+        except Exception as exc:  # noqa: BLE001 — recording what is raised
+            out["fetch_all_series_when_every_series_fails"] = type(exc).__name__
         return out
 
     result = asyncio.run(go())

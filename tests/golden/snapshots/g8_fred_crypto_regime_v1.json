@@ -24,9 +24,7 @@
    ]
   ]
  },
- "fetch_all_series_when_every_series_fails": {
-  "DEXUSEU": 0
- },
+ "fetch_all_series_when_every_series_fails": "FredHTTPError",
  "fetch_series_explicit_window": [
   [
    "2026-03-01",

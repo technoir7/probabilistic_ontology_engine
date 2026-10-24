@@ -58,11 +58,7 @@
    ]
   ]
  },
- "fetch_all_series_when_every_series_fails": {
-  "SANF806INFO": 0,
-  "SANF806LEIH": 0,
-  "SANF806NA": 0
- },
+ "fetch_all_series_when_every_series_fails": "FredHTTPError",
  "fetch_series_explicit_window": [
   [
    "2026-03-01",

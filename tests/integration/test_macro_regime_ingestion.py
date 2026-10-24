@@ -485,6 +485,7 @@ def _make_fred_http_response(
     values: list[str],
 ) -> MagicMock:
     resp = MagicMock()
+    resp.status_code = 200
     resp.raise_for_status = MagicMock()
     observations = [
         {"date": d, "value": v}

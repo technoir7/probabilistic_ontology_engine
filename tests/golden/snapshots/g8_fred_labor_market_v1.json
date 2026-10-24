@@ -126,15 +126,7 @@
    ]
   ]
  },
- "fetch_all_series_when_every_series_fails": {
-  "CES0500000003": 0,
-  "CIVPART": 0,
-  "CPIAUCSL": 0,
-  "ICSA": 0,
-  "JTSJOL": 0,
-  "PRS85006092": 0,
-  "UNRATE": 0
- },
+ "fetch_all_series_when_every_series_fails": "FredHTTPError",
  "fetch_series_explicit_window": [
   [
    "2026-03-01",

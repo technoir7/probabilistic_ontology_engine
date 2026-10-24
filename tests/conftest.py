@@ -24,7 +24,8 @@ from src.domains.test_domain_v1.domain import (
 from src.domains.test_domain_v1.synthetic_generator import SyntheticDataGenerator
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import OntologyCandidate, OntologyPopulation
-from src.domains.sources import gdelt
+from src.domains.sources import fred, gdelt
+from src.domains.sources.rate_limit import RateLimiter
 from tests.fakes import ADMIN_TOKEN
 
 
@@ -53,8 +54,9 @@ def _sealed_runtime(request, monkeypatch, tmp_path):
     monkeypatch.setenv("EVIDENCE_SCHEDULER_ENABLED", "false")
     monkeypatch.setenv("POE_ADMIN_TOKEN", ADMIN_TOKEN)
     # The process-wide GDELT limit would make tests wait real seconds on each other.
-    monkeypatch.setattr(gdelt, "GDELT_RATE_LIMIT", gdelt.RateLimiter(0.0))
+    monkeypatch.setattr(gdelt, "GDELT_RATE_LIMIT", RateLimiter(0.0))
     monkeypatch.setattr(gdelt, "GDELT_TIMELINE_CACHE", gdelt.TimelineCache())
+    monkeypatch.setattr(fred, "FRED_RATE_LIMIT", RateLimiter(0.0))
     if "live" in request.keywords:
         return
 

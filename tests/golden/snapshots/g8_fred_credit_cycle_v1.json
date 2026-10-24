@@ -92,13 +92,7 @@
    ]
   ]
  },
- "fetch_all_series_when_every_series_fails": {
-  "BAMLC0A0CM": 0,
-  "BAMLH0A0HYM2": 0,
-  "DGS5": 0,
-  "DRTSCILM": 0,
-  "TOTCI": 0
- },
+ "fetch_all_series_when_every_series_fails": "FredHTTPError",
  "fetch_series_explicit_window": [
   [
    "2026-03-01",
