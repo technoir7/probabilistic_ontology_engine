@@ -137,6 +137,7 @@ def programmes(active: list[OntologyCandidate], leader: OntologyCandidate, paren
 def write_rows(path: Path, rows: list[dict]) -> None:
     """One JSON row a week, gzipped when the name ends in .gz."""
     text = "".join(json.dumps(r) + "\n" for r in rows)
+    path.parent.mkdir(parents=True, exist_ok=True)
     if path.suffix == ".gz":
         path.write_bytes(gzip.compress(text.encode(), mtime=0))
     else:

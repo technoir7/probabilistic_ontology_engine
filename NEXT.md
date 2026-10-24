@@ -41,3 +41,22 @@ Macro's live history was rebuilt from ALFRED vintages. Every other
 domain's history comes from today's figures, revisions included (B10).
 Replay 7 found revisions changed macro's beliefs little, so this is a
 small distortion, but it is one.
+
+## 6. Some links are true by definition
+
+A few domains read two variables from one series: credit's
+LeveragedLoanStress and BankLendingTightening are the same DRTSCILM
+z-score at two thresholds, and CorporateDefaultRisk and HYSpreadElevated
+both come from the high-yield spread. A link between such a pair is
+learned as strong because it cannot be otherwise, and says nothing about
+the world. Each variable should come from its own source, or such pairs
+should be inadmissible as links (problem 4).
+
+## 7. Some "13-week" signals look back 18 weeks
+
+Macro's NASDAQ momentum and energy's WTI and XLE momentum take the price
+91 observations back as 13 weeks ago, but the series are daily trading
+prices, so 91 observations is about 18 weeks. Credit's TOTCI had the
+opposite fault, three observations of a weekly series read as three
+months; it is fixed. Fixing macro's changes what the replays measured, so
+it waits for a replay that says what it changes.

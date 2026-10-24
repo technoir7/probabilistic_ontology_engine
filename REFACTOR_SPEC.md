@@ -1,11 +1,11 @@
 # Refactor Spec — Probabilistic Ontology Engine
 
-Status: Phases 0–6 done except 4.7 and the 5.5 read-model split — see each phase. The milestone passes on 18/20 seeds (D14). Art moved into this repo (D2). Open: D3, D9, B20 · Branch `refactor/phase-0-safety-net`, not pushed · Date: 2026-10-04, status updated 2026-10-13 · Scope: `src/`, `tests/`, `scripts/`, repo hygiene
+Status: done, merged to `main`. Phases 0–6 are complete except 4.7 and the 5.5 read-model split (see each phase). The milestone passes on 18/20 seeds (D14). Open: B20. The decision log (§8) has continued past the refactor, D1–D23 · Written 2026-10-04, status updated 2026-10-24 · Scope: `src/`, `tests/`, `scripts/`, repo hygiene
 
 This is the plan we follow to refactor the backend. It says what is wrong (with
 evidence), what the code should look like afterwards, and the order to get there
 without breaking the running service. §0–§2: summary and rules. §3–§4: evidence and bugs.
-§5–§6: target design and guardrails. §7: the plan. §8: decisions for you.
+§5–§6: target design and guardrails. §7: the plan. §8: decisions and their reasons.
 
 ---
 
@@ -537,7 +537,7 @@ Not verifiable locally: the CI workflow (needs a push) and the Railway build
 0.1 **Hygiene.** `git rm -r --cached .venv` and all tracked `*.pyc`; add
 `uv.lock` (`uv lock`), move `dev` extras to `[dependency-groups]`, pin pgmpy to
 the installed major version; fix `CLAUDE.md` SPECM→SPEC; move one-off audit docs
-to `docs/archive/`. (H1–H3, H5, H6)
+to `docs/archive/` (since deleted; they are in git history). (H1–H3, H5, H6)
 Exit: fresh clone → `uv sync && uv run pytest` runs on macOS and Linux (passing is 0.2’s exit).
 
 0.2 **Make the existing suite run on a fresh clone.** Declare `art-market-domain`

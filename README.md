@@ -15,9 +15,34 @@ dashboard ([source](https://github.com/technoir7/epistemic-monitor)).
 
 ![The Epistemic State Monitor: the macro domain's leading explanation, its belief graph, current regime and paradigm-shift history](docs/dashboard.png)
 
+**What's here.** About 19,000 lines of Python (FastAPI, SQLite, pgmpy) and
+14,000 of tests: 660 tests (18 of them against the live APIs), including 38 golden snapshots that pin the API,
+domains and engine behaviour, with real network calls blocked. The layering
+below is enforced by import-linter in CI. Eleven domains learn from public
+data on a schedule, deployed on Railway from `main`. Every finding below
+comes from a replay planned in writing before it ran, and reruns offline
+from data committed here.
+
+## Try it
+
+No API keys needed:
+
+```bash
+uv sync
+uv run pytest                     # ~40 s, no network
+uv run python -m evals.replay --seed 0 --as-published --out /tmp/poe/seed0.jsonl.gz
+uv run python -m evals.programmes /tmp/poe
+```
+
+The replay feeds 23 years of weekly FRED data (2003–2026, as first
+published) through a fresh engine in about 40 seconds; the last command
+prints how long each rival worldview survived and led. It reproduces
+seed 0 of replay 10 below exactly.
+
 ## How it holds beliefs
 
-Belief lives at three levels (SPEC §3), each revised by Bayesian updating:
+Belief lives at three levels, each revised by Bayesian updating
+([SPEC.md](SPEC.md) §3):
 
 - **How strong is a relationship?** Each explanation's conditional
   probability tables, learned from the evidence.
@@ -26,7 +51,9 @@ Belief lives at three levels (SPEC §3), each revised by Bayesian updating:
 - **Which whole explanation do I hold?** A population of rival
   explanations, scored on recent evidence; the best leads, the worst are
   dropped, and variants of the survivors are tried. A change of leader is
-  recorded as a paradigm shift.
+  recorded as a paradigm shift, dated by the evidence that caused it, and
+  marked as a change of worldview when the new leader comes from another
+  research programme or as a revision when it is a variant of the same one.
 
 Four rules, each added after a replay showed the engine needed it
 ([what each replay found](evals/README.md)):
@@ -53,7 +80,11 @@ Four rules, each added after a replay showed the engine needed it
 ## What 23 years of evidence did to it
 
 Replayed week by week through 2003–2026 of real FRED data (macro domain,
-five seeds, each replay planned in writing before it ran):
+five seeds, each replay planned in writing before it ran). Fit is measured
+in nats, the log of how surprised the engine was by a week's evidence: one
+nat less surprise means it gave what happened about 2.7 times the
+probability. A Bayes factor above 100 is the conventional threshold for
+"decisive".
 
 - **Its rivals were first refuted unfairly.** Through replay 9 every rival
   worldview (monetary, credit-first, AI boom, recession) died by 2005–08,
@@ -146,7 +177,7 @@ Code layout (layers import downward only; enforced by `uv run lint-imports`):
 api/        HTTP routers, response models, view logic
 runtime/    domain registry, settings, ingest/backfill/scheduler
 engine.py   the facade over services + stores
-services/   learning, edge existence, population, inference (pure)
+services/   learning, edge existence, population, inference
 stores/     SQLite repositories, migrations/*.sql, one transaction per learning cycle
 model/      CPTs, the candidate score, cadence, domain contract, errors
 domains/    one package per domain + sources/ (shared FRED/yfinance clients, helpers)
@@ -211,7 +242,7 @@ FIREWORKS_API_KEY=...               # required for POST /v1/report/{domain}/refr
 EVIDENCE_SCHEDULER_ENABLED=true
 POE_DATA_DIR=/data                  # Railway: persistent volume mount; default "." loses reports on redeploy
 POE_ADMIN_TOKEN=...                 # enables backfill and the art routes; unset = those routes return 503
-POE_CORS_ORIGINS=https://x.vercel.app,http://localhost:3000   # default "*"; read before .env loads, so set it in the real environment
+POE_CORS_ORIGINS=https://your-dashboard.example,http://localhost:3000   # default "*"; read before .env loads, so set it in the real environment
 ```
 
 No key required for SF Open Data, CoinGecko public endpoints, or GDELT. SEC EDGAR requires only a valid `User-Agent` header.
