@@ -222,7 +222,7 @@ class NaturalGasPipeline:
             observed_assignments=assignments,
             source_type=SourceType.API,
             source_ref=(
-                f"NOAA:api.weather.gov+EIA:NG.NW2_EPG0_SWO_R48_BCF.W"
+                f"NOAA:ncei.daily-summaries+EIA:NG.NW2_EPG0_SWO_R48_BCF.W"
                 f"+NG.RNGWHHD.D@{climate_obs.target_date}"
             ),
             confidence=_station_confidence(climate_obs.stations_used),

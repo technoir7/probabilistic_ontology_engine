@@ -149,8 +149,9 @@ async def rebuild(
     Everything is fetched before the reset, so the domain keeps its state
     until there is something to replace it with. A target whose fetch fails
     is tried once more after the rest, since upstream errors are often
-    momentary; one that is EvidenceUnavailable is not. Targets still without
-    a record are returned as missed. The caller holds the lock.
+    momentary; one that is EvidenceUnavailable is not. If most targets still
+    fail, the domain is kept as it was. Targets still without a record are
+    returned as missed. The caller holds the lock.
     """
     fetched: list[EvidenceRecord] = []
     unavailable: list[date] = []
@@ -170,6 +171,7 @@ async def rebuild(
         finally:
             await sleep(pause_s)
 
+    targets = list(targets)
     for target in targets:
         if not await attempt(target):
             failed.append(target)
@@ -179,6 +181,11 @@ async def rebuild(
     if not fetched and not supplied:
         # Nothing to replace it with: keep what the domain has.
         raise RuntimeError(f"{domain_id} rebuild: nothing fetched, domain kept as it was")
+    if 2 * len(still_failed) > len(targets):
+        # A source that is down, or serves only recent days, fails most of the
+        # window; relearning from the rest would throw away a longer history.
+        raise RuntimeError(f"{domain_id} rebuild: {len(still_failed)} of {len(targets)} fetches failed, "
+                           "domain kept as it was")
     engine.reset_domain(domain_id)
     learned = learn_new_records(engine, domain_id, [*fetched, *supplied])
     return RebuildResult(learned=learned, missed=sorted([*unavailable, *still_failed]))

@@ -157,3 +157,24 @@ def test_a_rebuild_that_fetches_nothing_keeps_the_domain():
     with pytest.raises(RuntimeError, match="nothing fetched"):
         asyncio.run(rebuild(engine, DOMAIN_ID, fetch, [date(2026, 3, 1)], [], pause_s=0, sleep=_no_sleep))
     assert engine.evidence_store.count(DOMAIN_ID) == 1
+
+
+def test_a_rebuild_whose_fetches_mostly_fail_keeps_the_domain():
+    """A source that is down, or cannot reach that far back, fails most of
+    the window. Relearning from the few days it gave would throw away a
+    longer history, so the domain is kept."""
+    engine = _engine()
+    kept = soft_record(get_variables().values(), date(2025, 1, 5), seed="kept")
+    engine.ingest(kept)
+    engine.learn([kept], DOMAIN_ID)
+    recent = date(2026, 3, 22)
+
+    async def fetch(day):
+        if day == recent:
+            return soft_record(get_variables().values(), day, seed="fetched")
+        raise IOError("only the last week is served")
+
+    targets = [date(2026, 3, 1), date(2026, 3, 8), date(2026, 3, 15), recent]
+    with pytest.raises(RuntimeError, match="3 of 4 fetches failed"):
+        asyncio.run(rebuild(engine, DOMAIN_ID, fetch, targets, [], pause_s=0, sleep=_no_sleep))
+    assert [r.timestamp.date() for r in engine.evidence_store.load_all(DOMAIN_ID)] == [date(2025, 1, 5)]

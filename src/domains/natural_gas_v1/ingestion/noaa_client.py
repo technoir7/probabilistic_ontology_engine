@@ -1,21 +1,22 @@
 """
-NOAAClient — fetches temperature observations from api.weather.gov.
+NOAAClient — daily high and low temperatures from NOAA NCEI's Global
+Historical Climatology Network daily summaries (Access Data Service).
 
-No API key required. User-Agent header is mandatory per NWS policy.
+No API key required. Unlike api.weather.gov, which serves only about the last
+week of observations, NCEI keeps the full history, so a rebuild can refetch
+past years. A day's summary appears about four days later.
 
 Monitored stations (representative CONUS coverage, weighted toward heating-
-demand regions):
-    KORD  Chicago O'Hare          (Midwest / Great Lakes)
-    KJFK  New York Kennedy        (Northeast)
-    KATL  Atlanta Hartsfield      (Southeast)
-    KDFW  Dallas/Fort Worth       (South-Central)
-    KDEN  Denver International    (Mountain)
+demand regions), with their GHCN-Daily ids:
+    KORD  Chicago O'Hare          USW00094846  (Midwest / Great Lakes)
+    KJFK  New York Kennedy        USW00094789  (Northeast)
+    KATL  Atlanta Hartsfield      USW00013874  (Southeast)
+    KDFW  Dallas/Fort Worth       USW00003927  (South-Central)
+    KDEN  Denver International    USW00003017  (Mountain)
 
-For each station the client fetches all hourly observations for the target UTC
-date (up to 500 per station; major airports report every 4–5 minutes so a full
-day yields ~300 readings).  Valid readings (non-null temperature, qualityControl
-in {"V","C","S"}) are averaged to produce a per-station daily mean in Celsius.
-Station means are then averaged to produce a CONUS mean.
+One request fetches every station's summary for the target day. A station's
+daily mean is the midpoint of its high and low, the convention degree days
+are defined by; station means are averaged to a CONUS mean.
 
 Derived quantities returned in `DailyClimateObs`:
     mean_temp_c   — CONUS mean daily temperature (Celsius)
@@ -26,21 +27,23 @@ Derived quantities returned in `DailyClimateObs`:
 """
 from __future__ import annotations
 
-import asyncio
-import logging
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta, timezone
+from datetime import date
 from typing import Any
 
 import httpx
-
-logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Monitored stations
 # ---------------------------------------------------------------------------
 
-STATIONS: list[str] = ["KORD", "KJFK", "KATL", "KDFW", "KDEN"]
+STATIONS: dict[str, str] = {
+    "KORD": "USW00094846",
+    "KJFK": "USW00094789",
+    "KATL": "USW00013874",
+    "KDFW": "USW00003927",
+    "KDEN": "USW00003017",
+}
 
 # ---------------------------------------------------------------------------
 # Monthly CONUS temperature normals (°C) — approximate population-weighted
@@ -65,9 +68,6 @@ MONTHLY_NORMALS_C: dict[int, float] = {
 
 HDD_BASE_C: float = 18.33  # 65°F expressed in Celsius
 
-# Quality-control codes accepted as valid observations
-_VALID_QC: frozenset[str] = frozenset({"V", "C", "S"})
-
 
 # ---------------------------------------------------------------------------
 # Result type
@@ -90,7 +90,7 @@ class DailyClimateObs:
 
 class NOAAClient:
     """
-    Asynchronous client for api.weather.gov station observations.
+    Asynchronous client for NCEI's daily-summaries service.
 
     Parameters
     ----------
@@ -100,16 +100,11 @@ class NOAAClient:
         If omitted, the NOAAClient creates and manages its own client.
     """
 
-    BASE_URL = "https://api.weather.gov"
-    USER_AGENT = "probabilistic-ontology-engine/0.1 (natural-gas-domain)"
-    _OBS_LIMIT = 500   # max observations per station per day (~300 for busy airports)
+    URL = "https://www.ncei.noaa.gov/access/services/data/v1"
 
     def __init__(self, client: httpx.AsyncClient | None = None) -> None:
         self._injected = client is not None
-        self._client: httpx.AsyncClient = client or httpx.AsyncClient(
-            headers={"User-Agent": self.USER_AGENT},
-            timeout=httpx.Timeout(30.0),
-        )
+        self._client: httpx.AsyncClient = client or httpx.AsyncClient(timeout=httpx.Timeout(60.0))
 
     async def aclose(self) -> None:
         if not self._injected:
@@ -121,34 +116,34 @@ class NOAAClient:
     async def __aexit__(self, *_: Any) -> None:
         await self.aclose()
 
-    # ------------------------------------------------------------------
-    # Public API
-    # ------------------------------------------------------------------
-
     async def fetch_daily_obs(self, target_date: date) -> DailyClimateObs:
         """
-        Fetch and aggregate observations for all monitored stations on
-        `target_date` (UTC).
-
-        Returns a DailyClimateObs.  If fewer than 2 stations have valid
-        data an IOError is raised.
+        Fetch every monitored station's summary for `target_date` and
+        aggregate them. Raises IOError if the request fails or fewer than
+        2 stations have both a high and a low.
         """
-        start = datetime(
-            target_date.year, target_date.month, target_date.day,
-            0, 0, 0, tzinfo=timezone.utc,
-        )
-        end = start + timedelta(days=1)
+        day = target_date.isoformat()
+        params = {
+            "dataset": "daily-summaries",
+            "stations": ",".join(STATIONS.values()),
+            "startDate": day,
+            "endDate": day,
+            "dataTypes": "TMAX,TMIN",
+            "units": "metric",
+            "format": "json",
+        }
+        try:
+            resp = await self._client.get(self.URL, params=params)
+            resp.raise_for_status()
+            rows = resp.json()
+        except Exception as exc:
+            raise IOError(f"NOAA NCEI request failed for {day}: {exc}") from exc
 
-        tasks = [
-            self._fetch_station_mean(station, start, end)
-            for station in STATIONS
-        ]
-        results: list[tuple[str, float | None]] = await asyncio.gather(*tasks)
-
+        icao = {ghcn: code for code, ghcn in STATIONS.items()}
         station_means: dict[str, float] = {}
-        for station, mean in results:
-            if mean is not None:
-                station_means[station] = mean
+        for row in rows:
+            if row.get("DATE") == day and row.get("STATION") in icao and "TMAX" in row and "TMIN" in row:
+                station_means[icao[row["STATION"]]] = (float(row["TMAX"]) + float(row["TMIN"])) / 2
 
         if len(station_means) < 2:
             raise IOError(
@@ -169,54 +164,3 @@ class NOAAClient:
             stations_used=len(station_means),
             station_means=station_means,
         )
-
-    # ------------------------------------------------------------------
-    # Internal helpers
-    # ------------------------------------------------------------------
-
-    async def _fetch_station_mean(
-        self, station: str, start: datetime, end: datetime
-    ) -> tuple[str, float | None]:
-        """
-        Return (station_id, daily_mean_c) or (station_id, None) on error.
-        """
-        url = f"{self.BASE_URL}/stations/{station}/observations"
-        params = {
-            "start": _fmt_utc(start),
-            "end": _fmt_utc(end),
-            "limit": self._OBS_LIMIT,
-        }
-        try:
-            resp = await self._client.get(url, params=params)
-            resp.raise_for_status()
-            data = resp.json()
-        except Exception as exc:
-            logger.warning("NOAA fetch failed for %s: %s", station, exc)
-            return station, None
-
-        temps: list[float] = []
-        for feature in data.get("features", []):
-            props = feature.get("properties", {})
-            temp_obj = props.get("temperature", {}) or {}
-            value = temp_obj.get("value")
-            qc = temp_obj.get("qualityControl", "")
-            if value is not None and qc in _VALID_QC:
-                temps.append(float(value))
-
-        if len(temps) < 3:
-            logger.warning(
-                "Station %s: only %d valid readings for %s; skipping",
-                station, len(temps), start.date(),
-            )
-            return station, None
-
-        return station, sum(temps) / len(temps)
-
-
-# ---------------------------------------------------------------------------
-# Utilities
-# ---------------------------------------------------------------------------
-
-def _fmt_utc(dt: datetime) -> str:
-    """Format a UTC datetime as 'YYYY-MM-DDTHH:MM:SSZ' for the NWS API."""
-    return dt.strftime("%Y-%m-%dT%H:%M:%SZ")

@@ -17,17 +17,22 @@ SUNDAY = 6
 
 @dataclass(frozen=True)
 class Daily:
-    """One record per day, dated that day; runs every day for yesterday."""
+    """One record per day, dated that day; runs every day for the day
+    *lag_days* back, the latest its source has published (yesterday unless
+    the source is late)."""
+
+    lag_days: int = 1
 
     def align(self, day: date) -> date:
         return day
 
     def default_target(self, today: date) -> date:
-        return today - timedelta(days=1)
+        return today - timedelta(days=self.lag_days)
 
     def window_targets(self, days: int, today: date) -> list[date]:
-        """One target per day in the *days* before *today*, oldest first."""
-        return [today - timedelta(days=delta) for delta in range(days, 0, -1)]
+        """The latest *days* published days before *today*, oldest first."""
+        latest = self.default_target(today)
+        return [latest - timedelta(days=delta) for delta in range(days - 1, -1, -1)]
 
     def next_run(self, now: datetime, run_hour_utc: int) -> datetime:
         nxt = now.replace(hour=run_hour_utc, minute=0, second=0, microsecond=0)

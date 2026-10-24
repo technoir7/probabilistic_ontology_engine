@@ -31,6 +31,14 @@ def test_daily_dates():
     assert daily.window_targets(3, WED) == [date(2026, 3, 1), date(2026, 3, 2), date(2026, 3, 3)]
 
 
+def test_a_daily_source_published_late_is_fetched_that_many_days_back():
+    """NOAA's daily summaries appear about four days after the day, so asking
+    for yesterday would miss every day."""
+    late = Daily(lag_days=5)
+    assert late.default_target(WED) == date(2026, 2, 27)
+    assert late.window_targets(3, WED) == [date(2026, 2, 25), date(2026, 2, 26), date(2026, 2, 27)]
+
+
 def test_monthly_dates_are_month_ends_and_runs_the_day_after():
     monthly = Monthly()
     assert monthly.default_target(WED) == date(2026, 2, 28)

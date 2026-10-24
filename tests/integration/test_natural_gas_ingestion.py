@@ -17,6 +17,7 @@ TEST-NG-07  latest price at or below 28-day median → PriceUp=False
 TEST-NG-08  station confidence scales with stations_used
 TEST-NG-09  EIA variables always carry confidence=1.0
 TEST-NG-10  full async fetch_evidence via mocked httpx clients
+TEST-NG-11  NOAA daily mean is the midpoint of the day's high and low
 """
 from __future__ import annotations
 
@@ -266,26 +267,47 @@ def test_eia_variables_always_full_confidence():
 # TEST-NG-10 — Full async pipeline with mocked httpx clients
 # ---------------------------------------------------------------------------
 
-def _make_noaa_http_response(temp_value: float, n_readings: int = 10) -> MagicMock:
-    """
-    Build a mock httpx response for the NWS station observations endpoint.
-    Produces `n_readings` valid temperature observations at `temp_value` °C.
-    """
-    features = [
-        {
-            "properties": {
-                "temperature": {
-                    "value": temp_value,
-                    "qualityControl": "V",
-                }
-            }
-        }
-        for _ in range(n_readings)
-    ]
+STATION_IDS = ["USW00094846", "USW00094789", "USW00013874", "USW00003927", "USW00003017"]
+
+
+def _make_noaa_http_response(rows: list[dict]) -> MagicMock:
+    """A mock httpx response from NCEI's daily-summaries service: one row per
+    station that reported, with the day's high and low as strings."""
     resp = MagicMock()
     resp.raise_for_status = MagicMock()
-    resp.json = MagicMock(return_value={"features": features})
+    resp.json = MagicMock(return_value=rows)
     return resp
+
+
+def _rows(day: date, tmax: float, tmin: float, stations=STATION_IDS) -> list[dict]:
+    return [{"DATE": day.isoformat(), "STATION": s, "TMAX": str(tmax), "TMIN": str(tmin)} for s in stations]
+
+
+def test_noaa_daily_mean_is_the_midpoint_of_high_and_low_for_the_day_asked():
+    """The standard heating-degree-day convention. Every station comes from
+    one request for that one day."""
+    http = AsyncMock()
+    http.get = AsyncMock(return_value=_make_noaa_http_response(
+        _rows(_JAN_1_2025, 10.0, 0.0, STATION_IDS[:3]) + [
+            {"DATE": "2025-01-01", "STATION": STATION_IDS[3], "TMAX": "4.0"},  # no low: unusable
+        ]))
+    obs = asyncio.run(NOAAClient(client=http).fetch_daily_obs(_JAN_1_2025))
+
+    assert obs.mean_temp_c == 5.0
+    assert obs.hdd == pytest.approx(HDD_BASE_C - 5.0)
+    assert obs.temp_anom is True  # 5.0 > January's 1.5
+    assert obs.stations_used == 3
+    assert http.get.call_count == 1
+    params = http.get.call_args.kwargs["params"]
+    assert params["startDate"] == params["endDate"] == "2025-01-01"
+    assert params["stations"] == ",".join(STATION_IDS)
+
+
+def test_noaa_with_fewer_than_two_stations_is_an_error():
+    http = AsyncMock()
+    http.get = AsyncMock(return_value=_make_noaa_http_response(_rows(_JAN_1_2025, 1.0, 0.0, STATION_IDS[:1])))
+    with pytest.raises(IOError, match="1/5 stations"):
+        asyncio.run(NOAAClient(client=http).fetch_daily_obs(_JAN_1_2025))
 
 
 def _make_eia_http_response(series_id_fragment: str) -> MagicMock:
@@ -376,7 +398,7 @@ def test_fetch_evidence_full_async():
     clients mocked.  No real network calls are made.
 
     Setup:
-        NOAA: all 5 stations return 10 readings at 0.0°C (January baseline)
+        NOAA: all 5 stations report a high and low of 0.0°C (January baseline)
             → CONUS mean = 0.0°C
             → TempAnom  = False  (0.0 < 1.5 = Jan normal)
             → HeatingDem = True  (HDD = 18.33 > 0)
@@ -388,7 +410,7 @@ def test_fetch_evidence_full_async():
     variables = get_variables()
 
     # --- mock NOAA client (all stations return 0.0°C) ---
-    noaa_response = _make_noaa_http_response(temp_value=0.0, n_readings=10)
+    noaa_response = _make_noaa_http_response(_rows(_JAN_1_2025, 0.0, 0.0))
     noaa_http_mock = AsyncMock()
     noaa_http_mock.get = AsyncMock(return_value=noaa_response)
     noaa = NOAAClient(client=noaa_http_mock)
@@ -424,8 +446,8 @@ def test_fetch_evidence_full_async():
     assert amap[variables["StorageDraw"].variable_id].confidence == 1.0
     assert amap[variables["PriceUp"].variable_id].confidence     == 1.0
 
-    # --- NOAA was called 5 times (once per station) ---
-    assert noaa_http_mock.get.call_count == 5
+    # --- NOAA was called once for all 5 stations ---
+    assert noaa_http_mock.get.call_count == 1
 
     # --- EIA was called 2 times (storage + price series) ---
     assert eia_http_mock.get.call_count == 2

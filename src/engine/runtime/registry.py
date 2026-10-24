@@ -65,7 +65,7 @@ _FRED = ("FRED_API_KEY",)
 REGISTRY: tuple[DomainRegistration, ...] = (
     DomainRegistration("ng", "natural-gas-v1", "Natural Gas", "natural_gas.db", NaturalGasV1,
                        ng_source.open_source, ("EIA_API_KEY",), "NATURAL_GAS", default_run_hour_utc=7,
-                       cadence=Daily(), backfill_pause_s=1.0),
+                       cadence=Daily(lag_days=5), backfill_pause_s=1.0),
     DomainRegistration("mr", "macro-regime-v1", "Macro Regime", "macro_regime.db", MacroRegimeV1,
                        mr_source.open_source, _FRED, "MACRO_REGIME"),
     DomainRegistration("ai", "ai-regime-v1", "AI Regime", "ai_regime.db", AIRegimeV1,

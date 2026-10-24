@@ -15,7 +15,7 @@
      "evidence_count": 21,
      "generation_introduced": 0,
      "id": "<id0>",
-     "log_score": -59.116977988,
+     "log_score": -58.945927736,
      "name": "unconnected: no hypotheses yet",
      "score_normalized": 0.05,
      "status": "dominant"
@@ -112,7 +112,7 @@
  },
  "debug_evidence-geometry": {
   "body": {
-   "average_pairwise_mi": 0.012750343,
+   "average_pairwise_mi": 0.017394797,
    "cadence_detected": "daily",
    "compression_ratio_daily_to_weekly": 1.105263158,
    "daily_state_count": 21,
@@ -125,17 +125,17 @@
    "effective_transitions_per_month": 28.915625,
    "highest_entropy_variable": {
     "shannon_entropy": 0.998363673,
-    "variable": "HeatingDem"
+    "variable": "StorageDraw"
    },
    "highest_mi_variable_pair": {
     "joint_observed_count": 21,
-    "mutual_information": 0.020244207,
-    "variable_x": "TempAnom",
-    "variable_y": "PriceUp"
+    "mutual_information": 0.039718535,
+    "variable_x": "HeatingDem",
+    "variable_y": "StorageDraw"
    },
    "lowest_entropy_variable": {
-    "shannon_entropy": 0.985228136,
-    "variable": "TempAnom"
+    "shannon_entropy": 0.958711883,
+    "variable": "HeatingDem"
    },
    "pairwise_joint_observed_counts": {
     "HeatingDem": {
@@ -165,27 +165,27 @@
    },
    "pairwise_mutual_information_matrix": {
     "HeatingDem": {
-     "HeatingDem": 0.998363673,
-     "PriceUp": 0.013691786,
-     "StorageDraw": 0.001490705,
-     "TempAnom": 0.013691786
+     "HeatingDem": 0.958711883,
+     "PriceUp": 0.039718535,
+     "StorageDraw": 0.039718535,
+     "TempAnom": 0.005231522
     },
     "PriceUp": {
-     "HeatingDem": 0.013691786,
-     "PriceUp": 0.985228136,
-     "StorageDraw": 0.013691786,
-     "TempAnom": 0.020244207
+     "HeatingDem": 0.039718535,
+     "PriceUp": 0.998363673,
+     "StorageDraw": 0.015323755,
+     "TempAnom": 0.002188218
     },
     "StorageDraw": {
-     "HeatingDem": 0.001490705,
-     "PriceUp": 0.013691786,
+     "HeatingDem": 0.039718535,
+     "PriceUp": 0.015323755,
      "StorageDraw": 0.998363673,
-     "TempAnom": 0.013691786
+     "TempAnom": 0.002188218
     },
     "TempAnom": {
-     "HeatingDem": 0.013691786,
-     "PriceUp": 0.020244207,
-     "StorageDraw": 0.013691786,
+     "HeatingDem": 0.005231522,
+     "PriceUp": 0.002188218,
+     "StorageDraw": 0.002188218,
      "TempAnom": 0.985228136
     }
    },
@@ -205,52 +205,43 @@
      "pattern": {
       "HeatingDem": true,
       "PriceUp": false,
-      "StorageDraw": false,
-      "TempAnom": false
-     }
-    },
-    {
-     "count": 2,
-     "pattern": {
-      "HeatingDem": true,
-      "PriceUp": false,
       "StorageDraw": true,
       "TempAnom": false
      }
     },
     {
-     "count": 2,
-     "pattern": {
-      "HeatingDem": false,
-      "PriceUp": false,
-      "StorageDraw": false,
-      "TempAnom": true
-     }
-    },
-    {
-     "count": 2,
-     "pattern": {
-      "HeatingDem": false,
-      "PriceUp": false,
-      "StorageDraw": true,
-      "TempAnom": true
-     }
-    },
-    {
-     "count": 2,
-     "pattern": {
-      "HeatingDem": true,
-      "PriceUp": false,
-      "StorageDraw": false,
-      "TempAnom": true
-     }
-    },
-    {
-     "count": 2,
+     "count": 3,
      "pattern": {
       "HeatingDem": true,
       "PriceUp": true,
       "StorageDraw": true,
+      "TempAnom": true
+     }
+    },
+    {
+     "count": 2,
+     "pattern": {
+      "HeatingDem": true,
+      "PriceUp": false,
+      "StorageDraw": false,
+      "TempAnom": false
+     }
+    },
+    {
+     "count": 2,
+     "pattern": {
+      "HeatingDem": false,
+      "PriceUp": false,
+      "StorageDraw": false,
+      "TempAnom": true
+     }
+    },
+    {
+     "count": 2,
+     "pattern": {
+      "HeatingDem": true,
+      "PriceUp": false,
+      "StorageDraw": false,
       "TempAnom": true
      }
     },
@@ -278,6 +269,15 @@
       "HeatingDem": true,
       "PriceUp": true,
       "StorageDraw": false,
+      "TempAnom": false
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": true,
+      "PriceUp": true,
+      "StorageDraw": true,
       "TempAnom": false
      }
     }
@@ -296,12 +296,12 @@
      "missing_ratio": 0.0,
      "observed_count": 21,
      "observed_ratio": 1.0,
-     "shannon_entropy": 0.998363673,
-     "transition_count": 9,
+     "shannon_entropy": 0.958711883,
+     "transition_count": 6,
      "unique_value_count": 2,
      "value_distribution": {
-      "False": 10,
-      "True": 11
+      "False": 8,
+      "True": 13
      }
     },
     "PriceUp": {
@@ -309,12 +309,12 @@
      "missing_ratio": 0.0,
      "observed_count": 21,
      "observed_ratio": 1.0,
-     "shannon_entropy": 0.985228136,
-     "transition_count": 12,
+     "shannon_entropy": 0.998363673,
+     "transition_count": 14,
      "unique_value_count": 2,
      "value_distribution": {
-      "False": 12,
-      "True": 9
+      "False": 11,
+      "True": 10
      }
     },
     "StorageDraw": {
@@ -323,11 +323,11 @@
      "observed_count": 21,
      "observed_ratio": 1.0,
      "shannon_entropy": 0.998363673,
-     "transition_count": 9,
+     "transition_count": 7,
      "unique_value_count": 2,
      "value_distribution": {
-      "False": 11,
-      "True": 10
+      "False": 10,
+      "True": 11
      }
     },
     "TempAnom": {
@@ -336,7 +336,7 @@
      "observed_count": 21,
      "observed_ratio": 1.0,
      "shannon_entropy": 0.985228136,
-     "transition_count": 10,
+     "transition_count": 9,
      "unique_value_count": 2,
      "value_distribution": {
       "False": 12,
@@ -346,11 +346,48 @@
    },
    "weekly_aggregation": [
     {
-     "compressed_state_count": 5,
-     "daily_state_count": 5,
+     "compressed_state_count": 2,
+     "daily_state_count": 2,
+     "iso_week": 6,
+     "iso_year": 2026,
+     "top_patterns": [
+      {
+       "count": 1,
+       "pattern": {
+        "HeatingDem": true,
+        "PriceUp": false,
+        "StorageDraw": true,
+        "TempAnom": true
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "HeatingDem": true,
+        "PriceUp": true,
+        "StorageDraw": true,
+        "TempAnom": true
+       }
+      }
+     ],
+     "unique_state_count": 2,
+     "week_start_date": "2026-02-02"
+    },
+    {
+     "compressed_state_count": 6,
+     "daily_state_count": 7,
      "iso_week": 7,
      "iso_year": 2026,
      "top_patterns": [
+      {
+       "count": 2,
+       "pattern": {
+        "HeatingDem": true,
+        "PriceUp": false,
+        "StorageDraw": true,
+        "TempAnom": false
+       }
+      },
       {
        "count": 1,
        "pattern": {
@@ -372,15 +409,6 @@
       {
        "count": 1,
        "pattern": {
-        "HeatingDem": true,
-        "PriceUp": false,
-        "StorageDraw": true,
-        "TempAnom": false
-       }
-      },
-      {
-       "count": 1,
-       "pattern": {
         "HeatingDem": false,
         "PriceUp": false,
         "StorageDraw": false,
@@ -395,9 +423,18 @@
         "StorageDraw": false,
         "TempAnom": true
        }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "HeatingDem": true,
+        "PriceUp": true,
+        "StorageDraw": true,
+        "TempAnom": true
+       }
       }
      ],
-     "unique_state_count": 5,
+     "unique_state_count": 6,
      "week_start_date": "2026-02-09"
     },
     {
@@ -465,16 +502,16 @@
      "week_start_date": "2026-02-16"
     },
     {
-     "compressed_state_count": 6,
-     "daily_state_count": 7,
+     "compressed_state_count": 5,
+     "daily_state_count": 5,
      "iso_week": 9,
      "iso_year": 2026,
      "top_patterns": [
       {
-       "count": 2,
+       "count": 1,
        "pattern": {
-        "HeatingDem": true,
-        "PriceUp": false,
+        "HeatingDem": false,
+        "PriceUp": true,
         "StorageDraw": false,
         "TempAnom": false
        }
@@ -482,8 +519,8 @@
       {
        "count": 1,
        "pattern": {
-        "HeatingDem": false,
-        "PriceUp": true,
+        "HeatingDem": true,
+        "PriceUp": false,
         "StorageDraw": false,
         "TempAnom": false
        }
@@ -504,15 +541,6 @@
         "PriceUp": false,
         "StorageDraw": true,
         "TempAnom": false
-       }
-      },
-      {
-       "count": 1,
-       "pattern": {
-        "HeatingDem": false,
-        "PriceUp": false,
-        "StorageDraw": true,
-        "TempAnom": true
        }
       },
       {
@@ -525,36 +553,8 @@
        }
       }
      ],
-     "unique_state_count": 6,
+     "unique_state_count": 5,
      "week_start_date": "2026-02-23"
-    },
-    {
-     "compressed_state_count": 2,
-     "daily_state_count": 2,
-     "iso_week": 10,
-     "iso_year": 2026,
-     "top_patterns": [
-      {
-       "count": 1,
-       "pattern": {
-        "HeatingDem": false,
-        "PriceUp": false,
-        "StorageDraw": true,
-        "TempAnom": true
-       }
-      },
-      {
-       "count": 1,
-       "pattern": {
-        "HeatingDem": true,
-        "PriceUp": true,
-        "StorageDraw": true,
-        "TempAnom": true
-       }
-      }
-     ],
-     "unique_state_count": 2,
-     "week_start_date": "2026-03-02"
     }
    ],
    "weekly_bucket_count": 4,
@@ -573,7 +573,7 @@
    "domain": "Natural Gas",
    "domain_module_id": "natural-gas-v1",
    "dominant_evidence_count": 21,
-   "dominant_log_score": -59.116977988,
+   "dominant_log_score": -58.945927736,
    "last_learn_timestamp": "<ts>",
    "last_mutation_introduced": 0,
    "last_mutation_total_attempts": 0,
@@ -593,17 +593,17 @@
    "candidates": [
     {
      "active_edge_count": 0,
-     "avg_ll": -2.815096105,
+     "avg_ll": -2.807736573,
      "bic_penalty_raw": 0.607025661,
-     "bic_score_explore": -2.96685252,
-     "bic_score_strict": -3.422121766,
+     "bic_score_explore": -2.959492988,
+     "bic_score_strict": -3.414762234,
      "candidate_id": "<id0>",
      "description": "unconnected: no hypotheses yet",
      "edge_structure": [],
      "evidence_count": 21,
      "generation": 0,
      "is_dominant": true,
-     "log_score": -59.116977988,
+     "log_score": -58.945927736,
      "status": "ACTIVE",
      "total_edge_count": 0
     }
@@ -627,7 +627,7 @@
    "domain": "Natural Gas",
    "records": [
     {
-     "description": "fake@2026-03-03",
+     "description": "fake@2026-02-27",
      "id": "<id1>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -635,7 +635,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-03-02",
+     "description": "fake@2026-02-26",
      "id": "<id2>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -643,7 +643,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-03-01",
+     "description": "fake@2026-02-25",
      "id": "<id3>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -651,7 +651,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-28",
+     "description": "fake@2026-02-24",
      "id": "<id4>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -659,7 +659,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-27",
+     "description": "fake@2026-02-23",
      "id": "<id5>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -667,7 +667,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-26",
+     "description": "fake@2026-02-22",
      "id": "<id6>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -675,7 +675,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-25",
+     "description": "fake@2026-02-21",
      "id": "<id7>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -683,7 +683,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-24",
+     "description": "fake@2026-02-20",
      "id": "<id8>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -691,7 +691,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-23",
+     "description": "fake@2026-02-19",
      "id": "<id9>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -699,7 +699,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-22",
+     "description": "fake@2026-02-18",
      "id": "<id10>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -707,7 +707,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-21",
+     "description": "fake@2026-02-17",
      "id": "<id11>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -715,7 +715,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-20",
+     "description": "fake@2026-02-16",
      "id": "<id12>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -723,7 +723,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-19",
+     "description": "fake@2026-02-15",
      "id": "<id13>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -731,7 +731,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-18",
+     "description": "fake@2026-02-14",
      "id": "<id14>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -739,7 +739,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-17",
+     "description": "fake@2026-02-13",
      "id": "<id15>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -747,7 +747,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-16",
+     "description": "fake@2026-02-12",
      "id": "<id16>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -755,7 +755,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-15",
+     "description": "fake@2026-02-11",
      "id": "<id17>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -763,7 +763,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-14",
+     "description": "fake@2026-02-10",
      "id": "<id18>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -771,7 +771,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-13",
+     "description": "fake@2026-02-09",
      "id": "<id19>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -779,7 +779,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-12",
+     "description": "fake@2026-02-08",
      "id": "<id20>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -787,7 +787,7 @@
      "variables_updated": null
     },
     {
-     "description": "fake@2026-02-11",
+     "description": "fake@2026-02-07",
      "id": "<id21>",
      "impact_delta": 1.0,
      "strength": "strong",
@@ -808,7 +808,7 @@
      "id": "TempAnom",
      "label": "TempAnom",
      "observation": null,
-     "probability": 0.467482609,
+     "probability": 0.453430435,
      "status": "target"
     },
     {
@@ -861,7 +861,7 @@
      "status": "weak"
     }
    ],
-   "target_probability": 0.467482609,
+   "target_probability": 0.453430435,
    "target_variable": "TempAnom"
   },
   "status": 200
@@ -887,7 +887,7 @@
     "candidates": [
      {
       "edge_count": 0,
-      "log_score": -59.116977988,
+      "log_score": -58.945927736,
       "name": "unconnected: no hypotheses yet",
       "score_normalized": 0.05,
       "status": "dominant"
@@ -899,22 +899,22 @@
     {
      "boolean_state": false,
      "name": "TempAnom",
-     "probability": 0.467482609
+     "probability": 0.453430435
     },
     {
-     "boolean_state": false,
+     "boolean_state": true,
      "name": "HeatingDem",
-     "probability": 0.498913043
+     "probability": 0.536426087
     },
     {
      "boolean_state": true,
      "name": "StorageDraw",
-     "probability": 0.52073913
+     "probability": 0.534904348
     },
     {
      "boolean_state": false,
      "name": "PriceUp",
-     "probability": 0.466826087
+     "probability": 0.477613043
     }
    ],
    "dominant_hypothesis": {
@@ -922,7 +922,7 @@
     "edge_count": 0,
     "edges": [],
     "generations_dominant": 0,
-    "log_score": -59.116977988,
+    "log_score": -58.945927736,
     "name": "unconnected: no hypotheses yet"
    },
    "frontier": {

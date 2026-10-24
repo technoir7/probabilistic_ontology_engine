@@ -4,7 +4,7 @@
 — FRED series: `T10Y2Y`, `CPIAUCSL`, `WALCL`, `BAMLH0A0HYM2`, `VIXCLS`, `DEXUSEU`, `UNRATE`, `NASDAQCOM`
 
 **`natural-gas-v1`**: `TempAnom`, `HeatingDem`, `StorageDraw`, `PriceUp`
-— NOAA weather API + EIA storage/price
+— NOAA NCEI daily climate summaries (high and low at five airports, about four days late, so gas runs five days behind) + EIA storage/price
 
 **`ai-regime-v1`**: `SemiconductorMomentum`, `MarketConcentrationExtreme`, `HyperscalerCapexAccelerating`, `TechValuationDetached`, `IPInvestmentRising`, `LaborProductivityImproving`, `BroadEconomicLift`, `AIRiskPremiumCompressed`
 — SEC EDGAR capex; yfinance `^SOX`, `QQQ`, `RSP`, `^VIX`; FRED quarterly IP/productivity/GDP
