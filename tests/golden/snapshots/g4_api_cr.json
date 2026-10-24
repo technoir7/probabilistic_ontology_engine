@@ -1688,7 +1688,7 @@
       "target": "AltcoinSeasonActive"
      }
     ],
-    "generations_dominant": 9,
+    "generations_dominant": 4,
     "log_score": -22.598143308,
     "name": "T_null: btc-altcoin baseline"
    },
@@ -1746,8 +1746,10 @@
      "generation": 5,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "T_null: btc-altcoin baseline",
+     "new_programme": "T_null",
      "previous_dominant_id": "<id8>",
      "previous_dominant_name": "H1: liquidity_overflow",
+     "previous_programme": "H1",
      "shift_id": "<id10>",
      "timestamp": "<ts>"
     }
@@ -1763,7 +1765,7 @@
    "domain": "Crypto Regime",
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "generations_dominant": 9,
+    "generations_dominant": 4,
     "name": "T_null: btc-altcoin baseline"
    },
    "engine_status": "online",

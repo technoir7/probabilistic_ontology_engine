@@ -1708,7 +1708,7 @@
       "target": "InvestmentGradeSpread"
      }
     ],
-    "generations_dominant": 9,
+    "generations_dominant": 4,
     "log_score": -22.503197368,
     "name": "H4: credit_normalization"
    },
@@ -1772,8 +1772,10 @@
      "generation": 5,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "H4: credit_normalization",
+     "new_programme": "H4",
      "previous_dominant_id": "<id2>",
      "previous_dominant_name": "H1: monetary_tightening_transmission",
+     "previous_programme": "H1",
      "shift_id": "<id10>",
      "timestamp": "<ts>"
     }
@@ -1789,7 +1791,7 @@
    "domain": "Credit Cycle",
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "generations_dominant": 9,
+    "generations_dominant": 4,
     "name": "H4: credit_normalization"
    },
    "engine_status": "online",

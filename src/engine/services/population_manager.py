@@ -4,11 +4,11 @@ PopulationManager — Level 3 belief management.  Novel component.
 Responsibilities:
   - Maintains OntologyPopulation for each active domain.
   - Scores candidates after each learning cycle.
-  - Introduces new candidates as variants of high-scoring survivors.
-  - Prunes low-scoring candidates (bottom quartile after min evidence).
-  - Enforces max_population_size.
-  - Tracks dominant (highest-scoring) candidate.
-  - Tracks paradigm_shift_count.
+  - Introduces variants, each research programme's best breeding in turn (D16).
+  - Prunes candidates the leader's evidence refutes, sparing each programme's
+    best until then (D15, D22), within max_population_size.
+  - Tracks the dominant candidate and logs each paradigm shift: the lead
+    passing to another programme.
 """
 from __future__ import annotations
 
@@ -514,6 +514,8 @@ class PopulationManager:
                     ),
                     evidence_count_at_shift=new_dom.evidence_count,
                     evidence_ts=evidence_ts,
+                    prev_programme=prev_cand.lineage,
+                    new_programme=new_dom.lineage,
                 )
 
         self.pop_store.save_population(pop)

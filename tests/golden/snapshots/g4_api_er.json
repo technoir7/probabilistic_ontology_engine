@@ -1735,7 +1735,7 @@
       "target": "EnergyInflationPersistent"
      }
     ],
-    "generations_dominant": 9,
+    "generations_dominant": 4,
     "log_score": -22.70592383,
     "name": "H2: demand_driven"
    },
@@ -1805,8 +1805,10 @@
      "generation": 5,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "H2: demand_driven",
+     "new_programme": "H2",
      "previous_dominant_id": "<id1>",
      "previous_dominant_name": "H1: supply_shock",
+     "previous_programme": "H1",
      "shift_id": "<id10>",
      "timestamp": "<ts>"
     }
@@ -1822,7 +1824,7 @@
    "domain": "Energy Regime",
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "generations_dominant": 9,
+    "generations_dominant": 4,
     "name": "H2: demand_driven"
    },
    "engine_status": "online",

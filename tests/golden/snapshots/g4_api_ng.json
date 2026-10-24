@@ -2558,7 +2558,7 @@
       "target": "PriceUp"
      }
     ],
-    "generations_dominant": 44,
+    "generations_dominant": 37,
     "log_score": -59.089428016,
     "name": "null: storage-only"
    },
@@ -2609,8 +2609,10 @@
      "generation": 7,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "null: storage-only",
+     "new_programme": "null",
      "previous_dominant_id": "<id7>",
      "previous_dominant_name": "T*: demand-chain",
+     "previous_programme": "T*",
      "shift_id": "<id10>",
      "timestamp": "<ts>"
     }
@@ -2626,7 +2628,7 @@
    "domain": "Natural Gas",
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "generations_dominant": 44,
+    "generations_dominant": 37,
     "name": "null: storage-only"
    },
    "engine_status": "online",

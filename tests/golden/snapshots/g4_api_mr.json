@@ -3566,7 +3566,7 @@
       "target": "AIRiskOn"
      }
     ],
-    "generations_dominant": 6,
+    "generations_dominant": 2,
     "log_score": -22.766615454,
     "name": "T_persistence: each signal follows its own last week"
    },
@@ -3666,8 +3666,10 @@
      "generation": 4,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "T_persistence: each signal follows its own last week",
+     "new_programme": "T_persistence",
      "previous_dominant_id": "<id9>",
      "previous_dominant_name": "T_monetary: inflation-driven tightening chain",
+     "previous_programme": "T_monetary",
      "shift_id": "<id10>",
      "timestamp": "<ts>"
     }
@@ -3683,7 +3685,7 @@
    "domain": "Macro Regime",
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "generations_dominant": 6,
+    "generations_dominant": 2,
     "name": "T_persistence: each signal follows its own last week"
    },
    "engine_status": "online",

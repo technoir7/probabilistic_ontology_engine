@@ -1708,7 +1708,7 @@
       "target": "TechValuationDetached"
      }
     ],
-    "generations_dominant": 10,
+    "generations_dominant": 4,
     "log_score": -22.864706514,
     "name": "H3: winner_take_all \u2014 concentration drives capex and valuation"
    },
@@ -1772,8 +1772,10 @@
      "generation": 6,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "H3: winner_take_all \u2014 concentration drives capex and valuation",
+     "new_programme": "H3",
      "previous_dominant_id": "<id3>",
      "previous_dominant_name": "H1: infrastructure_buildout \u2014 rational capex \u2192 productivity chain",
+     "previous_programme": "H1",
      "shift_id": "<id10>",
      "timestamp": "<ts>"
     }
@@ -1789,7 +1791,7 @@
    "domain": "AI Regime",
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "generations_dominant": 10,
+    "generations_dominant": 4,
     "name": "H3: winner_take_all \u2014 concentration drives capex and valuation"
    },
    "engine_status": "online",

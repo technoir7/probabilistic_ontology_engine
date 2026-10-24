@@ -315,6 +315,8 @@ class PopulationStore:
         new_dominant_name: str,
         evidence_count_at_shift: int,
         evidence_ts: datetime,
+        prev_programme: str,
+        new_programme: str,
     ) -> None:
         """Persist one paradigm-shift event (dominant candidate changed)."""
         from uuid import uuid4
@@ -324,8 +326,8 @@ class PopulationStore:
               (shift_id, domain_module_id, generation, shift_ts,
                prev_dominant_id, prev_dominant_name,
                new_dominant_id, new_dominant_name,
-               evidence_count_at_shift, evidence_ts)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+               evidence_count_at_shift, evidence_ts, prev_programme, new_programme)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 str(uuid4()),
@@ -338,6 +340,8 @@ class PopulationStore:
                 new_dominant_name,
                 evidence_count_at_shift,
                 evidence_ts.isoformat(),
+                prev_programme,
+                new_programme,
             ),
         )
         self._db.commit()
@@ -357,14 +361,15 @@ class PopulationStore:
             shift_id, domain_module_id, generation, shift_ts,
             prev_dominant_id, prev_dominant_name,
             new_dominant_id, new_dominant_name, evidence_count_at_shift,
-            evidence_ts (None for shifts recorded before it was kept)
+            evidence_ts, prev_programme, new_programme (None for shifts
+            recorded before they were kept)
         """
         cur = self._conn.execute(
             """
             SELECT shift_id, domain_module_id, generation, shift_ts,
                    prev_dominant_id, prev_dominant_name,
                    new_dominant_id, new_dominant_name,
-                   evidence_count_at_shift, evidence_ts
+                   evidence_count_at_shift, evidence_ts, prev_programme, new_programme
             FROM paradigm_shifts
             WHERE domain_module_id = ?
             ORDER BY shift_ts DESC

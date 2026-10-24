@@ -1729,7 +1729,7 @@
       "target": "WageInflationPersistent"
      }
     ],
-    "generations_dominant": 9,
+    "generations_dominant": 4,
     "log_score": -22.875718583,
     "name": "T_null: layoff-unemployment baseline"
    },
@@ -1793,8 +1793,10 @@
      "generation": 5,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "T_null: layoff-unemployment baseline",
+     "new_programme": "T_null",
      "previous_dominant_id": "<id5>",
      "previous_dominant_name": "H1: labor_tightening",
+     "previous_programme": "H1",
      "shift_id": "<id10>",
      "timestamp": "<ts>"
     }
@@ -1810,7 +1812,7 @@
    "domain": "Labor Market",
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "generations_dominant": 9,
+    "generations_dominant": 4,
     "name": "T_null: layoff-unemployment baseline"
    },
    "engine_status": "online",

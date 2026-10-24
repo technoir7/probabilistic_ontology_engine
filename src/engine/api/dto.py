@@ -112,6 +112,8 @@ class ParadigmShiftEventOut(BaseModel):
     new_dominant_name: str
     evidence_count_at_shift: int
     evidence_date: Optional[str] = None  # date of the evidence that caused it; None if recorded before this was kept
+    previous_programme: Optional[str] = None  # research programme of each leader; equal when a variant
+    new_programme: Optional[str] = None       # overtook one of its own programme (a revision, not a new worldview)
 
 
 class ParadigmShiftsOut(BaseModel):

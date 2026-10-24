@@ -5092,7 +5092,7 @@
       "target": "BlueChipConcentration"
      }
     ],
-    "generations_dominant": 5,
+    "generations_dominant": 0,
     "log_score": -34.607224058,
     "name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum"
    },
@@ -5169,8 +5169,10 @@
      "generation": 5,
      "new_dominant_id": "<id1>",
      "new_dominant_name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
+     "new_programme": "H2",
      "previous_dominant_id": "<id7>",
      "previous_dominant_name": "H1: CraftAuraBacklash \u2014 AI saturation \u2192 aura premium \u2192 craft/figurative institutionalisation",
+     "previous_programme": "H1",
      "shift_id": "<id10>",
      "timestamp": "<ts>"
     },
@@ -5180,8 +5182,10 @@
      "generation": 5,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum",
+     "new_programme": "H4",
      "previous_dominant_id": "<id1>",
      "previous_dominant_name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
+     "previous_programme": "H2",
      "shift_id": "<id11>",
      "timestamp": "<ts>"
     }
@@ -5197,7 +5201,7 @@
    "domain": "Art Prestige Regime",
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "generations_dominant": 5,
+    "generations_dominant": 0,
     "name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum"
    },
    "engine_status": "online",

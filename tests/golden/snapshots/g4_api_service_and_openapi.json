@@ -1474,6 +1474,17 @@
        "title": "New Dominant Name",
        "type": "string"
       },
+      "new_programme": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "New Programme"
+      },
       "previous_dominant_id": {
        "title": "Previous Dominant Id",
        "type": "string"
@@ -1481,6 +1492,17 @@
       "previous_dominant_name": {
        "title": "Previous Dominant Name",
        "type": "string"
+      },
+      "previous_programme": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Previous Programme"
       },
       "shift_id": {
        "title": "Shift Id",

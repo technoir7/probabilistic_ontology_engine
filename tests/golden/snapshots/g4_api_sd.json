@@ -1726,7 +1726,7 @@
       "target": "USYieldSpiking"
      }
     ],
-    "generations_dominant": 9,
+    "generations_dominant": 2,
     "log_score": -22.084365685,
     "name": "H1: us_fiscal_stress"
    },
@@ -1803,8 +1803,10 @@
      "generation": 5,
      "new_dominant_id": "<id1>",
      "new_dominant_name": "H4: global_liquidity_crunch",
+     "new_programme": "H4",
      "previous_dominant_id": "<id0>",
      "previous_dominant_name": "H1: us_fiscal_stress",
+     "previous_programme": "H1",
      "shift_id": "<id10>",
      "timestamp": "<ts>"
     },
@@ -1814,8 +1816,10 @@
      "generation": 7,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "H1: us_fiscal_stress",
+     "new_programme": "H1",
      "previous_dominant_id": "<id1>",
      "previous_dominant_name": "H4: global_liquidity_crunch",
+     "previous_programme": "H4",
      "shift_id": "<id11>",
      "timestamp": "<ts>"
     }
@@ -1831,7 +1835,7 @@
    "domain": "Sovereign Debt",
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "generations_dominant": 9,
+    "generations_dominant": 2,
     "name": "H1: us_fiscal_stress"
    },
    "engine_status": "online",

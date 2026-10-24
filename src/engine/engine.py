@@ -510,6 +510,13 @@ class ProbabilisticOntologyEngine:
         domain = domain_module_id or self.active_domain
         return self.population_manager.summary(domain)
 
+    def generations_led(self, domain_module_id: str) -> int:
+        """Generations since the last paradigm shift (or since the start): how
+        long the leading programme has led. One query on the shift log."""
+        last = self.population_store.load_shift_events(domain_module_id, last=1)
+        since = last[0]["generation"] if last else 0
+        return max(0, self.get_population(domain_module_id).generation - since)
+
     def get_population(self, domain_module_id: str | None = None) -> OntologyPopulation:
         domain = domain_module_id or self.active_domain
         return self.population_manager.get_population(domain)

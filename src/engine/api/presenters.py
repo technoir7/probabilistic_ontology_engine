@@ -138,7 +138,7 @@ def build_population_status(
 
     dom_name = (dom.description or "Hypothesis A") if dom else "none"
     dom_cid = str(dom.candidate_id) if dom else ""
-    gens_dominant = max(0, pop.generation - dom.generation) if dom else 0
+    gens_dominant = engine.generations_led(domain_id) if dom else 0
 
     return PopStatusOut(
         domain=display_name,

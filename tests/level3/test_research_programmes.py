@@ -3,6 +3,8 @@ every candidate carries the seed explanation it descends from, and pruning
 spares a programme's best candidate unless the evidence for the leader over
 it is decisive (a Bayes factor above 100, Jeffreys' scale), so the
 population can shift to another worldview rather than only refine one."""
+from uuid import uuid4
+
 from src.domains.macro_regime_v1.domain import MacroRegimeV1
 from src.domains.test_domain_v1.domain import TestDomainV1
 from src.domains.test_domain_v1.synthetic_generator import SyntheticDataGenerator
@@ -156,3 +158,43 @@ def test_evidence_is_compared_over_the_records_both_were_judged_on():
     # The leader (c) has seen 150 records. Over those, d trails by 3.75 nats,
     # short of 4.6; window totals would have put it 482 nats behind.
     assert d not in pm.prune_low_scorers("test-domain-v1")
+
+
+def test_a_shift_records_whether_the_lead_changed_programme():
+    """Every change of leader is logged (SPEC: a paradigm shift), but a variant
+    overtaking one of its own programme is that programme revising itself,
+    and only a rival programme taking the lead is a change of worldview.
+    Each event says which it was, so the two can be told apart."""
+    from datetime import datetime
+    from src.domains.test_domain_v1 import domain as d
+    first = scored(d.make_tstar_candidate("test-domain-v1"), "T_star", -2.0)
+    sibling = scored(d.make_talt_candidate("test-domain-v1"), "T_star", -3.0)
+    rival = scored(d.make_null_candidate("test-domain-v1"), "T_null", -4.0)
+    pm = manager_with([first, sibling, rival])
+
+    sibling.window_log_score = -1.0 * sibling.window_evidence
+    pm.end_cycle("test-domain-v1", evidence_ts=datetime(2008, 9, 14))
+    rival.window_log_score = -0.5 * rival.window_evidence
+    pm.end_cycle("test-domain-v1", evidence_ts=datetime(2020, 3, 15))
+
+    revision, shift = pm.pop_store.load_shift_events("test-domain-v1")
+    assert (revision["prev_programme"], revision["new_programme"]) == ("T_star", "T_star")
+    assert (shift["prev_programme"], shift["new_programme"]) == ("T_star", "T_null")
+
+
+def test_generations_led_counts_from_the_last_paradigm_shift():
+    """How long the leading programme has led: since the last shift, or since
+    the start if none. Not the leading candidate's age, which a variant born
+    long after its programme took the lead would understate."""
+    from datetime import datetime
+    engine = engine_for(TestDomainV1())
+    domain = "test-domain-v1"
+    pop = engine.get_population(domain)
+    pop.generation = 12
+    assert engine.generations_led(domain) == 12
+
+    engine.population_store.append_shift_event(
+        domain_module_id=domain, generation=7, prev_dominant_id=uuid4(), prev_dominant_name="a",
+        new_dominant_id=uuid4(), new_dominant_name="b", evidence_count_at_shift=40,
+        evidence_ts=datetime(2020, 3, 15), prev_programme="a", new_programme="b")
+    assert engine.generations_led(domain) == 5

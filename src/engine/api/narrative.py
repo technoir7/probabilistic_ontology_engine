@@ -100,7 +100,7 @@ def build_snapshot(
                     target=cv.name,
                     existence_probability=e.existence_probability,
                 ))
-        gens_dominant = max(0, pop.generation - dom.generation)
+        gens_dominant = engine.generations_led(domain_id)
         dominant_out = NarrativeDominantHypothesisOut(
             name=dom.description or str(dom.candidate_id)[:8],
             candidate_id=str(dom.candidate_id),

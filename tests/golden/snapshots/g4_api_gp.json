@@ -1679,7 +1679,7 @@
       "target": "TradeDisruptionRisk"
      }
     ],
-    "generations_dominant": 9,
+    "generations_dominant": 4,
     "log_score": -22.438044176,
     "name": "T_null: conflict-trade baseline"
    },
@@ -1737,8 +1737,10 @@
      "generation": 5,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "T_null: conflict-trade baseline",
+     "new_programme": "T_null",
      "previous_dominant_id": "<id3>",
      "previous_dominant_name": "H1: great_power_competition",
+     "previous_programme": "H1",
      "shift_id": "<id10>",
      "timestamp": "<ts>"
     }
@@ -1754,7 +1756,7 @@
    "domain": "Geopolitics",
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "generations_dominant": 9,
+    "generations_dominant": 4,
     "name": "T_null: conflict-trade baseline"
    },
    "engine_status": "online",
