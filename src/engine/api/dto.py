@@ -7,7 +7,6 @@ from typing import Any, Literal, Optional
 from pydantic import BaseModel
 
 # Validated: the report routes build cache file names from it.
-OntologyMode = Literal["apriori", "dynamic"]
 
 
 
@@ -86,7 +85,6 @@ class QueryBodyIn(BaseModel):
     candidate_id: Optional[str] = None
     conditions: Optional[dict[str, Any]] = None
     aggregation: Optional[Literal["weighted_avg", "map", "marginal"]] = None
-    ontology_mode: Optional[OntologyMode] = None
 
 
 class LineageEventOut(BaseModel):
@@ -366,7 +364,6 @@ class StructureDiagOut(BaseModel):
 class DomainReportOut(BaseModel):
     found: bool = True
     domain: str
-    ontology_mode: str
     generated_at: str
     snapshot_hash: str
     report: str
@@ -378,4 +375,3 @@ class DomainReportOut(BaseModel):
 class DomainReportNotFound(BaseModel):
     found: bool = False
     domain: str
-    ontology_mode: str

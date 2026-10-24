@@ -1,8 +1,7 @@
 """
 Report generation: hash-gated Fireworks AI calls with persistent cache under POE_DATA_DIR.
 
-LLM provider: Fireworks AI via OpenAI-compatible endpoint, matching the pattern
-used in probabilistic_ontology_engine_abductive/src/poea/llm.py.
+LLM provider: Fireworks AI via its OpenAI-compatible endpoint.
 
 Env vars:
   FIREWORKS_API_KEY   (required for generation)
@@ -79,12 +78,17 @@ def reports_dir(data_dir: Path) -> Path:
     return d
 
 
-def cache_path(data_dir: Path, domain: str, mode: str, hash_hex: str) -> Path:
-    fname = f"{domain}__{mode}__pv{PROMPT_VERSION}__{hash_hex[:16]}.json"
-    return reports_dir(data_dir) / fname
+# "apriori" is left from a retired second ontology mode; kept in the file
+# names so reports already cached on the data volume are still found.
+def _prefix(domain: str) -> str:
+    return f"{domain}__apriori__pv{PROMPT_VERSION}__"
 
 
-def stale_cache_path(data_dir: Path, domain: str, mode: str) -> Optional[Path]:
+def cache_path(data_dir: Path, domain: str, hash_hex: str) -> Path:
+    return reports_dir(data_dir) / f"{_prefix(domain)}{hash_hex[:16]}.json"
+
+
+def stale_cache_path(data_dir: Path, domain: str) -> Optional[Path]:
     """Return the most-recently-written pv{PROMPT_VERSION} cache file, if any.
 
     Version-gated: only files whose name contains the current PROMPT_VERSION are
@@ -92,7 +96,7 @@ def stale_cache_path(data_dir: Path, domain: str, mode: str) -> Optional[Path]:
     silently ignored so stale prompts are never served.
     """
     rd = reports_dir(data_dir)
-    prefix = f"{domain}__{mode}__pv{PROMPT_VERSION}__"
+    prefix = _prefix(domain)
     candidates = sorted(
         (p for p in rd.glob(f"{prefix}*.json") if p.is_file()),
         key=lambda p: p.stat().st_mtime,

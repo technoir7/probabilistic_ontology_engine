@@ -12,7 +12,7 @@ from typing import Any, Optional
 from ..engine import ProbabilisticOntologyEngine
 from ..model.scoring import candidate_score
 from ..schemas import InferenceQuery, PopulationAggregation, QueryType
-from . import context, poea_dynamic, presenters
+from . import context, presenters
 from .dto import (
     NarrativeCompetingCandidatesOut,
     NarrativeCompetitorOut,
@@ -28,13 +28,9 @@ from .dto import (
 )
 
 
-def snapshot_for(state: Any, domain: str, ontology_mode: str) -> NarrativeSnapshotOut:
-    """The snapshot for a domain key; POE-A artifacts when dynamic mode has them."""
+def snapshot_for(state: Any, domain: str) -> NarrativeSnapshotOut:
+    """The snapshot for a domain key."""
     engine, domain_id, display_name = context.resolve_domain(domain, state)
-    if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(domain.lower()):
-        data = poea_dynamic.build_narrative_snapshot(display_name, domain_id)
-        if data is not None:
-            return NarrativeSnapshotOut.model_validate(data)
     return build_snapshot(engine, domain_id, display_name)
 
 

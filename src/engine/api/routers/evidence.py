@@ -6,9 +6,8 @@ from typing import Literal
 
 from fastapi import APIRouter, Query, Request
 
-from .. import context, poea_dynamic
+from .. import context
 from ..dto import (
-    OntologyMode,
     EvidenceRecordOut,
     EvidenceOut,
 )
@@ -22,13 +21,8 @@ async def evidence_recent(
     request: Request,
     domain: str = Query("ng"),
     limit: int = Query(20, ge=1, le=100),
-    ontology_mode: OntologyMode = Query("apriori"),
 ) -> EvidenceOut:
     engine, domain_id, display_name = context.resolve_domain(domain, request.app.state)
-    if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(domain.lower()):
-        return EvidenceOut.model_validate(
-            poea_dynamic.build_recent_evidence(display_name, limit)
-        )
     raw_records = engine.evidence_store.load_recent(domain_id, limit)
 
     records: list[EvidenceRecordOut] = []

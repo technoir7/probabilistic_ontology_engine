@@ -109,7 +109,7 @@ def test_snapshot_hash_key_order_independent():
 def test_cache_hit_returns_stored_report(tmp_path):
     snap = {"domain": "mr", "evidence_count": 100}
     h = snapshot_hash(snap)
-    p = cache_path(tmp_path, "mr", "apriori", h)
+    p = cache_path(tmp_path, "mr", h)
     data = {
         "domain": "mr", "ontology_mode": "apriori",
         "generated_at": "2026-01-01T00:00:00+00:00",
@@ -124,12 +124,12 @@ def test_cache_hit_returns_stored_report(tmp_path):
 def test_changed_snapshot_uses_different_path(tmp_path):
     h_a = snapshot_hash({"evidence_count": 10})
     h_b = snapshot_hash({"evidence_count": 11})
-    assert cache_path(tmp_path, "mr", "apriori", h_a) != cache_path(tmp_path, "mr", "apriori", h_b)
+    assert cache_path(tmp_path, "mr", h_a) != cache_path(tmp_path, "mr", h_b)
 
 
 def test_report_file_written_under_data_dir(tmp_path):
     h = snapshot_hash({"x": 1})
-    p = cache_path(tmp_path, "sf", "apriori", h)
+    p = cache_path(tmp_path, "sf", h)
     save_cache(p, {"report": "hello"})
     assert p.parent == reports_dir(tmp_path)
     assert p.exists()
@@ -138,12 +138,12 @@ def test_report_file_written_under_data_dir(tmp_path):
 
 def test_stale_cache_path_most_recent(tmp_path):
     import time
-    p1 = cache_path(tmp_path, "mr", "apriori", "a" * 20)
+    p1 = cache_path(tmp_path, "mr", "a" * 20)
     save_cache(p1, {"report": "old"})
     time.sleep(0.02)
-    p2 = cache_path(tmp_path, "mr", "apriori", "b" * 20)
+    p2 = cache_path(tmp_path, "mr", "b" * 20)
     save_cache(p2, {"report": "newer"})
-    assert stale_cache_path(tmp_path, "mr", "apriori") == p2
+    assert stale_cache_path(tmp_path, "mr") == p2
 
 
 # ─── TEST-RC-09 to TEST-RC-11: GET endpoint ──────────────────────────────────
@@ -151,7 +151,7 @@ def test_stale_cache_path_most_recent(tmp_path):
 def test_get_report_found_false_when_no_cache(tmp_path, monkeypatch):
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
     client = TestClient(api_app.app)
-    res = client.get("/v1/report/ng?ontology_mode=apriori")
+    res = client.get("/v1/report/ng")
     assert res.status_code == 200
     assert res.json()["found"] is False
 
@@ -165,9 +165,9 @@ def test_get_report_found_true_when_cache_exists(tmp_path, monkeypatch):
         "generated_at": "2026-01-01T00:00:00+00:00",
         "snapshot_hash": h, "report": "Cached report.",
     }
-    save_cache(cache_path(tmp_path, "ng", "apriori", h), data)
+    save_cache(cache_path(tmp_path, "ng", h), data)
     client = TestClient(api_app.app)
-    res = client.get("/v1/report/ng?ontology_mode=apriori")
+    res = client.get("/v1/report/ng")
     assert res.status_code == 200
     body = res.json()
     assert body["found"] is True
@@ -192,7 +192,7 @@ def test_get_report_does_not_call_llm(tmp_path, monkeypatch):
 
     with patch("src.engine.api.report.generate_report", new=spy):
         client = TestClient(api_app.app)
-        client.get("/v1/report/ng?ontology_mode=apriori")
+        client.get("/v1/report/ng")
 
     assert generate_called["n"] == 0, "GET must not call the LLM"
 
@@ -211,7 +211,7 @@ def test_refresh_cache_hit_skips_llm(tmp_path, monkeypatch):
 
     # Pre-populate exact cache for mock snapshot's hash
     h = snapshot_hash(mock_snap.model_dump())
-    save_cache(cache_path(tmp_path, "ng", "apriori", h), {
+    save_cache(cache_path(tmp_path, "ng", h), {
         "domain": "ng", "ontology_mode": "apriori",
         "generated_at": "2026-01-01T00:00:00+00:00",
         "snapshot_hash": h, "report": "Existing report.",
@@ -220,7 +220,7 @@ def test_refresh_cache_hit_skips_llm(tmp_path, monkeypatch):
     with patch("src.engine.api.narrative.snapshot_for", new=MagicMock(return_value=mock_snap)), \
          patch("src.engine.api.report.generate_report", new=counting_generate):
         client = TestClient(api_app.app)
-        res = client.post("/v1/report/ng/refresh?ontology_mode=apriori")
+        res = client.post("/v1/report/ng/refresh")
 
     assert res.status_code == 200
     body = res.json()
@@ -238,7 +238,7 @@ def test_refresh_changed_snapshot_calls_fireworks(tmp_path, monkeypatch):
     with patch("src.engine.api.narrative.snapshot_for", new=MagicMock(return_value=mock_snap)), \
          patch("src.engine.api.report.generate_report", new=AsyncMock(return_value=mock_text)):
         client = TestClient(api_app.app)
-        res = client.post("/v1/report/ng/refresh?ontology_mode=apriori")
+        res = client.post("/v1/report/ng/refresh")
 
     assert res.status_code == 200
     body = res.json()
@@ -264,11 +264,11 @@ def test_refresh_no_key_stale_cache_serves_stale(tmp_path, monkeypatch):
         "snapshot_hash": "stale_000000000000000000",
         "report": "Stale report.",
     }
-    save_cache(cache_path(tmp_path, "ng", "apriori", "stale_000000000000000000"), stale_data)
+    save_cache(cache_path(tmp_path, "ng", "stale_000000000000000000"), stale_data)
 
     with patch("src.engine.api.narrative.snapshot_for", new=MagicMock(return_value=mock_snap)):
         client = TestClient(api_app.app)
-        res = client.post("/v1/report/ng/refresh?ontology_mode=apriori")
+        res = client.post("/v1/report/ng/refresh")
 
     assert res.status_code == 200
     body = res.json()
@@ -283,7 +283,7 @@ def test_refresh_no_key_no_cache_returns_503(tmp_path, monkeypatch):
 
     with patch("src.engine.api.narrative.snapshot_for", new=MagicMock(return_value=mock_snap)):
         client = TestClient(api_app.app)
-        res = client.post("/v1/report/ng/refresh?ontology_mode=apriori")
+        res = client.post("/v1/report/ng/refresh")
 
     assert res.status_code == 503
     assert "FIREWORKS_API_KEY" in res.json()["detail"]
@@ -300,7 +300,7 @@ def test_refresh_fireworks_failure_serves_stale(tmp_path, monkeypatch):
         "snapshot_hash": "old_hash_000000000000000",
         "report": "Previous report.",
     }
-    save_cache(cache_path(tmp_path, "ng", "apriori", "old_hash_000000000000000"), stale_data)
+    save_cache(cache_path(tmp_path, "ng", "old_hash_000000000000000"), stale_data)
 
     async def failing_generate(*a, **kw):
         raise RuntimeError("Fireworks timeout")
@@ -308,7 +308,7 @@ def test_refresh_fireworks_failure_serves_stale(tmp_path, monkeypatch):
     with patch("src.engine.api.narrative.snapshot_for", new=MagicMock(return_value=mock_snap)), \
          patch("src.engine.api.report.generate_report", new=failing_generate):
         client = TestClient(api_app.app)
-        res = client.post("/v1/report/ng/refresh?ontology_mode=apriori")
+        res = client.post("/v1/report/ng/refresh")
 
     assert res.status_code == 200
     body = res.json()
@@ -327,7 +327,7 @@ def test_refresh_fireworks_failure_no_cache_returns_502(tmp_path, monkeypatch):
     with patch("src.engine.api.narrative.snapshot_for", new=MagicMock(return_value=mock_snap)), \
          patch("src.engine.api.report.generate_report", new=failing_generate):
         client = TestClient(api_app.app)
-        res = client.post("/v1/report/ng/refresh?ontology_mode=apriori")
+        res = client.post("/v1/report/ng/refresh")
 
     assert res.status_code == 502
 
@@ -354,9 +354,9 @@ def test_prompt_version_changes_cache_path(tmp_path, monkeypatch):
     import src.engine.api.report as _report_mod
     h = snapshot_hash({"evidence_count": 42})
     monkeypatch.setattr(_report_mod, "PROMPT_VERSION", "1")
-    path_v1 = cache_path(tmp_path, "ng", "apriori", h)
+    path_v1 = cache_path(tmp_path, "ng", h)
     monkeypatch.setattr(_report_mod, "PROMPT_VERSION", "2")
-    path_v2 = cache_path(tmp_path, "ng", "apriori", h)
+    path_v2 = cache_path(tmp_path, "ng", h)
     assert path_v1 != path_v2
 
 
@@ -373,15 +373,15 @@ def test_stale_cache_path_ignores_old_prompt_version(tmp_path, monkeypatch):
     _report_mod.save_cache(pv1_path, {"domain": "ng", "report": "old bad pv1 report"})
 
     # stale_cache_path with PROMPT_VERSION="99" must not find the pv1 file
-    result = _report_mod.stale_cache_path(tmp_path, "ng", "apriori")
+    result = _report_mod.stale_cache_path(tmp_path, "ng")
     assert result is None
 
     # Plant a pv99 file (correct version)
-    pv99_path = cache_path(tmp_path, "ng", "apriori", "def" * 6)
+    pv99_path = cache_path(tmp_path, "ng", "def" * 6)
     _report_mod.save_cache(pv99_path, {"domain": "ng", "report": "new pv99 report"})
 
     # Now it should find the pv99 file
-    result = _report_mod.stale_cache_path(tmp_path, "ng", "apriori")
+    result = _report_mod.stale_cache_path(tmp_path, "ng")
     assert result == pv99_path
 
 
@@ -451,7 +451,7 @@ def test_refresh_still_returns_200_when_retry_matches_heuristic(tmp_path, monkey
     with patch("src.engine.api.report._generate_report_sync", new=always_meta), \
          patch("src.engine.api.narrative.snapshot_for", new=MagicMock(return_value=mock_snap)):
         client = TestClient(api_app.app)
-        res = client.post("/v1/report/ng/refresh?ontology_mode=apriori")
+        res = client.post("/v1/report/ng/refresh")
 
     # Must succeed despite heuristic hits — better than 502.
     assert res.status_code == 200

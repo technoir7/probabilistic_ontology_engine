@@ -1664,21 +1664,6 @@
        "title": "Domain",
        "type": "string"
       },
-      "ontology_mode": {
-       "anyOf": [
-        {
-         "enum": [
-          "apriori",
-          "dynamic"
-         ],
-         "type": "string"
-        },
-        {
-         "type": "null"
-        }
-       ],
-       "title": "Ontology Mode"
-      },
       "target_variable": {
        "title": "Target Variable",
        "type": "string"
@@ -2084,20 +2069,6 @@
         "title": "Limit",
         "type": "integer"
        }
-      },
-      {
-       "in": "query",
-       "name": "ontology_mode",
-       "required": false,
-       "schema": {
-        "default": "apriori",
-        "enum": [
-         "apriori",
-         "dynamic"
-        ],
-        "title": "Ontology Mode",
-        "type": "string"
-       }
       }
      ],
      "responses": {
@@ -2127,7 +2098,7 @@
    },
    "/v1/export/narrative-snapshot": {
     "get": {
-     "description": "Structured epistemic-state snapshot designed to be passed to an LLM for\nprose interpretation.  Returns the full current state of the probabilistic\nengine for a domain: regime variables, dominant hypothesis, population\ncompetition, causal frontier, and machine-readable interpretation hints.\n\nPass ontology_mode=dynamic for a POE-A artifact snapshot (art domain only).\nDynamic snapshots use induced concepts and support scores rather than old\nPOE posterior probabilities.",
+     "description": "Structured epistemic-state snapshot designed to be passed to an LLM for\nprose interpretation.  Returns the full current state of the probabilistic\nengine for a domain: regime variables, dominant hypothesis, population\ncompetition, causal frontier, and machine-readable interpretation hints.",
      "operationId": "narrative_snapshot_v1_export_narrative_snapshot_get",
      "parameters": [
       {
@@ -2137,20 +2108,6 @@
        "schema": {
         "default": "ng",
         "title": "Domain",
-        "type": "string"
-       }
-      },
-      {
-       "in": "query",
-       "name": "ontology_mode",
-       "required": false,
-       "schema": {
-        "default": "apriori",
-        "enum": [
-         "apriori",
-         "dynamic"
-        ],
-        "title": "Ontology Mode",
         "type": "string"
        }
       }
@@ -2683,20 +2640,6 @@
         "title": "Domain",
         "type": "string"
        }
-      },
-      {
-       "in": "query",
-       "name": "ontology_mode",
-       "required": false,
-       "schema": {
-        "default": "apriori",
-        "enum": [
-         "apriori",
-         "dynamic"
-        ],
-        "title": "Ontology Mode",
-        "type": "string"
-       }
       }
      ],
      "responses": {
@@ -2746,20 +2689,6 @@
         "title": "Domain",
         "type": "string"
        }
-      },
-      {
-       "in": "query",
-       "name": "ontology_mode",
-       "required": false,
-       "schema": {
-        "default": "apriori",
-        "enum": [
-         "apriori",
-         "dynamic"
-        ],
-        "title": "Ontology Mode",
-        "type": "string"
-       }
       }
      ],
      "responses": {
@@ -2789,6 +2718,7 @@
    },
    "/v1/population/shifts": {
     "get": {
+     "description": "Return the full chronological history of paradigm shifts for a domain.\n\nA paradigm shift is recorded each time the dominant candidate changes\nduring a learning cycle.  Events are written by PopulationManager.end_cycle()\nand persisted to the ``paradigm_shifts`` SQLite table.\n\nNote: Events are only available from the point when shift logging was first\nenabled.  Older engines that ran before this feature was introduced will\nreturn an empty list even if shifts occurred historically \u2014 the\n``dominant_hypothesis.candidate_id`` in /v1/population/status still reflects\nthe current dominant, and ``paradigm_shifts_this_window`` in that response\ngives the cumulative shift count since startup.",
      "operationId": "population_shifts_v1_population_shifts_get",
      "parameters": [
       {
@@ -2798,20 +2728,6 @@
        "schema": {
         "default": "ng",
         "title": "Domain",
-        "type": "string"
-       }
-      },
-      {
-       "in": "query",
-       "name": "ontology_mode",
-       "required": false,
-       "schema": {
-        "default": "apriori",
-        "enum": [
-         "apriori",
-         "dynamic"
-        ],
-        "title": "Ontology Mode",
         "type": "string"
        }
       }
@@ -2854,20 +2770,6 @@
         "title": "Domain",
         "type": "string"
        }
-      },
-      {
-       "in": "query",
-       "name": "ontology_mode",
-       "required": false,
-       "schema": {
-        "default": "apriori",
-        "enum": [
-         "apriori",
-         "dynamic"
-        ],
-        "title": "Ontology Mode",
-        "type": "string"
-       }
       }
      ],
      "responses": {
@@ -2897,7 +2799,7 @@
    },
    "/v1/report/{domain}": {
     "get": {
-     "description": "Read-only: return the latest cached report for this domain/mode without\nrebuilding the snapshot or calling the LLM.  Returns found=False when no\ncached report exists so callers can distinguish \"never generated\" from an\nerror.",
+     "description": "Read-only: return the latest cached report for this domain without\nrebuilding the snapshot or calling the LLM.  Returns found=False when no\ncached report exists so callers can distinguish \"never generated\" from an\nerror.",
      "operationId": "domain_report_read_v1_report__domain__get",
      "parameters": [
       {
@@ -2906,20 +2808,6 @@
        "required": true,
        "schema": {
         "title": "Domain",
-        "type": "string"
-       }
-      },
-      {
-       "in": "query",
-       "name": "ontology_mode",
-       "required": false,
-       "schema": {
-        "default": "apriori",
-        "enum": [
-         "apriori",
-         "dynamic"
-        ],
-        "title": "Ontology Mode",
         "type": "string"
        }
       }
@@ -2960,20 +2848,6 @@
        "required": true,
        "schema": {
         "title": "Domain",
-        "type": "string"
-       }
-      },
-      {
-       "in": "query",
-       "name": "ontology_mode",
-       "required": false,
-       "schema": {
-        "default": "apriori",
-        "enum": [
-         "apriori",
-         "dynamic"
-        ],
-        "title": "Ontology Mode",
         "type": "string"
        }
       }

@@ -9,9 +9,8 @@ from fastapi import APIRouter, HTTPException, Query, Request
 from ...engine import ProbabilisticOntologyEngine
 from ...model.scoring import candidate_score
 from ...schemas import OntologyCandidate
-from .. import context, poea_dynamic, presenters
+from .. import context, presenters
 from ..dto import (
-    OntologyMode,
     PopStatusOut,
     CandidateOut,
     CandidatesOut,
@@ -29,13 +28,8 @@ router = APIRouter()
 async def population_status(
     request: Request,
     domain: str = Query("ng"),
-    ontology_mode: OntologyMode = Query("apriori"),
 ) -> PopStatusOut:
     engine, domain_id, display_name = context.resolve_domain(domain, request.app.state)
-    if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(domain.lower()):
-        data = poea_dynamic.build_population_status(display_name)
-        if data is not None:
-            return PopStatusOut.model_validate(data)
     return presenters.build_population_status(engine, domain_id, display_name)
 
 
@@ -43,13 +37,8 @@ async def population_status(
 async def population_candidates(
     request: Request,
     domain: str = Query("ng"),
-    ontology_mode: OntologyMode = Query("apriori"),
 ) -> CandidatesOut:
     engine, domain_id, display_name = context.resolve_domain(domain, request.app.state)
-    if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(domain.lower()):
-        data = poea_dynamic.build_candidates(display_name)
-        if data is not None:
-            return CandidatesOut.model_validate(data)
     pop = engine.get_population(domain_id)
     active = pop.active_candidates()
     dom = pop.dominant()
@@ -83,17 +72,7 @@ async def population_lineage(
     request: Request,
     candidate_id: str,
     domain: str = Query("ng"),
-    ontology_mode: OntologyMode = Query("apriori"),
 ) -> LineageOut:
-    if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(domain.lower()):
-        _, _, display_name = context.resolve_domain(domain, request.app.state)
-        data = poea_dynamic.build_lineage(candidate_id, display_name)
-        if data is not None:
-            return LineageOut.model_validate(data)
-        raise HTTPException(
-            status_code=404,
-            detail=f"Dynamic candidate '{candidate_id}' not found in POE-A artifacts",
-        )
     engine, domain_id, display_name = context.resolve_domain(domain, request.app.state)
     pop = engine.get_population(domain_id)
 
@@ -188,13 +167,7 @@ async def population_lineage(
 async def population_shifts(
     request: Request,
     domain: str = Query("ng"),
-    ontology_mode: OntologyMode = Query("apriori"),
 ) -> ParadigmShiftsOut:
-    if ontology_mode == "dynamic" and poea_dynamic.is_dynamic_available(domain.lower()):
-        engine, domain_id, display_name = context.resolve_domain(domain, request.app.state)
-        return ParadigmShiftsOut.model_validate(
-            poea_dynamic.build_shifts(display_name, domain_id)
-        )
     """
     Return the full chronological history of paradigm shifts for a domain.
 

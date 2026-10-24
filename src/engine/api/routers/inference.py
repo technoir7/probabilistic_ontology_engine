@@ -6,7 +6,7 @@ import logging
 from fastapi import APIRouter, HTTPException, Request
 
 from ...schemas import InferenceQuery, PopulationAggregation, QueryType
-from .. import context, poea_dynamic, presenters
+from .. import context, presenters
 from ..dto import (
     GraphNodeOut,
     GraphEdgeOut,
@@ -22,14 +22,6 @@ router = APIRouter()
 @router.post("/v1/inference/query", response_model=InferenceOut)
 async def inference_query(request: Request, body: QueryBodyIn) -> InferenceOut:
     engine, domain_id, display_name = context.resolve_domain(body.domain, request.app.state)
-
-    if (
-        body.ontology_mode == "dynamic"
-        and poea_dynamic.is_dynamic_available(body.domain.lower())
-    ):
-        data = poea_dynamic.build_inference(body.target_variable)
-        if data is not None:
-            return InferenceOut.model_validate(data)
 
     pop = engine.get_population(domain_id)
 
