@@ -5,16 +5,13 @@ Implements the pseudocode from SPEC §17.
 """
 from __future__ import annotations
 
-import random
-
 import hashlib
 import json
 import logging
+import random
 from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID
-
-logger = logging.getLogger(__name__)
 
 from .model.domain import DomainModule
 from .model.doubt import DISCOUNT as DOUBT_DISCOUNT
@@ -36,6 +33,8 @@ from .stores.database import Database
 from .stores.evidence_store import EvidenceStore
 from .stores.parameter_store import ParameterStore
 from .stores.population_store import PopulationStore
+
+logger = logging.getLogger(__name__)
 
 
 class ProbabilisticOntologyEngine:
