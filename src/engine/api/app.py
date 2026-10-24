@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse
 
 from ..engine import ProbabilisticOntologyEngine
 from ..runtime.data_migrations import move_friday_weekly_records_to_sunday
+from ..runtime.log_redaction import configure_logging
 from ..runtime.registry import REGISTRY, DomainRegistration
 from ..runtime.scheduler import run_scheduler
 from ..runtime.settings import Settings, load_dotenv_unless_disabled
@@ -28,7 +29,7 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     load_dotenv_unless_disabled()
     settings = Settings.from_env()
-    logging.basicConfig(level=settings.log_level, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+    configure_logging(settings.log_level)
     data_dir = settings.data_dir
     data_dir.mkdir(parents=True, exist_ok=True)
     scheduler_enabled = settings.scheduler_enabled

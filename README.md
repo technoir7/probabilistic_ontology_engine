@@ -9,8 +9,9 @@ forecaster, and is not tuned to be one; it is meant to be legible as
 epistemology, and its forecasts are watched only as a check on its honesty.
 
 It runs live over eleven domains fed by public data (FRED, EIA, SEC EDGAR,
-GDELT, CoinGecko, SF Open Data and others), behind the Epistemic State
-Monitor dashboard.
+GDELT, CoinGecko, SF Open Data and others), behind the
+[Epistemic State Monitor](https://epistemic-monitor-production.up.railway.app)
+dashboard ([source](https://github.com/technoir7/epistemic-monitor)).
 
 ![The Epistemic State Monitor: the macro domain's leading explanation, its belief graph, current regime and paradigm-shift history](docs/dashboard.png)
 
