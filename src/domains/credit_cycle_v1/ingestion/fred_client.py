@@ -10,7 +10,7 @@ BAMLH0A0HYM2  ICE BofA US High Yield OAS (daily, %)
 DRTSCILM      Net % of Domestic Banks Tightening C&I Loan Standards (quarterly)
               Used for: LeveragedLoanStress (z-score), BankLendingTightening (z-score)
 
-TOTCI         Total Consumer Installment Loans (monthly, billions)
+TOTCI         Commercial and Industrial Loans, All Commercial Banks (weekly, billions)
               Used for: CreditImpulseNegative (3-month growth rate)
 
 BAMLC0A0CM    ICE BofA US Corporate Index OAS — Investment Grade (daily, %)

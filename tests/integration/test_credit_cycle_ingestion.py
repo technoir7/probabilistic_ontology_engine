@@ -186,6 +186,17 @@ def test_negative_credit_impulse():
     assert p > 0.5, f"Expected P > 0.5 for declining credit, got {p:.3f}"
 
 
+def test_credit_impulse_compares_three_months_of_a_weekly_series():
+    """TOTCI is weekly (C&I loans, all commercial banks). Lending that fell
+    over the quarter but rose in the last three weeks is a negative impulse;
+    counting three observations back measured three weeks."""
+    weekly = [1000.0, 960.0, 930.0, 900.0] + [1100.0] * 13  # newest first: up 11% in 3 weeks, down 9% in 13
+    obs = [FREDObservation(obs_date=_TARGET_DATE - timedelta(weeks=w), value=v, series_id="TOTCI")
+           for w, v in enumerate(weekly)]
+    sig, _ = _compute_credit_impulse_negative(obs)
+    assert sig is not None and _soft_bool(sig) > 0.5
+
+
 def test_build_evidence_record_maps_all_uuids():
     variables = get_variables()
     expected_ids = {v.variable_id for v in variables.values()}

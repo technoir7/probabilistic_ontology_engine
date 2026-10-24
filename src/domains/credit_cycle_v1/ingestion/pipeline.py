@@ -39,7 +39,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, timedelta
 from typing import Optional
 
 
@@ -58,7 +58,7 @@ _CLAMP_HI: float = 0.99
 _MIN_OBS: dict[str, int] = {
     "BAMLH0A0HYM2": 52,
     "DRTSCILM":     5,    # quarterly; need 5 quarters for z-score
-    "TOTCI":        4,    # 4 months for 3m growth
+    "TOTCI":        2,    # a value now and one at least 3 months earlier
     "BAMLC0A0CM":   52,
     "DGS5":         52,
 }
@@ -125,12 +125,17 @@ def _compute_corporate_default_risk(obs: list[FREDObservation]) -> tuple[Optiona
 
 
 def _compute_credit_impulse_negative(obs: list[FREDObservation]) -> tuple[Optional[float], float]:
-    """TOTCI: negative 3-month growth rate → CreditImpulseNegative = True."""
+    """TOTCI: negative 3-month growth rate → CreditImpulseNegative = True.
+
+    Found by date, not position: TOTCI is weekly, so three observations
+    back would be three weeks.
+    """
     if len(obs) < _MIN_OBS["TOTCI"]:
         return None, 0.5
     current = obs[0].value
-    three_m_ago = obs[min(3, len(obs) - 1)].value
-    if three_m_ago == 0:
+    quarter_back = obs[0].obs_date - timedelta(days=91)
+    three_m_ago = next((o.value for o in obs if o.obs_date <= quarter_back), None)
+    if three_m_ago is None or three_m_ago == 0:
         return None, 0.5
     growth_pct = (current / three_m_ago - 1.0) * 100.0
     # Negative growth → positive signal

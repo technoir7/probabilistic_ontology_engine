@@ -42,7 +42,7 @@ RefinancingStress
     True  = DGS5 + BAMLH0A0HYM2 composite elevated (refinancing cost above threshold)
     False = refinancing environment manageable
 
-Seed ontologies (4 competing hypotheses)
+Seed ontologies (4 competing hypotheses, and the T_null baseline)
 -----------------------------------------
 H1: monetary_tightening_transmission
     BankLendingTightening → LeveragedLoanStress → HYSpreadElevated
@@ -60,7 +60,7 @@ FRED series used
 ----------------
 BAMLH0A0HYM2  (daily)   — HYSpreadElevated, CorporateDefaultRisk, HighYieldIssuanceFalling
 DRTSCILM      (quarterly)— LeveragedLoanStress, BankLendingTightening
-TOTCI         (monthly)  — CreditImpulseNegative
+TOTCI         (weekly)   — CreditImpulseNegative
 BAMLC0A0CM    (daily)    — InvestmentGradeSpread
 DGS5          (daily)    — RefinancingStress (composite with BAMLH0A0HYM2)
 
