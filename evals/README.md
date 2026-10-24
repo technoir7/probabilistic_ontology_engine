@@ -573,3 +573,48 @@ written to `data/replay10/`:
     survival and leaders came from the engine's own scoring and stand,
     except as the skipped-variable fault touched the engine too (replay 10's
     second fault).
+
+## Replay 11: an engine given no hypotheses
+
+*Plan, written before replay 11 ran. The design it tests was settled
+against the synthetic milestone (EPISTEMOLOGY.md §2), not against any
+replay; nothing here has been run on the FRED data.*
+
+Replays 1 to 10 began from six worldviews written by hand in 2026, by
+someone who knew how 2003–2026 turned out. However carefully the evidence
+was kept to what was first published, the hypotheses carried hindsight.
+REFACTOR_SPEC D24 removed them. The engine now begins with the eight
+signals, each one's value last week, and one explanation that connects
+nothing. Each week it offers each programme's best explanation the
+connection, or reversal, that its last 100 records most support beyond
+BIC's penalty, judged only on the weeks after. Blind variants revise what
+it has formed and never form anything from nothing. Persistence is no
+longer assumed.
+
+Same data as first published (ALFRED), seeds 0–4, the same events and
+window, written to `data/replay11/`. Compared with replay 10 throughout.
+
+14. **Does it find persistence, and how soon?** For each signal, the first
+    week the leader holds "this signal last week bears on it", and the
+    share of weeks after that it keeps holding it. Expected: all eight
+    within the first year, since in replay 10 persistence explained each
+    week 0.56 nats better than independent signals. If any signal's
+    persistence is never held, that is a finding about the engine, not the
+    signal.
+15. **Does anything it forms explain the weeks better than persistence?**
+    The leader's fit gap over independent signals, week by week and over
+    the whole run, against replay 10's 0.56–0.57 nats; and every link
+    between two different signals that a leader holds for 52 weeks or
+    more. A better fit with such links would be the first evidence that
+    the signals bear on one another. The same fit with none would say
+    replay 10's verdict did not depend on the hand-written worldviews.
+16. **Do its changes of programme follow the events?** Programme changes
+    (worldview changes, not revisions) against the ten events, within 26
+    weeks, as before; and changes away from any event.
+17. **Is it still calibrated?** Calibration against the evidence and the
+    forecast from last week alone, against replay 10's 0.046–0.048 and
+    −3.35 nats.
+
+What would count against the design: a leader that never holds most of
+the persistence links, a fit gap well below replay 10's, or a population
+that fills with programmes the evidence never refutes.
