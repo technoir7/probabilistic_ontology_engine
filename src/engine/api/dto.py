@@ -13,7 +13,7 @@ from pydantic import BaseModel
 class DominantHypothesis(BaseModel):
     name: str
     candidate_id: str
-    generations_dominant: int
+    generations_dominant: Optional[int]  # None when the shift log cannot place the last shift (B1)
 
 
 class PopStatusOut(BaseModel):
@@ -148,7 +148,7 @@ class NarrativeDominantHypothesisOut(BaseModel):
     candidate_id: str
     edge_count: int
     edges: list[NarrativeEdgeOut]
-    generations_dominant: int
+    generations_dominant: Optional[int]  # None when the shift log cannot place the last shift (B1)
     log_score: float
 
 

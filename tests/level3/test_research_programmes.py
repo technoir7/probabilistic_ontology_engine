@@ -197,4 +197,26 @@ def test_generations_led_counts_from_the_last_paradigm_shift():
         domain_module_id=domain, generation=7, prev_dominant_id=uuid4(), prev_dominant_name="a",
         new_dominant_id=uuid4(), new_dominant_name="b", evidence_count_at_shift=40,
         evidence_ts=datetime(2020, 3, 15), prev_programme="a", new_programme="b")
+    pop.paradigm_shift_count = 1
     assert engine.generations_led(domain) == 5
+
+
+def test_generations_led_is_unknown_when_the_log_predates_the_population():
+    """Before populations were persisted (B1) each restart counted generations
+    from 0 again, so an old log can end with a shift numbered past today's
+    generation. With no shift in this population's life the leader has led
+    throughout; with one that cannot be placed, how long is unknown."""
+    from datetime import datetime
+    engine = engine_for(TestDomainV1())
+    domain = "test-domain-v1"
+    pop = engine.get_population(domain)
+    pop.generation = 6
+    engine.population_store.append_shift_event(
+        domain_module_id=domain, generation=408, prev_dominant_id=uuid4(), prev_dominant_name="a",
+        new_dominant_id=uuid4(), new_dominant_name="b", evidence_count_at_shift=40,
+        evidence_ts=datetime(2026, 5, 27), prev_programme="a", new_programme="b")
+
+    pop.paradigm_shift_count = 0
+    assert engine.generations_led(domain) == 6
+    pop.paradigm_shift_count = 1
+    assert engine.generations_led(domain) is None

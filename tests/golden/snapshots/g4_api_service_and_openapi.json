@@ -437,8 +437,15 @@
        "type": "string"
       },
       "generations_dominant": {
-       "title": "Generations Dominant",
-       "type": "integer"
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Generations Dominant"
       },
       "name": {
        "title": "Name",
@@ -1107,8 +1114,15 @@
        "type": "array"
       },
       "generations_dominant": {
-       "title": "Generations Dominant",
-       "type": "integer"
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Generations Dominant"
       },
       "log_score": {
        "title": "Log Score",
