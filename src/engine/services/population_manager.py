@@ -285,8 +285,8 @@ class PopulationManager:
         max_attempts = slots * 10
 
         # Mutation-cycle diagnostics
-        _dag_violations = 0
-        _duplicate_rejections = 0
+        dag_violations = 0
+        duplicate_rejections = 0
 
         while len(new_candidates) < slots and attempts < max_attempts:
             parent_cand = survivors[attempts % len(survivors)]
@@ -295,13 +295,13 @@ class PopulationManager:
             if variant is None:
                 continue
             if not variant.is_dag():
-                _dag_violations += 1
+                dag_violations += 1
                 continue
             # Avoid duplicates
             sig = variant.edge_structure_signature()
             existing_sigs = {c.edge_structure_signature() for c in active + new_candidates}
             if sig in existing_sigs:
-                _duplicate_rejections += 1
+                duplicate_rejections += 1
                 continue
 
             pop.candidates.append(variant)
@@ -328,8 +328,8 @@ class PopulationManager:
         # Record mutation diagnostics for this cycle
         self._last_mutation_stats[domain_module_id] = {
             "total_attempts": attempts,
-            "dag_violations": _dag_violations,
-            "duplicate_rejections": _duplicate_rejections,
+            "dag_violations": dag_violations,
+            "duplicate_rejections": duplicate_rejections,
             "introduced": len(new_candidates),
         }
 
@@ -383,9 +383,6 @@ class PopulationManager:
         ]
 
         if strategy == "add" and admissible:
-            candidates_to_add = sorted(admissible - edge_sigs)
-            if not candidates_to_add:
-                return None
             pname, cname = self.rng.choice(candidates_to_add)
             pvar = parent.get_variable_by_name(pname)
             cvar = parent.get_variable_by_name(cname)
