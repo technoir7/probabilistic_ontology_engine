@@ -40,18 +40,6 @@ def fridays(start: date, end: date) -> list[date]:
     return [first + timedelta(weeks=i) for i in range((end - first).days // 7 + 1)]
 
 
-def family_of(candidate_id: str, parents: dict[str, str | None], seeds: dict[str, str]) -> str:
-    """The seed explanation a candidate descends from."""
-    seen = set()
-    current: str | None = candidate_id
-    while current is not None and current not in seen:
-        if current in seeds:
-            return seeds[current]
-        seen.add(current)
-        current = parents.get(current)
-    return "unknown"
-
-
 def _independent() -> OntologyCandidate:
     return OntologyCandidate(candidate_id=uuid4(), domain_module_id=DOMAIN, generation=0,
                              variables=list(get_variables().values()), edges=[],
@@ -63,10 +51,6 @@ def run(history: dict, seed: int, start: date, end: date, credit: str = fh.CREDI
     engine.register_domain(MacroRegimeV1())
     engine.activate_domain(DOMAIN)
     pop = engine.population_manager.get_population(DOMAIN)
-    seeds = {str(c.candidate_id): c.description.split(":")[0] for c in pop.candidates}
-    founding = {seeds[str(c.candidate_id)]: {(e.parent_variable_id, e.child_variable_id) for e in c.edges}
-                for c in pop.candidates}
-    parents: dict[str, str | None] = {}
     baseline = _independent()
     engine.learning_service.initialize_candidate(baseline)
 
@@ -91,46 +75,42 @@ def run(history: dict, seed: int, start: date, end: date, credit: str = fh.CREDI
                 cpt.discount(DOUBT_DISCOUNT)
         engine.learning_service.accumulate([record], baseline)
 
-        for c in pop.candidates:
-            parents.setdefault(str(c.candidate_id), str(c.parent_candidate_id) if c.parent_candidate_id else None)
         now = engine.population_manager.dominant(DOMAIN)
         rows.append({
             "week": week.isoformat(),
             "leader": str(now.candidate_id),
-            "family": family_of(str(now.candidate_id), parents, seeds),
+            "family": now.lineage,
             "edges": sorted(f"{e.parent_variable_id}>{e.child_variable_id}" for e in now.edges),
             "leader_ll": leader_ll,
             "independent_ll": independent_ll,
             "observed": sum(a.missingness.value != "MISSING" for a in record.observed_assignments),
             "states": {get_name(a.variable_id): a.observed_value for a in record.observed_assignments},
             "entropy": structure_entropy(pop.active_candidates()),
-            "active_families": dict(sorted(Counter(family_of(str(c.candidate_id), parents, seeds)
-                                                   for c in pop.active_candidates()).items())),
+            "active_families": dict(sorted(Counter(c.lineage for c in pop.active_candidates()).items())),
             "active": len(pop.active_candidates()),
             "doubt": engine.doubt_events(DOMAIN) > doubts,
             "population_ll": engine.epistemic_health(DOMAIN)["last_cycle"].get("population_ll"),
             "forecast_ll": engine.epistemic_health(DOMAIN)["last_cycle"].get("forecast_ll"),
-            "programmes": programmes(pop.active_candidates(), now, parents, seeds, founding),
+            "programmes": programmes(pop.active_candidates(), now),
         })
     rows[-1]["health"] = engine.epistemic_health(DOMAIN)
     return rows
 
 
-def programmes(active: list[OntologyCandidate], leader: OntologyCandidate, parents: dict, seeds: dict,
-               founding: dict) -> dict:
+def programmes(active: list[OntologyCandidate], leader: OntologyCandidate) -> dict:
     """Each surviving programme's best candidate: the evidence for the leader
     over it (what pruning judges), its links, the evidence it has been scored
-    on, and the share of its founding links it still holds."""
+    on, and whether it still holds the connection that founded it (D24)."""
     best: dict[str, OntologyCandidate] = {}
     for c in sorted(active, key=lambda c: log_bayes_factor(leader, c)):
-        best.setdefault(family_of(str(c.candidate_id), parents, seeds), c)
+        best.setdefault(c.lineage, c)
     out = {}
     for family, c in sorted(best.items()):
-        edges = {(e.parent_variable_id, e.child_variable_id) for e in c.edges}
-        core = founding.get(family, set())
-        out[family] = {"log_bf": round(log_bayes_factor(leader, c), 3), "edges": len(edges),
+        pair = family.split("–") if "–" in family else None
+        held = {frozenset(e) for e in c.edge_structure_signature()}
+        out[family] = {"log_bf": round(log_bayes_factor(leader, c), 3), "edges": len(c.edges),
                        "window": round(c.window_evidence, 1),
-                       "core_kept": round(len(edges & core) / len(core), 2) if core else None}
+                       "core_kept": frozenset(pair) in held if pair else None}
     return out
 
 

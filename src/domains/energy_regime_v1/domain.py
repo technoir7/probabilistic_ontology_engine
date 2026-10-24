@@ -50,20 +50,6 @@ DemandDestructionRisk
     False = industrial production stable or unemployment not rising
     Signal: economic slowdown reducing energy demand
 
-Seed ontologies (4 competing hypotheses)
------------------------------------------
-H1: supply_shock
-    OPECSupplyConstraint → OilPriceSurge → EnergyInflationPersistent
-
-H2: demand_driven
-    DemandDestructionRisk (inverted) → OilPriceSurge → EnergyEquityMomentum
-
-H3: geopolitical_premium
-    GeopoliticalRiskElevated → OilPriceSurge → NatGasPriceSurge
-
-H4: renewables_transition
-    RenewablesDisplacement → EnergyEquityMomentum → OilPriceSurge (weak, inverted)
-
 Data sources
 ------------
 yfinance: CL=F, NG=F, XLE, ICLN (daily close prices)
@@ -73,13 +59,9 @@ Cadence: WEEKLY (every Monday at 09:00 UTC)
 """
 from __future__ import annotations
 
-from uuid import uuid4
-
-from ..sources.structure import boolean_variables, seed_edge
+from ..sources.structure import boolean_variables, with_lags
 from ...engine.schemas import (
-    DependencyEdge,
     EdgeExistenceThresholdConfig,
-    OntologyCandidate,
     Variable,
 )
 
@@ -103,156 +85,6 @@ def get_variables() -> dict[str, Variable]:
     return _VARIABLE_DEFS
 
 
-def _var(name: str) -> Variable:
-    return _VARIABLE_DEFS[name]
-
-
-def _var_list() -> list[Variable]:
-    return list(_VARIABLE_DEFS.values())
-
-
-def _edge(parent: str, child: str, prior: float = 0.60, label: str = "") -> DependencyEdge:
-    return seed_edge(_VARIABLE_DEFS, parent, child, prior, label)
-
-
-def make_supply_shock_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
-    """
-    H1: supply_shock — OPEC-driven supply constraint cascade.
-
-    Hypothesis: OPEC+ supply cuts create a sustained oil price rally
-    which feeds through to energy inflation and pulls natural gas prices
-    higher as fuel switching increases demand.
-
-        OPECSupplyConstraint → OilPriceSurge
-        OilPriceSurge → EnergyInflationPersistent
-        OilPriceSurge → NatGasPriceSurge
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge("OPECSupplyConstraint",     "OilPriceSurge",             prior=0.70,
-                  label="OPEC supply cut → oil price surge"),
-            _edge("OilPriceSurge",             "EnergyInflationPersistent", prior=0.65,
-                  label="oil rally → energy CPI elevated"),
-            _edge("OilPriceSurge",             "NatGasPriceSurge",          prior=0.60,
-                  label="oil surge → fuel switching → gas demand"),
-        ],
-        description="H1: supply_shock",
-    )
-
-
-def make_demand_driven_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
-    """
-    H2: demand_driven — Strong demand driving energy price surge.
-
-    Hypothesis: Absence of demand destruction (DemandDestructionRisk=False)
-    supports sustained energy demand, driving oil prices higher which lifts
-    energy equity valuations.
-
-        DemandDestructionRisk → OilPriceSurge (negative: no destruction → price up)
-        OilPriceSurge → EnergyEquityMomentum
-        OilPriceSurge → EnergyInflationPersistent
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge("DemandDestructionRisk",    "OilPriceSurge",             prior=0.60,
-                  label="demand resilience → oil price support"),
-            _edge("OilPriceSurge",             "EnergyEquityMomentum",      prior=0.70,
-                  label="oil surge → energy equity outperformance"),
-            _edge("OilPriceSurge",             "EnergyInflationPersistent", prior=0.60,
-                  label="oil price → energy inflation"),
-        ],
-        description="H2: demand_driven",
-    )
-
-
-def make_geopolitical_premium_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
-    """
-    H3: geopolitical_premium — Geopolitical risk driving cross-commodity surge.
-
-    Hypothesis: Elevated geopolitical risk drives oil price volatility and
-    a persistent risk premium that also spills into natural gas markets
-    (common supply infrastructure and fuel switching).
-
-        GeopoliticalRiskElevated → OilPriceSurge
-        OilPriceSurge → NatGasPriceSurge
-        GeopoliticalRiskElevated → EnergyInflationPersistent
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge("GeopoliticalRiskElevated", "OilPriceSurge",             prior=0.70,
-                  label="geopolitical risk → oil risk premium"),
-            _edge("OilPriceSurge",             "NatGasPriceSurge",          prior=0.65,
-                  label="oil → gas cross-commodity linkage"),
-            _edge("GeopoliticalRiskElevated", "EnergyInflationPersistent", prior=0.60,
-                  label="geopolitical supply risk → energy inflation"),
-        ],
-        description="H3: geopolitical_premium",
-    )
-
-
-def make_renewables_transition_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
-    """
-    H4: renewables_transition — Clean energy displacement narrative.
-
-    Hypothesis: Renewable energy momentum (ICLN outperforming XLE) drives
-    energy equity market leadership and weakens the long-run demand signal
-    for fossil fuel prices.
-
-        RenewablesDisplacement → EnergyEquityMomentum
-        EnergyEquityMomentum → OilPriceSurge
-        RenewablesDisplacement → OPECSupplyConstraint
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge("RenewablesDisplacement", "EnergyEquityMomentum", prior=0.60,
-                  label="clean energy momentum → energy sector rerating"),
-            _edge("EnergyEquityMomentum",   "OilPriceSurge",         prior=0.55,
-                  label="energy equity momentum → oil demand expectation"),
-            _edge("RenewablesDisplacement", "OPECSupplyConstraint",  prior=0.55,
-                  label="renewables pressure → OPEC defends price"),
-        ],
-        description="H4: renewables_transition",
-    )
-
-
-def make_null_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
-    """
-    T_null — Baseline: only direct geopolitical → oil linkage is structural.
-
-        GeopoliticalRiskElevated → OilPriceSurge
-        OPECSupplyConstraint → OilPriceSurge
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge("GeopoliticalRiskElevated", "OilPriceSurge",        prior=0.55,
-                  label="geopolitical → oil (baseline)"),
-            _edge("OPECSupplyConstraint",      "OilPriceSurge",        prior=0.55,
-                  label="OPEC → oil (baseline)"),
-        ],
-        description="T_null: direct supply-geopolitical baseline",
-    )
-
-
 class EnergyRegimeV1:
     """Domain module for the energy regime ontology."""
 
@@ -261,14 +93,8 @@ class EnergyRegimeV1:
     def module_id(self) -> str:
         return self._MODULE_ID
 
-    def initial_candidates(self) -> list[OntologyCandidate]:
-        return [
-            make_supply_shock_candidate(self._MODULE_ID),
-            make_demand_driven_candidate(self._MODULE_ID),
-            make_geopolitical_premium_candidate(self._MODULE_ID),
-            make_renewables_transition_candidate(self._MODULE_ID),
-            make_null_candidate(self._MODULE_ID),
-        ]
+    def variables(self) -> list[Variable]:
+        return list(with_lags(self._MODULE_ID, _VARIABLE_DEFS).values())
 
     def existence_thresholds(self) -> EdgeExistenceThresholdConfig:
         return EdgeExistenceThresholdConfig(

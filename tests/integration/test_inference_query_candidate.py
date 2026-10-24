@@ -7,12 +7,29 @@ from __future__ import annotations
 from fastapi.testclient import TestClient
 
 from src.engine.api import app as api_app
-from src.engine.schemas import InferenceQuery
-from tests.fakes import ADMIN, patch_soft_evidence_for_all_domains, running_engine
+from src.engine.schemas import InferenceQuery, MissingnessType
+from tests.fakes import ADMIN, domain_variables, patch_evidence_fetch, running_engine, soft_record
+
+
+def price_follows_storage(monkeypatch) -> None:
+    """Natural-gas evidence in which PriceUp copies StorageDraw, so the engine,
+    which begins with no hypotheses (D24), has a connection to form and the
+    population holds rivals that answer differently about PriceUp."""
+    async def fetch(domain_key, target_date):
+        record = soft_record(domain_variables(domain_key), target_date, seed=domain_key)
+        by_name = {v.variable_id: v.name for v in domain_variables(domain_key)}
+        storage = next(a for a in record.observed_assignments if by_name[a.variable_id] == "StorageDraw")
+        seen = {"variable_id": None, "observed_value": storage.observed_value,
+                "missingness": MissingnessType.OBSERVED, "probabilities": None}
+        return record.model_copy(update={"observed_assignments": [
+            a.model_copy(update={**seen, "variable_id": a.variable_id})
+            if by_name[a.variable_id] in ("StorageDraw", "PriceUp") else a
+            for a in record.observed_assignments]})
+    patch_evidence_fetch(monkeypatch, fetch)
 
 
 def test_inference_query_answers_for_the_requested_candidate(monkeypatch):
-    patch_soft_evidence_for_all_domains(monkeypatch)
+    price_follows_storage(monkeypatch)
     with TestClient(api_app.app, headers=ADMIN) as client:
         assert client.post("/v1/ingest/backfill?domain=ng&days=21").status_code == 200
         engine = running_engine("ng")
@@ -37,7 +54,7 @@ def test_inference_query_answers_for_the_requested_candidate(monkeypatch):
 def test_weighted_avg_answers_for_the_population(monkeypatch):
     """REFACTOR_SPEC D6: aggregation="weighted_avg" (the dashboard sends it) averages
     P(True) over the population by structure weight; the graph stays the candidate's."""
-    patch_soft_evidence_for_all_domains(monkeypatch)
+    price_follows_storage(monkeypatch)
     with TestClient(api_app.app, headers=ADMIN) as client:
         assert client.post("/v1/ingest/backfill?domain=ng&days=21").status_code == 200
         engine = running_engine("ng")

@@ -8,8 +8,6 @@ ingestion logic, and cadence logic.
 Test inventory
 --------------
 TEST-AI-01  All 8 variable IDs are stable across module imports
-TEST-AI-02  All 4 initial candidates are valid DAGs
-TEST-AI-03  All candidates share the same variable set
 TEST-AI-04  Soft probabilities are clamped to [0.01, 0.99] for all signals
 TEST-AI-05  SemiconductorMomentum: high SOX momentum → P > 0.5
 TEST-AI-06  SemiconductorMomentum: low SOX momentum → P < 0.5
@@ -33,9 +31,6 @@ TEST-AI-24  compute_snapshot falls back gracefully with no data
 TEST-AI-25  compute_snapshot partial data does not raise
 TEST-AI-26  Full pipeline fetch_evidence with fully mocked clients
 TEST-AI-27  Domain registers and activates in the engine
-TEST-AI-28  All 4 candidates have distinct edge structures
-TEST-AI-29  All edges have valid existence priors
-TEST-AI-30  AIRegimeV1 module_id matches candidates
 TEST-AI-31  Existence thresholds are within valid ranges
 TEST-AI-32  IPInvestmentRising signal uses historical median comparison
 TEST-AI-33  Scheduler backfill date list has correct cadence (Fridays only)
@@ -59,10 +54,6 @@ from src.domains.sources.soft_evidence import sigmoid as _sigmoid, zscore as _zs
 from src.domains.ai_regime_v1.domain import (
     AIRegimeV1,
     get_variables,
-    make_infrastructure_buildout_candidate,
-    make_bubble_detachment_candidate,
-    make_winner_take_all_candidate,
-    make_productivity_regime_candidate,
 )
 from src.domains.ai_regime_v1.ingestion.edgar_client import (
     EDGARClient,
@@ -222,58 +213,13 @@ def test_variable_ids_are_stable():
     vars1 = get_variables()
     vars2 = get_variables()
     domain = AIRegimeV1()
-    cands = domain.initial_candidates()
-    cand_vars = {v.name: v.variable_id for v in cands[0].variables}
+    domain_vars = {v.name: v.variable_id for v in domain.variables()}
 
     for name in vars1:
         assert vars1[name].variable_id == vars2[name].variable_id, \
             f"Variable ID for {name} changed between calls"
-        assert vars1[name].variable_id == cand_vars[name], \
+        assert vars1[name].variable_id == domain_vars[name], \
             f"Variable ID for {name} differs between domain and get_variables()"
-
-
-# ---------------------------------------------------------------------------
-# TEST-AI-02 — All 4 candidates are valid DAGs
-# ---------------------------------------------------------------------------
-
-def test_all_candidates_are_dags():
-    """Every initial candidate must be a valid DAG."""
-    factories = [
-        make_infrastructure_buildout_candidate,
-        make_bubble_detachment_candidate,
-        make_winner_take_all_candidate,
-        make_productivity_regime_candidate,
-    ]
-    for factory in factories:
-        candidate = factory()
-        assert candidate.is_dag(), (
-            f"Candidate '{candidate.description}' violates DAG constraint. "
-            f"Edges: {candidate.edge_structure_signature()}"
-        )
-
-
-# ---------------------------------------------------------------------------
-# TEST-AI-03 — All candidates share canonical variable set
-# ---------------------------------------------------------------------------
-
-def test_all_candidates_share_variable_set():
-    """All candidates must contain exactly the same 8 canonical variables."""
-    expected_names = set(get_variables().keys())
-    expected_ids = {v.variable_id for v in get_variables().values()}
-    factories = [
-        make_infrastructure_buildout_candidate,
-        make_bubble_detachment_candidate,
-        make_winner_take_all_candidate,
-        make_productivity_regime_candidate,
-    ]
-    for factory in factories:
-        cand = factory()
-        cand_names = {v.name for v in cand.variables}
-        cand_ids = {v.variable_id for v in cand.variables}
-        assert cand_names == expected_names, \
-            f"Candidate '{cand.description}' has wrong variable names"
-        assert cand_ids == expected_ids, \
-            f"Candidate '{cand.description}' has wrong variable IDs"
 
 
 # ---------------------------------------------------------------------------
@@ -786,7 +732,7 @@ def test_domain_registers_in_engine():
 
     pop = engine.get_population(domain.module_id())
     assert pop is not None
-    assert len(pop.active_candidates()) == 4
+    assert [(c.edges, c.lineage) for c in pop.active_candidates()] == [([], "unconnected")]
 
     yf_data, fred_data, capex = _make_full_data()
     snapshot = compute_snapshot(yf_data, fred_data, capex, _TARGET_DATE)
@@ -794,53 +740,6 @@ def test_domain_registers_in_engine():
     engine.ingest(record)
 
     assert engine.evidence_store.count(domain.module_id()) == 1
-
-
-# ---------------------------------------------------------------------------
-# TEST-AI-28 — Candidates have distinct edge structures
-# ---------------------------------------------------------------------------
-
-def test_candidates_have_distinct_edge_structures():
-    """The 4 seed candidates must encode genuinely distinct structural hypotheses."""
-    domain = AIRegimeV1()
-    candidates = domain.initial_candidates()
-    signatures = [c.edge_structure_signature() for c in candidates]
-    unique_signatures = set(signatures)
-    assert len(unique_signatures) == len(signatures), (
-        f"Some candidates share the same edge structure. "
-        f"Got {len(unique_signatures)} unique structures for {len(candidates)} candidates."
-    )
-
-
-# ---------------------------------------------------------------------------
-# TEST-AI-29 — All edges have valid existence priors
-# ---------------------------------------------------------------------------
-
-def test_all_edges_have_existence_prior():
-    """All edges must have valid existence_prior ∈ (0, 1) and enabled=True."""
-    domain = AIRegimeV1()
-    for cand in domain.initial_candidates():
-        for edge in cand.edges:
-            assert 0.0 < edge.existence_prior < 1.0, \
-                f"Candidate '{cand.description}' edge has invalid prior {edge.existence_prior}"
-            assert edge.existence_probability == edge.existence_prior
-            assert edge.enabled is True
-            assert edge.learnable is True
-
-
-# ---------------------------------------------------------------------------
-# TEST-AI-30 — Module ID matches candidates
-# ---------------------------------------------------------------------------
-
-def test_domain_module_id_matches_candidates():
-    """All candidates must reference the same domain module ID as the domain."""
-    domain = AIRegimeV1()
-    module_id = domain.module_id()
-    for cand in domain.initial_candidates():
-        assert cand.domain_module_id == module_id, (
-            f"Candidate '{cand.description}' has module_id "
-            f"'{cand.domain_module_id}', expected '{module_id}'"
-        )
 
 
 # ---------------------------------------------------------------------------

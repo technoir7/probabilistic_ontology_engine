@@ -23,7 +23,7 @@ def _counts(path) -> dict[str, int]:
     return out
 
 
-def test_reset_domain_forgets_everything_and_reseeds(tmp_path):
+def test_reset_domain_forgets_everything_and_starts_with_no_hypotheses(tmp_path):
     db = str(tmp_path / "x.db")
     engine = ProbabilisticOntologyEngine(db_path=db)
     engine.register_domain(TestDomainV1())
@@ -39,15 +39,15 @@ def test_reset_domain_forgets_everything_and_reseeds(tmp_path):
 
     pop = engine.get_population()
     assert pop.generation == 0
-    assert sorted(c.description for c in pop.candidates) == ["T*", "T_alt", "null"]
+    assert [(c.edges, c.lineage) for c in pop.candidates] == [([], "unconnected")]
     assert all(c.evidence_count == 0 for c in pop.candidates)
     assert engine.learning_stats(DOMAIN_ID)["learn_calls"] == 0
     counts = _counts(db)
     for table in ("evidence_records", "candidate_scores", "paradigm_shifts", "parameters"):
         assert counts[table] == 0, table
-    # Only the fresh seeds remain.
-    assert counts["ontology_candidates"] == 3
-    assert counts["candidate_edges"] == sum(len(c.edges) for c in pop.candidates)
+    # Only the fresh start remains.
+    assert counts["ontology_candidates"] == 1
+    assert counts["candidate_edges"] == 0
 
     # A restart resumes the fresh population, not the old one.
     restarted = ProbabilisticOntologyEngine(db_path=db)

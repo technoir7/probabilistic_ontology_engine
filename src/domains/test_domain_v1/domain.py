@@ -136,7 +136,9 @@ def _var_list() -> list[Variable]:
 
 
 # ---------------------------------------------------------------------------
-# Candidate constructors (all share canonical variable IDs)
+# Candidate constructors (all share canonical variable IDs). The engine never
+# starts from these (D24); tests use them to check how given structures are
+# judged.
 # ---------------------------------------------------------------------------
 
 def make_tstar_candidate(module_id: str = "test-domain-v1", gen: int = 0) -> OntologyCandidate:
@@ -231,12 +233,10 @@ class TestDomainV1:
     def module_id(self) -> str:
         return self._MODULE_ID
 
-    def initial_candidates(self) -> list[OntologyCandidate]:
-        return [
-            make_tstar_candidate(self._MODULE_ID),
-            make_talt_candidate(self._MODULE_ID),
-            make_null_candidate(self._MODULE_ID),
-        ]
+    def variables(self) -> list[Variable]:
+        # Its records are drawn independently, not in time, so no last-period
+        # companions: there is no before to depend on.
+        return _var_list()
 
     def existence_thresholds(self) -> EdgeExistenceThresholdConfig:
         return EdgeExistenceThresholdConfig(

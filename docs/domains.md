@@ -30,8 +30,8 @@
 **`sf-urban-v1`**: `TechHiringAccelerating`, `OfficeVacancyFalling`, `RetailClosureElevated`, `PermitActivityRising`, `CrimeIndexElevated`, `StartupFormationRising`, `FootTrafficRecovering`, `PopulationFlowPositive`
 — SF Open Data: permits (`i98e-djp9`), crime (`wg3w-h783`), businesses (`g8m3-pdis`); FRED: `SANF806INFO`, `SANF806LEIH`, `SANF806NA` (SF-Oakland-Fremont MSA, monthly SA)
 
-**`art_prestige_regime_v1`**: 25 art prestige regime variables (institutional, market, cultural) and five seed hypotheses, in `src/domains/art_prestige_regime_v1`.
+**`art_prestige_regime_v1`**: 25 art prestige regime variables (institutional, market, cultural), in `src/domains/art_prestige_regime_v1`.
 — Fetched monthly where a series measures the variable (see `ingestion/pipeline.py` `MEASURES`); hand-labelled reports in `report_files/` cover the rest under the rules in `reports.py`. Unmeasured variables are MISSING.
 
 
-The macro domain's candidates also hold each signal's value last week (`X_prev`), as inputs only (REFACTOR_SPEC D19).
+Every domain's candidates also hold each signal's value last period (`X_prev`), as inputs only (REFACTOR_SPEC D19, D24). No domain gives hypotheses: the engine starts each with none and forms its own (D24).

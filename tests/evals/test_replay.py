@@ -63,13 +63,6 @@ class TestWeeks:
         weeks = replay.fridays(date(2024, 1, 1), date(2024, 1, 31))
         assert weeks == [date(2024, 1, 5), date(2024, 1, 12), date(2024, 1, 19), date(2024, 1, 26)]
 
-    def test_a_variant_belongs_to_its_seeds_family(self):
-        parents = {"v2": "v1", "v1": "seed", "seed": None}
-        assert replay.family_of("v2", parents, {"seed": "T_credit"}) == "T_credit"
-
-    def test_an_unknown_lineage_is_said_to_be(self):
-        assert replay.family_of("x", {"x": None}, {}) == "unknown"
-
 
 def synthetic_history(weeks: int) -> dict:
     """Enough of every series for the pipeline to compute every signal."""
@@ -102,8 +95,8 @@ class TestTheRun:
         assert [r["week"] for r in rows] == sorted(r["week"] for r in rows)
 
     def test_records_the_leader_and_its_family(self, rows):
-        families = {"T_monetary", "T_credit", "T_ai_boom", "T_recession", "T_null", "T_persistence"}
-        assert all(r["family"] in families for r in rows)
+        # The programme of nothing yet, or one founded by a prompted connection (D24).
+        assert all(r["family"] == "unconnected" or "–" in r["family"] for r in rows)
 
     def test_counts_the_active_candidates_of_each_family(self, rows):
         for r in rows:

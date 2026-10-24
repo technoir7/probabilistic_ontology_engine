@@ -53,9 +53,10 @@ class LearningService:
         self,
         batch: list[EvidenceRecord],
         candidate: OntologyCandidate,
+        only: set[str] | None = None,
     ) -> None:
         """
-        Update count tables from a batch.
+        Update count tables from a batch: every variable's, or ONLY these.
 
         Fully-observed records → exact update.
         Partially-observed records → forward mean-field imputation (single pass).
@@ -93,20 +94,21 @@ class LearningService:
 
             if not missing_names and not soft_evidence:
                 # All variables are hard-observed → fast exact path
-                self._accumulate_fully_observed(candidate, observed)
+                self._accumulate_fully_observed(candidate, observed, only)
             else:
                 # Some variables are soft-observed or missing → mean-field path
                 self._accumulate_mean_field(
-                    candidate, observed, topo_order, soft_evidence or None
+                    candidate, observed, topo_order, soft_evidence or None, only
                 )
 
     def _accumulate_fully_observed(
         self,
         candidate: OntologyCandidate,
         observed: dict[str, Any],
+        only: set[str] | None = None,
     ) -> None:
         for var in candidate.variables:
-            if var.name not in observed:
+            if var.name not in observed or (only is not None and var.name not in only):
                 continue
             if not self.ps.has(candidate.candidate_id, var.name):
                 continue
@@ -129,6 +131,7 @@ class LearningService:
         observed: dict[str, Any],
         topo_order: list,
         soft_by_name: dict[str, dict[Any, float]] | None = None,
+        only: set[str] | None = None,
     ) -> None:
         """
         Single-pass forward imputation.
@@ -187,7 +190,7 @@ class LearningService:
         # Accumulate fractional counts. Every variable is in soft_obs after the
         # forward pass; a root has one (empty) parent configuration.
         for var in candidate.variables:
-            if not self.ps.has(candidate.candidate_id, var.name):
+            if not self.ps.has(candidate.candidate_id, var.name) or (only is not None and var.name not in only):
                 continue
             cpt_data = self.ps.get(candidate.candidate_id, var.name)
             parent_names = [pv.name for pv in candidate.get_parents(var.variable_id)]

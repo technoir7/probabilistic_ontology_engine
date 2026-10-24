@@ -53,14 +53,6 @@ AIRiskOn
     Signal: technology / AI narrative driving risk appetite; acts as distinct
             explanatory factor from broad credit/vol signals
 
-Competing ontology templates (seed population)
-----------------------------------------------
-T_monetary   — monetary transmission chain: IS drives curve → liquidity → credit → equity
-T_credit     — credit-first: credit spreads are the primary leading signal
-T_ai_boom    — AI productivity narrative: tech momentum drives equity & dollar conditions
-T_recession  — recessionary tightening cascade: inflation triggers a full tightening chain
-T_null       — null/noise baseline: volatility is the only structural signal
-
 FRED series used
 ----------------
 T10Y2Y        (daily)   — YieldCurveInverted
@@ -87,13 +79,9 @@ Reasoning:
 """
 from __future__ import annotations
 
-from uuid import uuid4
-
-from ..sources.structure import boolean_variables, seed_edge, with_lags
+from ..sources.structure import boolean_variables, with_lags
 from ...engine.schemas import (
-    DependencyEdge,
     EdgeExistenceThresholdConfig,
-    OntologyCandidate,
     Variable,
 )
 
@@ -134,225 +122,6 @@ def get_variables_with_lags() -> dict[str, Variable]:
     return _WITH_LAGS
 
 
-def _var(name: str) -> Variable:
-    return _WITH_LAGS[name]
-
-
-def _var_list() -> list[Variable]:
-    return list(_WITH_LAGS.values())
-
-
-# ---------------------------------------------------------------------------
-# Edge factory
-# ---------------------------------------------------------------------------
-
-def _edge(parent: str, child: str, prior: float = 0.60, label: str = "") -> DependencyEdge:
-    return seed_edge(_WITH_LAGS, parent, child, prior, label)
-
-
-# ---------------------------------------------------------------------------
-# Candidate factories
-# ---------------------------------------------------------------------------
-
-def make_monetary_chain_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
-    """
-    T_monetary — Standard monetary transmission chain.
-
-    Hypothesis: Inflation is the root cause. It drives policy tightening
-    (yield curve inversion), which drains liquidity, which stresses credit
-    markets, which suppresses equity risk appetite.
-
-        InflationShock → YieldCurveInverted
-        InflationShock → LiquidityStress
-        YieldCurveInverted → CreditSpreadStress
-        LiquidityStress → CreditSpreadStress
-        CreditSpreadStress → EquityRiskOn
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge("InflationShock",      "YieldCurveInverted",  prior=0.70,
-                  label="inflation → curve inversion"),
-            _edge("InflationShock",      "LiquidityStress",     prior=0.60,
-                  label="inflation → Fed tightening"),
-            _edge("YieldCurveInverted",  "CreditSpreadStress",  prior=0.65,
-                  label="curve inversion → credit stress"),
-            _edge("LiquidityStress",     "CreditSpreadStress",  prior=0.65,
-                  label="liquidity drain → credit stress"),
-            _edge("CreditSpreadStress",  "EquityRiskOn",        prior=0.70,
-                  label="credit stress → equity risk-off"),
-        ],
-        description="T_monetary: inflation-driven tightening chain",
-    )
-
-
-def make_credit_first_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
-    """
-    T_credit — Credit markets as the primary leading signal.
-
-    Hypothesis: Credit spreads lead all other signals. Dollar strength
-    squeezes leveraged finance, causing credit stress, which then propagates
-    to volatility and equity risk appetite. Fed liquidity feeds directly into
-    credit conditions.
-
-        DollarStrength → CreditSpreadStress
-        LiquidityStress → CreditSpreadStress
-        CreditSpreadStress → VolatilityShock
-        CreditSpreadStress → EquityRiskOn
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge("DollarStrength",      "CreditSpreadStress",  prior=0.65,
-                  label="dollar squeeze → credit stress"),
-            _edge("LiquidityStress",     "CreditSpreadStress",  prior=0.70,
-                  label="liquidity drain → credit stress"),
-            _edge("CreditSpreadStress",  "VolatilityShock",     prior=0.70,
-                  label="credit stress → equity vol"),
-            _edge("CreditSpreadStress",  "EquityRiskOn",        prior=0.65,
-                  label="credit stress → equity risk-off"),
-        ],
-        description="T_credit: credit-market-led regime",
-    )
-
-
-def make_ai_boom_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
-    """
-    T_ai_boom — AI/technology productivity boom narrative.
-
-    Hypothesis: A technology productivity narrative (proxied by NASDAQ
-    momentum) is an independent driver of equity risk appetite and capital
-    flows. Tech dominance also attracts global capital → dollar strength.
-    Strong risk appetite suppresses volatility.
-
-        AIRiskOn → EquityRiskOn
-        AIRiskOn → DollarStrength
-        EquityRiskOn → VolatilityShock
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge("AIRiskOn",       "EquityRiskOn",    prior=0.65,
-                  label="tech boom → equity confidence"),
-            _edge("AIRiskOn",       "DollarStrength",  prior=0.55,
-                  label="tech capital inflows → dollar demand"),
-            _edge("EquityRiskOn",   "VolatilityShock", prior=0.60,
-                  label="equity appetite ↔ vol regime"),
-        ],
-        description="T_ai_boom: AI productivity narrative dominant",
-    )
-
-
-def make_recessionary_tightening_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
-    """
-    T_recession — Recessionary tightening cascade.
-
-    Hypothesis: Persistent inflation causes the Fed to overtighten. This
-    drains liquidity, inverts the yield curve, stresses credit, collapses
-    equity risk appetite, and ultimately triggers a recessionary signal in
-    unemployment. Dollar strengthens as capital seeks safety.
-
-        InflationShock → LiquidityStress
-        LiquidityStress → YieldCurveInverted
-        YieldCurveInverted → CreditSpreadStress
-        CreditSpreadStress → EquityRiskOn
-        InflationShock → DollarStrength
-        CreditSpreadStress → VolatilityShock
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge("InflationShock",     "LiquidityStress",     prior=0.65,
-                  label="inflation → Fed responds with QT"),
-            _edge("LiquidityStress",    "YieldCurveInverted",  prior=0.60,
-                  label="QT → short-end rate rise → inversion"),
-            _edge("YieldCurveInverted", "CreditSpreadStress",  prior=0.65,
-                  label="inversion → credit concern"),
-            _edge("CreditSpreadStress", "EquityRiskOn",        prior=0.70,
-                  label="credit stress → risk-off equity"),
-            _edge("InflationShock",     "DollarStrength",      prior=0.55,
-                  label="inflation premium → dollar demand"),
-            _edge("CreditSpreadStress", "VolatilityShock",     prior=0.65,
-                  label="credit stress → vol spike"),
-        ],
-        description="T_recession: recessionary tightening cascade",
-    )
-
-
-def make_null_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
-    """
-    T_null — Null/noise baseline.
-
-    Hypothesis: Only volatility has a structural link to credit spreads;
-    other relationships are noise. This candidate serves as the Bayesian
-    null hypothesis and should be pruned if any richer structure is
-    supported by evidence.
-
-        VolatilityShock → CreditSpreadStress
-        VolatilityShock → EquityRiskOn
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge("VolatilityShock", "CreditSpreadStress", prior=0.55,
-                  label="vol → credit widening"),
-            _edge("VolatilityShock", "EquityRiskOn",       prior=0.55,
-                  label="vol → equity risk-off"),
-        ],
-        description="T_null: volatility-only baseline",
-    )
-
-
-def make_persistence_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
-    """
-    T_persistence — Things stay as they were (REFACTOR_SPEC D19).
-
-    Hypothesis: each signal this week follows from its own value last week,
-    and from nothing else. A rival to every causal story: if regimes are
-    mostly inertia, explanations in terms of each other add little.
-
-        X_prev → X   for each of the eight signals
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=_persistence_edges(),
-        description="T_persistence: each signal follows its own last week",
-    )
-
-
-def _persistence_edges() -> list[DependencyEdge]:
-    return [_edge(f"{name}_prev", name, prior=0.60, label=f"{name} persists") for name in _VAR_NAMES]
-
-
-def _assuming_persistence(candidate: OntologyCandidate) -> OntologyCandidate:
-    """CANDIDATE with each signal also following its own last week.
-
-    Replay 10 refuted every causal programme within weeks for not knowing
-    that signals persist, which none of them denies; so persistence is their
-    shared auxiliary hypothesis, and they compete on their own claims
-    (REFACTOR_SPEC D23). T_persistence, persistence and nothing else, is the
-    baseline they must beat."""
-    return candidate.model_copy(update={"edges": [*candidate.edges, *_persistence_edges()]})
-
-
 # ---------------------------------------------------------------------------
 # Domain module class
 # ---------------------------------------------------------------------------
@@ -361,23 +130,15 @@ class MacroRegimeV1:
     """
     Domain module for the macro regime ontology.
 
-    Implements the domain module contract defined in SPEC.md §8.
-    All five seed candidates encode competing explanatory narratives.
+    Implements the domain module contract (engine/model/domain.py).
     """
     _MODULE_ID = _MODULE_ID
 
     def module_id(self) -> str:
         return self._MODULE_ID
 
-    def initial_candidates(self) -> list[OntologyCandidate]:
-        causal = [
-            make_monetary_chain_candidate(self._MODULE_ID),
-            make_credit_first_candidate(self._MODULE_ID),
-            make_ai_boom_candidate(self._MODULE_ID),
-            make_recessionary_tightening_candidate(self._MODULE_ID),
-            make_null_candidate(self._MODULE_ID),
-        ]
-        return [*map(_assuming_persistence, causal), make_persistence_candidate(self._MODULE_ID)]
+    def variables(self) -> list[Variable]:
+        return list(_WITH_LAGS.values())
 
     def existence_thresholds(self) -> EdgeExistenceThresholdConfig:
         """

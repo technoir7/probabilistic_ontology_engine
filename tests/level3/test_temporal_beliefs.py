@@ -1,13 +1,13 @@
 """Beliefs about change (REFACTOR_SPEC D19): a domain may give each variable
 a companion holding last period's value, which can only be a parent. It is
-taken from the previous record when learning, scored never (it was scored
-last period), and the macro domain adds a rival programme that holds things
-persist."""
+taken from the previous record when learning, and scored never (it was
+scored last period). That things persist is not assumed: the engine must
+find it in the evidence (D24)."""
 from datetime import datetime, timedelta
 
 from src.domains.macro_regime_v1.domain import MacroRegimeV1, get_variables, get_variables_with_lags
 from src.domains.sources.structure import boolean_variables, with_lags
-from src.engine.engine import ProbabilisticOntologyEngine, _derive_admissible_edges
+from src.engine.engine import ProbabilisticOntologyEngine, _admissible_edges
 from src.engine.model.temporal import lag_name, lagged
 from src.engine.schemas import EvidenceRecord, MissingnessType, ObservedAssignment
 
@@ -49,47 +49,49 @@ def test_a_domain_without_lags_is_untouched():
 
 
 def test_nothing_points_into_last_period():
-    engine = ProbabilisticOntologyEngine(db_path=":memory:")
-    admissible = _derive_admissible_edges(MacroRegimeV1().initial_candidates())
+    admissible = _admissible_edges(MacroRegimeV1().variables())
     assert all(not child.endswith("_prev") for _, child in admissible)
     assert ("InflationShock_prev", "InflationShock") in admissible
     assert ("InflationShock_prev", "DollarStrength") in admissible
 
 
-def test_the_macro_domain_has_a_persistence_programme():
-    seeds = MacroRegimeV1().initial_candidates()
-    [persistence] = [c for c in seeds if c.description.startswith("T_persistence")]
-    names = {v.variable_id: v.name for v in persistence.variables}
-    assert {(names[e.parent_variable_id], names[e.child_variable_id]) for e in persistence.edges} == {
-        (f"{n}_prev", n) for n in get_variables()}
+def test_every_domain_but_the_synthetic_one_has_last_periods_values():
+    from src.engine.runtime.registry import REGISTRY
+    for r in REGISTRY:
+        variables = r.build_domain().variables()
+        signals = {v.name for v in variables if not v.lag_of}
+        assert {v.lag_of for v in variables if v.lag_of} == signals, r.module_id
 
 
-def test_the_engine_learns_with_last_periods_values():
+def persisting_weeks(n, seed=0):
+    """Each signal keeps last week's value nine times in ten, independently."""
+    import random
+    rng = random.Random(seed)
+    v = get_variables_with_lags()
+    names = [name for name in v if not name.endswith("_prev")]
+    state = {name: rng.random() < 0.5 for name in names}
+    out = []
+    for week in range(n):
+        state = {name: x if rng.random() < 0.9 else not x for name, x in state.items()}
+        out.append(record(v, state, 7 * week))
+    return out
+
+
+def test_persistence_is_found_in_the_evidence_not_given():
+    # D23 gave every programme persistence as an assumption; with no
+    # hypotheses given (D24), the engine must find it, and it is what the
+    # evidence most prompts when signals persist and are otherwise unrelated.
     engine = ProbabilisticOntologyEngine(db_path=":memory:", random_seed=0)
     engine.register_domain(MacroRegimeV1())
     engine.activate_domain("macro-regime-v1")
-    v = get_variables_with_lags()
-    names = [n for n in v if not n.endswith("_prev")]
-    for week in range(6):
-        engine.learn([record(v, {n: (week + i) % 2 == 0 for i, n in enumerate(names)}, 7 * week)])
+    weeks = persisting_weeks(60)
+    engine.learn(weeks[:30])
     pop = engine.population_manager.get_population("macro-regime-v1")
-    [persistence] = [c for c in pop.candidates if c.lineage == "T_persistence" and c.generation == 0]
-    cpt = engine.parameter_store.get(persistence.candidate_id, "InflationShock")
-    assert cpt.parents == ["InflationShock_prev"] and cpt.total_count() >= 5
+    [prompted] = [c for c in pop.candidates if c.description.startswith("prompted_add_")]
+    (parent, child), = prompted.edge_structure_signature()
+    assert parent == f"{child}_prev"
+    cpt = engine.parameter_store.get(prompted.candidate_id, child)
+    assert cpt.parents == [parent]
+    engine.learn(weeks[30:])
+    assert cpt.total_count() >= 30
     assert engine.epistemic_health("macro-regime-v1")["last_cycle"]["forecast_ll"] <= 0
-
-
-def test_every_causal_programme_assumes_persistence():
-    # Replay 10: without it, every causal programme was refuted within weeks
-    # for not knowing that signals persist, a claim none of them denies.
-    # Persistence is their shared auxiliary; they compete on their cores.
-    from src.domains.macro_regime_v1.domain import MacroRegimeV1, get_variables_with_lags
-    v = get_variables_with_lags()
-    persists = {(v[f"{n}_prev"].variable_id, v[n].variable_id) for n in v if not n.endswith("_prev")}
-    for c in MacroRegimeV1().initial_candidates():
-        edges = {(e.parent_variable_id, e.child_variable_id) for e in c.edges}
-        assert persists <= edges, c.description
-        if c.description.startswith("T_persistence"):
-            assert edges == persists
-        else:
-            assert edges - persists, f"{c.description} must still claim something of its own"

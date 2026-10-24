@@ -21,73 +21,29 @@
  "inference fuzzy suffix": {
   "body": {
    "candidate_id": "<id1>",
-   "edges": [
-    {
-     "probability": 0.75,
-     "source": "TempAnom",
-     "status": "explore",
-     "target": "HeatingDem"
-    },
-    {
-     "probability": 0.7,
-     "source": "HeatingDem",
-     "status": "explore",
-     "target": "StorageDraw"
-    },
-    {
-     "probability": 0.7,
-     "source": "StorageDraw",
-     "status": "explore",
-     "target": "PriceUp"
-    }
-   ],
-   "frontier_edges": [
-    {
-     "explore_weight": 1.0,
-     "note": "existence_probability=0.750 in explore band [0.25, 0.75]",
-     "probability": 0.75,
-     "relation": "TempAnom\u2192HeatingDem",
-     "source": "TempAnom",
-     "target": "HeatingDem"
-    },
-    {
-     "explore_weight": 1.0,
-     "note": "existence_probability=0.700 in explore band [0.25, 0.75]",
-     "probability": 0.7,
-     "relation": "HeatingDem\u2192StorageDraw",
-     "source": "HeatingDem",
-     "target": "StorageDraw"
-    },
-    {
-     "explore_weight": 1.0,
-     "note": "existence_probability=0.700 in explore band [0.25, 0.75]",
-     "probability": 0.7,
-     "relation": "StorageDraw\u2192PriceUp",
-     "source": "StorageDraw",
-     "target": "PriceUp"
-    }
-   ],
+   "edges": [],
+   "frontier_edges": [],
    "nodes": [
     {
      "id": "TempAnom",
      "label": "TempAnom",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
      "id": "HeatingDem",
      "label": "HeatingDem",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
      "id": "StorageDraw",
      "label": "StorageDraw",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
      "id": "PriceUp",
@@ -95,6 +51,34 @@
      "observation": null,
      "probability": 0.5,
      "status": "target"
+    },
+    {
+     "id": "TempAnom_prev",
+     "label": "TempAnom_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "HeatingDem_prev",
+     "label": "HeatingDem_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "StorageDraw_prev",
+     "label": "StorageDraw_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "PriceUp_prev",
+     "label": "PriceUp_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
     }
    ],
    "target_probability": 0.5,
@@ -105,52 +89,8 @@
  "inference malformed candidate id": {
   "body": {
    "candidate_id": "<id1>",
-   "edges": [
-    {
-     "probability": 0.75,
-     "source": "TempAnom",
-     "status": "explore",
-     "target": "HeatingDem"
-    },
-    {
-     "probability": 0.7,
-     "source": "HeatingDem",
-     "status": "explore",
-     "target": "StorageDraw"
-    },
-    {
-     "probability": 0.7,
-     "source": "StorageDraw",
-     "status": "explore",
-     "target": "PriceUp"
-    }
-   ],
-   "frontier_edges": [
-    {
-     "explore_weight": 1.0,
-     "note": "existence_probability=0.750 in explore band [0.25, 0.75]",
-     "probability": 0.75,
-     "relation": "TempAnom\u2192HeatingDem",
-     "source": "TempAnom",
-     "target": "HeatingDem"
-    },
-    {
-     "explore_weight": 1.0,
-     "note": "existence_probability=0.700 in explore band [0.25, 0.75]",
-     "probability": 0.7,
-     "relation": "HeatingDem\u2192StorageDraw",
-     "source": "HeatingDem",
-     "target": "StorageDraw"
-    },
-    {
-     "explore_weight": 1.0,
-     "note": "existence_probability=0.700 in explore band [0.25, 0.75]",
-     "probability": 0.7,
-     "relation": "StorageDraw\u2192PriceUp",
-     "source": "StorageDraw",
-     "target": "PriceUp"
-    }
-   ],
+   "edges": [],
+   "frontier_edges": [],
    "nodes": [
     {
      "id": "TempAnom",
@@ -164,21 +104,49 @@
      "label": "HeatingDem",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
      "id": "StorageDraw",
      "label": "StorageDraw",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
      "id": "PriceUp",
      "label": "PriceUp",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
+    },
+    {
+     "id": "TempAnom_prev",
+     "label": "TempAnom_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "HeatingDem_prev",
+     "label": "HeatingDem_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "StorageDraw_prev",
+     "label": "StorageDraw_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "PriceUp_prev",
+     "label": "PriceUp_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
     }
    ],
    "target_probability": 0.5,
@@ -201,52 +169,8 @@
  "inference with conditions": {
   "body": {
    "candidate_id": "<id1>",
-   "edges": [
-    {
-     "probability": 0.75,
-     "source": "TempAnom",
-     "status": "explore",
-     "target": "HeatingDem"
-    },
-    {
-     "probability": 0.7,
-     "source": "HeatingDem",
-     "status": "explore",
-     "target": "StorageDraw"
-    },
-    {
-     "probability": 0.7,
-     "source": "StorageDraw",
-     "status": "explore",
-     "target": "PriceUp"
-    }
-   ],
-   "frontier_edges": [
-    {
-     "explore_weight": 1.0,
-     "note": "existence_probability=0.750 in explore band [0.25, 0.75]",
-     "probability": 0.75,
-     "relation": "TempAnom\u2192HeatingDem",
-     "source": "TempAnom",
-     "target": "HeatingDem"
-    },
-    {
-     "explore_weight": 1.0,
-     "note": "existence_probability=0.700 in explore band [0.25, 0.75]",
-     "probability": 0.7,
-     "relation": "HeatingDem\u2192StorageDraw",
-     "source": "HeatingDem",
-     "target": "StorageDraw"
-    },
-    {
-     "explore_weight": 1.0,
-     "note": "existence_probability=0.700 in explore band [0.25, 0.75]",
-     "probability": 0.7,
-     "relation": "StorageDraw\u2192PriceUp",
-     "source": "StorageDraw",
-     "target": "PriceUp"
-    }
-   ],
+   "edges": [],
+   "frontier_edges": [],
    "nodes": [
     {
      "id": "TempAnom",
@@ -260,21 +184,49 @@
      "label": "HeatingDem",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
      "id": "StorageDraw",
      "label": "StorageDraw",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
      "id": "PriceUp",
      "label": "PriceUp",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
+    },
+    {
+     "id": "TempAnom_prev",
+     "label": "TempAnom_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "HeatingDem_prev",
+     "label": "HeatingDem_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "StorageDraw_prev",
+     "label": "StorageDraw_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "PriceUp_prev",
+     "label": "PriceUp_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
     }
    ],
    "target_probability": 0.5,

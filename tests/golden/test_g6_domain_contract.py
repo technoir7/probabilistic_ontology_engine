@@ -2,9 +2,8 @@
 G6 — domain contract golden (REFACTOR_SPEC §7 Phase 0.3).
 
 One parametrized check of what the engine requires from every domain module,
-plus a snapshot of each domain's definition (variables, seed candidates,
-priors, thresholds), so Phase 4 can replace the copied domain.py boilerplate
-with shared constructors and prove nothing moved.
+plus a snapshot of each domain's definition (variables and thresholds), so
+a refactor can prove nothing moved. A domain gives no hypotheses (D24).
 
 Pipeline math (raw observations → evidence) is pinned per domain at the HTTP
 layer in the Phase 4 PR that converts that domain.
@@ -30,7 +29,6 @@ from src.engine.api import context as api_context
 from src.engine.schemas import DomainType
 from src.engine.variable_identity import stable_variable_id
 
-from .probe import signature
 from .snapshot import assert_matches_snapshot
 
 DOMAINS = [
@@ -50,20 +48,16 @@ def test_every_served_domain_is_covered():
 def test_domain_satisfies_engine_contract(cls):
     domain = cls()
     module_id = domain.module_id()
-    seeds = domain.initial_candidates()
-    assert seeds, "a domain needs at least one seed candidate"
-
-    names = [v.name for v in seeds[0].variables]
-    for cand in seeds:
-        assert cand.domain_module_id == module_id
-        assert [v.name for v in cand.variables] == names, "seeds must share one variable set"
-        assert cand.is_dag()
-        for v in cand.variables:
-            assert v.variable_id == stable_variable_id(module_id, v.name)
-            if v.domain_type == DomainType.BOOLEAN:
-                assert v.support == [True, False]
-    signatures = [frozenset(signature(c)) for c in seeds]
-    assert len(set(signatures)) == len(signatures), "seed candidates must differ in structure"
+    variables = domain.variables()
+    assert variables, "a domain needs at least one variable"
+    names = [v.name for v in variables]
+    assert len(set(names)) == len(names)
+    for v in variables:
+        assert v.variable_id == stable_variable_id(module_id, v.name)
+        if v.domain_type == DomainType.BOOLEAN:
+            assert v.support == [True, False]
+        if v.lag_of:
+            assert v.lag_of in names
 
     t = domain.existence_thresholds()
     assert 0.0 < t.prune_below < t.explore_band[0] < t.explore_band[1] < t.accept_above < 1.0
@@ -80,22 +74,7 @@ def _definition(domain) -> dict:
         },
         "variables": [
             [v.name, v.domain_type.value, v.support, v.time_indexed, v.hidden]
-            for v in domain.initial_candidates()[0].variables
-        ],
-        "seed_candidates": [
-            {
-                "description": c.description,
-                "edges": [
-                    [
-                        f"{c.get_variable_by_id(e.parent_variable_id).name}->"
-                        f"{c.get_variable_by_id(e.child_variable_id).name}",
-                        e.existence_prior, e.existence_probability, e.explore_weight,
-                        e.dependency_kind.value, e.learnable, e.enabled, e.explanatory_label,
-                    ]
-                    for e in c.edges
-                ],
-            }
-            for c in domain.initial_candidates()
+            for v in domain.variables()
         ],
     }
 

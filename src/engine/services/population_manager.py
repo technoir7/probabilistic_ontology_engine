@@ -2,9 +2,11 @@
 PopulationManager — Level 3 belief management.  Novel component.
 
 Responsibilities:
-  - Maintains OntologyPopulation for each active domain.
+  - Maintains OntologyPopulation for each active domain, which begins with
+    no hypotheses: one structure that connects nothing (D24).
   - Scores candidates after each learning cycle.
-  - Introduces variants, each research programme's best breeding in turn (D16).
+  - Forms hypotheses from the evidence (synthesis) and introduces blind
+    variants, each research programme's best in turn (D16, D24).
   - Prunes candidates the leader's evidence refutes, sparing each programme's
     best until then (D15, D22), within max_population_size.
   - Tracks the dominant candidate and logs each paradigm shift: the lead
@@ -26,9 +28,12 @@ from ..schemas import (
     DependencyEdge,
     DependencyKind,
     EdgeExistenceThresholdConfig,
+    EvidenceRecord,
     OntologyCandidate,
     OntologyPopulation,
+    Variable,
 )
+from .synthesis import Connection, connections
 from ..stores.parameter_store import ParameterStore
 from ..stores.population_store import PopulationStore
 from ..model.clock import naive_utc_now
@@ -38,6 +43,26 @@ from ..model.clock import naive_utc_now
 _MIN_RECORDS_FOR_PRUNING = 3
 # Jeffreys' "decisive": a Bayes factor above 100 for the leader over a rival.
 _DECISIVE_LOG_BAYES_FACTOR = math.log(100)
+# The programme of the structure that connects nothing.
+UNCONNECTED = "unconnected"
+
+
+def programme_name(a: str, b: str) -> str:
+    """A programme founded on the connection between A and B, either way."""
+    return "–".join(sorted((a, b)))
+
+
+def unconnected(domain_module_id: str, variables: list[Variable]) -> OntologyCandidate:
+    """Where every domain begins: its concepts, and no hypothesis connecting
+    them (D24)."""
+    return OntologyCandidate(
+        candidate_id=uuid4(),
+        domain_module_id=domain_module_id,
+        variables=variables,
+        edges=[],
+        description=f"{UNCONNECTED}: no hypotheses yet",
+        lineage=UNCONNECTED,
+    )
 
 
 def _breeding_order(ranked: list[OntologyCandidate], turn: int) -> list[OntologyCandidate]:
@@ -51,6 +76,34 @@ def _breeding_order(ranked: list[OntologyCandidate], turn: int) -> list[Ontology
         k = turn % len(order)
         order = order[k:] + order[:k]
     return order + [c for c in ranked if c not in order]
+
+
+def _copied_edges(parent: OntologyCandidate) -> list[DependencyEdge]:
+    return [e.model_copy(update={"edge_id": uuid4()}) for e in parent.edges]
+
+
+def _descendant(
+    parent: OntologyCandidate, domain_module_id: str, edges: list[DependencyEdge],
+    description: str, lineage: str,
+) -> OntologyCandidate:
+    # Warm-start: inherit the parent's score, so the two differ only by how
+    # they predict from here on. The evidence that prompted a connection is
+    # already in that score, and counts for the parent as much as the child.
+    return OntologyCandidate(
+        candidate_id=uuid4(),
+        domain_module_id=domain_module_id,
+        generation=parent.generation + 1,
+        parent_candidate_id=parent.candidate_id,
+        variables=parent.variables,  # shared; immutable at engine level
+        edges=edges,
+        log_score=parent.log_score,
+        evidence_count=parent.evidence_count,
+        window_log_score=parent.window_log_score,
+        window_evidence=parent.window_evidence,
+        status=CandidateStatus.ACTIVE,
+        description=description,
+        lineage=lineage,
+    )
 
 
 def _refuted(candidate: OntologyCandidate, leader: OntologyCandidate) -> bool:
@@ -256,12 +309,16 @@ class PopulationManager:
     # Variant introduction
     # ------------------------------------------------------------------
 
-    def introduce_variants(self, domain_module_id: str) -> list[OntologyCandidate]:
+    def introduce_variants(
+        self, domain_module_id: str, recent: list[EvidenceRecord] = ()
+    ) -> list[OntologyCandidate]:
         """
-        Introduce new candidates as variants of the top survivors.
-        Variants are: add one edge OR remove one edge.
-        All variants must be valid DAGs.
-        Population is kept bounded at max_population_size.
+        Introduce new candidates into the free places, up to max_population_size.
+
+        First, each research programme's best, in turn, may take the connection
+        the RECENT evidence most prompts (synthesis, D24). Then blind variants
+        of the top survivors fill what is left: add one edge OR remove one.
+        All must be valid DAGs, and none may duplicate a structure held.
         """
         pop = self._populations[domain_module_id]
         active = pop.active_candidates()
@@ -281,6 +338,28 @@ class PopulationManager:
         admissible = self._admissible_edges.get(domain_module_id, set())
 
         new_candidates: list[OntologyCandidate] = []
+        held = {c.edge_structure_signature() for c in active}
+
+        def admit(parent_cand: OntologyCandidate, variant: OntologyCandidate) -> None:
+            pop.candidates.append(variant)
+            pop.generation += 1
+            held.add(variant.edge_structure_signature())
+            self._admit_parameters(parent_cand, variant)
+            self.pop_store.save_candidate(variant)
+            new_candidates.append(variant)
+
+        if recent:
+            # The evidence is heard first: each programme's best, in this
+            # cycle's turn (survivors begins with them), takes the change the
+            # evidence most prompts. Blind variants fill the places left.
+            for parent_cand in survivors[: len({c.lineage for c in survivors})]:
+                if len(new_candidates) >= slots:
+                    break
+                offers = connections(parent_cand, recent, admissible)
+                prompted = self._prompted(domain_module_id, parent_cand, offers, held)
+                if prompted is not None:
+                    admit(parent_cand, prompted)
+
         attempts = 0
         max_attempts = slots * 10
 
@@ -288,8 +367,11 @@ class PopulationManager:
         dag_violations = 0
         duplicate_rejections = 0
 
-        while len(new_candidates) < slots and attempts < max_attempts:
-            parent_cand = survivors[attempts % len(survivors)]
+        # Blind variation revises hypotheses; of the unconnected it would make
+        # one from nowhere (D24).
+        revisable = [c for c in survivors if c.edges]
+        while revisable and len(new_candidates) < slots and attempts < max_attempts:
+            parent_cand = revisable[attempts % len(revisable)]
             attempts += 1
             variant = self._make_variant(domain_module_id, parent_cand, admissible)
             if variant is None:
@@ -298,32 +380,10 @@ class PopulationManager:
                 dag_violations += 1
                 continue
             # Avoid duplicates
-            sig = variant.edge_structure_signature()
-            existing_sigs = {c.edge_structure_signature() for c in active + new_candidates}
-            if sig in existing_sigs:
+            if variant.edge_structure_signature() in held:
                 duplicate_rejections += 1
                 continue
-
-            pop.candidates.append(variant)
-            pop.generation += 1
-            self.pop_store.save_candidate(variant)
-
-            # Initialize CPTs for the new candidate (clone from parent)
-            self.ps.clone_candidate(parent_cand.candidate_id, variant.candidate_id)
-
-            # The clone has the parent's parent sets; reset the CPT of every
-            # variable whose parents the mutation changed.
-            for var in variant.variables:
-                parent_names = sorted(pv.name for pv in variant.get_parents(var.variable_id))
-                old_parents = (
-                    self.ps.get(variant.candidate_id, var.name).parents
-                    if self.ps.has(variant.candidate_id, var.name)
-                    else []
-                )
-                if set(parent_names) != set(old_parents):
-                    self.ps.update_parents(variant.candidate_id, var.name, parent_names)
-
-            new_candidates.append(variant)
+            admit(parent_cand, variant)
 
         # Record mutation diagnostics for this cycle
         self._last_mutation_stats[domain_module_id] = {
@@ -334,6 +394,60 @@ class PopulationManager:
         }
 
         return new_candidates
+
+    def _admit_parameters(self, parent: OntologyCandidate, variant: OntologyCandidate) -> None:
+        """The variant's CPTs: its parent's, reset for every variable whose
+        parents changed."""
+        self.ps.clone_candidate(parent.candidate_id, variant.candidate_id)
+        for var in variant.variables:
+            parent_names = sorted(pv.name for pv in variant.get_parents(var.variable_id))
+            old_parents = (
+                self.ps.get(variant.candidate_id, var.name).parents
+                if self.ps.has(variant.candidate_id, var.name)
+                else []
+            )
+            if set(parent_names) != set(old_parents):
+                self.ps.update_parents(variant.candidate_id, var.name, parent_names)
+
+    def _prompted(
+        self,
+        domain_module_id: str,
+        parent: OntologyCandidate,
+        offers: list[Connection],
+        held: set[frozenset[tuple[str, str]]],
+    ) -> OntologyCandidate | None:
+        """PARENT with the best of the changes the evidence OFFERS it (a
+        connection added or turned round, best first) that yields a structure
+        not already held, or None if there is none (D24).
+
+        A connection formed from nothing founds a research programme, named
+        for the pair it connects: from nothing its direction is undecided. A
+        change within a programme revises it."""
+        sig = parent.edge_structure_signature()
+        for c in offers:
+            kept = sig - {(c.child, c.parent)} if c.reverses else sig
+            if kept | {(c.parent, c.child)} in held:
+                continue
+            pvar, cvar = parent.get_variable_by_name(c.parent), parent.get_variable_by_name(c.child)
+            edge = DependencyEdge(
+                edge_id=uuid4(),
+                parent_variable_id=pvar.variable_id,
+                child_variable_id=cvar.variable_id,
+                dependency_kind=DependencyKind.DIRECTED_CONDITIONAL,
+                existence_prior=0.5,
+                existence_probability=0.5,
+                learnable=True,
+                enabled=True,
+            )
+            edges = [e for e in _copied_edges(parent)
+                     if not (c.reverses and (e.parent_variable_id, e.child_variable_id)
+                             == (cvar.variable_id, pvar.variable_id))]
+            return _descendant(
+                parent, domain_module_id, [*edges, edge],
+                description=f"prompted_{'reverse' if c.reverses else 'add'}_{c.parent}->{c.child}",
+                lineage=programme_name(c.parent, c.child) if not sig else parent.lineage,
+            )
+        return None
 
     def _make_variant(
         self,
@@ -363,24 +477,7 @@ class PopulationManager:
             if not candidates_to_add:
                 strategy = "remove"
 
-        # Clone the parent candidate
-        variant_id = uuid4()
-        variant_edges = [
-            DependencyEdge(
-                edge_id=uuid4(),
-                parent_variable_id=e.parent_variable_id,
-                child_variable_id=e.child_variable_id,
-                dependency_kind=e.dependency_kind,
-                existence_prior=e.existence_prior,
-                existence_probability=e.existence_probability,
-                existence_update_count=e.existence_update_count,
-                explore_weight=e.explore_weight,
-                explanatory_label=e.explanatory_label,
-                learnable=e.learnable,
-                enabled=e.enabled,
-            )
-            for e in parent.edges
-        ]
+        variant_edges = _copied_edges(parent)
 
         if strategy == "add" and admissible:
             pname, cname = self.rng.choice(candidates_to_add)
@@ -414,24 +511,7 @@ class PopulationManager:
         else:
             return None
 
-        # Warm-start: inherit parent's score history so cross-candidate
-        # comparison is fair.  Future batches will differentiate the variant.
-        variant = OntologyCandidate(
-            candidate_id=variant_id,
-            domain_module_id=domain_module_id,
-            generation=parent.generation + 1,
-            parent_candidate_id=parent.candidate_id,
-            variables=parent.variables,  # shared; immutable at engine level
-            edges=variant_edges,
-            log_score=parent.log_score,
-            evidence_count=parent.evidence_count,
-            window_log_score=parent.window_log_score,
-            window_evidence=parent.window_evidence,
-            status=CandidateStatus.ACTIVE,
-            description=description,
-            lineage=parent.lineage,
-        )
-        return variant
+        return _descendant(parent, domain_module_id, variant_edges, description, parent.lineage)
 
     # ------------------------------------------------------------------
     # Diagnostic accessors

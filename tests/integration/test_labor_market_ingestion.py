@@ -4,8 +4,6 @@ Integration tests — labor market domain ingestion pipeline.
 Test inventory
 --------------
 TEST-LM-01  All 8 variable IDs are stable across module imports
-TEST-LM-02  All 5 initial candidates are valid DAGs
-TEST-LM-03  All candidates share the same variable set
 TEST-LM-04  Soft probabilities are clamped to [0.01, 0.99]
 TEST-LM-05  Rising unemployment → P(UnemploymentRising) > 0.5
 TEST-LM-06  Falling unemployment → P(UnemploymentRising) < 0.5
@@ -16,10 +14,8 @@ TEST-LM-10  build_evidence_record produces SOFT_OBSERVED missingness
 TEST-LM-11  FRED client fetch_series with mocked HTTP
 TEST-LM-12  FRED client skips missing values
 TEST-LM-13  compute_snapshot falls back gracefully with no data
-TEST-LM-14  Domain module_id matches candidates
 TEST-LM-15  Existence thresholds are within valid ranges
 TEST-LM-16  Domain registers in engine and evidence is ingested
-TEST-LM-17  Candidates have distinct edge structures
 TEST-LM-18  Full pipeline fetch_evidence with mocked FREDClient
 """
 from __future__ import annotations
@@ -38,11 +34,6 @@ import pytest
 from src.domains.labor_market_v1.domain import (
     LaborMarketV1,
     get_variables,
-    make_labor_tightening_candidate,
-    make_layoff_cycle_candidate,
-    make_structural_shift_candidate,
-    make_wage_price_spiral_candidate,
-    make_null_candidate,
 )
 from src.domains.labor_market_v1.ingestion.fred_client import FREDClient, FREDObservation
 from src.domains.labor_market_v1.ingestion.pipeline import (
@@ -154,37 +145,10 @@ def test_variable_ids_are_stable():
     vars1 = get_variables()
     vars2 = get_variables()
     domain = LaborMarketV1()
-    cand_vars = {v.name: v.variable_id for v in domain.initial_candidates()[0].variables}
+    domain_vars = {v.name: v.variable_id for v in domain.variables()}
     for name in vars1:
         assert vars1[name].variable_id == vars2[name].variable_id
-        assert vars1[name].variable_id == cand_vars[name]
-
-
-def test_all_candidates_are_dags():
-    for factory in [
-        make_labor_tightening_candidate,
-        make_layoff_cycle_candidate,
-        make_structural_shift_candidate,
-        make_wage_price_spiral_candidate,
-        make_null_candidate,
-    ]:
-        cand = factory()
-        assert cand.is_dag(), f"Candidate '{cand.description}' violates DAG"
-
-
-def test_all_candidates_share_variable_set():
-    expected_names = set(get_variables().keys())
-    expected_ids = {v.variable_id for v in get_variables().values()}
-    for factory in [
-        make_labor_tightening_candidate,
-        make_layoff_cycle_candidate,
-        make_structural_shift_candidate,
-        make_wage_price_spiral_candidate,
-        make_null_candidate,
-    ]:
-        cand = factory()
-        assert {v.name for v in cand.variables} == expected_names
-        assert {v.variable_id for v in cand.variables} == expected_ids
+        assert vars1[name].variable_id == domain_vars[name]
 
 
 @pytest.mark.parametrize("signal", [-100.0, -10.0, 0.0, 10.0, 100.0])
@@ -322,13 +286,6 @@ def test_compute_snapshot_falls_back_gracefully_with_no_data():
         assert getattr(snapshot, attr) == 0.5, f"{attr} should be 0.5 with no data"
 
 
-def test_domain_module_id_matches_candidates():
-    domain = LaborMarketV1()
-    mid = domain.module_id()
-    for cand in domain.initial_candidates():
-        assert cand.domain_module_id == mid
-
-
 def test_existence_thresholds_are_valid():
     t = LaborMarketV1().existence_thresholds()
     assert 0.0 < t.prune_below < 1.0
@@ -341,19 +298,13 @@ def test_domain_registers_in_engine():
     engine.register_domain(domain)
     engine.activate_domain(domain.module_id())
     pop = engine.get_population(domain.module_id())
-    assert len(pop.active_candidates()) == 5
+    assert [(c.edges, c.lineage) for c in pop.active_candidates()] == [([], "unconnected")]
 
     observations = _make_full_observations()
     snapshot = compute_snapshot(observations, _TARGET_DATE)
     record = LaborMarketPipeline.build_evidence_record(snapshot)
     engine.ingest(record)
     assert engine.evidence_store.count(domain.module_id()) == 1
-
-
-def test_candidates_have_distinct_edge_structures():
-    domain = LaborMarketV1()
-    sigs = [c.edge_structure_signature() for c in domain.initial_candidates()]
-    assert len(set(sigs)) == len(sigs)
 
 
 def test_fetch_evidence_full_pipeline_mocked():

@@ -90,7 +90,7 @@ def test_soft_evidence_is_judged_against_its_own_probability():
     engine = ProbabilisticOntologyEngine(db_path=":memory:", random_seed=0)
     engine.register_domain(domain)
     engine.activate_domain("test-domain-v1")
-    variables = domain.initial_candidates()[0].variables
+    variables = domain.variables()
     for week in range(6):
         engine.learn([soft_record(variables, date(2024, 1, 7) + timedelta(weeks=week), seed=3)])
     health = engine.epistemic_health("test-domain-v1")

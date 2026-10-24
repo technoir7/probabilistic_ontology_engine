@@ -1,5 +1,6 @@
 """Rival research programmes stay alive until refuted (REFACTOR_SPEC D15):
-every candidate carries the seed explanation it descends from, and pruning
+every candidate carries the programme it belongs to, founded by a connection
+the evidence prompted from nothing (D24), and pruning
 spares a programme's best candidate unless the evidence for the leader over
 it is decisive (a Bayes factor above 100, Jeffreys' scale), so the
 population can shift to another worldview rather than only refine one."""
@@ -19,22 +20,25 @@ def engine_for(domain, seed=0):
     return engine
 
 
-def test_seeds_name_their_programme():
-    engine = engine_for(MacroRegimeV1())
-    pop = engine.population_manager.get_population("macro-regime-v1")
-    assert {c.lineage for c in pop.candidates} == {"T_monetary", "T_credit", "T_ai_boom", "T_recession", "T_null", "T_persistence"}
-
-
-def test_variants_inherit_their_parents_programme():
+def test_a_programme_is_founded_from_nothing_and_kept_by_its_descendants():
     engine = engine_for(TestDomainV1())
     gen = SyntheticDataGenerator(graph="T*", random_seed=1)
     for _ in range(10):
         engine.learn(gen.sample(30))
     pop = engine.population_manager.get_population("test-domain-v1")
     by_id = {c.candidate_id: c for c in pop.candidates}
+    founded = 0
     for c in pop.candidates:
-        if c.parent_candidate_id in by_id:
-            assert c.lineage == by_id[c.parent_candidate_id].lineage
+        parent = by_id.get(c.parent_candidate_id)
+        if parent is None:
+            continue
+        if not parent.edges and c.description.startswith("prompted_add_"):
+            (p, ch), = c.edge_structure_signature()
+            assert c.lineage == "–".join(sorted((p, ch)))
+            founded += 1
+        else:
+            assert c.lineage == parent.lineage
+    assert founded >= 1
 
 
 def scored(candidate, lineage, per_record, n=150.0):

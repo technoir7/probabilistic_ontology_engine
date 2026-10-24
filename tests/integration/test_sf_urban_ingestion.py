@@ -4,18 +4,14 @@ Integration tests — SF urban domain ingestion pipeline.
 Test inventory
 --------------
 TEST-SF-01  Variable IDs stable across imports
-TEST-SF-02  All 5 candidates are valid DAGs
-TEST-SF-03  All candidates share same variable set
 TEST-SF-04  _soft_bool clamped to [0.01, 0.99]
 TEST-SF-05  compute_snapshot falls back to 0.5 with empty data
 TEST-SF-06  High crime count → P(CrimeIndexElevated) > 0.5
 TEST-SF-07  Low crime count → P(CrimeIndexElevated) < 0.5
 TEST-SF-08  build_evidence_record maps all 8 UUIDs
 TEST-SF-09  build_evidence_record produces SOFT_OBSERVED
-TEST-SF-10  Domain module_id matches candidates
 TEST-SF-11  Existence thresholds valid
 TEST-SF-12  Domain registers in engine, evidence ingested
-TEST-SF-13  Candidates have distinct edge structures
 TEST-SF-14  SFGovClient returns empty lists on HTTP error (graceful failure)
 TEST-SF-15  Full pipeline fetch_evidence with mocked clients
 TEST-SF-16  Rising tech employment → P(TechHiringAccelerating) > 0.5
@@ -39,11 +35,6 @@ from src.domains.sources.soft_evidence import sigmoid as _sigmoid
 from src.domains.sf_urban_v1.domain import (
     SFUrbanV1,
     get_variables,
-    make_tech_rebound_candidate,
-    make_structural_decline_candidate,
-    make_bifurcated_recovery_candidate,
-    make_bottom_formation_candidate,
-    make_null_candidate,
 )
 from src.domains.sf_urban_v1.ingestion.sfgov_client import MonthlyCount, SFGovClient
 from src.domains.sf_urban_v1.ingestion.fred_client import (
@@ -147,49 +138,10 @@ def test_variable_ids_are_stable():
     vars1 = get_variables()
     vars2 = get_variables()
     domain = SFUrbanV1()
-    cands = domain.initial_candidates()
-    cand_vars = {v.name: v.variable_id for v in cands[0].variables}
+    domain_vars = {v.name: v.variable_id for v in domain.variables()}
     for name in vars1:
         assert vars1[name].variable_id == vars2[name].variable_id
-        assert vars1[name].variable_id == cand_vars[name]
-
-
-# ---------------------------------------------------------------------------
-# TEST-SF-02 — All 5 candidates are valid DAGs
-# ---------------------------------------------------------------------------
-
-def test_all_candidates_are_dags():
-    factories = [
-        make_tech_rebound_candidate,
-        make_structural_decline_candidate,
-        make_bifurcated_recovery_candidate,
-        make_bottom_formation_candidate,
-        make_null_candidate,
-    ]
-    for factory in factories:
-        cand = factory()
-        assert cand.is_dag(), f"Candidate '{cand.description}' violates DAG constraint"
-
-
-# ---------------------------------------------------------------------------
-# TEST-SF-03 — All candidates share the canonical variable set
-# ---------------------------------------------------------------------------
-
-def test_all_candidates_share_variable_set():
-    expected_names = set(get_variables().keys())
-    expected_ids = {v.variable_id for v in get_variables().values()}
-    factories = [
-        make_tech_rebound_candidate,
-        make_structural_decline_candidate,
-        make_bifurcated_recovery_candidate,
-        make_bottom_formation_candidate,
-        make_null_candidate,
-    ]
-    for factory in factories:
-        cand = factory()
-        cand_names = {v.name for v in cand.variables}
-        assert cand_names == expected_names
-        assert {v.variable_id for v in cand.variables} == expected_ids
+        assert vars1[name].variable_id == domain_vars[name]
 
 
 # ---------------------------------------------------------------------------
@@ -276,17 +228,6 @@ def test_build_evidence_record_all_soft_observed():
 
 
 # ---------------------------------------------------------------------------
-# TEST-SF-10 — Domain module_id matches candidates
-# ---------------------------------------------------------------------------
-
-def test_domain_module_id_matches_candidates():
-    domain = SFUrbanV1()
-    module_id = domain.module_id()
-    for cand in domain.initial_candidates():
-        assert cand.domain_module_id == module_id
-
-
-# ---------------------------------------------------------------------------
 # TEST-SF-11 — Existence thresholds valid
 # ---------------------------------------------------------------------------
 
@@ -311,25 +252,13 @@ def test_domain_registers_in_engine():
     engine.activate_domain(domain.module_id())
     pop = engine.get_population(domain.module_id())
     assert pop is not None
-    assert len(pop.active_candidates()) == 5
+    assert [(c.edges, c.lineage) for c in pop.active_candidates()] == [([], "unconnected")]
 
     sfgov_data, fred_data = _make_full_data()
     snapshot = compute_snapshot(sfgov_data, fred_data, _TARGET_DATE)
     record = SFUrbanPipeline.build_evidence_record(snapshot)
     engine.ingest(record)
     assert engine.evidence_store.count(domain.module_id()) == 1
-
-
-# ---------------------------------------------------------------------------
-# TEST-SF-13 — Candidates have distinct edge structures
-# ---------------------------------------------------------------------------
-
-def test_candidates_have_distinct_edge_structures():
-    domain = SFUrbanV1()
-    candidates = domain.initial_candidates()
-    signatures = [c.edge_structure_signature() for c in candidates]
-    assert len(set(signatures)) == len(signatures), \
-        "Some candidates share the same edge structure"
 
 
 # ---------------------------------------------------------------------------

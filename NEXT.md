@@ -7,11 +7,16 @@ sense of the code doing other than it says.
 
 ## 1. No worldview beats persistence
 
-Since replay 10 the rival programmes get a fair trial and live for years,
-but none, given persistence, explains the weeks better than persistence
-alone. Is that the verdict on these worldviews, or on weekly yes/no
-signals, which may be too coarse to carry how credit or money moves the
-rest? Monthly evidence, or degrees (problem 2), would say.
+In replay 10 the hand-written programmes got a fair trial and lived for
+years, but none, given persistence, explained the weeks better than
+persistence alone. Is that the verdict on these worldviews, or on weekly
+yes/no signals, which may be too coarse to carry how credit or money moves
+the rest? Monthly evidence, or degrees (problem 2), would say.
+
+The engine now forms its own hypotheses (D24), so the question has to be
+asked again: does anything it forms beat persistence, and does it even
+find persistence? That is replay 11, which needs planning in writing
+before it runs (evals/README.md).
 
 ## 2. Unsure in the middle
 
@@ -49,8 +54,10 @@ LeveragedLoanStress and BankLendingTightening are the same DRTSCILM
 z-score at two thresholds, and CorporateDefaultRisk and HYSpreadElevated
 both come from the high-yield spread. A link between such a pair is
 learned as strong because it cannot be otherwise, and says nothing about
-the world. Each variable should come from its own source, or such pairs
-should be inadmissible as links (problem 4).
+the world. Since D24 this matters more: the engine forms first the
+connection the evidence most supports, and a pair that cannot disagree
+supports it best. Each variable should come from its own source, or such
+pairs should be inadmissible as links (problem 4).
 
 ## 7. Some "13-week" signals look back 18 weeks
 
@@ -60,6 +67,17 @@ prices, so 91 observations is about 18 weeks. Credit's TOTCI had the
 opposite fault, three observations of a weekly series read as three
 months; it is fixed. Fixing macro's changes what the replays measured, so
 it waits for a replay that says what it changes.
+
+## 8. Weak dependences go unfound
+
+A hypothesis is formed from the last 100 records and must explain more
+than chance could. In the synthetic test, a real dependence worth about
+0.04 nats a record (B–C) was found in none of 20 runs within 300 records,
+so the test that the whole true structure is found from nothing is a known
+failure (G2, xfail). A longer memory would find it but notice a change of
+regime more slowly (D14); forming hypotheses from a longer memory than the
+score's is the obvious thing to try, and the replays would have to show it
+does not slow the response to change.
 
 ## Outside the epistemology
 

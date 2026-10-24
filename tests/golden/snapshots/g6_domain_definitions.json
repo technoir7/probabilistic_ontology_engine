@@ -1,138 +1,6 @@
 {
  "AIRegimeV1": {
   "module_id": "ai-regime-v1",
-  "seed_candidates": [
-   {
-    "description": "H1: infrastructure_buildout \u2014 rational capex \u2192 productivity chain",
-    "edges": [
-     [
-      "SemiconductorMomentum->HyperscalerCapexAccelerating",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "chip demand \u2192 hyperscaler capex"
-     ],
-     [
-      "HyperscalerCapexAccelerating->IPInvestmentRising",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "capex \u2192 measured IP investment"
-     ],
-     [
-      "IPInvestmentRising->LaborProductivityImproving",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "IP investment \u2192 labour productivity"
-     ]
-    ]
-   },
-   {
-    "description": "H2: bubble_detachment \u2014 narrative detached from fundamentals",
-    "edges": [
-     [
-      "SemiconductorMomentum->TechValuationDetached",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "chip momentum \u2192 valuation expansion"
-     ],
-     [
-      "TechValuationDetached->MarketConcentrationExtreme",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "stretched valuations \u2192 concentrated flows"
-     ],
-     [
-      "MarketConcentrationExtreme->AIRiskPremiumCompressed",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "concentration \u2192 compressed risk premium"
-     ]
-    ]
-   },
-   {
-    "description": "H3: winner_take_all \u2014 concentration drives capex and valuation",
-    "edges": [
-     [
-      "MarketConcentrationExtreme->HyperscalerCapexAccelerating",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "capital concentration \u2192 capex acceleration"
-     ],
-     [
-      "HyperscalerCapexAccelerating->TechValuationDetached",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "capex acceleration \u2192 valuation premium"
-     ]
-    ]
-   },
-   {
-    "description": "H4: productivity_regime \u2014 AI gains showing up in real economy",
-    "edges": [
-     [
-      "IPInvestmentRising->LaborProductivityImproving",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "IP investment \u2192 productivity gains"
-     ],
-     [
-      "LaborProductivityImproving->BroadEconomicLift",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "productivity \u2192 GDP lift"
-     ],
-     [
-      "AIRiskPremiumCompressed->MarketConcentrationExtreme",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "risk appetite \u2192 tech concentration"
-     ]
-    ]
-   }
-  ],
   "thresholds": {
    "accept_above": 0.9,
    "explore_band": [
@@ -221,208 +89,91 @@
     ],
     false,
     false
+   ],
+   [
+    "SemiconductorMomentum_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "MarketConcentrationExtreme_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "HyperscalerCapexAccelerating_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "TechValuationDetached_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "IPInvestmentRising_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "LaborProductivityImproving_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "BroadEconomicLift_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "AIRiskPremiumCompressed_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
    ]
   ]
  },
  "ArtPrestigeRegimeV1": {
   "module_id": "art_prestige_regime_v1",
-  "seed_candidates": [
-   {
-    "description": "H1: CraftAuraBacklash \u2014 AI saturation \u2192 aura premium \u2192 craft/figurative institutionalisation",
-    "edges": [
-     [
-      "AIImageSaturation->RitualAuraPremium",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "AI image saturation \u2192 aura/ritual premium"
-     ],
-     [
-      "RitualAuraPremium->CraftPrestigeRising",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "ritual aura premium \u2192 craft prestige elevation"
-     ],
-     [
-      "CraftPrestigeRising->MuseumFigurativeAcceptance",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "craft prestige \u2192 institutional figurative acceptance"
-     ],
-     [
-      "CuratorialMaterialityShift->CraftPrestigeRising",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "curatorial materiality shift \u2192 craft rising"
-     ]
-    ]
-   },
-   {
-    "description": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
-    "edges": [
-     [
-      "AIImageSaturation->AIArtInstitutionalAcceptance",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "AI image presence \u2192 institutional normalisation"
-     ],
-     [
-      "AIArtInstitutionalAcceptance->MuseumAcquisitionMomentum",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "AI institutional acceptance \u2192 museum acquisitions"
-     ],
-     [
-      "AIArtInstitutionalAcceptance->ConceptualDominance",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "AI acceptance \u2192 conceptual framework dominance"
-     ]
-    ]
-   },
-   {
-    "description": "H3: DefensiveBlueChipConsolidation \u2014 market uncertainty \u2192 blue-chip flight \u2192 institutional conservatism",
-    "edges": [
-     [
-      "MarketUncertainty->CollectorFlightToSafety",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "market uncertainty \u2192 flight to established names"
-     ],
-     [
-      "CollectorFlightToSafety->BlueChipConcentration",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "safety seeking \u2192 blue-chip market concentration"
-     ],
-     [
-      "BlueChipConcentration->InstitutionalRiskAversion",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "market concentration \u2192 institutional risk aversion"
-     ],
-     [
-      "BlueChipInstitutionalCapture->MuseumAcquisitionMomentum",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "blue-chip institutional capture \u2192 acquisition momentum"
-     ]
-    ]
-   },
-   {
-    "description": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum",
-    "edges": [
-     [
-      "AttentionFragmentation->PrestigeFragmentation",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "attention dispersal \u2192 prestige hierarchy fragmentation"
-     ],
-     [
-      "PrestigeFragmentation->RegionalSceneMomentum",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "prestige fragmentation \u2192 regional scenes gain visibility"
-     ],
-     [
-      "PrestigeFragmentation->BlueChipConcentration",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "fragmentation \u2192 suppressed blue-chip consensus"
-     ]
-    ]
-   },
-   {
-    "description": "H5: NeoAcademicResurgence \u2014 aura + authenticity premium \u2192 neo-academic figurative revival",
-    "edges": [
-     [
-      "RitualAuraPremium->NeoAcademicResurgence",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "ritual aura premium \u2192 neo-academic interest"
-     ],
-     [
-      "AuthenticityPremium->NeoAcademicResurgence",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "authenticity premium \u2192 neo-academic validation"
-     ],
-     [
-      "NeoAcademicResurgence->MuseumFigurativeAcceptance",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "neo-academic resurgence \u2192 museum figurative programming"
-     ]
-    ]
-   }
-  ],
   "thresholds": {
    "accept_above": 0.9,
    "explore_band": [
@@ -681,168 +432,261 @@
     ],
     false,
     false
+   ],
+   [
+    "InstitutionalRiskAversion_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "MuseumFigurativeAcceptance_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "ConceptualDominance_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "AIArtInstitutionalAcceptance_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "CuratorialMaterialityShift_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "CraftPrestigeRising_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "PrestigeFragmentation_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "RegionalSceneMomentum_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "BlueChipInstitutionalCapture_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "BiennialFatigue_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "MuseumAcquisitionMomentum_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "BlueChipConcentration_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "AuctionSpeculationElevated_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "CollectorFlightToSafety_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "FigurativeAuctionMomentum_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "EmergingMarketLiquidity_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "MarketPolarization_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "MarketUncertainty_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "RitualAuraPremium_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "EmbodimentDiscourseRising_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "AntiDigitalSentiment_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "AIImageSaturation_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "AuthenticityPremium_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "NeoAcademicResurgence_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "AttentionFragmentation_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
    ]
   ]
  },
  "CreditCycleV1": {
   "module_id": "credit-cycle-v1",
-  "seed_candidates": [
-   {
-    "description": "H1: monetary_tightening_transmission",
-    "edges": [
-     [
-      "BankLendingTightening->LeveragedLoanStress",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "bank tightening \u2192 leveraged loan stress"
-     ],
-     [
-      "LeveragedLoanStress->HYSpreadElevated",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "leveraged loan stress \u2192 HY spread widening"
-     ],
-     [
-      "BankLendingTightening->RefinancingStress",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "bank tightening \u2192 higher refinancing cost"
-     ]
-    ]
-   },
-   {
-    "description": "H2: default_cycle_beginning",
-    "edges": [
-     [
-      "CorporateDefaultRisk->HYSpreadElevated",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "default risk elevated \u2192 HY spreads widen"
-     ],
-     [
-      "HYSpreadElevated->InvestmentGradeSpread",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "HY widening \u2192 IG contagion"
-     ],
-     [
-      "LeveragedLoanStress->CorporateDefaultRisk",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "loan stress \u2192 default risk rising"
-     ]
-    ]
-   },
-   {
-    "description": "H3: liquidity_withdrawal",
-    "edges": [
-     [
-      "CreditImpulseNegative->HYSpreadElevated",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "credit contraction \u2192 HY spread widening"
-     ],
-     [
-      "HYSpreadElevated->HighYieldIssuanceFalling",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "high HY spreads \u2192 issuance deterred"
-     ],
-     [
-      "HYSpreadElevated->RefinancingStress",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "HY spread spike \u2192 refinancing cost surge"
-     ]
-    ]
-   },
-   {
-    "description": "H4: credit_normalization",
-    "edges": [
-     [
-      "InvestmentGradeSpread->HYSpreadElevated",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "IG widening \u2192 HY spread compression reversal"
-     ],
-     [
-      "CreditImpulseNegative->InvestmentGradeSpread",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "credit contraction \u2192 IG spread widening"
-     ]
-    ]
-   },
-   {
-    "description": "T_null: direct default-spread baseline",
-    "edges": [
-     [
-      "CorporateDefaultRisk->HYSpreadElevated",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "default risk \u2192 HY (baseline)"
-     ],
-     [
-      "BankLendingTightening->HYSpreadElevated",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "bank tightening \u2192 HY (baseline)"
-     ]
-    ]
-   }
-  ],
   "thresholds": {
    "accept_above": 0.9,
    "explore_band": [
@@ -931,168 +775,91 @@
     ],
     false,
     false
+   ],
+   [
+    "HYSpreadElevated_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "LeveragedLoanStress_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "CorporateDefaultRisk_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "CreditImpulseNegative_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "BankLendingTightening_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "InvestmentGradeSpread_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "HighYieldIssuanceFalling_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "RefinancingStress_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
    ]
   ]
  },
  "CryptoRegimeV1": {
   "module_id": "crypto-regime-v1",
-  "seed_candidates": [
-   {
-    "description": "H1: liquidity_overflow",
-    "edges": [
-     [
-      "RiskAssetCorrelation->BTCMomentumPositive",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "risk-on correlation \u2192 BTC momentum"
-     ],
-     [
-      "BTCMomentumPositive->AltcoinSeasonActive",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "BTC momentum \u2192 altcoin rotation"
-     ],
-     [
-      "StablecoinFlowPositive->BTCMomentumPositive",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "stablecoin inflows \u2192 BTC momentum"
-     ]
-    ]
-   },
-   {
-    "description": "H2: digital_gold",
-    "edges": [
-     [
-      "DollarDebasementNarrative->BTCMomentumPositive",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "USD weak + gold up \u2192 BTC store-of-value demand"
-     ],
-     [
-      "BTCMomentumPositive->StablecoinFlowPositive",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "BTC momentum \u2192 stablecoin inflows for dry powder"
-     ],
-     [
-      "DollarDebasementNarrative->RiskAssetCorrelation",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "macro debasement \u2192 risk-on correlation"
-     ]
-    ]
-   },
-   {
-    "description": "H3: speculative_mania",
-    "edges": [
-     [
-      "CryptoVolatilityShock->AltcoinSeasonActive",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "volatility shock \u2192 speculative altcoin rotation"
-     ],
-     [
-      "AltcoinSeasonActive->NarrativeMomentum",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "altcoin season \u2192 ETH/DeFi narrative momentum"
-     ],
-     [
-      "OnChainActivityElevated->CryptoVolatilityShock",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "elevated on-chain activity \u2192 volatility"
-     ]
-    ]
-   },
-   {
-    "description": "H4: utility_adoption",
-    "edges": [
-     [
-      "OnChainActivityElevated->NarrativeMomentum",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "on-chain activity \u2192 DeFi/ETH narrative momentum"
-     ],
-     [
-      "NarrativeMomentum->AltcoinSeasonActive",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "narrative momentum \u2192 altcoin season"
-     ],
-     [
-      "StablecoinFlowPositive->OnChainActivityElevated",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "stablecoin inflows \u2192 on-chain activity"
-     ]
-    ]
-   },
-   {
-    "description": "T_null: btc-altcoin baseline",
-    "edges": [
-     [
-      "BTCMomentumPositive->AltcoinSeasonActive",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "BTC momentum \u2192 altcoin season (baseline)"
-     ]
-    ]
-   }
-  ],
   "thresholds": {
    "accept_above": 0.9,
    "explore_band": [
@@ -1181,178 +948,91 @@
     ],
     false,
     false
+   ],
+   [
+    "BTCMomentumPositive_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "AltcoinSeasonActive_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "OnChainActivityElevated_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "StablecoinFlowPositive_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "CryptoVolatilityShock_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "RiskAssetCorrelation_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "NarrativeMomentum_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "DollarDebasementNarrative_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
    ]
   ]
  },
  "EnergyRegimeV1": {
   "module_id": "energy-regime-v1",
-  "seed_candidates": [
-   {
-    "description": "H1: supply_shock",
-    "edges": [
-     [
-      "OPECSupplyConstraint->OilPriceSurge",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "OPEC supply cut \u2192 oil price surge"
-     ],
-     [
-      "OilPriceSurge->EnergyInflationPersistent",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "oil rally \u2192 energy CPI elevated"
-     ],
-     [
-      "OilPriceSurge->NatGasPriceSurge",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "oil surge \u2192 fuel switching \u2192 gas demand"
-     ]
-    ]
-   },
-   {
-    "description": "H2: demand_driven",
-    "edges": [
-     [
-      "DemandDestructionRisk->OilPriceSurge",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "demand resilience \u2192 oil price support"
-     ],
-     [
-      "OilPriceSurge->EnergyEquityMomentum",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "oil surge \u2192 energy equity outperformance"
-     ],
-     [
-      "OilPriceSurge->EnergyInflationPersistent",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "oil price \u2192 energy inflation"
-     ]
-    ]
-   },
-   {
-    "description": "H3: geopolitical_premium",
-    "edges": [
-     [
-      "GeopoliticalRiskElevated->OilPriceSurge",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "geopolitical risk \u2192 oil risk premium"
-     ],
-     [
-      "OilPriceSurge->NatGasPriceSurge",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "oil \u2192 gas cross-commodity linkage"
-     ],
-     [
-      "GeopoliticalRiskElevated->EnergyInflationPersistent",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "geopolitical supply risk \u2192 energy inflation"
-     ]
-    ]
-   },
-   {
-    "description": "H4: renewables_transition",
-    "edges": [
-     [
-      "RenewablesDisplacement->EnergyEquityMomentum",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "clean energy momentum \u2192 energy sector rerating"
-     ],
-     [
-      "EnergyEquityMomentum->OilPriceSurge",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "energy equity momentum \u2192 oil demand expectation"
-     ],
-     [
-      "RenewablesDisplacement->OPECSupplyConstraint",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "renewables pressure \u2192 OPEC defends price"
-     ]
-    ]
-   },
-   {
-    "description": "T_null: direct supply-geopolitical baseline",
-    "edges": [
-     [
-      "GeopoliticalRiskElevated->OilPriceSurge",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "geopolitical \u2192 oil (baseline)"
-     ],
-     [
-      "OPECSupplyConstraint->OilPriceSurge",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "OPEC \u2192 oil (baseline)"
-     ]
-    ]
-   }
-  ],
   "thresholds": {
    "accept_above": 0.9,
    "explore_band": [
@@ -1441,168 +1121,91 @@
     ],
     false,
     false
+   ],
+   [
+    "OilPriceSurge_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "NatGasPriceSurge_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "EnergyEquityMomentum_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "OPECSupplyConstraint_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "RenewablesDisplacement_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "EnergyInflationPersistent_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "GeopoliticalRiskElevated_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "DemandDestructionRisk_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
    ]
   ]
  },
  "GeopoliticsV1": {
   "module_id": "geopolitics-v1",
-  "seed_candidates": [
-   {
-    "description": "H1: great_power_competition",
-    "edges": [
-     [
-      "DiplomaticTensionHigh->SanctionsPressureElevated",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "diplomatic tension \u2192 sanctions deployment"
-     ],
-     [
-      "SanctionsPressureElevated->TradeDisruptionRisk",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "sanctions pressure \u2192 trade route disruption"
-     ],
-     [
-      "CurrencyWarSignal->DiplomaticTensionHigh",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "currency volatility \u2192 diplomatic friction"
-     ]
-    ]
-   },
-   {
-    "description": "H2: resource_conflict",
-    "edges": [
-     [
-      "EnergyWeaponizationRisk->SupplyChainStress",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "energy weaponization \u2192 supply cost shock"
-     ],
-     [
-      "SupplyChainStress->TradeDisruptionRisk",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "supply chain stress \u2192 trade disruption"
-     ],
-     [
-      "ConflictIntensityElevated->EnergyWeaponizationRisk",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "armed conflict \u2192 energy infrastructure targeting"
-     ]
-    ]
-   },
-   {
-    "description": "H3: deglobalization",
-    "edges": [
-     [
-      "GlobalTradeVolumeWeak->SupplyChainStress",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "trade volume decline \u2192 supply fragmentation"
-     ],
-     [
-      "SupplyChainStress->CurrencyWarSignal",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "supply stress \u2192 competitive devaluation pressure"
-     ],
-     [
-      "SanctionsPressureElevated->GlobalTradeVolumeWeak",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "sanctions \u2192 trade route contraction"
-     ]
-    ]
-   },
-   {
-    "description": "H4: regional_instability",
-    "edges": [
-     [
-      "ConflictIntensityElevated->TradeDisruptionRisk",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "armed conflict \u2192 trade route disruption"
-     ],
-     [
-      "TradeDisruptionRisk->SupplyChainStress",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "trade disruption \u2192 supply chain cost shock"
-     ],
-     [
-      "DiplomaticTensionHigh->ConflictIntensityElevated",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "diplomatic breakdown \u2192 conflict escalation"
-     ]
-    ]
-   },
-   {
-    "description": "T_null: conflict-trade baseline",
-    "edges": [
-     [
-      "ConflictIntensityElevated->TradeDisruptionRisk",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "conflict \u2192 trade disruption (baseline)"
-     ]
-    ]
-   }
-  ],
   "thresholds": {
    "accept_above": 0.9,
    "explore_band": [
@@ -1691,178 +1294,91 @@
     ],
     false,
     false
+   ],
+   [
+    "ConflictIntensityElevated_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "TradeDisruptionRisk_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "SanctionsPressureElevated_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "DiplomaticTensionHigh_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "SupplyChainStress_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "CurrencyWarSignal_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "EnergyWeaponizationRisk_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "GlobalTradeVolumeWeak_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
    ]
   ]
  },
  "LaborMarketV1": {
   "module_id": "labor-market-v1",
-  "seed_candidates": [
-   {
-    "description": "H1: labor_tightening",
-    "edges": [
-     [
-      "TightLaborMarket->WageInflationPersistent",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "tight labor \u2192 wage pressure"
-     ],
-     [
-      "WageInflationPersistent->RealWageGrowthPositive",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "wage growth \u2192 real wage gains"
-     ],
-     [
-      "JobOpeningsFalling->TightLaborMarket",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "falling openings \u2192 loosening market"
-     ]
-    ]
-   },
-   {
-    "description": "H2: layoff_cycle",
-    "edges": [
-     [
-      "LayoffCycleBeginning->UnemploymentRising",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "layoffs \u2192 unemployment rising"
-     ],
-     [
-      "UnemploymentRising->LaborProductivityWeak",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "rising unemployment \u2192 productivity weakness"
-     ],
-     [
-      "LayoffCycleBeginning->JobOpeningsFalling",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "layoffs \u2192 demand for new hires falls"
-     ]
-    ]
-   },
-   {
-    "description": "H3: structural_shift",
-    "edges": [
-     [
-      "ParticipationRateFalling->TightLaborMarket",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "supply shrinkage \u2192 artificial tightness"
-     ],
-     [
-      "TightLaborMarket->WageInflationPersistent",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "tight market \u2192 wage pressure"
-     ],
-     [
-      "ParticipationRateFalling->LaborProductivityWeak",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "workforce shrinkage \u2192 aggregate productivity drag"
-     ]
-    ]
-   },
-   {
-    "description": "H4: wage_price_spiral",
-    "edges": [
-     [
-      "WageInflationPersistent->RealWageGrowthPositive",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "wage growth \u2192 real purchasing power gains"
-     ],
-     [
-      "RealWageGrowthPositive->TightLaborMarket",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "real wage gains \u2192 workers stay employed"
-     ],
-     [
-      "WageInflationPersistent->LaborProductivityWeak",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "wage cost pressure \u2192 firms cut investment"
-     ]
-    ]
-   },
-   {
-    "description": "T_null: layoff-unemployment baseline",
-    "edges": [
-     [
-      "LayoffCycleBeginning->UnemploymentRising",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "layoffs \u2192 unemployment (baseline)"
-     ],
-     [
-      "TightLaborMarket->WageInflationPersistent",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "tight market \u2192 wages (baseline)"
-     ]
-    ]
-   }
-  ],
   "thresholds": {
    "accept_above": 0.9,
    "explore_band": [
@@ -1951,723 +1467,91 @@
     ],
     false,
     false
+   ],
+   [
+    "UnemploymentRising_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "WageInflationPersistent_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "JobOpeningsFalling_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "LayoffCycleBeginning_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "LaborProductivityWeak_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "ParticipationRateFalling_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "RealWageGrowthPositive_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "TightLaborMarket_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
    ]
   ]
  },
  "MacroRegimeV1": {
   "module_id": "macro-regime-v1",
-  "seed_candidates": [
-   {
-    "description": "T_monetary: inflation-driven tightening chain",
-    "edges": [
-     [
-      "InflationShock->YieldCurveInverted",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "inflation \u2192 curve inversion"
-     ],
-     [
-      "InflationShock->LiquidityStress",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "inflation \u2192 Fed tightening"
-     ],
-     [
-      "YieldCurveInverted->CreditSpreadStress",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "curve inversion \u2192 credit stress"
-     ],
-     [
-      "LiquidityStress->CreditSpreadStress",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "liquidity drain \u2192 credit stress"
-     ],
-     [
-      "CreditSpreadStress->EquityRiskOn",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "credit stress \u2192 equity risk-off"
-     ],
-     [
-      "YieldCurveInverted_prev->YieldCurveInverted",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "YieldCurveInverted persists"
-     ],
-     [
-      "InflationShock_prev->InflationShock",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "InflationShock persists"
-     ],
-     [
-      "LiquidityStress_prev->LiquidityStress",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "LiquidityStress persists"
-     ],
-     [
-      "CreditSpreadStress_prev->CreditSpreadStress",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "CreditSpreadStress persists"
-     ],
-     [
-      "VolatilityShock_prev->VolatilityShock",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "VolatilityShock persists"
-     ],
-     [
-      "DollarStrength_prev->DollarStrength",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "DollarStrength persists"
-     ],
-     [
-      "EquityRiskOn_prev->EquityRiskOn",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "EquityRiskOn persists"
-     ],
-     [
-      "AIRiskOn_prev->AIRiskOn",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "AIRiskOn persists"
-     ]
-    ]
-   },
-   {
-    "description": "T_credit: credit-market-led regime",
-    "edges": [
-     [
-      "DollarStrength->CreditSpreadStress",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "dollar squeeze \u2192 credit stress"
-     ],
-     [
-      "LiquidityStress->CreditSpreadStress",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "liquidity drain \u2192 credit stress"
-     ],
-     [
-      "CreditSpreadStress->VolatilityShock",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "credit stress \u2192 equity vol"
-     ],
-     [
-      "CreditSpreadStress->EquityRiskOn",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "credit stress \u2192 equity risk-off"
-     ],
-     [
-      "YieldCurveInverted_prev->YieldCurveInverted",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "YieldCurveInverted persists"
-     ],
-     [
-      "InflationShock_prev->InflationShock",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "InflationShock persists"
-     ],
-     [
-      "LiquidityStress_prev->LiquidityStress",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "LiquidityStress persists"
-     ],
-     [
-      "CreditSpreadStress_prev->CreditSpreadStress",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "CreditSpreadStress persists"
-     ],
-     [
-      "VolatilityShock_prev->VolatilityShock",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "VolatilityShock persists"
-     ],
-     [
-      "DollarStrength_prev->DollarStrength",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "DollarStrength persists"
-     ],
-     [
-      "EquityRiskOn_prev->EquityRiskOn",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "EquityRiskOn persists"
-     ],
-     [
-      "AIRiskOn_prev->AIRiskOn",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "AIRiskOn persists"
-     ]
-    ]
-   },
-   {
-    "description": "T_ai_boom: AI productivity narrative dominant",
-    "edges": [
-     [
-      "AIRiskOn->EquityRiskOn",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "tech boom \u2192 equity confidence"
-     ],
-     [
-      "AIRiskOn->DollarStrength",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "tech capital inflows \u2192 dollar demand"
-     ],
-     [
-      "EquityRiskOn->VolatilityShock",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "equity appetite \u2194 vol regime"
-     ],
-     [
-      "YieldCurveInverted_prev->YieldCurveInverted",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "YieldCurveInverted persists"
-     ],
-     [
-      "InflationShock_prev->InflationShock",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "InflationShock persists"
-     ],
-     [
-      "LiquidityStress_prev->LiquidityStress",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "LiquidityStress persists"
-     ],
-     [
-      "CreditSpreadStress_prev->CreditSpreadStress",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "CreditSpreadStress persists"
-     ],
-     [
-      "VolatilityShock_prev->VolatilityShock",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "VolatilityShock persists"
-     ],
-     [
-      "DollarStrength_prev->DollarStrength",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "DollarStrength persists"
-     ],
-     [
-      "EquityRiskOn_prev->EquityRiskOn",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "EquityRiskOn persists"
-     ],
-     [
-      "AIRiskOn_prev->AIRiskOn",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "AIRiskOn persists"
-     ]
-    ]
-   },
-   {
-    "description": "T_recession: recessionary tightening cascade",
-    "edges": [
-     [
-      "InflationShock->LiquidityStress",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "inflation \u2192 Fed responds with QT"
-     ],
-     [
-      "LiquidityStress->YieldCurveInverted",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "QT \u2192 short-end rate rise \u2192 inversion"
-     ],
-     [
-      "YieldCurveInverted->CreditSpreadStress",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "inversion \u2192 credit concern"
-     ],
-     [
-      "CreditSpreadStress->EquityRiskOn",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "credit stress \u2192 risk-off equity"
-     ],
-     [
-      "InflationShock->DollarStrength",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "inflation premium \u2192 dollar demand"
-     ],
-     [
-      "CreditSpreadStress->VolatilityShock",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "credit stress \u2192 vol spike"
-     ],
-     [
-      "YieldCurveInverted_prev->YieldCurveInverted",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "YieldCurveInverted persists"
-     ],
-     [
-      "InflationShock_prev->InflationShock",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "InflationShock persists"
-     ],
-     [
-      "LiquidityStress_prev->LiquidityStress",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "LiquidityStress persists"
-     ],
-     [
-      "CreditSpreadStress_prev->CreditSpreadStress",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "CreditSpreadStress persists"
-     ],
-     [
-      "VolatilityShock_prev->VolatilityShock",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "VolatilityShock persists"
-     ],
-     [
-      "DollarStrength_prev->DollarStrength",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "DollarStrength persists"
-     ],
-     [
-      "EquityRiskOn_prev->EquityRiskOn",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "EquityRiskOn persists"
-     ],
-     [
-      "AIRiskOn_prev->AIRiskOn",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "AIRiskOn persists"
-     ]
-    ]
-   },
-   {
-    "description": "T_null: volatility-only baseline",
-    "edges": [
-     [
-      "VolatilityShock->CreditSpreadStress",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "vol \u2192 credit widening"
-     ],
-     [
-      "VolatilityShock->EquityRiskOn",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "vol \u2192 equity risk-off"
-     ],
-     [
-      "YieldCurveInverted_prev->YieldCurveInverted",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "YieldCurveInverted persists"
-     ],
-     [
-      "InflationShock_prev->InflationShock",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "InflationShock persists"
-     ],
-     [
-      "LiquidityStress_prev->LiquidityStress",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "LiquidityStress persists"
-     ],
-     [
-      "CreditSpreadStress_prev->CreditSpreadStress",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "CreditSpreadStress persists"
-     ],
-     [
-      "VolatilityShock_prev->VolatilityShock",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "VolatilityShock persists"
-     ],
-     [
-      "DollarStrength_prev->DollarStrength",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "DollarStrength persists"
-     ],
-     [
-      "EquityRiskOn_prev->EquityRiskOn",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "EquityRiskOn persists"
-     ],
-     [
-      "AIRiskOn_prev->AIRiskOn",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "AIRiskOn persists"
-     ]
-    ]
-   },
-   {
-    "description": "T_persistence: each signal follows its own last week",
-    "edges": [
-     [
-      "YieldCurveInverted_prev->YieldCurveInverted",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "YieldCurveInverted persists"
-     ],
-     [
-      "InflationShock_prev->InflationShock",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "InflationShock persists"
-     ],
-     [
-      "LiquidityStress_prev->LiquidityStress",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "LiquidityStress persists"
-     ],
-     [
-      "CreditSpreadStress_prev->CreditSpreadStress",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "CreditSpreadStress persists"
-     ],
-     [
-      "VolatilityShock_prev->VolatilityShock",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "VolatilityShock persists"
-     ],
-     [
-      "DollarStrength_prev->DollarStrength",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "DollarStrength persists"
-     ],
-     [
-      "EquityRiskOn_prev->EquityRiskOn",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "EquityRiskOn persists"
-     ],
-     [
-      "AIRiskOn_prev->AIRiskOn",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "AIRiskOn persists"
-     ]
-    ]
-   }
-  ],
   "thresholds": {
    "accept_above": 0.9,
    "explore_band": [
@@ -2841,93 +1725,6 @@
  },
  "NaturalGasV1": {
   "module_id": "natural-gas-v1",
-  "seed_candidates": [
-   {
-    "description": "T*: demand-chain",
-    "edges": [
-     [
-      "TempAnom->HeatingDem",
-      0.75,
-      0.75,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ],
-     [
-      "HeatingDem->StorageDraw",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ],
-     [
-      "StorageDraw->PriceUp",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ]
-    ]
-   },
-   {
-    "description": "T_alt: temp-direct",
-    "edges": [
-     [
-      "TempAnom->HeatingDem",
-      0.75,
-      0.75,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ],
-     [
-      "TempAnom->StorageDraw",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ],
-     [
-      "StorageDraw->PriceUp",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ]
-    ]
-   },
-   {
-    "description": "null: storage-only",
-    "edges": [
-     [
-      "StorageDraw->PriceUp",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ]
-    ]
-   }
-  ],
   "thresholds": {
    "accept_above": 0.9,
    "explore_band": [
@@ -2976,168 +1773,51 @@
     ],
     false,
     false
+   ],
+   [
+    "TempAnom_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "HeatingDem_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "StorageDraw_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "PriceUp_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
    ]
   ]
  },
  "SFUrbanV1": {
   "module_id": "sf-urban-v1",
-  "seed_candidates": [
-   {
-    "description": "H1: tech_rebound",
-    "edges": [
-     [
-      "TechHiringAccelerating->StartupFormationRising",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "tech hiring \u2192 talent pool for startups"
-     ],
-     [
-      "StartupFormationRising->PermitActivityRising",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "startup formation \u2192 office/commercial permits"
-     ],
-     [
-      "FootTrafficRecovering->TechHiringAccelerating",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "foot traffic recovery \u2192 local amenity \u2192 tech attraction"
-     ]
-    ]
-   },
-   {
-    "description": "H2: structural_decline",
-    "edges": [
-     [
-      "RetailClosureElevated->OfficeVacancyFalling",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "retail closures \u2192 neighborhood decline \u2192 office exodus"
-     ],
-     [
-      "OfficeVacancyFalling->PopulationFlowPositive",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "office recovery \u2192 population return"
-     ],
-     [
-      "CrimeIndexElevated->RetailClosureElevated",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "elevated crime \u2192 retail business closure"
-     ]
-    ]
-   },
-   {
-    "description": "H3: bifurcated_recovery",
-    "edges": [
-     [
-      "TechHiringAccelerating->FootTrafficRecovering",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "tech hiring \u2192 worker return \u2192 foot traffic"
-     ],
-     [
-      "FootTrafficRecovering->StartupFormationRising",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "foot traffic \u2192 viable market \u2192 startup formation"
-     ],
-     [
-      "PermitActivityRising->TechHiringAccelerating",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "permit activity \u2192 new office space \u2192 tech office demand"
-     ]
-    ]
-   },
-   {
-    "description": "H4: bottom_formation",
-    "edges": [
-     [
-      "PermitActivityRising->FootTrafficRecovering",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "new construction \u2192 amenities \u2192 foot traffic recovery"
-     ],
-     [
-      "FootTrafficRecovering->RetailClosureElevated",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "foot traffic recovery \u2192 retail viability improves"
-     ],
-     [
-      "StartupFormationRising->PermitActivityRising",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "startup formation \u2192 office space demand \u2192 permits"
-     ]
-    ]
-   },
-   {
-    "description": "T_null: tech-foottraffic baseline",
-    "edges": [
-     [
-      "TechHiringAccelerating->FootTrafficRecovering",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "tech hiring \u2192 foot traffic (baseline)"
-     ]
-    ]
-   }
-  ],
   "thresholds": {
    "accept_above": 0.9,
    "explore_band": [
@@ -3226,178 +1906,91 @@
     ],
     false,
     false
+   ],
+   [
+    "TechHiringAccelerating_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "OfficeVacancyFalling_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "RetailClosureElevated_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "PermitActivityRising_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "CrimeIndexElevated_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "StartupFormationRising_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "FootTrafficRecovering_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "PopulationFlowPositive_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
    ]
   ]
  },
  "SovereignDebtV1": {
   "module_id": "sovereign-debt-v1",
-  "seed_candidates": [
-   {
-    "description": "H1: us_fiscal_stress",
-    "edges": [
-     [
-      "USYieldSpiking->FiscalDominanceRisk",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "yield spike \u2192 fiscal dominance concern"
-     ],
-     [
-      "FiscalDominanceRisk->SpreadWidening",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "fiscal risk \u2192 credit spread widening"
-     ],
-     [
-      "FedBalanceSheetShrinking->USYieldSpiking",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "QT \u2192 term premium \u2192 yield spike"
-     ]
-    ]
-   },
-   {
-    "description": "H2: dollar_dominance_erosion",
-    "edges": [
-     [
-      "DollarStrengthening->EMStressElevated",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "strong USD \u2192 EM capital outflows"
-     ],
-     [
-      "EMStressElevated->SpreadWidening",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "EM stress \u2192 global spread widening"
-     ],
-     [
-      "FedBalanceSheetShrinking->DollarStrengthening",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "QT \u2192 dollar appreciation"
-     ]
-    ]
-   },
-   {
-    "description": "H3: em_contagion",
-    "edges": [
-     [
-      "EMStressElevated->CreditDefaultRisk",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "EM stress \u2192 corporate default risk"
-     ],
-     [
-      "CreditDefaultRisk->SpreadWidening",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "default risk \u2192 HY spread widening"
-     ],
-     [
-      "USYieldSpiking->EMStressElevated",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "UST yield spike \u2192 USD drain \u2192 EM stress"
-     ]
-    ]
-   },
-   {
-    "description": "H4: global_liquidity_crunch",
-    "edges": [
-     [
-      "GlobalLiquidityContracting->USYieldSpiking",
-      0.65,
-      0.65,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "global liquidity drain \u2192 UST yield pressure"
-     ],
-     [
-      "USYieldSpiking->FiscalDominanceRisk",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "yield spike \u2192 fiscal dominance concern"
-     ],
-     [
-      "GlobalLiquidityContracting->DollarStrengthening",
-      0.6,
-      0.6,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "liquidity crunch \u2192 safe-haven dollar demand"
-     ]
-    ]
-   },
-   {
-    "description": "T_null: credit-spread baseline",
-    "edges": [
-     [
-      "CreditDefaultRisk->SpreadWidening",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "default risk \u2192 spread widening (baseline)"
-     ],
-     [
-      "USYieldSpiking->SpreadWidening",
-      0.55,
-      0.55,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      "yield spike \u2192 spread widening (baseline)"
-     ]
-    ]
-   }
-  ],
   "thresholds": {
    "accept_above": 0.9,
    "explore_band": [
@@ -3486,138 +2079,91 @@
     ],
     false,
     false
+   ],
+   [
+    "USYieldSpiking_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "SpreadWidening_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "DollarStrengthening_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "FedBalanceSheetShrinking_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "EMStressElevated_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "FiscalDominanceRisk_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "CreditDefaultRisk_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
+   ],
+   [
+    "GlobalLiquidityContracting_prev",
+    "BOOLEAN",
+    [
+     true,
+     false
+    ],
+    true,
+    false
    ]
   ]
  },
  "TestDomainV1": {
   "module_id": "test-domain-v1",
-  "seed_candidates": [
-   {
-    "description": "T*",
-    "edges": [
-     [
-      "A->C",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ],
-     [
-      "B->C",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ],
-     [
-      "B->D",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ],
-     [
-      "C->E",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ],
-     [
-      "D->E",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ]
-    ]
-   },
-   {
-    "description": "T_alt",
-    "edges": [
-     [
-      "A->C",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ],
-     [
-      "B->C",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ],
-     [
-      "A->D",
-      0.5,
-      0.5,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ],
-     [
-      "C->E",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ],
-     [
-      "D->E",
-      0.7,
-      0.7,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ]
-    ]
-   },
-   {
-    "description": "null",
-    "edges": [
-     [
-      "C->E",
-      0.5,
-      0.5,
-      1.0,
-      "DIRECTED_CONDITIONAL",
-      true,
-      true,
-      ""
-     ]
-    ]
-   }
-  ],
   "thresholds": {
    "accept_above": 0.9,
    "explore_band": [

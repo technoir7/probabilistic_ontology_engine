@@ -1,8 +1,9 @@
 # Probabilistic Ontology Engine
 
 A working argument about how beliefs should be held, revised and given up,
-written as software. The engine keeps several rival explanations of a domain
-(how inflation, credit, the dollar and the rest of the macro economy bear on
+written as software. The engine starts with no hypotheses, only a domain's
+concepts. It forms rival explanations of the domain from the evidence (how
+inflation, credit, the dollar and the rest of the macro economy bear on
 each other, for instance), weighs each against the evidence as it arrives
 week by week, and changes its mind when the evidence says to. It is not a
 forecaster, and is not tuned to be one; it is meant to be legible as
@@ -16,7 +17,7 @@ dashboard ([source](https://github.com/technoir7/epistemic-monitor)).
 ![The Epistemic State Monitor: the macro domain's leading explanation, its belief graph, current regime and paradigm-shift history](docs/dashboard.png)
 
 **What's here.** About 19,000 lines of Python (FastAPI, SQLite, pgmpy) and
-14,000 of tests: 660 tests (18 of them against the live APIs), including 38 golden snapshots that pin the API,
+14,000 of tests: 644 tests (18 of them against the live APIs), including 38 golden snapshots that pin the API,
 domains and engine behaviour, with real network calls blocked. The layering
 below is enforced by import-linter in CI. Eleven domains learn from public
 data on a schedule, deployed on Railway from `main`. Every finding below
@@ -35,11 +36,23 @@ uv run python -m evals.programmes /tmp/poe
 ```
 
 The replay feeds 23 years of weekly FRED data (2003–2026, as first
-published) through a fresh engine in about 40 seconds; the last command
-prints how long each rival worldview survived and led. It reproduces
-seed 0 of replay 10 below exactly.
+published) through a fresh engine; the last command prints how long each
+rival programme survived and led. The findings below come from replays 1–10,
+run by an earlier engine that began from hand-written worldviews; to
+reproduce replay 10 exactly, check out `d2a8f6cb`, the last commit before
+the engine began forming its own (REFACTOR_SPEC D24). The current engine
+has not yet been replayed.
 
 ## How it holds beliefs
+
+It begins with a domain's concepts, the form of time (each signal's value
+last period may bear on this one) and the form of a connection, and with no
+hypothesis about how the concepts connect. Each week it forms hypotheses
+from the evidence it remembers: for each research programme, the connection
+that would best have explained that evidence, offered only when it explains
+more than chance could. A new hypothesis is judged only on evidence that
+arrives after it is formed. Blind variants revise what it has formed but
+never make a hypothesis from nothing.
 
 Belief lives at three levels, each revised by Bayesian updating
 ([SPEC.md](SPEC.md) §3). The philosophy behind each rule, and where it falls
@@ -60,7 +73,7 @@ Four rules, each added after a replay showed the engine needed it
 ([what each replay found](evals/README.md)):
 
 - **Rivals live until refuted.** Every explanation belongs to a research
-  programme (the seed it grew from). A programme's best is kept until the
+  programme (the connection it grew from, formed from nothing). A programme's best is kept until the
   evidence for the leader over it is decisive, a Bayes factor above 100
   from fit alone (simplicity ranks explanations but refutes none),
   and programmes take turns to propose variants, so a rival gets to revise
@@ -70,8 +83,8 @@ Four rules, each added after a replay showed the engine needed it
   so a world that has broken (COVID) loosens old certainties without making
   calm years fickle.
 - **Beliefs about change.** Each signal's value last week is available as a
-  cause. Every causal programme assumes signals persist, so they compete on
-  what else they claim; one programme claims nothing else.
+  cause. That signals persist is not assumed: like any connection, the
+  engine must find it in the evidence.
 - **Know your own confidence.** Each week the engine records whether its
   70% beliefs come true 70% of the time, judged both against each signal
   rounded and against the probability the evidence gave it, and whether its
@@ -81,7 +94,8 @@ Four rules, each added after a replay showed the engine needed it
 ## What 23 years of evidence did to it
 
 Replayed week by week through 2003–2026 of real FRED data (macro domain,
-five seeds, each replay planned in writing before it ran). Fit is measured
+five seeds, each replay planned in writing before it ran). These replays
+ran the earlier engine, which began from six hand-written worldviews. Fit is measured
 in nats, the log of how surprised the engine was by a week's evidence: one
 nat less surprise means it gave what happened about 2.7 times the
 probability. A Bayes factor above 100 is the conventional threshold for
@@ -115,10 +129,12 @@ probability. A Bayes factor above 100 is the conventional threshold for
   middle: it says 56% where the evidence says 65%.
 - **Its paradigm shifts do not follow the headlines.** No change of leading
   programme followed 2008, COVID or the 2022 hikes within six months.
-- **Nothing rests on hindsight.** Replayed again with each figure as it was
-  first published (ALFRED vintages, before revisions), the beliefs barely
-  moved: inflation read differently in 37 of 1,229 weeks, and the same
-  programme led.
+- **The evidence did not rest on hindsight; the hypotheses did.** Replayed
+  again with each figure as it was first published (ALFRED vintages,
+  before revisions), the beliefs barely moved: inflation read differently
+  in 37 of 1,229 weeks, and the same programme led. But the starting
+  worldviews were written in 2026 by someone who knew how 2003–2026 went,
+  which is why the engine now forms its own (D24).
 - **Finer evidence bought fewer beliefs.** Reading each signal in five
   ordered levels instead of yes/no made the engine better calibrated, but a
   five-level relationship costs ten times the parameters, and Occam's razor
@@ -152,7 +168,7 @@ Eleven domains are live and registered in the API:
 | `sf` | `sf-urban-v1` | Weekly | SF Open Data + FRED |
 | `art` | `art_prestige_regime_v1` | Monthly | GDELT news coverage, Art Institute of Chicago acquisitions, hand-labelled reports |
 
-Most domains track eight Boolean variables across five seed candidate DAGs; the macro domain also holds each one's value last week and a sixth, persistence, programme. The art domain tracks 25 Boolean variables. Every domain's variables and sources: [docs/domains.md](docs/domains.md).
+Most domains track eight Boolean variables, each with its value last period; the art domain tracks 25. No domain gives any hypothesis about how its variables connect. Every domain's variables and sources: [docs/domains.md](docs/domains.md).
 
 ## Architecture
 

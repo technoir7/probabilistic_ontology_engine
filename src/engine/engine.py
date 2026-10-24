@@ -9,12 +9,14 @@ import hashlib
 import json
 import logging
 import random
+from collections import deque
 from datetime import datetime, timezone
 from typing import Any
 from uuid import UUID
 
 from .model.domain import DomainModule
 from .model.doubt import DISCOUNT as DOUBT_DISCOUNT
+from .model.scoring import SCORE_HALF_LIFE_RECORDS
 from .model.temporal import lagged
 from .schemas import (
     EdgeExistenceThresholdConfig,
@@ -23,18 +25,24 @@ from .schemas import (
     ModelSnapshot,
     OntologyCandidate,
     OntologyPopulation,
+    Variable,
 )
 from .services.edge_existence import EdgeExistenceService
 from .services.health import EpistemicHealth
 from .services.inference import InferenceService
 from .services.learning import LearningService
-from .services.population_manager import PopulationManager
+from .services.population_manager import PopulationManager, unconnected
 from .stores.database import Database
 from .stores.evidence_store import EvidenceStore
 from .stores.parameter_store import ParameterStore
 from .stores.population_store import PopulationStore
 
 logger = logging.getLogger(__name__)
+
+# How much past evidence a hypothesis may be formed from: the span the score
+# window mostly remembers (SCORE_HALF_LIFE_RECORDS), so the engine proposes
+# from what it currently attends to (D24).
+RECENT_RECORDS = SCORE_HALF_LIFE_RECORDS
 
 
 class ProbabilisticOntologyEngine:
@@ -71,6 +79,8 @@ class ProbabilisticOntologyEngine:
         self.health = EpistemicHealth(self.inference_service)
         # The last record learned per domain, for last period's values (D19).
         self._previous: dict[str, EvidenceRecord] = {}
+        # The evidence hypotheses are formed from, per domain (D24).
+        self._recent: dict[str, deque[EvidenceRecord]] = {}
         self.population_manager = PopulationManager(
             parameter_store=self.parameter_store,
             population_store=self.population_store,
@@ -103,13 +113,9 @@ class ProbabilisticOntologyEngine:
         thresholds = domain_module.existence_thresholds()
         self._edge_existence[module_id] = EdgeExistenceService(self.parameter_store, thresholds)
 
-        # Build initial candidates
-        initial_candidates = domain_module.initial_candidates()
-        if initial_candidates:
-            migration = self.evidence_store.migrate_variable_ids_by_position(
-                module_id,
-                initial_candidates[0].variables,
-            )
+        variables = domain_module.variables()
+        if variables:
+            migration = self.evidence_store.migrate_variable_ids_by_position(module_id, variables)
             if migration["migrated_records"]:
                 logger.info(
                     "Migrated legacy evidence variable IDs for domain '%s': "
@@ -125,23 +131,21 @@ class ProbabilisticOntologyEngine:
                     module_id,
                 )
 
-        # Determine admissible edges from domain schema
-        admissible = _derive_admissible_edges(initial_candidates)
+        admissible = _admissible_edges(variables)
         self._batch_index[module_id] = 0
-        latest = self.evidence_store.load_latest(module_id, 1)
+        latest = self.evidence_store.load_latest(module_id, RECENT_RECORDS)
         if latest:
-            self._previous[module_id] = latest[0]
+            self._previous[module_id] = latest[-1]
+        self._recent[module_id] = deque(lagged(latest, None, variables), maxlen=RECENT_RECORDS)
 
-        if initial_candidates and self._resume_population(
-            module_id, initial_candidates[0].variables, admissible
-        ):
+        if self._resume_population(module_id, variables, admissible):
             return
 
-        # No resumable population: start from the domain's seeds. On a database
+        # No resumable population: begin with no hypotheses. On a database
         # written before population persistence (migration 0002) this also
-        # restores seed CPTs from the old signature-keyed table and recomputes
+        # restores CPTs from the old signature-keyed table and recomputes
         # scores from stored evidence, once; the result is then persisted.
-        # Initialize CPTs for each candidate (empty counts; support from domain)
+        initial_candidates = [unconnected(module_id, variables)]
         for cand in initial_candidates:
             self.learning_service.initialize_candidate(cand, alpha=1.0)
 
@@ -262,7 +266,7 @@ class ProbabilisticOntologyEngine:
     def reset_domain(self, module_id: str) -> None:
         """
         Forget everything learned for a domain — evidence, population, CPTs,
-        scores, shift log — and start again from its seed candidates.
+        scores, shift log — and start again with no hypotheses.
         One transaction for the deletes.
         """
         domain_module = self._modules[module_id]
@@ -274,6 +278,7 @@ class ProbabilisticOntologyEngine:
         self.population_manager.forget(module_id)
         self.health.forget(module_id)
         self._previous.pop(module_id, None)
+        self._recent.pop(module_id, None)
         for stats in (self._learn_call_count, self._learn_last_ts, self._learn_records_total):
             stats.pop(module_id, None)
         self.register_domain(domain_module)
@@ -346,7 +351,7 @@ class ProbabilisticOntologyEngine:
              c. Level 2: update edge existence probabilities; prune edges below threshold
              d. Add (a) to the candidate's score and score window
           2. Level 3: prune low-scoring candidates
-          3. Introduce variants of top survivors
+          3. Form hypotheses from recent evidence; introduce variants of top survivors
           4. Return a model snapshot
         """
         domain = domain_module_id or self.active_domain
@@ -356,6 +361,7 @@ class ProbabilisticOntologyEngine:
         observed, batch = batch, lagged(batch, self._previous.get(domain), pop.candidates[0].variables)
         if observed:
             self._previous[domain] = observed[-1]
+        self._recent.setdefault(domain, deque(maxlen=RECENT_RECORDS)).extend(batch)
         # Candidates pruned this cycle still changed this cycle, so save them too.
         active_at_start = list(pop.active_candidates())
         edge_existence = self._edge_existence[domain]
@@ -414,7 +420,9 @@ class ProbabilisticOntologyEngine:
             )
 
         logger.debug("introduce_variants(): domain=%s", domain)
-        new_variants = self.population_manager.introduce_variants(domain)
+        recent = list(self._recent[domain])
+        new_variants = self.population_manager.introduce_variants(domain, recent)
+        self._reproduce(pop, new_variants, recent)
         if new_variants:
             for v in new_variants:
                 logger.info(
@@ -445,6 +453,20 @@ class ProbabilisticOntologyEngine:
         self._persist_population(domain, list(changed.values()))
 
         return self._make_snapshot(domain, batch, summary)
+
+    def _reproduce(self, pop: OntologyPopulation, variants: list[OntologyCandidate],
+                   recent: list[EvidenceRecord]) -> None:
+        """Each variant's tables for the variables whose parents it changed
+        start empty; fill them from the evidence remembered, read under the new
+        structure (D24). Scoring stays prequential: the variant is judged only
+        on evidence after this."""
+        by_id = {c.candidate_id: c for c in pop.candidates}
+        for v in variants:
+            parent = by_id[v.parent_candidate_id]
+            changed = {var.name for var in v.variables
+                       if {p.name for p in v.get_parents(var.variable_id)}
+                       != {p.name for p in parent.get_parents(var.variable_id)}}
+            self.learning_service.accumulate(recent, v, only=changed)
 
     def _doubt_if_surprised(self, domain: str, scores: dict, n_records: int) -> None:
         """A crisis (D17): the leader far more surprised than usual. Every
@@ -566,32 +588,8 @@ def _candidate_edge_sig(candidate: OntologyCandidate) -> str:
     )
 
 
-def _derive_admissible_edges(
-    candidates: list[OntologyCandidate],
-) -> set[tuple[str, str]]:
-    """
-    Derive admissible edge pairs from the union of all edges across all candidates.
-    In a full implementation this would come from domain schema TemplateRules.
-    For MVP we use all edges seen in initial candidates.
-    """
-    edges: set[tuple[str, str]] = set()
-    var_names: set[str] = set()
-    lags: set[str] = set()
-    for cand in candidates:
-        for v in cand.variables:
-            var_names.add(v.name)
-            if v.lag_of:
-                lags.add(v.name)
-        for e in cand.edges:
-            pv = cand.get_variable_by_id(e.parent_variable_id)
-            cv = cand.get_variable_by_id(e.child_variable_id)
-            if pv and cv:
-                edges.add((pv.name, cv.name))
-    # Add all variable pairs as potentially admissible
-    # (in a real system this would be schema-constrained)
-    # Last period's values are inputs only: nothing points into them (D19).
-    for a in var_names:
-        for b in var_names:
-            if a != b and b not in lags:
-                edges.add((a, b))
-    return {(a, b) for a, b in edges if b not in lags}
+def _admissible_edges(variables: list[Variable]) -> set[tuple[str, str]]:
+    """Every ordered pair of distinct variables, except into last period's
+    values: those are inputs only (D19). No domain knowledge narrows this
+    (NEXT.md problem 4)."""
+    return {(a.name, b.name) for a in variables for b in variables if a is not b and not b.lag_of}

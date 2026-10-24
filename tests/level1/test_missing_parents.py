@@ -41,8 +41,17 @@ def record(values):
 
 
 def persistence_candidate(engine):
-    pop = engine.population_manager.get_population("macro-regime-v1")
-    return next(c for c in pop.candidates if c.lineage == "T_persistence")
+    """Each signal following its own last week, with even tables."""
+    from uuid import uuid4
+    from src.engine.schemas import DependencyEdge, DependencyKind, OntologyCandidate
+    v = get_variables_with_lags()
+    edges = [DependencyEdge(edge_id=uuid4(), parent_variable_id=v[f"{n}_prev"].variable_id,
+                            child_variable_id=v[n].variable_id, dependency_kind=DependencyKind.DIRECTED_CONDITIONAL)
+             for n in v if not n.endswith("_prev")]
+    c = OntologyCandidate(candidate_id=uuid4(), domain_module_id="macro-regime-v1",
+                          variables=list(v.values()), edges=edges)
+    engine.learning_service.initialize_candidate(c)
+    return c
 
 
 def test_the_first_week_is_scored_without_last_weeks_values():

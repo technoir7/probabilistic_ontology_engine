@@ -4,8 +4,6 @@ Integration tests — sovereign debt domain ingestion pipeline.
 Test inventory
 --------------
 TEST-SD-01  All 8 variable IDs are stable across module imports
-TEST-SD-02  All 5 initial candidates are valid DAGs
-TEST-SD-03  All candidates share the same variable set
 TEST-SD-04  Soft probabilities are clamped to [0.01, 0.99] for all signals
 TEST-SD-05  Sigmoid calibration: deeply inverted dollar (USD strong) → P(DollarStrengthening) > 0.6
 TEST-SD-06  Active Fed QT → P(FedBalanceSheetShrinking) > 0.9
@@ -16,10 +14,8 @@ TEST-SD-10  build_evidence_record produces SOFT_OBSERVED missingness on all assi
 TEST-SD-11  FRED client fetch_series with mocked HTTP returns correct observations
 TEST-SD-12  FRED client skips missing (".") values
 TEST-SD-13  compute_snapshot falls back gracefully with insufficient data
-TEST-SD-14  Domain module_id matches candidates
 TEST-SD-15  Existence thresholds are within valid ranges
 TEST-SD-16  Domain registers and activates in the engine
-TEST-SD-17  Candidates have distinct edge structures
 TEST-SD-18  Full pipeline fetch_evidence with mocked FREDClient
 """
 from __future__ import annotations
@@ -39,11 +35,6 @@ from src.domains.sources.soft_evidence import sigmoid as _sigmoid
 from src.domains.sovereign_debt_v1.domain import (
     SovereignDebtV1,
     get_variables,
-    make_us_fiscal_stress_candidate,
-    make_dollar_dominance_erosion_candidate,
-    make_em_contagion_candidate,
-    make_global_liquidity_crunch_candidate,
-    make_null_candidate,
 )
 from src.domains.sovereign_debt_v1.ingestion.fred_client import (
     FREDClient,
@@ -157,49 +148,10 @@ def test_variable_ids_are_stable():
     vars1 = get_variables()
     vars2 = get_variables()
     domain = SovereignDebtV1()
-    cands = domain.initial_candidates()
-    cand_vars = {v.name: v.variable_id for v in cands[0].variables}
+    domain_vars = {v.name: v.variable_id for v in domain.variables()}
     for name in vars1:
         assert vars1[name].variable_id == vars2[name].variable_id
-        assert vars1[name].variable_id == cand_vars[name]
-
-
-# ---------------------------------------------------------------------------
-# TEST-SD-02 — All 5 candidates are valid DAGs
-# ---------------------------------------------------------------------------
-
-def test_all_candidates_are_dags():
-    factories = [
-        make_us_fiscal_stress_candidate,
-        make_dollar_dominance_erosion_candidate,
-        make_em_contagion_candidate,
-        make_global_liquidity_crunch_candidate,
-        make_null_candidate,
-    ]
-    for factory in factories:
-        cand = factory()
-        assert cand.is_dag(), f"Candidate '{cand.description}' violates DAG constraint"
-
-
-# ---------------------------------------------------------------------------
-# TEST-SD-03 — All candidates share the canonical variable set
-# ---------------------------------------------------------------------------
-
-def test_all_candidates_share_variable_set():
-    expected_names = set(get_variables().keys())
-    expected_ids = {v.variable_id for v in get_variables().values()}
-    factories = [
-        make_us_fiscal_stress_candidate,
-        make_dollar_dominance_erosion_candidate,
-        make_em_contagion_candidate,
-        make_global_liquidity_crunch_candidate,
-        make_null_candidate,
-    ]
-    for factory in factories:
-        cand = factory()
-        cand_names = {v.name for v in cand.variables}
-        assert cand_names == expected_names
-        assert {v.variable_id for v in cand.variables} == expected_ids
+        assert vars1[name].variable_id == domain_vars[name]
 
 
 # ---------------------------------------------------------------------------
@@ -365,17 +317,6 @@ def test_compute_snapshot_falls_back_gracefully_with_no_data():
 
 
 # ---------------------------------------------------------------------------
-# TEST-SD-14 — Domain module_id matches candidates
-# ---------------------------------------------------------------------------
-
-def test_domain_module_id_matches_candidates():
-    domain = SovereignDebtV1()
-    module_id = domain.module_id()
-    for cand in domain.initial_candidates():
-        assert cand.domain_module_id == module_id
-
-
-# ---------------------------------------------------------------------------
 # TEST-SD-15 — Existence thresholds are valid
 # ---------------------------------------------------------------------------
 
@@ -400,25 +341,13 @@ def test_domain_registers_in_engine():
     engine.activate_domain(domain.module_id())
     pop = engine.get_population(domain.module_id())
     assert pop is not None
-    assert len(pop.active_candidates()) == 5
+    assert [(c.edges, c.lineage) for c in pop.active_candidates()] == [([], "unconnected")]
 
     observations = _make_full_observations()
     snapshot = compute_snapshot(observations, _TARGET_DATE)
     record = SovereignDebtPipeline.build_evidence_record(snapshot)
     engine.ingest(record)
     assert engine.evidence_store.count(domain.module_id()) == 1
-
-
-# ---------------------------------------------------------------------------
-# TEST-SD-17 — Candidates have distinct edge structures
-# ---------------------------------------------------------------------------
-
-def test_candidates_have_distinct_edge_structures():
-    domain = SovereignDebtV1()
-    candidates = domain.initial_candidates()
-    signatures = [c.edge_structure_signature() for c in candidates]
-    assert len(set(signatures)) == len(signatures), \
-        "Some candidates share the same edge structure"
 
 
 # ---------------------------------------------------------------------------

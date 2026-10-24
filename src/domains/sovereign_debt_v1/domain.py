@@ -5,8 +5,7 @@ Purpose
 -------
 Tracks evolving causal narratives around U.S. Treasury yields, sovereign
 credit risk, dollar dominance dynamics, Fed balance-sheet policy, and
-emerging-market stress.  Competing hypotheses represent distinct transmission
-channels from fiscal/monetary policy to global credit conditions.
+emerging-market stress.
 
 Variables (all BOOLEAN)
 -----------------------
@@ -50,20 +49,6 @@ GlobalLiquidityContracting
     False = at least one liquidity measure stable or expanding
     Signal: simultaneous Fed and broad-money contraction → global tightening
 
-Seed ontologies (4 competing hypotheses)
------------------------------------------
-H1: us_fiscal_stress
-    USYieldSpiking → FiscalDominanceRisk → SpreadWidening
-
-H2: dollar_dominance_erosion
-    DollarStrengthening → EMStressElevated → SpreadWidening
-
-H3: em_contagion
-    EMStressElevated → CreditDefaultRisk → SpreadWidening
-
-H4: global_liquidity_crunch
-    GlobalLiquidityContracting → USYieldSpiking → FiscalDominanceRisk
-
 FRED series used
 ----------------
 DGS10         (daily)     — USYieldSpiking
@@ -78,13 +63,9 @@ Cadence: WEEKLY (every Monday at 09:00 UTC)
 """
 from __future__ import annotations
 
-from uuid import uuid4
-
-from ..sources.structure import boolean_variables, seed_edge
+from ..sources.structure import boolean_variables, with_lags
 from ...engine.schemas import (
-    DependencyEdge,
     EdgeExistenceThresholdConfig,
-    OntologyCandidate,
     Variable,
 )
 
@@ -117,169 +98,6 @@ def get_variables() -> dict[str, Variable]:
     return _VARIABLE_DEFS
 
 
-def _var(name: str) -> Variable:
-    return _VARIABLE_DEFS[name]
-
-
-def _var_list() -> list[Variable]:
-    return list(_VARIABLE_DEFS.values())
-
-
-# ---------------------------------------------------------------------------
-# Edge factory
-# ---------------------------------------------------------------------------
-
-def _edge(parent: str, child: str, prior: float = 0.60, label: str = "") -> DependencyEdge:
-    return seed_edge(_VARIABLE_DEFS, parent, child, prior, label)
-
-
-# ---------------------------------------------------------------------------
-# Candidate factories
-# ---------------------------------------------------------------------------
-
-def make_us_fiscal_stress_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
-    """
-    H1: us_fiscal_stress — Fiscal deterioration drives yields and spreads.
-
-    Hypothesis: Rising U.S. long-end yields signal fiscal dominance risk.
-    Bond markets price in unsustainable debt trajectories, which then widens
-    credit spreads as investors demand a premium for correlated sovereign risk.
-
-        USYieldSpiking → FiscalDominanceRisk
-        FiscalDominanceRisk → SpreadWidening
-        FedBalanceSheetShrinking → USYieldSpiking
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge("USYieldSpiking",        "FiscalDominanceRisk",      prior=0.70,
-                  label="yield spike → fiscal dominance concern"),
-            _edge("FiscalDominanceRisk",   "SpreadWidening",            prior=0.65,
-                  label="fiscal risk → credit spread widening"),
-            _edge("FedBalanceSheetShrinking", "USYieldSpiking",         prior=0.65,
-                  label="QT → term premium → yield spike"),
-        ],
-        description="H1: us_fiscal_stress",
-    )
-
-
-def make_dollar_dominance_erosion_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
-    """
-    H2: dollar_dominance_erosion — Dollar strength propagates to EM stress.
-
-    Hypothesis: Dollar strengthening (capital flight to USD) creates EM
-    debt-servicing pressure that eventually widens global credit spreads.
-    A strengthening dollar is both cause and symptom of risk-off dynamics.
-
-        DollarStrengthening → EMStressElevated
-        EMStressElevated → SpreadWidening
-        FedBalanceSheetShrinking → DollarStrengthening
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge("DollarStrengthening",   "EMStressElevated",          prior=0.70,
-                  label="strong USD → EM capital outflows"),
-            _edge("EMStressElevated",      "SpreadWidening",             prior=0.65,
-                  label="EM stress → global spread widening"),
-            _edge("FedBalanceSheetShrinking", "DollarStrengthening",    prior=0.60,
-                  label="QT → dollar appreciation"),
-        ],
-        description="H2: dollar_dominance_erosion",
-    )
-
-
-def make_em_contagion_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
-    """
-    H3: em_contagion — EM stress transmits to DM credit markets.
-
-    Hypothesis: Elevated EM stress (proxied by broad dollar index) feeds
-    through to corporate default risk as global growth deteriorates and
-    leveraged balance sheets come under pressure.
-
-        EMStressElevated → CreditDefaultRisk
-        CreditDefaultRisk → SpreadWidening
-        USYieldSpiking → EMStressElevated
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge("EMStressElevated",      "CreditDefaultRisk",          prior=0.65,
-                  label="EM stress → corporate default risk"),
-            _edge("CreditDefaultRisk",     "SpreadWidening",              prior=0.70,
-                  label="default risk → HY spread widening"),
-            _edge("USYieldSpiking",        "EMStressElevated",            prior=0.60,
-                  label="UST yield spike → USD drain → EM stress"),
-        ],
-        description="H3: em_contagion",
-    )
-
-
-def make_global_liquidity_crunch_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
-    """
-    H4: global_liquidity_crunch — Dual monetary contraction cascade.
-
-    Hypothesis: Simultaneous Fed balance-sheet contraction and M2 deceleration
-    represents a global liquidity crunch that forces UST yields up through
-    reduced demand, heightening fiscal dominance risk.
-
-        GlobalLiquidityContracting → USYieldSpiking
-        USYieldSpiking → FiscalDominanceRisk
-        GlobalLiquidityContracting → DollarStrengthening
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge("GlobalLiquidityContracting", "USYieldSpiking",        prior=0.65,
-                  label="global liquidity drain → UST yield pressure"),
-            _edge("USYieldSpiking",              "FiscalDominanceRisk",   prior=0.60,
-                  label="yield spike → fiscal dominance concern"),
-            _edge("GlobalLiquidityContracting", "DollarStrengthening",   prior=0.60,
-                  label="liquidity crunch → safe-haven dollar demand"),
-        ],
-        description="H4: global_liquidity_crunch",
-    )
-
-
-def make_null_candidate(module_id: str = _MODULE_ID) -> OntologyCandidate:
-    """
-    T_null — Baseline: only direct credit/spread linkage is structural.
-
-    Hypothesis: All sovereign debt signals are noise except the direct
-    relationship between credit default risk and spread widening.  Serves
-    as the Bayesian null that should be displaced if richer structure is
-    supported by evidence.
-
-        CreditDefaultRisk → SpreadWidening
-        USYieldSpiking → SpreadWidening
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge("CreditDefaultRisk", "SpreadWidening", prior=0.55,
-                  label="default risk → spread widening (baseline)"),
-            _edge("USYieldSpiking",    "SpreadWidening", prior=0.55,
-                  label="yield spike → spread widening (baseline)"),
-        ],
-        description="T_null: credit-spread baseline",
-    )
-
-
 # ---------------------------------------------------------------------------
 # Domain module class
 # ---------------------------------------------------------------------------
@@ -292,14 +110,8 @@ class SovereignDebtV1:
     def module_id(self) -> str:
         return self._MODULE_ID
 
-    def initial_candidates(self) -> list[OntologyCandidate]:
-        return [
-            make_us_fiscal_stress_candidate(self._MODULE_ID),
-            make_dollar_dominance_erosion_candidate(self._MODULE_ID),
-            make_em_contagion_candidate(self._MODULE_ID),
-            make_global_liquidity_crunch_candidate(self._MODULE_ID),
-            make_null_candidate(self._MODULE_ID),
-        ]
+    def variables(self) -> list[Variable]:
+        return list(with_lags(self._MODULE_ID, _VARIABLE_DEFS).values())
 
     def existence_thresholds(self) -> EdgeExistenceThresholdConfig:
         return EdgeExistenceThresholdConfig(

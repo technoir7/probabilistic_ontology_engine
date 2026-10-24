@@ -4,18 +4,14 @@ Integration tests — energy regime domain ingestion pipeline.
 Test inventory
 --------------
 TEST-ER-01  All 8 variable IDs are stable across module imports
-TEST-ER-02  All 5 initial candidates are valid DAGs
-TEST-ER-03  All candidates share the same variable set
 TEST-ER-04  Soft probabilities are clamped to [0.01, 0.99]
 TEST-ER-05  High energy CPI YoY → P(EnergyInflationPersistent) > 0.5
 TEST-ER-06  Low energy CPI YoY → P(EnergyInflationPersistent) < 0.5
 TEST-ER-07  build_evidence_record maps all 8 variable UUIDs correctly
 TEST-ER-08  build_evidence_record produces SOFT_OBSERVED missingness
 TEST-ER-09  compute_snapshot falls back gracefully with no data
-TEST-ER-10  Domain module_id matches candidates
 TEST-ER-11  Existence thresholds are within valid ranges
 TEST-ER-12  Domain registers in engine and evidence is ingested
-TEST-ER-13  Candidates have distinct edge structures
 TEST-ER-14  Full pipeline fetch_evidence with mocked FRED + yfinance
 TEST-ER-15  FRED client skips missing values
 """
@@ -36,11 +32,6 @@ import numpy as np
 from src.domains.energy_regime_v1.domain import (
     EnergyRegimeV1,
     get_variables,
-    make_supply_shock_candidate,
-    make_demand_driven_candidate,
-    make_geopolitical_premium_candidate,
-    make_renewables_transition_candidate,
-    make_null_candidate,
 )
 from src.domains.energy_regime_v1.ingestion.fred_client import FREDClient, FREDObservation
 from src.domains.energy_regime_v1.ingestion.yfinance_client import EnergyYFinanceClient, YFObservation
@@ -137,37 +128,10 @@ def test_variable_ids_are_stable():
     vars1 = get_variables()
     vars2 = get_variables()
     domain = EnergyRegimeV1()
-    cand_vars = {v.name: v.variable_id for v in domain.initial_candidates()[0].variables}
+    domain_vars = {v.name: v.variable_id for v in domain.variables()}
     for name in vars1:
         assert vars1[name].variable_id == vars2[name].variable_id
-        assert vars1[name].variable_id == cand_vars[name]
-
-
-def test_all_candidates_are_dags():
-    for factory in [
-        make_supply_shock_candidate,
-        make_demand_driven_candidate,
-        make_geopolitical_premium_candidate,
-        make_renewables_transition_candidate,
-        make_null_candidate,
-    ]:
-        cand = factory()
-        assert cand.is_dag(), f"Candidate '{cand.description}' violates DAG"
-
-
-def test_all_candidates_share_variable_set():
-    expected_names = set(get_variables().keys())
-    expected_ids = {v.variable_id for v in get_variables().values()}
-    for factory in [
-        make_supply_shock_candidate,
-        make_demand_driven_candidate,
-        make_geopolitical_premium_candidate,
-        make_renewables_transition_candidate,
-        make_null_candidate,
-    ]:
-        cand = factory()
-        assert {v.name for v in cand.variables} == expected_names
-        assert {v.variable_id for v in cand.variables} == expected_ids
+        assert vars1[name].variable_id == domain_vars[name]
 
 
 @pytest.mark.parametrize("signal", [-100.0, -10.0, 0.0, 10.0, 100.0])
@@ -236,13 +200,6 @@ def test_compute_snapshot_falls_back_gracefully_with_no_data():
         assert getattr(snapshot, attr) == 0.5, f"{attr} should be 0.5 with no data"
 
 
-def test_domain_module_id_matches_candidates():
-    domain = EnergyRegimeV1()
-    mid = domain.module_id()
-    for cand in domain.initial_candidates():
-        assert cand.domain_module_id == mid
-
-
 def test_existence_thresholds_are_valid():
     t = EnergyRegimeV1().existence_thresholds()
     assert 0.0 < t.prune_below < 1.0
@@ -255,7 +212,7 @@ def test_domain_registers_in_engine():
     engine.register_domain(domain)
     engine.activate_domain(domain.module_id())
     pop = engine.get_population(domain.module_id())
-    assert len(pop.active_candidates()) == 5
+    assert [(c.edges, c.lineage) for c in pop.active_candidates()] == [([], "unconnected")]
 
     yf_obs = _make_full_yf_observations()
     fred_obs = _make_full_fred_observations()
@@ -263,12 +220,6 @@ def test_domain_registers_in_engine():
     record = EnergyRegimePipeline.build_evidence_record(snapshot)
     engine.ingest(record)
     assert engine.evidence_store.count(domain.module_id()) == 1
-
-
-def test_candidates_have_distinct_edge_structures():
-    domain = EnergyRegimeV1()
-    sigs = [c.edge_structure_signature() for c in domain.initial_candidates()]
-    assert len(set(sigs)) == len(sigs)
 
 
 def test_fetch_evidence_full_pipeline_mocked():

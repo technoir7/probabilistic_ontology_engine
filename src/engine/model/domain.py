@@ -9,14 +9,16 @@ from __future__ import annotations
 
 from typing import Protocol
 
-from ..schemas import EdgeExistenceThresholdConfig, OntologyCandidate
+from ..schemas import EdgeExistenceThresholdConfig, Variable
 
 
 class DomainModule(Protocol):
     def module_id(self) -> str: ...
 
-    def initial_candidates(self) -> list[OntologyCandidate]:
-        """Seed candidates; all must share one variable list with stable ids."""
+    def variables(self) -> list[Variable]:
+        """The domain's concepts, with ids stable across restarts. A domain
+        gives no hypotheses about how they connect: the engine begins with
+        none and forms its own from the evidence (REFACTOR_SPEC D24)."""
         ...
 
     def existence_thresholds(self) -> EdgeExistenceThresholdConfig: ...

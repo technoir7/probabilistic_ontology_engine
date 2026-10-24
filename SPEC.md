@@ -282,10 +282,13 @@ After each learning cycle, candidates are ranked by log_score. Candidates in the
 
 ### 5.2 Explore-exploit for edge discovery
 
-> **Superseded 2026-10-23 (REFACTOR_SPEC D3).** No service proposes edges
-> from the evidence. New relationships enter only as conjectures, in
-> variants that add an admissible edge, and the evidence then judges them.
-> The service below was built and tested but never used, and was removed.
+> **Superseded 2026-10-23 (REFACTOR_SPEC D3), and again 2026-10-24 (D24).**
+> D3 removed the service below, built and tested but never used, so that
+> relationships entered only as conjectures. D24 reversed the stance, not
+> the service: the engine is given no hypotheses, and `services/synthesis.py`
+> proposes for each programme's best the connection (or reversal) the
+> recent evidence most supports beyond BIC's penalty. A proposal is judged
+> only on evidence that arrives after it, so no evidence counts twice.
 
 The engine allocates attention to candidate edges it has not yet resolved. An unresolved edge is one whose existence_probability is near 0.5 — the engine does not yet have a confident belief about whether this relationship is real.
 
@@ -433,6 +436,12 @@ TABLE candidate_scores(
 ---
 
 ## 8. Domain module contract
+
+> **Superseded in part 2026-10-24 (REFACTOR_SPEC D24).** A domain gives
+> its concepts, `variables()`, and no `initial_candidates()`: the engine
+> starts every domain with one structure that connects nothing and forms
+> its hypotheses from the evidence. The contract in force is
+> `src/engine/model/domain.py`.
 
 Every domain module SHALL implement the following interface. v2 adds `initial_candidates()` which provides the seed population of ontology candidates.
 

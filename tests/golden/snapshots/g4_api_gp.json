@@ -11,108 +11,18 @@
   "body": {
    "candidates": [
     {
-     "edge_count": 1,
+     "edge_count": 0,
      "evidence_count": 4,
      "generation_introduced": 0,
      "id": "<id0>",
-     "log_score": -22.438044176,
-     "name": "T_null: conflict-trade baseline",
-     "score_normalized": 0.95,
-     "status": "dominant"
-    },
-    {
-     "edge_count": 2,
-     "evidence_count": 4,
-     "generation_introduced": 1,
-     "id": "<id1>",
-     "log_score": -22.418878635,
-     "name": "variant_add_ConflictIntensityElevated->DiplomaticTensionHigh",
-     "score_normalized": 0.73251066,
-     "status": "rising"
-    },
-    {
-     "edge_count": 2,
-     "evidence_count": 4,
-     "generation_introduced": 1,
-     "id": "<id2>",
-     "log_score": -22.438044176,
-     "name": "variant_add_SupplyChainStress->EnergyWeaponizationRisk",
-     "score_normalized": 0.726203614,
-     "status": "rising"
-    },
-    {
-     "edge_count": 3,
-     "evidence_count": 4,
-     "generation_introduced": 0,
-     "id": "<id3>",
-     "log_score": -22.425775982,
-     "name": "H1: great_power_competition",
-     "score_normalized": 0.506139673,
-     "status": "neutral"
-    },
-    {
-     "edge_count": 3,
-     "evidence_count": 4,
-     "generation_introduced": 0,
-     "id": "<id4>",
-     "log_score": -22.452856642,
-     "name": "H4: regional_instability",
-     "score_normalized": 0.497592772,
-     "status": "neutral"
-    },
-    {
-     "edge_count": 3,
-     "evidence_count": 4,
-     "generation_introduced": 0,
-     "id": "<id5>",
-     "log_score": -22.459162193,
-     "name": "H3: deglobalization",
-     "score_normalized": 0.495250014,
-     "status": "neutral"
-    },
-    {
-     "edge_count": 3,
-     "evidence_count": 4,
-     "generation_introduced": 0,
-     "id": "<id6>",
-     "log_score": -22.552691378,
-     "name": "H2: resource_conflict",
-     "score_normalized": 0.465032174,
-     "status": "falling"
-    },
-    {
-     "edge_count": 4,
-     "evidence_count": 4,
-     "generation_introduced": 1,
-     "id": "<id7>",
-     "log_score": -22.381815374,
-     "name": "variant_add_SanctionsPressureElevated->GlobalTradeVolumeWeak",
-     "score_normalized": 0.296956685,
-     "status": "falling"
-    },
-    {
-     "edge_count": 4,
-     "evidence_count": 4,
-     "generation_introduced": 1,
-     "id": "<id8>",
-     "log_score": -22.512474274,
-     "name": "variant_add_DiplomaticTensionHigh->CurrencyWarSignal",
-     "score_normalized": 0.25452784,
-     "status": "falling"
-    },
-    {
-     "edge_count": 4,
-     "evidence_count": 4,
-     "generation_introduced": 1,
-     "id": "<id9>",
-     "log_score": -22.452856642,
-     "name": "variant_add_EnergyWeaponizationRisk->SupplyChainStress",
+     "log_score": -22.488983917,
+     "name": "unconnected: no hypotheses yet",
      "score_normalized": 0.05,
-     "status": "falling"
+     "status": "dominant"
     }
    ],
    "domain": "Geopolitics",
-   "generation": 9
+   "generation": 0
   },
   "status": 200
  },
@@ -606,14 +516,14 @@
      }
     }
    ],
-   "total_assignment_count": 32,
+   "total_assignment_count": 64,
    "total_evidence_records": 4,
    "unique_observed_assignment_patterns": 4,
    "unique_state_retention_ratio": 1.0,
    "used_assignment_position_fallback": false,
    "variable_id_match_count": 32,
-   "variable_id_match_ratio": 1.0,
-   "variable_id_mismatch_count": 0,
+   "variable_id_match_ratio": 0.5,
+   "variable_id_mismatch_count": 32,
    "variables": {
     "ConflictIntensityElevated": {
      "missing_count": 0,
@@ -823,15 +733,15 @@
  },
  "debug_learning": {
   "body": {
-   "active_candidates": 10,
-   "current_generation": 9,
+   "active_candidates": 1,
+   "current_generation": 0,
    "domain": "Geopolitics",
    "domain_module_id": "geopolitics-v1",
    "dominant_evidence_count": 4,
-   "dominant_log_score": -22.438044176,
+   "dominant_log_score": -22.488983917,
    "last_learn_timestamp": "<ts>",
-   "last_mutation_introduced": 2,
-   "last_mutation_total_attempts": 9,
+   "last_mutation_introduced": 0,
+   "last_mutation_total_attempts": 0,
    "learn_calls_this_session": 4,
    "pipeline_status": {
     "backfill_calls_learn": true,
@@ -847,422 +757,20 @@
   "body": {
    "candidates": [
     {
-     "active_edge_count": 1,
-     "avg_ll": -5.610359876,
-     "bic_penalty_raw": 1.564049096,
-     "bic_score_explore": -6.00137215,
-     "bic_score_strict": -7.174408973,
+     "active_edge_count": 0,
+     "avg_ll": -5.623471307,
+     "bic_penalty_raw": 2.780531726,
+     "bic_score_explore": -6.318604239,
+     "bic_score_strict": -8.404003034,
      "candidate_id": "<id0>",
-     "description": "T_null: conflict-trade baseline",
-     "edge_structure": [
-      [
-       "ConflictIntensityElevated",
-       "TradeDisruptionRisk"
-      ]
-     ],
+     "description": "unconnected: no hypotheses yet",
+     "edge_structure": [],
      "evidence_count": 4,
      "generation": 0,
      "is_dominant": true,
-     "log_score": -22.438044176,
+     "log_score": -22.488983917,
      "status": "ACTIVE",
-     "total_edge_count": 1
-    },
-    {
-     "active_edge_count": 2,
-     "avg_ll": -5.605462305,
-     "bic_penalty_raw": 1.737832329,
-     "bic_score_explore": -6.039920387,
-     "bic_score_strict": -7.343294634,
-     "candidate_id": "<id1>",
-     "description": "variant_add_ConflictIntensityElevated->DiplomaticTensionHigh",
-     "edge_structure": [
-      [
-       "ConflictIntensityElevated",
-       "DiplomaticTensionHigh"
-      ],
-      [
-       "ConflictIntensityElevated",
-       "TradeDisruptionRisk"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.418878635,
-     "status": "ACTIVE",
-     "total_edge_count": 2
-    },
-    {
-     "active_edge_count": 2,
-     "avg_ll": -5.610359876,
-     "bic_penalty_raw": 1.737832329,
-     "bic_score_explore": -6.044817959,
-     "bic_score_strict": -7.348192205,
-     "candidate_id": "<id2>",
-     "description": "variant_add_SupplyChainStress->EnergyWeaponizationRisk",
-     "edge_structure": [
-      [
-       "ConflictIntensityElevated",
-       "TradeDisruptionRisk"
-      ],
-      [
-       "SupplyChainStress",
-       "EnergyWeaponizationRisk"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.438044176,
-     "status": "ACTIVE",
-     "total_edge_count": 2
-    },
-    {
-     "active_edge_count": 3,
-     "avg_ll": -5.607461544,
-     "bic_penalty_raw": 1.911615562,
-     "bic_score_explore": -6.085365435,
-     "bic_score_strict": -7.519077106,
-     "candidate_id": "<id3>",
-     "description": "H1: great_power_competition",
-     "edge_structure": [
-      [
-       "CurrencyWarSignal",
-       "DiplomaticTensionHigh"
-      ],
-      [
-       "DiplomaticTensionHigh",
-       "SanctionsPressureElevated"
-      ],
-      [
-       "SanctionsPressureElevated",
-       "TradeDisruptionRisk"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 0,
-     "is_dominant": false,
-     "log_score": -22.425775982,
-     "status": "ACTIVE",
-     "total_edge_count": 3
-    },
-    {
-     "active_edge_count": 3,
-     "avg_ll": -5.614098417,
-     "bic_penalty_raw": 1.911615562,
-     "bic_score_explore": -6.092002307,
-     "bic_score_strict": -7.525713979,
-     "candidate_id": "<id4>",
-     "description": "H4: regional_instability",
-     "edge_structure": [
-      [
-       "ConflictIntensityElevated",
-       "TradeDisruptionRisk"
-      ],
-      [
-       "DiplomaticTensionHigh",
-       "ConflictIntensityElevated"
-      ],
-      [
-       "TradeDisruptionRisk",
-       "SupplyChainStress"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 0,
-     "is_dominant": false,
-     "log_score": -22.452856642,
-     "status": "ACTIVE",
-     "total_edge_count": 3
-    },
-    {
-     "active_edge_count": 3,
-     "avg_ll": -5.615917624,
-     "bic_penalty_raw": 1.911615562,
-     "bic_score_explore": -6.093821515,
-     "bic_score_strict": -7.527533186,
-     "candidate_id": "<id5>",
-     "description": "H3: deglobalization",
-     "edge_structure": [
-      [
-       "GlobalTradeVolumeWeak",
-       "SupplyChainStress"
-      ],
-      [
-       "SanctionsPressureElevated",
-       "GlobalTradeVolumeWeak"
-      ],
-      [
-       "SupplyChainStress",
-       "CurrencyWarSignal"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 0,
-     "is_dominant": false,
-     "log_score": -22.459162193,
-     "status": "ACTIVE",
-     "total_edge_count": 3
-    },
-    {
-     "active_edge_count": 3,
-     "avg_ll": -5.639382498,
-     "bic_penalty_raw": 1.911615562,
-     "bic_score_explore": -6.117286388,
-     "bic_score_strict": -7.55099806,
-     "candidate_id": "<id6>",
-     "description": "H2: resource_conflict",
-     "edge_structure": [
-      [
-       "ConflictIntensityElevated",
-       "EnergyWeaponizationRisk"
-      ],
-      [
-       "EnergyWeaponizationRisk",
-       "SupplyChainStress"
-      ],
-      [
-       "SupplyChainStress",
-       "TradeDisruptionRisk"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 0,
-     "is_dominant": false,
-     "log_score": -22.552691378,
-     "status": "ACTIVE",
-     "total_edge_count": 3
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.596113892,
-     "bic_penalty_raw": 2.085398795,
-     "bic_score_explore": -6.117463591,
-     "bic_score_strict": -7.681512687,
-     "candidate_id": "<id7>",
-     "description": "variant_add_SanctionsPressureElevated->GlobalTradeVolumeWeak",
-     "edge_structure": [
-      [
-       "ConflictIntensityElevated",
-       "TradeDisruptionRisk"
-      ],
-      [
-       "DiplomaticTensionHigh",
-       "ConflictIntensityElevated"
-      ],
-      [
-       "SanctionsPressureElevated",
-       "GlobalTradeVolumeWeak"
-      ],
-      [
-       "TradeDisruptionRisk",
-       "SupplyChainStress"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.381815374,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.629060903,
-     "bic_penalty_raw": 2.085398795,
-     "bic_score_explore": -6.150410601,
-     "bic_score_strict": -7.714459697,
-     "candidate_id": "<id8>",
-     "description": "variant_add_DiplomaticTensionHigh->CurrencyWarSignal",
-     "edge_structure": [
-      [
-       "ConflictIntensityElevated",
-       "EnergyWeaponizationRisk"
-      ],
-      [
-       "DiplomaticTensionHigh",
-       "CurrencyWarSignal"
-      ],
-      [
-       "EnergyWeaponizationRisk",
-       "SupplyChainStress"
-      ],
-      [
-       "SupplyChainStress",
-       "TradeDisruptionRisk"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.512474274,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.614098417,
-     "bic_penalty_raw": 2.259182028,
-     "bic_score_explore": -6.178893924,
-     "bic_score_strict": -7.873280445,
-     "candidate_id": "<id9>",
-     "description": "variant_add_EnergyWeaponizationRisk->SupplyChainStress",
-     "edge_structure": [
-      [
-       "ConflictIntensityElevated",
-       "TradeDisruptionRisk"
-      ],
-      [
-       "DiplomaticTensionHigh",
-       "ConflictIntensityElevated"
-      ],
-      [
-       "EnergyWeaponizationRisk",
-       "SupplyChainStress"
-      ],
-      [
-       "TradeDisruptionRisk",
-       "SupplyChainStress"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.452856642,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.578474913,
-     "bic_penalty_raw": 2.198545158,
-     "bic_score_explore": -6.128111203,
-     "bic_score_strict": -7.777020071,
-     "candidate_id": "<id15>",
-     "description": "variant_add_ConflictIntensityElevated->SupplyChainStress",
-     "edge_structure": [
-      [
-       "ConflictIntensityElevated",
-       "SupplyChainStress"
-      ],
-      [
-       "CurrencyWarSignal",
-       "DiplomaticTensionHigh"
-      ],
-      [
-       "DiplomaticTensionHigh",
-       "SanctionsPressureElevated"
-      ],
-      [
-       "SanctionsPressureElevated",
-       "TradeDisruptionRisk"
-      ]
-     ],
-     "evidence_count": 3,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -16.733587968,
-     "status": "PRUNED",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.559984271,
-     "bic_penalty_raw": 2.259182028,
-     "bic_score_explore": -6.124779778,
-     "bic_score_strict": -7.819166299,
-     "candidate_id": "<id16>",
-     "description": "variant_add_SupplyChainStress->TradeDisruptionRisk",
-     "edge_structure": [
-      [
-       "CurrencyWarSignal",
-       "DiplomaticTensionHigh"
-      ],
-      [
-       "DiplomaticTensionHigh",
-       "SanctionsPressureElevated"
-      ],
-      [
-       "SanctionsPressureElevated",
-       "TradeDisruptionRisk"
-      ],
-      [
-       "SupplyChainStress",
-       "TradeDisruptionRisk"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.237825542,
-     "status": "PRUNED",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.59180575,
-     "bic_penalty_raw": 2.259182028,
-     "bic_score_explore": -6.156601257,
-     "bic_score_strict": -7.850987778,
-     "candidate_id": "<id17>",
-     "description": "variant_add_SanctionsPressureElevated->CurrencyWarSignal",
-     "edge_structure": [
-      [
-       "GlobalTradeVolumeWeak",
-       "SupplyChainStress"
-      ],
-      [
-       "SanctionsPressureElevated",
-       "CurrencyWarSignal"
-      ],
-      [
-       "SanctionsPressureElevated",
-       "GlobalTradeVolumeWeak"
-      ],
-      [
-       "SupplyChainStress",
-       "CurrencyWarSignal"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.363709419,
-     "status": "PRUNED",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.579640248,
-     "bic_penalty_raw": 2.381757254,
-     "bic_score_explore": -6.175079562,
-     "bic_score_strict": -7.961397502,
-     "candidate_id": "<id18>",
-     "description": "variant_add_CurrencyWarSignal->EnergyWeaponizationRisk",
-     "edge_structure": [
-      [
-       "ConflictIntensityElevated",
-       "EnergyWeaponizationRisk"
-      ],
-      [
-       "CurrencyWarSignal",
-       "EnergyWeaponizationRisk"
-      ],
-      [
-       "EnergyWeaponizationRisk",
-       "SupplyChainStress"
-      ],
-      [
-       "SupplyChainStress",
-       "TradeDisruptionRisk"
-      ]
-     ],
-     "evidence_count": 3,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -16.736739276,
-     "status": "PRUNED",
-     "total_edge_count": 4
+     "total_edge_count": 0
     }
    ],
    "domain": "Geopolitics",
@@ -1270,10 +778,10 @@
    "env_bic_multiplier": 1.0,
    "env_mode": "strict",
    "last_mutation_cycle": {
-    "dag_violations": 1,
-    "duplicate_rejections": 6,
-    "introduced": 2,
-    "total_attempts": 9
+    "dag_violations": 0,
+    "duplicate_rejections": 0,
+    "introduced": 0,
+    "total_attempts": 0
    },
    "total_evidence_records": 4
   },
@@ -1285,7 +793,7 @@
    "records": [
     {
      "description": "fake@2026-03-01",
-     "id": "<id11>",
+     "id": "<id1>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
@@ -1293,7 +801,7 @@
     },
     {
      "description": "fake@2026-02-22",
-     "id": "<id12>",
+     "id": "<id2>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
@@ -1301,7 +809,7 @@
     },
     {
      "description": "fake@2026-02-15",
-     "id": "<id13>",
+     "id": "<id3>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
@@ -1309,7 +817,7 @@
     },
     {
      "description": "fake@2026-02-08",
-     "id": "<id14>",
+     "id": "<id4>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
@@ -1322,24 +830,8 @@
  "inference_dominant": {
   "body": {
    "candidate_id": "<id0>",
-   "edges": [
-    {
-     "probability": 0.387432938,
-     "source": "ConflictIntensityElevated",
-     "status": "explore",
-     "target": "TradeDisruptionRisk"
-    }
-   ],
-   "frontier_edges": [
-    {
-     "explore_weight": 1.21550625,
-     "note": "existence_probability=0.387 in explore band [0.25, 0.75]",
-     "probability": 0.387432938,
-     "relation": "conflict \u2192 trade disruption (baseline)",
-     "source": "ConflictIntensityElevated",
-     "target": "TradeDisruptionRisk"
-    }
-   ],
+   "edges": [],
+   "frontier_edges": [],
    "nodes": [
     {
      "id": "ConflictIntensityElevated",
@@ -1353,7 +845,7 @@
      "label": "TradeDisruptionRisk",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
      "id": "SanctionsPressureElevated",
@@ -1393,6 +885,62 @@
     {
      "id": "GlobalTradeVolumeWeak",
      "label": "GlobalTradeVolumeWeak",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "ConflictIntensityElevated_prev",
+     "label": "ConflictIntensityElevated_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "TradeDisruptionRisk_prev",
+     "label": "TradeDisruptionRisk_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "SanctionsPressureElevated_prev",
+     "label": "SanctionsPressureElevated_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "DiplomaticTensionHigh_prev",
+     "label": "DiplomaticTensionHigh_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "SupplyChainStress_prev",
+     "label": "SupplyChainStress_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "CurrencyWarSignal_prev",
+     "label": "CurrencyWarSignal_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "EnergyWeaponizationRisk_prev",
+     "label": "EnergyWeaponizationRisk_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "GlobalTradeVolumeWeak_prev",
+     "label": "GlobalTradeVolumeWeak_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
@@ -1403,148 +951,16 @@
   },
   "status": 200
  },
- "inference_other_candidate": {
-  "body": {
-   "candidate_id": "<id9>",
-   "edges": [
-    {
-     "probability": 0.490064523,
-     "source": "ConflictIntensityElevated",
-     "status": "explore",
-     "target": "TradeDisruptionRisk"
-    },
-    {
-     "probability": 0.481589123,
-     "source": "TradeDisruptionRisk",
-     "status": "explore",
-     "target": "SupplyChainStress"
-    },
-    {
-     "probability": 0.432378241,
-     "source": "DiplomaticTensionHigh",
-     "status": "explore",
-     "target": "ConflictIntensityElevated"
-    },
-    {
-     "probability": 0.5,
-     "source": "EnergyWeaponizationRisk",
-     "status": "explore",
-     "target": "SupplyChainStress"
-    }
-   ],
-   "frontier_edges": [
-    {
-     "explore_weight": 1.21550625,
-     "note": "existence_probability=0.490 in explore band [0.25, 0.75]",
-     "probability": 0.490064523,
-     "relation": "armed conflict \u2192 trade route disruption",
-     "source": "ConflictIntensityElevated",
-     "target": "TradeDisruptionRisk"
-    },
-    {
-     "explore_weight": 1.21550625,
-     "note": "existence_probability=0.482 in explore band [0.25, 0.75]",
-     "probability": 0.481589123,
-     "relation": "trade disruption \u2192 supply chain cost shock",
-     "source": "TradeDisruptionRisk",
-     "target": "SupplyChainStress"
-    },
-    {
-     "explore_weight": 1.21550625,
-     "note": "existence_probability=0.432 in explore band [0.25, 0.75]",
-     "probability": 0.432378241,
-     "relation": "diplomatic breakdown \u2192 conflict escalation",
-     "source": "DiplomaticTensionHigh",
-     "target": "ConflictIntensityElevated"
-    },
-    {
-     "explore_weight": 1.0,
-     "note": "existence_probability=0.500 in explore band [0.25, 0.75]",
-     "probability": 0.5,
-     "relation": "EnergyWeaponizationRisk\u2192SupplyChainStress",
-     "source": "EnergyWeaponizationRisk",
-     "target": "SupplyChainStress"
-    }
-   ],
-   "nodes": [
-    {
-     "id": "ConflictIntensityElevated",
-     "label": "ConflictIntensityElevated",
-     "observation": null,
-     "probability": 0.489753146,
-     "status": "target"
-    },
-    {
-     "id": "TradeDisruptionRisk",
-     "label": "TradeDisruptionRisk",
-     "observation": null,
-     "probability": null,
-     "status": "exploring"
-    },
-    {
-     "id": "SanctionsPressureElevated",
-     "label": "SanctionsPressureElevated",
-     "observation": null,
-     "probability": null,
-     "status": "weak"
-    },
-    {
-     "id": "DiplomaticTensionHigh",
-     "label": "DiplomaticTensionHigh",
-     "observation": null,
-     "probability": null,
-     "status": "exploring"
-    },
-    {
-     "id": "SupplyChainStress",
-     "label": "SupplyChainStress",
-     "observation": null,
-     "probability": null,
-     "status": "exploring"
-    },
-    {
-     "id": "CurrencyWarSignal",
-     "label": "CurrencyWarSignal",
-     "observation": null,
-     "probability": null,
-     "status": "weak"
-    },
-    {
-     "id": "EnergyWeaponizationRisk",
-     "label": "EnergyWeaponizationRisk",
-     "observation": null,
-     "probability": null,
-     "status": "exploring"
-    },
-    {
-     "id": "GlobalTradeVolumeWeak",
-     "label": "GlobalTradeVolumeWeak",
-     "observation": null,
-     "probability": null,
-     "status": "weak"
-    }
-   ],
-   "target_probability": 0.489753146,
-   "target_variable": "ConflictIntensityElevated"
-  },
-  "status": 200
- },
  "lineage_dominant": {
   "body": {
    "candidate_id": "<id0>",
    "domain": "Geopolitics",
    "events": [
     {
-     "description": "T_null: conflict-trade baseline",
-     "dominant_after": "T_null: conflict-trade baseline",
+     "description": "unconnected: no hypotheses yet",
+     "dominant_after": "unconnected: no hypotheses yet",
      "event_type": "current",
      "generation": 0
-    },
-    {
-     "description": "Became dominant candidate after 1 paradigm shift(s)",
-     "dominant_after": "T_null: conflict-trade baseline",
-     "event_type": "shift",
-     "generation": 9
     }
    ]
   },
@@ -1555,77 +971,14 @@
    "competing_candidates": {
     "candidates": [
      {
-      "edge_count": 1,
-      "log_score": -22.438044176,
-      "name": "T_null: conflict-trade baseline",
-      "score_normalized": 0.95,
-      "status": "dominant"
-     },
-     {
-      "edge_count": 2,
-      "log_score": -22.418878635,
-      "name": "variant_add_ConflictIntensityElevated->DiplomaticTensionHigh",
-      "score_normalized": 0.73251066,
-      "status": "rising"
-     },
-     {
-      "edge_count": 2,
-      "log_score": -22.438044176,
-      "name": "variant_add_SupplyChainStress->EnergyWeaponizationRisk",
-      "score_normalized": 0.726203614,
-      "status": "rising"
-     },
-     {
-      "edge_count": 3,
-      "log_score": -22.425775982,
-      "name": "H1: great_power_competition",
-      "score_normalized": 0.506139673,
-      "status": "neutral"
-     },
-     {
-      "edge_count": 3,
-      "log_score": -22.452856642,
-      "name": "H4: regional_instability",
-      "score_normalized": 0.497592772,
-      "status": "neutral"
-     },
-     {
-      "edge_count": 3,
-      "log_score": -22.459162193,
-      "name": "H3: deglobalization",
-      "score_normalized": 0.495250014,
-      "status": "neutral"
-     },
-     {
-      "edge_count": 3,
-      "log_score": -22.552691378,
-      "name": "H2: resource_conflict",
-      "score_normalized": 0.465032174,
-      "status": "falling"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -22.381815374,
-      "name": "variant_add_SanctionsPressureElevated->GlobalTradeVolumeWeak",
-      "score_normalized": 0.296956685,
-      "status": "falling"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -22.512474274,
-      "name": "variant_add_DiplomaticTensionHigh->CurrencyWarSignal",
-      "score_normalized": 0.25452784,
-      "status": "falling"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -22.452856642,
-      "name": "variant_add_EnergyWeaponizationRisk->SupplyChainStress",
+      "edge_count": 0,
+      "log_score": -22.488983917,
+      "name": "unconnected: no hypotheses yet",
       "score_normalized": 0.05,
-      "status": "falling"
+      "status": "dominant"
      }
     ],
-    "score_gap_to_dominant": 0.168885661
+    "score_gap_to_dominant": null
    },
    "current_regime_state": [
     {
@@ -1636,7 +989,7 @@
     {
      "boolean_state": false,
      "name": "TradeDisruptionRisk",
-     "probability": 0.478330946
+     "probability": 0.4714
     },
     {
      "boolean_state": true,
@@ -1671,57 +1024,36 @@
    ],
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "edge_count": 1,
-    "edges": [
-     {
-      "existence_probability": 0.387432938,
-      "source": "ConflictIntensityElevated",
-      "target": "TradeDisruptionRisk"
-     }
-    ],
-    "generations_dominant": 4,
-    "log_score": -22.438044176,
-    "name": "T_null: conflict-trade baseline"
+    "edge_count": 0,
+    "edges": [],
+    "generations_dominant": 0,
+    "log_score": -22.488983917,
+    "name": "unconnected: no hypotheses yet"
    },
    "frontier": {
-    "frontier_edge_count": 1,
-    "frontier_edges": [
-     {
-      "probability": 0.387432938,
-      "relation": "conflict \u2192 trade disruption (baseline)",
-      "source": "ConflictIntensityElevated",
-      "target": "TradeDisruptionRisk"
-     }
-    ]
+    "frontier_edge_count": 0,
+    "frontier_edges": []
    },
    "interpretation_hints": [
-    "structure_entropy is high (2.031): engine has not converged; multiple causal stories remain plausible",
-    "dominant hypothesis has held for 9 generations",
-    "last paradigm shift was <ago>",
+    "structure_entropy is low (0.000): engine has converged on a single dominant causal story",
+    "dominant hypothesis was introduced in the current generation",
+    "no paradigm shifts recorded since shift logging was enabled",
     "evidence base is small (4 records); scores may not yet be reliable",
-    "1 edge(s) are in the explore band: causal structure is still being refined in these relations"
+    "no edges are in the explore band: dominant causal structure is well-determined"
    ],
    "metadata": {
-    "current_generation": 9,
+    "current_generation": 0,
     "domain": "Geopolitics",
     "domain_module_id": "geopolitics-v1",
     "evidence_count": 4,
     "timestamp": "<ts>"
    },
    "ontology_competition": {
-    "active_candidates": 10,
-    "entropy_interpretation": "high",
-    "paradigm_shifts_total": 1,
-    "recent_shifts": [
-     {
-      "evidence_date": "2026-02-08",
-      "from_name": "H1: great_power_competition",
-      "generation": 5,
-      "timestamp": "<ts>",
-      "to_name": "T_null: conflict-trade baseline"
-     }
-    ],
-    "structure_entropy": 2.0306203
+    "active_candidates": 1,
+    "entropy_interpretation": "low",
+    "paradigm_shifts_total": 0,
+    "recent_shifts": [],
+    "structure_entropy": 0.0
    }
   },
   "status": 200
@@ -1730,41 +1062,27 @@
   "body": {
    "domain": "Geopolitics",
    "domain_module_id": "geopolitics-v1",
-   "events": [
-    {
-     "evidence_count_at_shift": 1,
-     "evidence_date": "2026-02-08",
-     "generation": 5,
-     "new_dominant_id": "<id0>",
-     "new_dominant_name": "T_null: conflict-trade baseline",
-     "new_programme": "T_null",
-     "previous_dominant_id": "<id3>",
-     "previous_dominant_name": "H1: great_power_competition",
-     "previous_programme": "H1",
-     "shift_id": "<id10>",
-     "timestamp": "<ts>"
-    }
-   ],
-   "total_shifts": 1
+   "events": [],
+   "total_shifts": 0
   },
   "status": 200
  },
  "status": {
   "body": {
-   "active_candidates": 10,
-   "current_generation": 9,
+   "active_candidates": 1,
+   "current_generation": 0,
    "domain": "Geopolitics",
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "generations_dominant": 4,
-    "name": "T_null: conflict-trade baseline"
+    "generations_dominant": 0,
+    "name": "unconnected: no hypotheses yet"
    },
    "engine_status": "online",
-   "frontier_edge_count": 1,
+   "frontier_edge_count": 0,
    "last_evidence_cycle_ago": "<ago>",
    "max_candidates": 10,
-   "paradigm_shifts_this_window": 1,
-   "structure_entropy": 2.0306203
+   "paradigm_shifts_this_window": 0,
+   "structure_entropy": 0.0
   },
   "status": 200
  }

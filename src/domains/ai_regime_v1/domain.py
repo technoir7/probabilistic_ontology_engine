@@ -5,8 +5,7 @@ Purpose
 -------
 Track which causal story best explains the current AI investment cycle.
 This is an interpretive analysis domain, not a prediction engine.
-The engine discovers its own causal structures; seed ontologies are
-scaffolding expected to be displaced by data-driven structures over time.
+The engine forms its own hypotheses about how these signals connect.
 
 Variables (all BOOLEAN)
 -----------------------
@@ -56,27 +55,6 @@ AIRiskPremiumCompressed
     Signal: market-implied risk appetite; compressed risk premium is a
             necessary (not sufficient) condition for sustained AI narrative
 
-Competing ontology templates (seed population — expected to evolve)
---------------------------------------------------------------------
-H1: infrastructure_buildout
-    Semiconductor demand drives hyperscaler capex → IP investment →
-    labour productivity gains.
-    Interpretation: rational buildout with real economic grounding.
-
-H2: bubble_detachment
-    Valuation detachment leads to concentration, which compresses risk
-    premium and detaches price from fundamentals.
-    Interpretation: narrative driven, fundamentals not yet delivered.
-
-H3: winner_take_all
-    Concentration drives hyperscaler capex, which further lifts valuations.
-    Interpretation: concentration is the primary structural dynamic.
-
-H4: productivity_regime
-    IP investment → productivity → GDP lift.  Compressed risk premium
-    enables further concentration.
-    Interpretation: AI gains are already in the real economy.
-
 Data sources
 ------------
 yfinance:
@@ -111,13 +89,9 @@ Reasoning:
 """
 from __future__ import annotations
 
-from uuid import uuid4
-
-from ..sources.structure import boolean_variables, seed_edge
+from ..sources.structure import boolean_variables, with_lags
 from ...engine.schemas import (
-    DependencyEdge,
     EdgeExistenceThresholdConfig,
-    OntologyCandidate,
     Variable,
 )
 
@@ -151,193 +125,6 @@ def get_variables() -> dict[str, Variable]:
     return _VARIABLE_DEFS
 
 
-def _var(name: str) -> Variable:
-    return _VARIABLE_DEFS[name]
-
-
-def _var_list() -> list[Variable]:
-    return list(_VARIABLE_DEFS.values())
-
-
-# ---------------------------------------------------------------------------
-# Edge factory
-# ---------------------------------------------------------------------------
-
-def _edge(parent: str, child: str, prior: float = 0.60, label: str = "") -> DependencyEdge:
-    return seed_edge(_VARIABLE_DEFS, parent, child, prior, label)
-
-
-# ---------------------------------------------------------------------------
-# Candidate factories
-# ---------------------------------------------------------------------------
-
-def make_infrastructure_buildout_candidate(
-    module_id: str = _MODULE_ID,
-) -> OntologyCandidate:
-    """
-    H1 — infrastructure_buildout: rational capex-driven productivity chain.
-
-    Semiconductor momentum is the leading indicator of sustained AI
-    infrastructure demand.  It drives hyperscaler capex decisions, which
-    flow into measured IP investment, and eventually manifest in labour
-    productivity gains.
-
-        SemiconductorMomentum → HyperscalerCapexAccelerating
-        HyperscalerCapexAccelerating → IPInvestmentRising
-        IPInvestmentRising → LaborProductivityImproving
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge(
-                "SemiconductorMomentum",
-                "HyperscalerCapexAccelerating",
-                prior=0.65,
-                label="chip demand → hyperscaler capex",
-            ),
-            _edge(
-                "HyperscalerCapexAccelerating",
-                "IPInvestmentRising",
-                prior=0.60,
-                label="capex → measured IP investment",
-            ),
-            _edge(
-                "IPInvestmentRising",
-                "LaborProductivityImproving",
-                prior=0.60,
-                label="IP investment → labour productivity",
-            ),
-        ],
-        description="H1: infrastructure_buildout — rational capex → productivity chain",
-    )
-
-
-def make_bubble_detachment_candidate(
-    module_id: str = _MODULE_ID,
-) -> OntologyCandidate:
-    """
-    H2 — bubble_detachment: narrative driven, fundamentals not yet delivered.
-
-    Semiconductor momentum inflates tech valuations.  Detached valuations
-    attract concentrated capital flows into tech, which further compresses
-    the risk premium as investors chase narrative returns.  This hypothesis
-    is the bearish structural counter-narrative.
-
-        SemiconductorMomentum → TechValuationDetached
-        TechValuationDetached → MarketConcentrationExtreme
-        MarketConcentrationExtreme → AIRiskPremiumCompressed
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge(
-                "SemiconductorMomentum",
-                "TechValuationDetached",
-                prior=0.65,
-                label="chip momentum → valuation expansion",
-            ),
-            _edge(
-                "TechValuationDetached",
-                "MarketConcentrationExtreme",
-                prior=0.70,
-                label="stretched valuations → concentrated flows",
-            ),
-            _edge(
-                "MarketConcentrationExtreme",
-                "AIRiskPremiumCompressed",
-                prior=0.65,
-                label="concentration → compressed risk premium",
-            ),
-        ],
-        description="H2: bubble_detachment — narrative detached from fundamentals",
-    )
-
-
-def make_winner_take_all_candidate(
-    module_id: str = _MODULE_ID,
-) -> OntologyCandidate:
-    """
-    H3 — winner_take_all: concentration is the dominant structural dynamic.
-
-    Market concentration in AI names drives hyperscaler capex, as the
-    dominant platforms use cheap capital to maintain competitive moats.
-    Accelerating capex further validates tech valuations, closing the loop.
-
-        MarketConcentrationExtreme → HyperscalerCapexAccelerating
-        HyperscalerCapexAccelerating → TechValuationDetached
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge(
-                "MarketConcentrationExtreme",
-                "HyperscalerCapexAccelerating",
-                prior=0.65,
-                label="capital concentration → capex acceleration",
-            ),
-            _edge(
-                "HyperscalerCapexAccelerating",
-                "TechValuationDetached",
-                prior=0.60,
-                label="capex acceleration → valuation premium",
-            ),
-        ],
-        description="H3: winner_take_all — concentration drives capex and valuation",
-    )
-
-
-def make_productivity_regime_candidate(
-    module_id: str = _MODULE_ID,
-) -> OntologyCandidate:
-    """
-    H4 — productivity_regime: AI gains visible in the real economy.
-
-    IP investment drives labour productivity, which lifts broad GDP growth.
-    A compressed risk premium enables further capital concentration into
-    AI sectors.  This hypothesis is the optimistic structural narrative.
-
-        IPInvestmentRising → LaborProductivityImproving
-        LaborProductivityImproving → BroadEconomicLift
-        AIRiskPremiumCompressed → MarketConcentrationExtreme
-    """
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=module_id,
-        generation=0,
-        variables=_var_list(),
-        edges=[
-            _edge(
-                "IPInvestmentRising",
-                "LaborProductivityImproving",
-                prior=0.65,
-                label="IP investment → productivity gains",
-            ),
-            _edge(
-                "LaborProductivityImproving",
-                "BroadEconomicLift",
-                prior=0.65,
-                label="productivity → GDP lift",
-            ),
-            _edge(
-                "AIRiskPremiumCompressed",
-                "MarketConcentrationExtreme",
-                prior=0.60,
-                label="risk appetite → tech concentration",
-            ),
-        ],
-        description="H4: productivity_regime — AI gains showing up in real economy",
-    )
-
-
 # ---------------------------------------------------------------------------
 # Domain module class
 # ---------------------------------------------------------------------------
@@ -346,9 +133,7 @@ class AIRegimeV1:
     """
     Domain module for the AI investment cycle interpretive ontology.
 
-    Implements the domain module contract defined in SPEC.md §8.
-    Four seed candidates encode competing explanatory narratives for
-    the current AI investment cycle.
+    Implements the domain module contract (engine/model/domain.py).
 
     Explore band: 0.25–0.75 (same as macro_regime_v1).
     Rationale: interpretive macro-financial domains require the engine to
@@ -362,13 +147,8 @@ class AIRegimeV1:
     def module_id(self) -> str:
         return self._MODULE_ID
 
-    def initial_candidates(self) -> list[OntologyCandidate]:
-        return [
-            make_infrastructure_buildout_candidate(self._MODULE_ID),
-            make_bubble_detachment_candidate(self._MODULE_ID),
-            make_winner_take_all_candidate(self._MODULE_ID),
-            make_productivity_regime_candidate(self._MODULE_ID),
-        ]
+    def variables(self) -> list[Variable]:
+        return list(with_lags(self._MODULE_ID, _VARIABLE_DEFS).values())
 
     def existence_thresholds(self) -> EdgeExistenceThresholdConfig:
         """

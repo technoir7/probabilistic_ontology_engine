@@ -11,108 +11,18 @@
   "body": {
    "candidates": [
     {
-     "edge_count": 1,
+     "edge_count": 0,
      "evidence_count": 4,
      "generation_introduced": 0,
      "id": "<id0>",
-     "log_score": -22.598143308,
-     "name": "T_null: btc-altcoin baseline",
-     "score_normalized": 0.95,
-     "status": "dominant"
-    },
-    {
-     "edge_count": 2,
-     "evidence_count": 4,
-     "generation_introduced": 1,
-     "id": "<id1>",
-     "log_score": -22.581171843,
-     "name": "variant_add_AltcoinSeasonActive->CryptoVolatilityShock",
-     "score_normalized": 0.725088275,
-     "status": "rising"
-    },
-    {
-     "edge_count": 3,
-     "evidence_count": 4,
-     "generation_introduced": 0,
-     "id": "<id2>",
-     "log_score": -22.435628669,
-     "name": "H2: digital_gold",
-     "score_normalized": 0.542588191,
-     "status": "rising"
-    },
-    {
-     "edge_count": 3,
-     "evidence_count": 4,
-     "generation_introduced": 0,
-     "id": "<id3>",
-     "log_score": -22.530727388,
-     "name": "H4: utility_adoption",
-     "score_normalized": 0.511233453,
-     "status": "neutral"
-    },
-    {
-     "edge_count": 3,
-     "evidence_count": 4,
-     "generation_introduced": 0,
-     "id": "<id4>",
-     "log_score": -22.562992133,
-     "name": "H3: speculative_mania",
-     "score_normalized": 0.500513888,
-     "status": "neutral"
-    },
-    {
-     "edge_count": 4,
-     "evidence_count": 4,
-     "generation_introduced": 1,
-     "id": "<id5>",
-     "log_score": -22.435628669,
-     "name": "variant_add_RiskAssetCorrelation->OnChainActivityElevated",
-     "score_normalized": 0.311971464,
-     "status": "neutral"
-    },
-    {
-     "edge_count": 4,
-     "evidence_count": 4,
-     "generation_introduced": 1,
-     "id": "<id6>",
-     "log_score": -22.513895711,
-     "name": "variant_add_OnChainActivityElevated->BTCMomentumPositive",
-     "score_normalized": 0.286258982,
-     "status": "falling"
-    },
-    {
-     "edge_count": 4,
-     "evidence_count": 4,
-     "generation_introduced": 1,
-     "id": "<id7>",
-     "log_score": -22.515706099,
-     "name": "variant_add_RiskAssetCorrelation->DollarDebasementNarrative",
-     "score_normalized": 0.285615216,
-     "status": "falling"
-    },
-    {
-     "edge_count": 3,
-     "evidence_count": 4,
-     "generation_introduced": 0,
-     "id": "<id8>",
-     "log_score": -22.571240299,
-     "name": "H1: liquidity_overflow",
-     "score_normalized": 0.267117526,
-     "status": "falling"
-    },
-    {
-     "edge_count": 4,
-     "evidence_count": 4,
-     "generation_introduced": 1,
-     "id": "<id9>",
-     "log_score": -22.530727388,
-     "name": "variant_add_RiskAssetCorrelation->OnChainActivityElevated",
+     "log_score": -22.580239807,
+     "name": "unconnected: no hypotheses yet",
      "score_normalized": 0.05,
-     "status": "falling"
+     "status": "dominant"
     }
    ],
    "domain": "Crypto Regime",
-   "generation": 9
+   "generation": 0
   },
   "status": 200
  },
@@ -606,14 +516,14 @@
      }
     }
    ],
-   "total_assignment_count": 32,
+   "total_assignment_count": 64,
    "total_evidence_records": 4,
    "unique_observed_assignment_patterns": 4,
    "unique_state_retention_ratio": 1.0,
    "used_assignment_position_fallback": false,
    "variable_id_match_count": 32,
-   "variable_id_match_ratio": 1.0,
-   "variable_id_mismatch_count": 0,
+   "variable_id_match_ratio": 0.5,
+   "variable_id_mismatch_count": 32,
    "variables": {
     "AltcoinSeasonActive": {
      "missing_count": 0,
@@ -824,15 +734,15 @@
  },
  "debug_learning": {
   "body": {
-   "active_candidates": 10,
-   "current_generation": 9,
+   "active_candidates": 1,
+   "current_generation": 0,
    "domain": "Crypto Regime",
    "domain_module_id": "crypto-regime-v1",
    "dominant_evidence_count": 4,
-   "dominant_log_score": -22.598143308,
+   "dominant_log_score": -22.580239807,
    "last_learn_timestamp": "<ts>",
-   "last_mutation_introduced": 2,
-   "last_mutation_total_attempts": 5,
+   "last_mutation_introduced": 0,
+   "last_mutation_total_attempts": 0,
    "learn_calls_this_session": 4,
    "pipeline_status": {
     "backfill_calls_learn": true,
@@ -848,430 +758,20 @@
   "body": {
    "candidates": [
     {
-     "active_edge_count": 1,
-     "avg_ll": -5.649577622,
-     "bic_penalty_raw": 1.564049096,
-     "bic_score_explore": -6.040589896,
-     "bic_score_strict": -7.213626718,
+     "active_edge_count": 0,
+     "avg_ll": -5.645097995,
+     "bic_penalty_raw": 2.780531726,
+     "bic_score_explore": -6.340230927,
+     "bic_score_strict": -8.425629721,
      "candidate_id": "<id0>",
-     "description": "T_null: btc-altcoin baseline",
-     "edge_structure": [
-      [
-       "BTCMomentumPositive",
-       "AltcoinSeasonActive"
-      ]
-     ],
+     "description": "unconnected: no hypotheses yet",
+     "edge_structure": [],
      "evidence_count": 4,
      "generation": 0,
      "is_dominant": true,
-     "log_score": -22.598143308,
+     "log_score": -22.580239807,
      "status": "ACTIVE",
-     "total_edge_count": 1
-    },
-    {
-     "active_edge_count": 2,
-     "avg_ll": -5.645278569,
-     "bic_penalty_raw": 1.737832329,
-     "bic_score_explore": -6.079736651,
-     "bic_score_strict": -7.383110897,
-     "candidate_id": "<id1>",
-     "description": "variant_add_AltcoinSeasonActive->CryptoVolatilityShock",
-     "edge_structure": [
-      [
-       "AltcoinSeasonActive",
-       "CryptoVolatilityShock"
-      ],
-      [
-       "BTCMomentumPositive",
-       "AltcoinSeasonActive"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.581171843,
-     "status": "ACTIVE",
-     "total_edge_count": 2
-    },
-    {
-     "active_edge_count": 3,
-     "avg_ll": -5.609019856,
-     "bic_penalty_raw": 1.911615562,
-     "bic_score_explore": -6.086923746,
-     "bic_score_strict": -7.520635418,
-     "candidate_id": "<id2>",
-     "description": "H2: digital_gold",
-     "edge_structure": [
-      [
-       "BTCMomentumPositive",
-       "StablecoinFlowPositive"
-      ],
-      [
-       "DollarDebasementNarrative",
-       "BTCMomentumPositive"
-      ],
-      [
-       "DollarDebasementNarrative",
-       "RiskAssetCorrelation"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 0,
-     "is_dominant": false,
-     "log_score": -22.435628669,
-     "status": "ACTIVE",
-     "total_edge_count": 3
-    },
-    {
-     "active_edge_count": 3,
-     "avg_ll": -5.63264749,
-     "bic_penalty_raw": 1.911615562,
-     "bic_score_explore": -6.11055138,
-     "bic_score_strict": -7.544263052,
-     "candidate_id": "<id3>",
-     "description": "H4: utility_adoption",
-     "edge_structure": [
-      [
-       "NarrativeMomentum",
-       "AltcoinSeasonActive"
-      ],
-      [
-       "OnChainActivityElevated",
-       "NarrativeMomentum"
-      ],
-      [
-       "StablecoinFlowPositive",
-       "OnChainActivityElevated"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 0,
-     "is_dominant": false,
-     "log_score": -22.530727388,
-     "status": "ACTIVE",
-     "total_edge_count": 3
-    },
-    {
-     "active_edge_count": 3,
-     "avg_ll": -5.640725311,
-     "bic_penalty_raw": 1.911615562,
-     "bic_score_explore": -6.118629201,
-     "bic_score_strict": -7.552340873,
-     "candidate_id": "<id4>",
-     "description": "H3: speculative_mania",
-     "edge_structure": [
-      [
-       "AltcoinSeasonActive",
-       "NarrativeMomentum"
-      ],
-      [
-       "CryptoVolatilityShock",
-       "AltcoinSeasonActive"
-      ],
-      [
-       "OnChainActivityElevated",
-       "CryptoVolatilityShock"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 0,
-     "is_dominant": false,
-     "log_score": -22.562992133,
-     "status": "ACTIVE",
-     "total_edge_count": 3
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.609019856,
-     "bic_penalty_raw": 2.085398795,
-     "bic_score_explore": -6.130369555,
-     "bic_score_strict": -7.694418651,
-     "candidate_id": "<id5>",
-     "description": "variant_add_RiskAssetCorrelation->OnChainActivityElevated",
-     "edge_structure": [
-      [
-       "BTCMomentumPositive",
-       "StablecoinFlowPositive"
-      ],
-      [
-       "DollarDebasementNarrative",
-       "BTCMomentumPositive"
-      ],
-      [
-       "DollarDebasementNarrative",
-       "RiskAssetCorrelation"
-      ],
-      [
-       "RiskAssetCorrelation",
-       "OnChainActivityElevated"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.435628669,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.628395719,
-     "bic_penalty_raw": 2.085398795,
-     "bic_score_explore": -6.149745418,
-     "bic_score_strict": -7.713794514,
-     "candidate_id": "<id6>",
-     "description": "variant_add_OnChainActivityElevated->BTCMomentumPositive",
-     "edge_structure": [
-      [
-       "NarrativeMomentum",
-       "AltcoinSeasonActive"
-      ],
-      [
-       "OnChainActivityElevated",
-       "BTCMomentumPositive"
-      ],
-      [
-       "OnChainActivityElevated",
-       "NarrativeMomentum"
-      ],
-      [
-       "StablecoinFlowPositive",
-       "OnChainActivityElevated"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.513895711,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.628880835,
-     "bic_penalty_raw": 2.085398795,
-     "bic_score_explore": -6.150230534,
-     "bic_score_strict": -7.71427963,
-     "candidate_id": "<id7>",
-     "description": "variant_add_RiskAssetCorrelation->DollarDebasementNarrative",
-     "edge_structure": [
-      [
-       "NarrativeMomentum",
-       "AltcoinSeasonActive"
-      ],
-      [
-       "OnChainActivityElevated",
-       "NarrativeMomentum"
-      ],
-      [
-       "RiskAssetCorrelation",
-       "DollarDebasementNarrative"
-      ],
-      [
-       "StablecoinFlowPositive",
-       "OnChainActivityElevated"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.515706099,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 3,
-     "avg_ll": -5.64281993,
-     "bic_penalty_raw": 2.085398795,
-     "bic_score_explore": -6.164169628,
-     "bic_score_strict": -7.728218724,
-     "candidate_id": "<id8>",
-     "description": "H1: liquidity_overflow",
-     "edge_structure": [
-      [
-       "BTCMomentumPositive",
-       "AltcoinSeasonActive"
-      ],
-      [
-       "RiskAssetCorrelation",
-       "BTCMomentumPositive"
-      ],
-      [
-       "StablecoinFlowPositive",
-       "BTCMomentumPositive"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 0,
-     "is_dominant": false,
-     "log_score": -22.571240299,
-     "status": "ACTIVE",
-     "total_edge_count": 3
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.63264749,
-     "bic_penalty_raw": 2.259182028,
-     "bic_score_explore": -6.197442997,
-     "bic_score_strict": -7.891829517,
-     "candidate_id": "<id9>",
-     "description": "variant_add_RiskAssetCorrelation->OnChainActivityElevated",
-     "edge_structure": [
-      [
-       "NarrativeMomentum",
-       "AltcoinSeasonActive"
-      ],
-      [
-       "OnChainActivityElevated",
-       "NarrativeMomentum"
-      ],
-      [
-       "RiskAssetCorrelation",
-       "OnChainActivityElevated"
-      ],
-      [
-       "StablecoinFlowPositive",
-       "OnChainActivityElevated"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.530727388,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.655715915,
-     "bic_penalty_raw": 2.085398795,
-     "bic_score_explore": -6.177065613,
-     "bic_score_strict": -7.741114709,
-     "candidate_id": "<id15>",
-     "description": "variant_add_BTCMomentumPositive->DollarDebasementNarrative",
-     "edge_structure": [
-      [
-       "AltcoinSeasonActive",
-       "NarrativeMomentum"
-      ],
-      [
-       "BTCMomentumPositive",
-       "DollarDebasementNarrative"
-      ],
-      [
-       "CryptoVolatilityShock",
-       "AltcoinSeasonActive"
-      ],
-      [
-       "OnChainActivityElevated",
-       "CryptoVolatilityShock"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.622332998,
-     "status": "PRUNED",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.604103429,
-     "bic_penalty_raw": 2.259182028,
-     "bic_score_explore": -6.168898936,
-     "bic_score_strict": -7.863285457,
-     "candidate_id": "<id16>",
-     "description": "variant_add_CryptoVolatilityShock->BTCMomentumPositive",
-     "edge_structure": [
-      [
-       "BTCMomentumPositive",
-       "StablecoinFlowPositive"
-      ],
-      [
-       "CryptoVolatilityShock",
-       "BTCMomentumPositive"
-      ],
-      [
-       "DollarDebasementNarrative",
-       "BTCMomentumPositive"
-      ],
-      [
-       "DollarDebasementNarrative",
-       "RiskAssetCorrelation"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.416165787,
-     "status": "PRUNED",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.597283603,
-     "bic_penalty_raw": 2.381757254,
-     "bic_score_explore": -6.192722917,
-     "bic_score_strict": -7.979040857,
-     "candidate_id": "<id17>",
-     "description": "variant_add_AltcoinSeasonActive->RiskAssetCorrelation",
-     "edge_structure": [
-      [
-       "AltcoinSeasonActive",
-       "RiskAssetCorrelation"
-      ],
-      [
-       "BTCMomentumPositive",
-       "StablecoinFlowPositive"
-      ],
-      [
-       "DollarDebasementNarrative",
-       "BTCMomentumPositive"
-      ],
-      [
-       "DollarDebasementNarrative",
-       "RiskAssetCorrelation"
-      ]
-     ],
-     "evidence_count": 3,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -16.79054564,
-     "status": "PRUNED",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.674966727,
-     "bic_penalty_raw": 2.381757254,
-     "bic_score_explore": -6.270406041,
-     "bic_score_strict": -8.056723982,
-     "candidate_id": "<id18>",
-     "description": "variant_add_OnChainActivityElevated->DollarDebasementNarrative",
-     "edge_structure": [
-      [
-       "BTCMomentumPositive",
-       "AltcoinSeasonActive"
-      ],
-      [
-       "OnChainActivityElevated",
-       "DollarDebasementNarrative"
-      ],
-      [
-       "RiskAssetCorrelation",
-       "BTCMomentumPositive"
-      ],
-      [
-       "StablecoinFlowPositive",
-       "BTCMomentumPositive"
-      ]
-     ],
-     "evidence_count": 3,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -17.023526737,
-     "status": "PRUNED",
-     "total_edge_count": 4
+     "total_edge_count": 0
     }
    ],
    "domain": "Crypto Regime",
@@ -1280,9 +780,9 @@
    "env_mode": "strict",
    "last_mutation_cycle": {
     "dag_violations": 0,
-    "duplicate_rejections": 3,
-    "introduced": 2,
-    "total_attempts": 5
+    "duplicate_rejections": 0,
+    "introduced": 0,
+    "total_attempts": 0
    },
    "total_evidence_records": 4
   },
@@ -1294,7 +794,7 @@
    "records": [
     {
      "description": "fake@2026-03-01",
-     "id": "<id11>",
+     "id": "<id1>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
@@ -1302,7 +802,7 @@
     },
     {
      "description": "fake@2026-02-22",
-     "id": "<id12>",
+     "id": "<id2>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
@@ -1310,7 +810,7 @@
     },
     {
      "description": "fake@2026-02-15",
-     "id": "<id13>",
+     "id": "<id3>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
@@ -1318,7 +818,7 @@
     },
     {
      "description": "fake@2026-02-08",
-     "id": "<id14>",
+     "id": "<id4>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
@@ -1331,24 +831,8 @@
  "inference_dominant": {
   "body": {
    "candidate_id": "<id0>",
-   "edges": [
-    {
-     "probability": 0.380829731,
-     "source": "BTCMomentumPositive",
-     "status": "explore",
-     "target": "AltcoinSeasonActive"
-    }
-   ],
-   "frontier_edges": [
-    {
-     "explore_weight": 1.21550625,
-     "note": "existence_probability=0.381 in explore band [0.25, 0.75]",
-     "probability": 0.380829731,
-     "relation": "BTC momentum \u2192 altcoin season (baseline)",
-     "source": "BTCMomentumPositive",
-     "target": "AltcoinSeasonActive"
-    }
-   ],
+   "edges": [],
+   "frontier_edges": [],
    "nodes": [
     {
      "id": "BTCMomentumPositive",
@@ -1362,7 +846,7 @@
      "label": "AltcoinSeasonActive",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
      "id": "OnChainActivityElevated",
@@ -1405,129 +889,59 @@
      "observation": null,
      "probability": null,
      "status": "weak"
-    }
-   ],
-   "target_probability": 0.496016667,
-   "target_variable": "BTCMomentumPositive"
-  },
-  "status": 200
- },
- "inference_other_candidate": {
-  "body": {
-   "candidate_id": "<id9>",
-   "edges": [
-    {
-     "probability": 0.49644088,
-     "source": "OnChainActivityElevated",
-     "status": "explore",
-     "target": "NarrativeMomentum"
     },
     {
-     "probability": 0.481839432,
-     "source": "NarrativeMomentum",
-     "status": "explore",
-     "target": "AltcoinSeasonActive"
-    },
-    {
-     "probability": 0.428874357,
-     "source": "StablecoinFlowPositive",
-     "status": "explore",
-     "target": "OnChainActivityElevated"
-    },
-    {
-     "probability": 0.5,
-     "source": "RiskAssetCorrelation",
-     "status": "explore",
-     "target": "OnChainActivityElevated"
-    }
-   ],
-   "frontier_edges": [
-    {
-     "explore_weight": 1.21550625,
-     "note": "existence_probability=0.496 in explore band [0.25, 0.75]",
-     "probability": 0.49644088,
-     "relation": "on-chain activity \u2192 DeFi/ETH narrative momentum",
-     "source": "OnChainActivityElevated",
-     "target": "NarrativeMomentum"
-    },
-    {
-     "explore_weight": 1.21550625,
-     "note": "existence_probability=0.482 in explore band [0.25, 0.75]",
-     "probability": 0.481839432,
-     "relation": "narrative momentum \u2192 altcoin season",
-     "source": "NarrativeMomentum",
-     "target": "AltcoinSeasonActive"
-    },
-    {
-     "explore_weight": 1.21550625,
-     "note": "existence_probability=0.429 in explore band [0.25, 0.75]",
-     "probability": 0.428874357,
-     "relation": "stablecoin inflows \u2192 on-chain activity",
-     "source": "StablecoinFlowPositive",
-     "target": "OnChainActivityElevated"
-    },
-    {
-     "explore_weight": 1.0,
-     "note": "existence_probability=0.500 in explore band [0.25, 0.75]",
-     "probability": 0.5,
-     "relation": "RiskAssetCorrelation\u2192OnChainActivityElevated",
-     "source": "RiskAssetCorrelation",
-     "target": "OnChainActivityElevated"
-    }
-   ],
-   "nodes": [
-    {
-     "id": "BTCMomentumPositive",
-     "label": "BTCMomentumPositive",
-     "observation": null,
-     "probability": 0.496016667,
-     "status": "target"
-    },
-    {
-     "id": "AltcoinSeasonActive",
-     "label": "AltcoinSeasonActive",
-     "observation": null,
-     "probability": null,
-     "status": "exploring"
-    },
-    {
-     "id": "OnChainActivityElevated",
-     "label": "OnChainActivityElevated",
-     "observation": null,
-     "probability": null,
-     "status": "exploring"
-    },
-    {
-     "id": "StablecoinFlowPositive",
-     "label": "StablecoinFlowPositive",
-     "observation": null,
-     "probability": null,
-     "status": "exploring"
-    },
-    {
-     "id": "CryptoVolatilityShock",
-     "label": "CryptoVolatilityShock",
+     "id": "BTCMomentumPositive_prev",
+     "label": "BTCMomentumPositive_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "RiskAssetCorrelation",
-     "label": "RiskAssetCorrelation",
+     "id": "AltcoinSeasonActive_prev",
+     "label": "AltcoinSeasonActive_prev",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
-     "id": "NarrativeMomentum",
-     "label": "NarrativeMomentum",
+     "id": "OnChainActivityElevated_prev",
+     "label": "OnChainActivityElevated_prev",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
-     "id": "DollarDebasementNarrative",
-     "label": "DollarDebasementNarrative",
+     "id": "StablecoinFlowPositive_prev",
+     "label": "StablecoinFlowPositive_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "CryptoVolatilityShock_prev",
+     "label": "CryptoVolatilityShock_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "RiskAssetCorrelation_prev",
+     "label": "RiskAssetCorrelation_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "NarrativeMomentum_prev",
+     "label": "NarrativeMomentum_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "DollarDebasementNarrative_prev",
+     "label": "DollarDebasementNarrative_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
@@ -1544,16 +958,10 @@
    "domain": "Crypto Regime",
    "events": [
     {
-     "description": "T_null: btc-altcoin baseline",
-     "dominant_after": "T_null: btc-altcoin baseline",
+     "description": "unconnected: no hypotheses yet",
+     "dominant_after": "unconnected: no hypotheses yet",
      "event_type": "current",
      "generation": 0
-    },
-    {
-     "description": "Became dominant candidate after 1 paradigm shift(s)",
-     "dominant_after": "T_null: btc-altcoin baseline",
-     "event_type": "shift",
-     "generation": 9
     }
    ]
   },
@@ -1564,77 +972,14 @@
    "competing_candidates": {
     "candidates": [
      {
-      "edge_count": 1,
-      "log_score": -22.598143308,
-      "name": "T_null: btc-altcoin baseline",
-      "score_normalized": 0.95,
-      "status": "dominant"
-     },
-     {
-      "edge_count": 2,
-      "log_score": -22.581171843,
-      "name": "variant_add_AltcoinSeasonActive->CryptoVolatilityShock",
-      "score_normalized": 0.725088275,
-      "status": "rising"
-     },
-     {
-      "edge_count": 3,
-      "log_score": -22.435628669,
-      "name": "H2: digital_gold",
-      "score_normalized": 0.542588191,
-      "status": "rising"
-     },
-     {
-      "edge_count": 3,
-      "log_score": -22.530727388,
-      "name": "H4: utility_adoption",
-      "score_normalized": 0.511233453,
-      "status": "neutral"
-     },
-     {
-      "edge_count": 3,
-      "log_score": -22.562992133,
-      "name": "H3: speculative_mania",
-      "score_normalized": 0.500513888,
-      "status": "neutral"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -22.435628669,
-      "name": "variant_add_RiskAssetCorrelation->OnChainActivityElevated",
-      "score_normalized": 0.311971464,
-      "status": "neutral"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -22.513895711,
-      "name": "variant_add_OnChainActivityElevated->BTCMomentumPositive",
-      "score_normalized": 0.286258982,
-      "status": "falling"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -22.515706099,
-      "name": "variant_add_RiskAssetCorrelation->DollarDebasementNarrative",
-      "score_normalized": 0.285615216,
-      "status": "falling"
-     },
-     {
-      "edge_count": 3,
-      "log_score": -22.571240299,
-      "name": "H1: liquidity_overflow",
-      "score_normalized": 0.267117526,
-      "status": "falling"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -22.530727388,
-      "name": "variant_add_RiskAssetCorrelation->OnChainActivityElevated",
+      "edge_count": 0,
+      "log_score": -22.580239807,
+      "name": "unconnected: no hypotheses yet",
       "score_normalized": 0.05,
-      "status": "falling"
+      "status": "dominant"
      }
     ],
-    "score_gap_to_dominant": 0.169484179
+    "score_gap_to_dominant": null
    },
    "current_regime_state": [
     {
@@ -1645,7 +990,7 @@
     {
      "boolean_state": true,
      "name": "AltcoinSeasonActive",
-     "probability": 0.580952707
+     "probability": 0.6079
     },
     {
      "boolean_state": false,
@@ -1680,57 +1025,36 @@
    ],
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "edge_count": 1,
-    "edges": [
-     {
-      "existence_probability": 0.380829731,
-      "source": "BTCMomentumPositive",
-      "target": "AltcoinSeasonActive"
-     }
-    ],
-    "generations_dominant": 4,
-    "log_score": -22.598143308,
-    "name": "T_null: btc-altcoin baseline"
+    "edge_count": 0,
+    "edges": [],
+    "generations_dominant": 0,
+    "log_score": -22.580239807,
+    "name": "unconnected: no hypotheses yet"
    },
    "frontier": {
-    "frontier_edge_count": 1,
-    "frontier_edges": [
-     {
-      "probability": 0.380829731,
-      "relation": "BTC momentum \u2192 altcoin season (baseline)",
-      "source": "BTCMomentumPositive",
-      "target": "AltcoinSeasonActive"
-     }
-    ]
+    "frontier_edge_count": 0,
+    "frontier_edges": []
    },
    "interpretation_hints": [
-    "structure_entropy is high (1.993): engine has not converged; multiple causal stories remain plausible",
-    "dominant hypothesis has held for 9 generations",
-    "last paradigm shift was <ago>",
+    "structure_entropy is low (0.000): engine has converged on a single dominant causal story",
+    "dominant hypothesis was introduced in the current generation",
+    "no paradigm shifts recorded since shift logging was enabled",
     "evidence base is small (4 records); scores may not yet be reliable",
-    "1 edge(s) are in the explore band: causal structure is still being refined in these relations"
+    "no edges are in the explore band: dominant causal structure is well-determined"
    ],
    "metadata": {
-    "current_generation": 9,
+    "current_generation": 0,
     "domain": "Crypto Regime",
     "domain_module_id": "crypto-regime-v1",
     "evidence_count": 4,
     "timestamp": "<ts>"
    },
    "ontology_competition": {
-    "active_candidates": 10,
-    "entropy_interpretation": "high",
-    "paradigm_shifts_total": 1,
-    "recent_shifts": [
-     {
-      "evidence_date": "2026-02-08",
-      "from_name": "H1: liquidity_overflow",
-      "generation": 5,
-      "timestamp": "<ts>",
-      "to_name": "T_null: btc-altcoin baseline"
-     }
-    ],
-    "structure_entropy": 1.993019532
+    "active_candidates": 1,
+    "entropy_interpretation": "low",
+    "paradigm_shifts_total": 0,
+    "recent_shifts": [],
+    "structure_entropy": 0.0
    }
   },
   "status": 200
@@ -1739,41 +1063,27 @@
   "body": {
    "domain": "Crypto Regime",
    "domain_module_id": "crypto-regime-v1",
-   "events": [
-    {
-     "evidence_count_at_shift": 1,
-     "evidence_date": "2026-02-08",
-     "generation": 5,
-     "new_dominant_id": "<id0>",
-     "new_dominant_name": "T_null: btc-altcoin baseline",
-     "new_programme": "T_null",
-     "previous_dominant_id": "<id8>",
-     "previous_dominant_name": "H1: liquidity_overflow",
-     "previous_programme": "H1",
-     "shift_id": "<id10>",
-     "timestamp": "<ts>"
-    }
-   ],
-   "total_shifts": 1
+   "events": [],
+   "total_shifts": 0
   },
   "status": 200
  },
  "status": {
   "body": {
-   "active_candidates": 10,
-   "current_generation": 9,
+   "active_candidates": 1,
+   "current_generation": 0,
    "domain": "Crypto Regime",
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "generations_dominant": 4,
-    "name": "T_null: btc-altcoin baseline"
+    "generations_dominant": 0,
+    "name": "unconnected: no hypotheses yet"
    },
    "engine_status": "online",
-   "frontier_edge_count": 1,
+   "frontier_edge_count": 0,
    "last_evidence_cycle_ago": "<ago>",
    "max_candidates": 10,
-   "paradigm_shifts_this_window": 1,
-   "structure_entropy": 1.993019532
+   "paradigm_shifts_this_window": 0,
+   "structure_entropy": 0.0
   },
   "status": 200
  }

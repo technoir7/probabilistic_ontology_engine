@@ -11,108 +11,18 @@
   "body": {
    "candidates": [
     {
-     "edge_count": 3,
+     "edge_count": 0,
      "evidence_count": 2,
      "generation_introduced": 0,
      "id": "<id0>",
-     "log_score": -34.607224058,
-     "name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum",
-     "score_normalized": 0.95,
-     "status": "dominant"
-    },
-    {
-     "edge_count": 3,
-     "evidence_count": 2,
-     "generation_introduced": 0,
-     "id": "<id1>",
-     "log_score": -34.817350271,
-     "name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
-     "score_normalized": 0.798991029,
-     "status": "rising"
-    },
-    {
-     "edge_count": 4,
-     "evidence_count": 2,
-     "generation_introduced": 1,
-     "id": "<id2>",
-     "log_score": -34.80068497,
-     "name": "variant_add_AIImageSaturation->AuthenticityPremium",
-     "score_normalized": 0.561899662,
-     "status": "rising"
-    },
-    {
-     "edge_count": 3,
-     "evidence_count": 2,
-     "generation_introduced": 0,
-     "id": "<id3>",
-     "log_score": -34.816071611,
-     "name": "H5: NeoAcademicResurgence \u2014 aura + authenticity premium \u2192 neo-academic figurative revival",
-     "score_normalized": 0.550841923,
-     "status": "neutral"
-    },
-    {
-     "edge_count": 4,
-     "evidence_count": 2,
-     "generation_introduced": 0,
-     "id": "<id4>",
-     "log_score": -34.828084612,
-     "name": "H3: DefensiveBlueChipConsolidation \u2014 market uncertainty \u2192 blue-chip flight \u2192 institutional conservatism",
-     "score_normalized": 0.542208679,
-     "status": "neutral"
-    },
-    {
-     "edge_count": 4,
-     "evidence_count": 2,
-     "generation_introduced": 1,
-     "id": "<id5>",
-     "log_score": -34.638686548,
-     "name": "variant_add_RegionalSceneMomentum->BlueChipInstitutionalCapture",
-     "score_normalized": 0.429253165,
-     "status": "neutral"
-    },
-    {
-     "edge_count": 5,
-     "evidence_count": 2,
-     "generation_introduced": 1,
-     "id": "<id6>",
-     "log_score": -34.682016886,
-     "name": "variant_add_AuthenticityPremium->RegionalSceneMomentum",
-     "score_normalized": 0.398113453,
-     "status": "falling"
-    },
-    {
-     "edge_count": 4,
-     "evidence_count": 2,
-     "generation_introduced": 0,
-     "id": "<id7>",
-     "log_score": -34.822281633,
-     "name": "H1: CraftAuraBacklash \u2014 AI saturation \u2192 aura premium \u2192 craft/figurative institutionalisation",
-     "score_normalized": 0.297311013,
-     "status": "falling"
-    },
-    {
-     "edge_count": 4,
-     "evidence_count": 2,
-     "generation_introduced": 1,
-     "id": "<id8>",
-     "log_score": -34.900465672,
-     "name": "variant_add_AIImageSaturation->ConceptualDominance",
-     "score_normalized": 0.241123395,
-     "status": "falling"
-    },
-    {
-     "edge_count": 5,
-     "evidence_count": 2,
-     "generation_introduced": 1,
-     "id": "<id9>",
-     "log_score": -34.819836781,
-     "name": "variant_add_MarketUncertainty->AttentionFragmentation",
+     "log_score": -34.779273007,
+     "name": "unconnected: no hypotheses yet",
      "score_normalized": 0.05,
-     "status": "falling"
+     "status": "dominant"
     }
    ],
    "domain": "Art Prestige Regime",
-   "generation": 5
+   "generation": 0
   },
   "status": 200
  },
@@ -3555,14 +3465,14 @@
      }
     }
    ],
-   "total_assignment_count": 50,
+   "total_assignment_count": 100,
    "total_evidence_records": 2,
    "unique_observed_assignment_patterns": 2,
    "unique_state_retention_ratio": 1.0,
    "used_assignment_position_fallback": false,
    "variable_id_match_count": 50,
-   "variable_id_match_ratio": 1.0,
-   "variable_id_mismatch_count": 0,
+   "variable_id_match_ratio": 0.5,
+   "variable_id_mismatch_count": 50,
    "variables": {
     "AIArtInstitutionalAcceptance": {
      "missing_count": 0,
@@ -3969,15 +3879,15 @@
  },
  "debug_learning": {
   "body": {
-   "active_candidates": 10,
-   "current_generation": 5,
+   "active_candidates": 1,
+   "current_generation": 0,
    "domain": "Art Prestige Regime",
    "domain_module_id": "art_prestige_regime_v1",
    "dominant_evidence_count": 2,
-   "dominant_log_score": -34.607224058,
+   "dominant_log_score": -34.779273007,
    "last_learn_timestamp": "<ts>",
-   "last_mutation_introduced": 5,
-   "last_mutation_total_attempts": 6,
+   "last_mutation_introduced": 0,
+   "last_mutation_total_attempts": 0,
    "learn_calls_this_session": 2,
    "pipeline_status": {
     "backfill_calls_learn": true,
@@ -3993,330 +3903,20 @@
   "body": {
    "candidates": [
     {
-     "active_edge_count": 3,
-     "avg_ll": -17.303525152,
-     "bic_penalty_raw": 4.868846052,
-     "bic_score_explore": -18.520736665,
-     "bic_score_strict": -22.172371204,
+     "active_edge_count": 0,
+     "avg_ll": -17.389847763,
+     "bic_penalty_raw": 8.69436795,
+     "bic_score_explore": -19.563439751,
+     "bic_score_strict": -26.084215714,
      "candidate_id": "<id0>",
-     "description": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum",
-     "edge_structure": [
-      [
-       "AttentionFragmentation",
-       "PrestigeFragmentation"
-      ],
-      [
-       "PrestigeFragmentation",
-       "BlueChipConcentration"
-      ],
-      [
-       "PrestigeFragmentation",
-       "RegionalSceneMomentum"
-      ]
-     ],
+     "description": "unconnected: no hypotheses yet",
+     "edge_structure": [],
      "evidence_count": 2,
      "generation": 0,
      "is_dominant": true,
-     "log_score": -34.607224058,
+     "log_score": -34.779273007,
      "status": "ACTIVE",
-     "total_edge_count": 3
-    },
-    {
-     "active_edge_count": 3,
-     "avg_ll": -17.408952378,
-     "bic_penalty_raw": 4.868846052,
-     "bic_score_explore": -18.626163891,
-     "bic_score_strict": -22.27779843,
-     "candidate_id": "<id1>",
-     "description": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
-     "edge_structure": [
-      [
-       "AIArtInstitutionalAcceptance",
-       "ConceptualDominance"
-      ],
-      [
-       "AIArtInstitutionalAcceptance",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "AIImageSaturation",
-       "AIArtInstitutionalAcceptance"
-      ]
-     ],
-     "evidence_count": 2,
-     "generation": 0,
-     "is_dominant": false,
-     "log_score": -34.817350271,
-     "status": "ACTIVE",
-     "total_edge_count": 3
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -17.400590849,
-     "bic_penalty_raw": 5.042733411,
-     "bic_score_explore": -18.661274202,
-     "bic_score_strict": -22.44332426,
-     "candidate_id": "<id2>",
-     "description": "variant_add_AIImageSaturation->AuthenticityPremium",
-     "edge_structure": [
-      [
-       "AIArtInstitutionalAcceptance",
-       "ConceptualDominance"
-      ],
-      [
-       "AIArtInstitutionalAcceptance",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "AIImageSaturation",
-       "AIArtInstitutionalAcceptance"
-      ],
-      [
-       "AIImageSaturation",
-       "AuthenticityPremium"
-      ]
-     ],
-     "evidence_count": 2,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -34.80068497,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 3,
-     "avg_ll": -17.408310833,
-     "bic_penalty_raw": 5.042733411,
-     "bic_score_explore": -18.668994185,
-     "bic_score_strict": -22.451044244,
-     "candidate_id": "<id3>",
-     "description": "H5: NeoAcademicResurgence \u2014 aura + authenticity premium \u2192 neo-academic figurative revival",
-     "edge_structure": [
-      [
-       "AuthenticityPremium",
-       "NeoAcademicResurgence"
-      ],
-      [
-       "NeoAcademicResurgence",
-       "MuseumFigurativeAcceptance"
-      ],
-      [
-       "RitualAuraPremium",
-       "NeoAcademicResurgence"
-      ]
-     ],
-     "evidence_count": 2,
-     "generation": 0,
-     "is_dominant": false,
-     "log_score": -34.816071611,
-     "status": "ACTIVE",
-     "total_edge_count": 3
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -17.41433815,
-     "bic_penalty_raw": 5.042733411,
-     "bic_score_explore": -18.675021503,
-     "bic_score_strict": -22.457071561,
-     "candidate_id": "<id4>",
-     "description": "H3: DefensiveBlueChipConsolidation \u2014 market uncertainty \u2192 blue-chip flight \u2192 institutional conservatism",
-     "edge_structure": [
-      [
-       "BlueChipConcentration",
-       "InstitutionalRiskAversion"
-      ],
-      [
-       "BlueChipInstitutionalCapture",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "CollectorFlightToSafety",
-       "BlueChipConcentration"
-      ],
-      [
-       "MarketUncertainty",
-       "CollectorFlightToSafety"
-      ]
-     ],
-     "evidence_count": 2,
-     "generation": 0,
-     "is_dominant": false,
-     "log_score": -34.828084612,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -17.319310917,
-     "bic_penalty_raw": 5.21662077,
-     "bic_score_explore": -18.62346611,
-     "bic_score_strict": -22.535931687,
-     "candidate_id": "<id5>",
-     "description": "variant_add_RegionalSceneMomentum->BlueChipInstitutionalCapture",
-     "edge_structure": [
-      [
-       "AuthenticityPremium",
-       "NeoAcademicResurgence"
-      ],
-      [
-       "NeoAcademicResurgence",
-       "MuseumFigurativeAcceptance"
-      ],
-      [
-       "RegionalSceneMomentum",
-       "BlueChipInstitutionalCapture"
-      ],
-      [
-       "RitualAuraPremium",
-       "NeoAcademicResurgence"
-      ]
-     ],
-     "evidence_count": 2,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -34.638686548,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -17.341051172,
-     "bic_penalty_raw": 5.21662077,
-     "bic_score_explore": -18.645206364,
-     "bic_score_strict": -22.557671942,
-     "candidate_id": "<id6>",
-     "description": "variant_add_AuthenticityPremium->RegionalSceneMomentum",
-     "edge_structure": [
-      [
-       "AuthenticityPremium",
-       "RegionalSceneMomentum"
-      ],
-      [
-       "BlueChipConcentration",
-       "InstitutionalRiskAversion"
-      ],
-      [
-       "BlueChipInstitutionalCapture",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "CollectorFlightToSafety",
-       "BlueChipConcentration"
-      ],
-      [
-       "MarketUncertainty",
-       "CollectorFlightToSafety"
-      ]
-     ],
-     "evidence_count": 2,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -34.682016886,
-     "status": "ACTIVE",
-     "total_edge_count": 5
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -17.411426605,
-     "bic_penalty_raw": 5.21662077,
-     "bic_score_explore": -18.715581797,
-     "bic_score_strict": -22.628047375,
-     "candidate_id": "<id7>",
-     "description": "H1: CraftAuraBacklash \u2014 AI saturation \u2192 aura premium \u2192 craft/figurative institutionalisation",
-     "edge_structure": [
-      [
-       "AIImageSaturation",
-       "RitualAuraPremium"
-      ],
-      [
-       "CraftPrestigeRising",
-       "MuseumFigurativeAcceptance"
-      ],
-      [
-       "CuratorialMaterialityShift",
-       "CraftPrestigeRising"
-      ],
-      [
-       "RitualAuraPremium",
-       "CraftPrestigeRising"
-      ]
-     ],
-     "evidence_count": 2,
-     "generation": 0,
-     "is_dominant": false,
-     "log_score": -34.822281633,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -17.450654106,
-     "bic_penalty_raw": 5.21662077,
-     "bic_score_explore": -18.754809299,
-     "bic_score_strict": -22.667274876,
-     "candidate_id": "<id8>",
-     "description": "variant_add_AIImageSaturation->ConceptualDominance",
-     "edge_structure": [
-      [
-       "AIArtInstitutionalAcceptance",
-       "ConceptualDominance"
-      ],
-      [
-       "AIArtInstitutionalAcceptance",
-       "MuseumAcquisitionMomentum"
-      ],
-      [
-       "AIImageSaturation",
-       "AIArtInstitutionalAcceptance"
-      ],
-      [
-       "AIImageSaturation",
-       "ConceptualDominance"
-      ]
-     ],
-     "evidence_count": 2,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -34.900465672,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 5,
-     "avg_ll": -17.410199942,
-     "bic_penalty_raw": 5.390508129,
-     "bic_score_explore": -18.757826974,
-     "bic_score_strict": -22.800708071,
-     "candidate_id": "<id9>",
-     "description": "variant_add_MarketUncertainty->AttentionFragmentation",
-     "edge_structure": [
-      [
-       "AIImageSaturation",
-       "RitualAuraPremium"
-      ],
-      [
-       "CraftPrestigeRising",
-       "MuseumFigurativeAcceptance"
-      ],
-      [
-       "CuratorialMaterialityShift",
-       "CraftPrestigeRising"
-      ],
-      [
-       "MarketUncertainty",
-       "AttentionFragmentation"
-      ],
-      [
-       "RitualAuraPremium",
-       "CraftPrestigeRising"
-      ]
-     ],
-     "evidence_count": 2,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -34.819836781,
-     "status": "ACTIVE",
-     "total_edge_count": 5
+     "total_edge_count": 0
     }
    ],
    "domain": "Art Prestige Regime",
@@ -4325,9 +3925,9 @@
    "env_mode": "strict",
    "last_mutation_cycle": {
     "dag_violations": 0,
-    "duplicate_rejections": 1,
-    "introduced": 5,
-    "total_attempts": 6
+    "duplicate_rejections": 0,
+    "introduced": 0,
+    "total_attempts": 0
    },
    "total_evidence_records": 2
   },
@@ -4339,7 +3939,7 @@
    "records": [
     {
      "description": "fake@2026-02-28",
-     "id": "<id12>",
+     "id": "<id1>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
@@ -4347,7 +3947,7 @@
     },
     {
      "description": "fake@2026-01-31",
-     "id": "<id13>",
+     "id": "<id2>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
@@ -4360,52 +3960,8 @@
  "inference_dominant": {
   "body": {
    "candidate_id": "<id0>",
-   "edges": [
-    {
-     "probability": 0.568374504,
-     "source": "AttentionFragmentation",
-     "status": "explore",
-     "target": "PrestigeFragmentation"
-    },
-    {
-     "probability": 0.546779196,
-     "source": "PrestigeFragmentation",
-     "status": "explore",
-     "target": "RegionalSceneMomentum"
-    },
-    {
-     "probability": 0.476268452,
-     "source": "PrestigeFragmentation",
-     "status": "explore",
-     "target": "BlueChipConcentration"
-    }
-   ],
-   "frontier_edges": [
-    {
-     "explore_weight": 1.1025,
-     "note": "existence_probability=0.568 in explore band [0.25, 0.75]",
-     "probability": 0.568374504,
-     "relation": "attention dispersal \u2192 prestige hierarchy fragmentation",
-     "source": "AttentionFragmentation",
-     "target": "PrestigeFragmentation"
-    },
-    {
-     "explore_weight": 1.1025,
-     "note": "existence_probability=0.547 in explore band [0.25, 0.75]",
-     "probability": 0.546779196,
-     "relation": "prestige fragmentation \u2192 regional scenes gain visibility",
-     "source": "PrestigeFragmentation",
-     "target": "RegionalSceneMomentum"
-    },
-    {
-     "explore_weight": 1.1025,
-     "note": "existence_probability=0.476 in explore band [0.25, 0.75]",
-     "probability": 0.476268452,
-     "relation": "fragmentation \u2192 suppressed blue-chip consensus",
-     "source": "PrestigeFragmentation",
-     "target": "BlueChipConcentration"
-    }
-   ],
+   "edges": [],
+   "frontier_edges": [],
    "nodes": [
     {
      "id": "InstitutionalRiskAversion",
@@ -4454,14 +4010,14 @@
      "label": "PrestigeFragmentation",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
      "id": "RegionalSceneMomentum",
      "label": "RegionalSceneMomentum",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
      "id": "BlueChipInstitutionalCapture",
@@ -4489,7 +4045,7 @@
      "label": "BlueChipConcentration",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
      "id": "AuctionSpeculationElevated",
@@ -4580,266 +4136,182 @@
      "label": "AttentionFragmentation",
      "observation": null,
      "probability": null,
-     "status": "exploring"
-    }
-   ],
-   "target_probability": 0.454225,
-   "target_variable": "InstitutionalRiskAversion"
-  },
-  "status": 200
- },
- "inference_other_candidate": {
-  "body": {
-   "candidate_id": "<id9>",
-   "edges": [
-    {
-     "probability": 0.56773987,
-     "source": "AIImageSaturation",
-     "status": "explore",
-     "target": "RitualAuraPremium"
+     "status": "weak"
     },
     {
-     "probability": 0.481486823,
-     "source": "RitualAuraPremium",
-     "status": "explore",
-     "target": "CraftPrestigeRising"
-    },
-    {
-     "probability": 0.514894353,
-     "source": "CraftPrestigeRising",
-     "status": "explore",
-     "target": "MuseumFigurativeAcceptance"
-    },
-    {
-     "probability": 0.428622502,
-     "source": "CuratorialMaterialityShift",
-     "status": "explore",
-     "target": "CraftPrestigeRising"
-    },
-    {
-     "probability": 0.5,
-     "source": "MarketUncertainty",
-     "status": "explore",
-     "target": "AttentionFragmentation"
-    }
-   ],
-   "frontier_edges": [
-    {
-     "explore_weight": 1.1025,
-     "note": "existence_probability=0.568 in explore band [0.25, 0.75]",
-     "probability": 0.56773987,
-     "relation": "AI image saturation \u2192 aura/ritual premium",
-     "source": "AIImageSaturation",
-     "target": "RitualAuraPremium"
-    },
-    {
-     "explore_weight": 1.1025,
-     "note": "existence_probability=0.481 in explore band [0.25, 0.75]",
-     "probability": 0.481486823,
-     "relation": "ritual aura premium \u2192 craft prestige elevation",
-     "source": "RitualAuraPremium",
-     "target": "CraftPrestigeRising"
-    },
-    {
-     "explore_weight": 1.1025,
-     "note": "existence_probability=0.515 in explore band [0.25, 0.75]",
-     "probability": 0.514894353,
-     "relation": "craft prestige \u2192 institutional figurative acceptance",
-     "source": "CraftPrestigeRising",
-     "target": "MuseumFigurativeAcceptance"
-    },
-    {
-     "explore_weight": 1.1025,
-     "note": "existence_probability=0.429 in explore band [0.25, 0.75]",
-     "probability": 0.428622502,
-     "relation": "curatorial materiality shift \u2192 craft rising",
-     "source": "CuratorialMaterialityShift",
-     "target": "CraftPrestigeRising"
-    },
-    {
-     "explore_weight": 1.05,
-     "note": "existence_probability=0.500 in explore band [0.25, 0.75]",
-     "probability": 0.5,
-     "relation": "MarketUncertainty\u2192AttentionFragmentation",
-     "source": "MarketUncertainty",
-     "target": "AttentionFragmentation"
-    }
-   ],
-   "nodes": [
-    {
-     "id": "InstitutionalRiskAversion",
-     "label": "InstitutionalRiskAversion",
-     "observation": null,
-     "probability": 0.454225,
-     "status": "target"
-    },
-    {
-     "id": "MuseumFigurativeAcceptance",
-     "label": "MuseumFigurativeAcceptance",
-     "observation": null,
-     "probability": null,
-     "status": "exploring"
-    },
-    {
-     "id": "ConceptualDominance",
-     "label": "ConceptualDominance",
+     "id": "InstitutionalRiskAversion_prev",
+     "label": "InstitutionalRiskAversion_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "AIArtInstitutionalAcceptance",
-     "label": "AIArtInstitutionalAcceptance",
+     "id": "MuseumFigurativeAcceptance_prev",
+     "label": "MuseumFigurativeAcceptance_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "CuratorialMaterialityShift",
-     "label": "CuratorialMaterialityShift",
-     "observation": null,
-     "probability": null,
-     "status": "exploring"
-    },
-    {
-     "id": "CraftPrestigeRising",
-     "label": "CraftPrestigeRising",
-     "observation": null,
-     "probability": null,
-     "status": "exploring"
-    },
-    {
-     "id": "PrestigeFragmentation",
-     "label": "PrestigeFragmentation",
+     "id": "ConceptualDominance_prev",
+     "label": "ConceptualDominance_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "RegionalSceneMomentum",
-     "label": "RegionalSceneMomentum",
+     "id": "AIArtInstitutionalAcceptance_prev",
+     "label": "AIArtInstitutionalAcceptance_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "BlueChipInstitutionalCapture",
-     "label": "BlueChipInstitutionalCapture",
+     "id": "CuratorialMaterialityShift_prev",
+     "label": "CuratorialMaterialityShift_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "BiennialFatigue",
-     "label": "BiennialFatigue",
+     "id": "CraftPrestigeRising_prev",
+     "label": "CraftPrestigeRising_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "MuseumAcquisitionMomentum",
-     "label": "MuseumAcquisitionMomentum",
+     "id": "PrestigeFragmentation_prev",
+     "label": "PrestigeFragmentation_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "BlueChipConcentration",
-     "label": "BlueChipConcentration",
+     "id": "RegionalSceneMomentum_prev",
+     "label": "RegionalSceneMomentum_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "AuctionSpeculationElevated",
-     "label": "AuctionSpeculationElevated",
+     "id": "BlueChipInstitutionalCapture_prev",
+     "label": "BlueChipInstitutionalCapture_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "CollectorFlightToSafety",
-     "label": "CollectorFlightToSafety",
+     "id": "BiennialFatigue_prev",
+     "label": "BiennialFatigue_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "FigurativeAuctionMomentum",
-     "label": "FigurativeAuctionMomentum",
+     "id": "MuseumAcquisitionMomentum_prev",
+     "label": "MuseumAcquisitionMomentum_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "EmergingMarketLiquidity",
-     "label": "EmergingMarketLiquidity",
+     "id": "BlueChipConcentration_prev",
+     "label": "BlueChipConcentration_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "MarketPolarization",
-     "label": "MarketPolarization",
+     "id": "AuctionSpeculationElevated_prev",
+     "label": "AuctionSpeculationElevated_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "MarketUncertainty",
-     "label": "MarketUncertainty",
-     "observation": null,
-     "probability": null,
-     "status": "exploring"
-    },
-    {
-     "id": "RitualAuraPremium",
-     "label": "RitualAuraPremium",
-     "observation": null,
-     "probability": null,
-     "status": "exploring"
-    },
-    {
-     "id": "EmbodimentDiscourseRising",
-     "label": "EmbodimentDiscourseRising",
+     "id": "CollectorFlightToSafety_prev",
+     "label": "CollectorFlightToSafety_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "AntiDigitalSentiment",
-     "label": "AntiDigitalSentiment",
+     "id": "FigurativeAuctionMomentum_prev",
+     "label": "FigurativeAuctionMomentum_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "AIImageSaturation",
-     "label": "AIImageSaturation",
-     "observation": null,
-     "probability": null,
-     "status": "exploring"
-    },
-    {
-     "id": "AuthenticityPremium",
-     "label": "AuthenticityPremium",
+     "id": "EmergingMarketLiquidity_prev",
+     "label": "EmergingMarketLiquidity_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "NeoAcademicResurgence",
-     "label": "NeoAcademicResurgence",
+     "id": "MarketPolarization_prev",
+     "label": "MarketPolarization_prev",
      "observation": null,
      "probability": null,
      "status": "weak"
     },
     {
-     "id": "AttentionFragmentation",
-     "label": "AttentionFragmentation",
+     "id": "MarketUncertainty_prev",
+     "label": "MarketUncertainty_prev",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
+    },
+    {
+     "id": "RitualAuraPremium_prev",
+     "label": "RitualAuraPremium_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "EmbodimentDiscourseRising_prev",
+     "label": "EmbodimentDiscourseRising_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "AntiDigitalSentiment_prev",
+     "label": "AntiDigitalSentiment_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "AIImageSaturation_prev",
+     "label": "AIImageSaturation_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "AuthenticityPremium_prev",
+     "label": "AuthenticityPremium_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "NeoAcademicResurgence_prev",
+     "label": "NeoAcademicResurgence_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "AttentionFragmentation_prev",
+     "label": "AttentionFragmentation_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
     }
    ],
    "target_probability": 0.454225,
@@ -4853,16 +4325,10 @@
    "domain": "Art Prestige Regime",
    "events": [
     {
-     "description": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum",
-     "dominant_after": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum",
+     "description": "unconnected: no hypotheses yet",
+     "dominant_after": "unconnected: no hypotheses yet",
      "event_type": "current",
      "generation": 0
-    },
-    {
-     "description": "Became dominant candidate after 2 paradigm shift(s)",
-     "dominant_after": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum",
-     "event_type": "shift",
-     "generation": 5
     }
    ]
   },
@@ -4873,77 +4339,14 @@
    "competing_candidates": {
     "candidates": [
      {
-      "edge_count": 3,
-      "log_score": -34.607224058,
-      "name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum",
-      "score_normalized": 0.95,
-      "status": "dominant"
-     },
-     {
-      "edge_count": 3,
-      "log_score": -34.817350271,
-      "name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
-      "score_normalized": 0.798991029,
-      "status": "rising"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -34.80068497,
-      "name": "variant_add_AIImageSaturation->AuthenticityPremium",
-      "score_normalized": 0.561899662,
-      "status": "rising"
-     },
-     {
-      "edge_count": 3,
-      "log_score": -34.816071611,
-      "name": "H5: NeoAcademicResurgence \u2014 aura + authenticity premium \u2192 neo-academic figurative revival",
-      "score_normalized": 0.550841923,
-      "status": "neutral"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -34.828084612,
-      "name": "H3: DefensiveBlueChipConsolidation \u2014 market uncertainty \u2192 blue-chip flight \u2192 institutional conservatism",
-      "score_normalized": 0.542208679,
-      "status": "neutral"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -34.638686548,
-      "name": "variant_add_RegionalSceneMomentum->BlueChipInstitutionalCapture",
-      "score_normalized": 0.429253165,
-      "status": "neutral"
-     },
-     {
-      "edge_count": 5,
-      "log_score": -34.682016886,
-      "name": "variant_add_AuthenticityPremium->RegionalSceneMomentum",
-      "score_normalized": 0.398113453,
-      "status": "falling"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -34.822281633,
-      "name": "H1: CraftAuraBacklash \u2014 AI saturation \u2192 aura premium \u2192 craft/figurative institutionalisation",
-      "score_normalized": 0.297311013,
-      "status": "falling"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -34.900465672,
-      "name": "variant_add_AIImageSaturation->ConceptualDominance",
-      "score_normalized": 0.241123395,
-      "status": "falling"
-     },
-     {
-      "edge_count": 5,
-      "log_score": -34.819836781,
-      "name": "variant_add_MarketUncertainty->AttentionFragmentation",
+      "edge_count": 0,
+      "log_score": -34.779273007,
+      "name": "unconnected: no hypotheses yet",
       "score_normalized": 0.05,
-      "status": "falling"
+      "status": "dominant"
      }
     ],
-    "score_gap_to_dominant": 0.105427226
+    "score_gap_to_dominant": null
    },
    "current_regime_state": [
     {
@@ -4979,12 +4382,12 @@
     {
      "boolean_state": true,
      "name": "PrestigeFragmentation",
-     "probability": 0.514531499
+     "probability": 0.521575
     },
     {
      "boolean_state": true,
      "name": "RegionalSceneMomentum",
-     "probability": 0.530633451
+     "probability": 0.545975
     },
     {
      "boolean_state": true,
@@ -5004,7 +4407,7 @@
     {
      "boolean_state": false,
      "name": "BlueChipConcentration",
-     "probability": 0.435542344
+     "probability": 0.4033
     },
     {
      "boolean_state": true,
@@ -5074,86 +4477,36 @@
    ],
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "edge_count": 3,
-    "edges": [
-     {
-      "existence_probability": 0.568374504,
-      "source": "AttentionFragmentation",
-      "target": "PrestigeFragmentation"
-     },
-     {
-      "existence_probability": 0.546779196,
-      "source": "PrestigeFragmentation",
-      "target": "RegionalSceneMomentum"
-     },
-     {
-      "existence_probability": 0.476268452,
-      "source": "PrestigeFragmentation",
-      "target": "BlueChipConcentration"
-     }
-    ],
+    "edge_count": 0,
+    "edges": [],
     "generations_dominant": 0,
-    "log_score": -34.607224058,
-    "name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum"
+    "log_score": -34.779273007,
+    "name": "unconnected: no hypotheses yet"
    },
    "frontier": {
-    "frontier_edge_count": 3,
-    "frontier_edges": [
-     {
-      "probability": 0.568374504,
-      "relation": "attention dispersal \u2192 prestige hierarchy fragmentation",
-      "source": "AttentionFragmentation",
-      "target": "PrestigeFragmentation"
-     },
-     {
-      "probability": 0.546779196,
-      "relation": "prestige fragmentation \u2192 regional scenes gain visibility",
-      "source": "PrestigeFragmentation",
-      "target": "RegionalSceneMomentum"
-     },
-     {
-      "probability": 0.476268452,
-      "relation": "fragmentation \u2192 suppressed blue-chip consensus",
-      "source": "PrestigeFragmentation",
-      "target": "BlueChipConcentration"
-     }
-    ]
+    "frontier_edge_count": 0,
+    "frontier_edges": []
    },
    "interpretation_hints": [
-    "structure_entropy is high (2.240): engine has not converged; multiple causal stories remain plausible",
-    "dominant hypothesis has held for 5 generations",
-    "last paradigm shift was <ago>",
+    "structure_entropy is low (0.000): engine has converged on a single dominant causal story",
+    "dominant hypothesis was introduced in the current generation",
+    "no paradigm shifts recorded since shift logging was enabled",
     "evidence base is small (2 records); scores may not yet be reliable",
-    "3 edge(s) are in the explore band: causal structure is still being refined in these relations"
+    "no edges are in the explore band: dominant causal structure is well-determined"
    ],
    "metadata": {
-    "current_generation": 5,
+    "current_generation": 0,
     "domain": "Art Prestige Regime",
     "domain_module_id": "art_prestige_regime_v1",
     "evidence_count": 2,
     "timestamp": "<ts>"
    },
    "ontology_competition": {
-    "active_candidates": 10,
-    "entropy_interpretation": "high",
-    "paradigm_shifts_total": 2,
-    "recent_shifts": [
-     {
-      "evidence_date": "2026-01-31",
-      "from_name": "H1: CraftAuraBacklash \u2014 AI saturation \u2192 aura premium \u2192 craft/figurative institutionalisation",
-      "generation": 5,
-      "timestamp": "<ts>",
-      "to_name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy"
-     },
-     {
-      "evidence_date": "2026-02-28",
-      "from_name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
-      "generation": 5,
-      "timestamp": "<ts>",
-      "to_name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum"
-     }
-    ],
-    "structure_entropy": 2.240331472
+    "active_candidates": 1,
+    "entropy_interpretation": "low",
+    "paradigm_shifts_total": 0,
+    "recent_shifts": [],
+    "structure_entropy": 0.0
    }
   },
   "status": 200
@@ -5162,54 +4515,27 @@
   "body": {
    "domain": "Art Prestige Regime",
    "domain_module_id": "art_prestige_regime_v1",
-   "events": [
-    {
-     "evidence_count_at_shift": 1,
-     "evidence_date": "2026-01-31",
-     "generation": 5,
-     "new_dominant_id": "<id1>",
-     "new_dominant_name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
-     "new_programme": "H2",
-     "previous_dominant_id": "<id7>",
-     "previous_dominant_name": "H1: CraftAuraBacklash \u2014 AI saturation \u2192 aura premium \u2192 craft/figurative institutionalisation",
-     "previous_programme": "H1",
-     "shift_id": "<id10>",
-     "timestamp": "<ts>"
-    },
-    {
-     "evidence_count_at_shift": 2,
-     "evidence_date": "2026-02-28",
-     "generation": 5,
-     "new_dominant_id": "<id0>",
-     "new_dominant_name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum",
-     "new_programme": "H4",
-     "previous_dominant_id": "<id1>",
-     "previous_dominant_name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
-     "previous_programme": "H2",
-     "shift_id": "<id11>",
-     "timestamp": "<ts>"
-    }
-   ],
-   "total_shifts": 2
+   "events": [],
+   "total_shifts": 0
   },
   "status": 200
  },
  "status": {
   "body": {
-   "active_candidates": 10,
-   "current_generation": 5,
+   "active_candidates": 1,
+   "current_generation": 0,
    "domain": "Art Prestige Regime",
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
     "generations_dominant": 0,
-    "name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum"
+    "name": "unconnected: no hypotheses yet"
    },
    "engine_status": "online",
-   "frontier_edge_count": 3,
+   "frontier_edge_count": 0,
    "last_evidence_cycle_ago": "<ago>",
    "max_candidates": 10,
-   "paradigm_shifts_this_window": 2,
-   "structure_entropy": 2.240331472
+   "paradigm_shifts_this_window": 0,
+   "structure_entropy": 0.0
   },
   "status": 200
  }

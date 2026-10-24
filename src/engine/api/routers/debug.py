@@ -34,7 +34,8 @@ async def debug_entropy(
     engine, domain_id, display_name = context.resolve_domain(domain_key, request.app.state)
     pop = engine.get_population(domain_id)
     candidates = pop.candidates
-    variables = candidates[0].variables if candidates else []
+    # Last period's values are not stored as evidence; they are attached when learning.
+    variables = [v for v in candidates[0].variables if not v.lag_of] if candidates else []
     diagnostics = build_entropy_diagnostics(
         records=engine.evidence_store.load_latest(domain_id, limit),
         variables=variables,
@@ -58,7 +59,8 @@ async def debug_evidence_geometry(
     engine, domain_id, display_name = context.resolve_domain(domain_key, request.app.state)
     pop = engine.get_population(domain_id)
     candidates = pop.candidates
-    variables = candidates[0].variables if candidates else []
+    # Last period's values are not stored as evidence; they are attached when learning.
+    variables = [v for v in candidates[0].variables if not v.lag_of] if candidates else []
     diagnostics = build_evidence_geometry_diagnostics(
         records=engine.evidence_store.load_latest(domain_id, limit),
         variables=variables,

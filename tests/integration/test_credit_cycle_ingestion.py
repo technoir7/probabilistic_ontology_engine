@@ -4,8 +4,6 @@ Integration tests — credit cycle domain ingestion pipeline.
 Test inventory
 --------------
 TEST-CC-01  All 8 variable IDs are stable across module imports
-TEST-CC-02  All 5 initial candidates are valid DAGs
-TEST-CC-03  All candidates share the same variable set
 TEST-CC-04  Soft probabilities are clamped to [0.01, 0.99]
 TEST-CC-05  HY OAS above 7% → P(CorporateDefaultRisk) > 0.8
 TEST-CC-06  HY OAS below 4% → P(CorporateDefaultRisk) < 0.2
@@ -15,10 +13,8 @@ TEST-CC-09  build_evidence_record produces SOFT_OBSERVED missingness
 TEST-CC-10  FRED client fetch_series with mocked HTTP returns correct observations
 TEST-CC-11  FRED client skips missing values
 TEST-CC-12  compute_snapshot falls back gracefully with no data
-TEST-CC-13  Domain module_id matches candidates
 TEST-CC-14  Existence thresholds are within valid ranges
 TEST-CC-15  Domain registers in engine and evidence is ingested
-TEST-CC-16  Candidates have distinct edge structures
 TEST-CC-17  Full pipeline fetch_evidence with mocked FREDClient
 """
 from __future__ import annotations
@@ -37,11 +33,6 @@ import pytest
 from src.domains.credit_cycle_v1.domain import (
     CreditCycleV1,
     get_variables,
-    make_monetary_tightening_candidate,
-    make_default_cycle_candidate,
-    make_liquidity_withdrawal_candidate,
-    make_credit_normalization_candidate,
-    make_null_candidate,
 )
 from src.domains.credit_cycle_v1.ingestion.fred_client import FREDClient, FREDObservation
 from src.domains.credit_cycle_v1.ingestion.pipeline import (
@@ -116,37 +107,10 @@ def test_variable_ids_are_stable():
     vars1 = get_variables()
     vars2 = get_variables()
     domain = CreditCycleV1()
-    cand_vars = {v.name: v.variable_id for v in domain.initial_candidates()[0].variables}
+    domain_vars = {v.name: v.variable_id for v in domain.variables()}
     for name in vars1:
         assert vars1[name].variable_id == vars2[name].variable_id
-        assert vars1[name].variable_id == cand_vars[name]
-
-
-def test_all_candidates_are_dags():
-    for factory in [
-        make_monetary_tightening_candidate,
-        make_default_cycle_candidate,
-        make_liquidity_withdrawal_candidate,
-        make_credit_normalization_candidate,
-        make_null_candidate,
-    ]:
-        cand = factory()
-        assert cand.is_dag(), f"Candidate '{cand.description}' violates DAG"
-
-
-def test_all_candidates_share_variable_set():
-    expected_names = set(get_variables().keys())
-    expected_ids = {v.variable_id for v in get_variables().values()}
-    for factory in [
-        make_monetary_tightening_candidate,
-        make_default_cycle_candidate,
-        make_liquidity_withdrawal_candidate,
-        make_credit_normalization_candidate,
-        make_null_candidate,
-    ]:
-        cand = factory()
-        assert {v.name for v in cand.variables} == expected_names
-        assert {v.variable_id for v in cand.variables} == expected_ids
+        assert vars1[name].variable_id == domain_vars[name]
 
 
 @pytest.mark.parametrize("signal", [-100.0, -10.0, 0.0, 10.0, 100.0])
@@ -267,13 +231,6 @@ def test_compute_snapshot_falls_back_gracefully_with_no_data():
     assert snapshot.p_refinancing_stress == 0.5
 
 
-def test_domain_module_id_matches_candidates():
-    domain = CreditCycleV1()
-    mid = domain.module_id()
-    for cand in domain.initial_candidates():
-        assert cand.domain_module_id == mid
-
-
 def test_existence_thresholds_are_valid():
     t = CreditCycleV1().existence_thresholds()
     assert 0.0 < t.prune_below < 1.0
@@ -286,19 +243,13 @@ def test_domain_registers_in_engine():
     engine.register_domain(domain)
     engine.activate_domain(domain.module_id())
     pop = engine.get_population(domain.module_id())
-    assert len(pop.active_candidates()) == 5
+    assert [(c.edges, c.lineage) for c in pop.active_candidates()] == [([], "unconnected")]
 
     obs = _make_full_observations()
     snapshot = compute_snapshot(obs, _TARGET_DATE)
     record = CreditCyclePipeline.build_evidence_record(snapshot)
     engine.ingest(record)
     assert engine.evidence_store.count(domain.module_id()) == 1
-
-
-def test_candidates_have_distinct_edge_structures():
-    domain = CreditCycleV1()
-    sigs = [c.edge_structure_signature() for c in domain.initial_candidates()]
-    assert len(set(sigs)) == len(sigs)
 
 
 def test_fetch_evidence_full_pipeline_mocked():

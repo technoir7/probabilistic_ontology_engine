@@ -8,8 +8,6 @@ geometry compatibility.
 Test inventory
 --------------
 TEST-MR-01  All 8 variable IDs are stable across module imports
-TEST-MR-02  All 5 initial candidates are valid DAGs
-TEST-MR-03  All candidates share the same variable set
 TEST-MR-04  Soft probabilities are clamped to [0.01, 0.99] for all signals
 TEST-MR-05  Sigmoid calibration: deeply inverted curve → P(YCI) > 0.85
 TEST-MR-06  Sigmoid calibration: steep normal curve → P(YCI) < 0.15
@@ -23,7 +21,6 @@ TEST-MR-13  FRED client fetch_series with mocked HTTP returns correct observatio
 TEST-MR-14  FRED client skips missing (".") values
 TEST-MR-15  Weekly backfill date computation is correct and idempotent
 TEST-MR-16  Evidence geometry diagnostics work for macro domain
-TEST-MR-17  MacroRegimeV1.initial_candidates() matches module_id
 TEST-MR-18  Existence thresholds are within valid ranges
 TEST-MR-19  compute_snapshot falls back gracefully with insufficient data
 TEST-MR-20  Pipeline fetch_evidence with fully mocked FREDClient
@@ -46,11 +43,6 @@ from src.domains.sources.soft_evidence import sigmoid as _sigmoid
 from src.domains.macro_regime_v1.domain import (
     MacroRegimeV1,
     get_variables,
-    make_ai_boom_candidate,
-    make_credit_first_candidate,
-    make_monetary_chain_candidate,
-    make_null_candidate,
-    make_recessionary_tightening_candidate,
 )
 from src.domains.macro_regime_v1.ingestion.fred_client import (
     FREDClient,
@@ -224,70 +216,13 @@ def test_variable_ids_are_stable():
     vars2 = get_variables()
     # Also get from a fresh domain instance
     domain = MacroRegimeV1()
-    cands = domain.initial_candidates()
-    cand_vars = {v.name: v.variable_id for v in cands[0].variables}
+    domain_vars = {v.name: v.variable_id for v in domain.variables()}
 
     for name in vars1:
         assert vars1[name].variable_id == vars2[name].variable_id, \
             f"Variable ID for {name} changed between calls"
-        assert vars1[name].variable_id == cand_vars[name], \
+        assert vars1[name].variable_id == domain_vars[name], \
             f"Variable ID for {name} differs between domain and get_variables()"
-
-
-# ---------------------------------------------------------------------------
-# TEST-MR-02 — All 5 candidates are valid DAGs
-# ---------------------------------------------------------------------------
-
-def test_all_candidates_are_dags():
-    """
-    Every initial candidate must be a directed acyclic graph (DAG constraint).
-    Cycles would break topological ordering and invalidate Bayesian inference.
-    """
-    factories = [
-        make_monetary_chain_candidate,
-        make_credit_first_candidate,
-        make_ai_boom_candidate,
-        make_recessionary_tightening_candidate,
-        make_null_candidate,
-    ]
-    for factory in factories:
-        candidate = factory()
-        assert candidate.is_dag(), (
-            f"Candidate '{candidate.description}' violates DAG constraint. "
-            f"Edges: {candidate.edge_structure_signature()}"
-        )
-
-
-# ---------------------------------------------------------------------------
-# TEST-MR-03 — All candidates share the canonical variable set
-# ---------------------------------------------------------------------------
-
-def test_all_candidates_share_variable_set():
-    """All candidates hold the same 8 canonical variables and their values
-    last week (REFACTOR_SPEC D19)."""
-    from src.domains.macro_regime_v1.domain import get_variables_with_lags
-    expected_names = set(get_variables_with_lags().keys())
-    expected_ids = {v.variable_id for v in get_variables_with_lags().values()}
-    assert len(expected_names) == 16
-
-    factories = [
-        make_monetary_chain_candidate,
-        make_credit_first_candidate,
-        make_ai_boom_candidate,
-        make_recessionary_tightening_candidate,
-        make_null_candidate,
-    ]
-    for factory in factories:
-        cand = factory()
-        cand_names = {v.name for v in cand.variables}
-        cand_ids = {v.variable_id for v in cand.variables}
-        assert cand_names == expected_names, (
-            f"Candidate '{cand.description}' has wrong variable names: "
-            f"got {cand_names}, expected {expected_names}"
-        )
-        assert cand_ids == expected_ids, (
-            f"Candidate '{cand.description}' has wrong variable IDs"
-        )
 
 
 # ---------------------------------------------------------------------------
@@ -467,12 +402,12 @@ def test_build_evidence_record_all_soft_observed():
         assert a.probabilities is not None, \
             f"Assignment for {a.variable_id} missing probabilities dict"
         assert set(a.probabilities.keys()) == {True, False}, \
-            f"Probabilities keys must be {{True, False}}"
+            "Probabilities keys must be {True, False}"
         p_true = a.probabilities[True]
         assert 0.01 <= p_true <= 0.99, \
             f"P(True)={p_true} outside [0.01, 0.99]"
         assert abs(a.probabilities[True] + a.probabilities[False] - 1.0) < 0.01, \
-            f"Probabilities do not sum to 1.0"
+            "Probabilities do not sum to 1.0"
 
 
 # ---------------------------------------------------------------------------
@@ -604,21 +539,6 @@ def test_evidence_geometry_works_for_macro_domain():
     # Should detect weekly cadence
     assert result.get("cadence_detected") in {"weekly", "irregular", "insufficient_data"}, \
         f"Unexpected cadence: {result.get('cadence_detected')}"
-
-
-# ---------------------------------------------------------------------------
-# TEST-MR-17 — MacroRegimeV1 module_id matches candidates
-# ---------------------------------------------------------------------------
-
-def test_domain_module_id_matches_candidates():
-    """All candidates must reference the same domain module ID as the domain."""
-    domain = MacroRegimeV1()
-    module_id = domain.module_id()
-    for cand in domain.initial_candidates():
-        assert cand.domain_module_id == module_id, (
-            f"Candidate '{cand.description}' has module_id "
-            f"'{cand.domain_module_id}', expected '{module_id}'"
-        )
 
 
 # ---------------------------------------------------------------------------
@@ -773,7 +693,7 @@ def test_domain_registers_in_engine():
 
     pop = engine.get_population(domain.module_id())
     assert pop is not None
-    assert len(pop.active_candidates()) == 6  # five narratives and persistence (D19)
+    assert [(c.edges, c.lineage) for c in pop.active_candidates()] == [([], "unconnected")]
 
     # Ingest one evidence record
     observations = _make_full_observations()
@@ -782,51 +702,6 @@ def test_domain_registers_in_engine():
     engine.ingest(record)
 
     assert engine.evidence_store.count(domain.module_id()) == 1
-
-
-# ---------------------------------------------------------------------------
-# TEST-MR-22 — Candidates have distinct edge structures
-# ---------------------------------------------------------------------------
-
-def test_candidates_have_distinct_edge_structures():
-    """
-    The 5 seed candidates must encode genuinely distinct structural hypotheses.
-    No two candidates should have identical edge sets (that would make one
-    redundant and prevent ontology competition).
-    """
-    domain = MacroRegimeV1()
-    candidates = domain.initial_candidates()
-    signatures = [c.edge_structure_signature() for c in candidates]
-    unique_signatures = set(signatures)
-    assert len(unique_signatures) == len(signatures), (
-        f"Some candidates share the same edge structure. "
-        f"Got {len(unique_signatures)} unique structures for {len(candidates)} candidates."
-    )
-
-
-# ---------------------------------------------------------------------------
-# TEST-MR-24 — Existence probability prior is set on all edges
-# ---------------------------------------------------------------------------
-
-def test_all_edges_have_existence_prior():
-    """
-    All edges in all candidates must have a valid existence_prior
-    in (0, 1) and existence_probability equal to the prior at initialization.
-    """
-    domain = MacroRegimeV1()
-    for cand in domain.initial_candidates():
-        for edge in cand.edges:
-            assert 0.0 < edge.existence_prior < 1.0, (
-                f"Candidate '{cand.description}' edge "
-                f"'{edge.explanatory_label}' has invalid prior {edge.existence_prior}"
-            )
-            assert edge.existence_probability == edge.existence_prior, (
-                f"existence_probability should equal existence_prior at init"
-            )
-            assert edge.enabled is True, \
-                f"All initial edges should be enabled"
-            assert edge.learnable is True, \
-                f"All initial edges should be learnable"
 
 
 # ---------------------------------------------------------------------------

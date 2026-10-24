@@ -114,4 +114,4 @@ def score_weights(candidates: Sequence[OntologyCandidate]) -> list[float]:
 
 def structure_entropy(candidates: Sequence[OntologyCandidate]) -> float:
     """Entropy of score_weights: 0 when one structure dominates completely."""
-    return -sum(w * math.log(w + 1e-12) for w in score_weights(candidates) if w > 0)
+    return -sum(w * math.log(w) for w in score_weights(candidates) if w > 0) + 0.0

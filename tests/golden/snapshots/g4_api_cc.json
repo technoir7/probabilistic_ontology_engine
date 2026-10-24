@@ -11,108 +11,18 @@
   "body": {
    "candidates": [
     {
-     "edge_count": 2,
+     "edge_count": 0,
      "evidence_count": 4,
      "generation_introduced": 0,
      "id": "<id0>",
-     "log_score": -22.503197368,
-     "name": "H4: credit_normalization",
-     "score_normalized": 0.95,
-     "status": "dominant"
-    },
-    {
-     "edge_count": 3,
-     "evidence_count": 4,
-     "generation_introduced": 0,
-     "id": "<id1>",
-     "log_score": -22.240668989,
-     "name": "H3: liquidity_withdrawal",
-     "score_normalized": 0.745785701,
-     "status": "rising"
-    },
-    {
-     "edge_count": 3,
-     "evidence_count": 4,
-     "generation_introduced": 0,
-     "id": "<id2>",
-     "log_score": -22.322238884,
-     "name": "H1: monetary_tightening_transmission",
-     "score_normalized": 0.707233288,
-     "status": "rising"
-    },
-    {
-     "edge_count": 3,
-     "evidence_count": 4,
-     "generation_introduced": 1,
-     "id": "<id3>",
-     "log_score": -22.469201747,
-     "name": "variant_add_BankLendingTightening->CreditImpulseNegative",
-     "score_normalized": 0.637564637,
-     "status": "neutral"
-    },
-    {
-     "edge_count": 2,
-     "evidence_count": 4,
-     "generation_introduced": 0,
-     "id": "<id4>",
-     "log_score": -22.497924558,
-     "name": "T_null: direct default-spread baseline",
-     "score_normalized": 0.623933594,
-     "status": "neutral"
-    },
-    {
-     "edge_count": 3,
-     "evidence_count": 4,
-     "generation_introduced": 0,
-     "id": "<id5>",
-     "log_score": -22.512247687,
-     "name": "H2: default_cycle_beginning",
-     "score_normalized": 0.617185137,
-     "status": "neutral"
-    },
-    {
-     "edge_count": 3,
-     "evidence_count": 4,
-     "generation_introduced": 1,
-     "id": "<id6>",
-     "log_score": -22.140136778,
-     "name": "variant_add_InvestmentGradeSpread->HighYieldIssuanceFalling",
-     "score_normalized": 0.464985723,
-     "status": "falling"
-    },
-    {
-     "edge_count": 4,
-     "evidence_count": 4,
-     "generation_introduced": 1,
-     "id": "<id7>",
-     "log_score": -22.240668989,
-     "name": "variant_add_LeveragedLoanStress->InvestmentGradeSpread",
-     "score_normalized": 0.417169057,
-     "status": "falling"
-    },
-    {
-     "edge_count": 4,
-     "evidence_count": 4,
-     "generation_introduced": 1,
-     "id": "<id8>",
-     "log_score": -22.369771526,
-     "name": "variant_add_CorporateDefaultRisk->BankLendingTightening",
-     "score_normalized": 0.356347736,
-     "status": "falling"
-    },
-    {
-     "edge_count": 4,
-     "evidence_count": 4,
-     "generation_introduced": 1,
-     "id": "<id9>",
-     "log_score": -22.322238884,
-     "name": "variant_add_LeveragedLoanStress->RefinancingStress",
+     "log_score": -22.506625049,
+     "name": "unconnected: no hypotheses yet",
      "score_normalized": 0.05,
-     "status": "falling"
+     "status": "dominant"
     }
    ],
    "domain": "Credit Cycle",
-   "generation": 9
+   "generation": 0
   },
   "status": 200
  },
@@ -606,14 +516,14 @@
      }
     }
    ],
-   "total_assignment_count": 32,
+   "total_assignment_count": 64,
    "total_evidence_records": 4,
    "unique_observed_assignment_patterns": 4,
    "unique_state_retention_ratio": 1.0,
    "used_assignment_position_fallback": false,
    "variable_id_match_count": 32,
-   "variable_id_match_ratio": 1.0,
-   "variable_id_mismatch_count": 0,
+   "variable_id_match_ratio": 0.5,
+   "variable_id_mismatch_count": 32,
    "variables": {
     "BankLendingTightening": {
      "missing_count": 0,
@@ -825,15 +735,15 @@
  },
  "debug_learning": {
   "body": {
-   "active_candidates": 10,
-   "current_generation": 9,
+   "active_candidates": 1,
+   "current_generation": 0,
    "domain": "Credit Cycle",
    "domain_module_id": "credit-cycle-v1",
    "dominant_evidence_count": 4,
-   "dominant_log_score": -22.503197368,
+   "dominant_log_score": -22.506625049,
    "last_learn_timestamp": "<ts>",
-   "last_mutation_introduced": 2,
-   "last_mutation_total_attempts": 5,
+   "last_mutation_introduced": 0,
+   "last_mutation_total_attempts": 0,
    "learn_calls_this_session": 4,
    "pipeline_status": {
     "backfill_calls_learn": true,
@@ -849,430 +759,20 @@
   "body": {
    "candidates": [
     {
-     "active_edge_count": 2,
-     "avg_ll": -5.625789517,
-     "bic_penalty_raw": 1.737832329,
-     "bic_score_explore": -6.060247599,
-     "bic_score_strict": -7.363621846,
+     "active_edge_count": 0,
+     "avg_ll": -5.626626765,
+     "bic_penalty_raw": 2.780531726,
+     "bic_score_explore": -6.321759697,
+     "bic_score_strict": -8.407158492,
      "candidate_id": "<id0>",
-     "description": "H4: credit_normalization",
-     "edge_structure": [
-      [
-       "CreditImpulseNegative",
-       "InvestmentGradeSpread"
-      ],
-      [
-       "InvestmentGradeSpread",
-       "HYSpreadElevated"
-      ]
-     ],
+     "description": "unconnected: no hypotheses yet",
+     "edge_structure": [],
      "evidence_count": 4,
      "generation": 0,
      "is_dominant": true,
-     "log_score": -22.503197368,
+     "log_score": -22.506625049,
      "status": "ACTIVE",
-     "total_edge_count": 2
-    },
-    {
-     "active_edge_count": 3,
-     "avg_ll": -5.560001487,
-     "bic_penalty_raw": 1.911615562,
-     "bic_score_explore": -6.037905378,
-     "bic_score_strict": -7.471617049,
-     "candidate_id": "<id1>",
-     "description": "H3: liquidity_withdrawal",
-     "edge_structure": [
-      [
-       "CreditImpulseNegative",
-       "HYSpreadElevated"
-      ],
-      [
-       "HYSpreadElevated",
-       "HighYieldIssuanceFalling"
-      ],
-      [
-       "HYSpreadElevated",
-       "RefinancingStress"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 0,
-     "is_dominant": false,
-     "log_score": -22.240668989,
-     "status": "ACTIVE",
-     "total_edge_count": 3
-    },
-    {
-     "active_edge_count": 3,
-     "avg_ll": -5.580389265,
-     "bic_penalty_raw": 1.911615562,
-     "bic_score_explore": -6.058293155,
-     "bic_score_strict": -7.492004826,
-     "candidate_id": "<id2>",
-     "description": "H1: monetary_tightening_transmission",
-     "edge_structure": [
-      [
-       "BankLendingTightening",
-       "LeveragedLoanStress"
-      ],
-      [
-       "BankLendingTightening",
-       "RefinancingStress"
-      ],
-      [
-       "LeveragedLoanStress",
-       "HYSpreadElevated"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 0,
-     "is_dominant": false,
-     "log_score": -22.322238884,
-     "status": "ACTIVE",
-     "total_edge_count": 3
-    },
-    {
-     "active_edge_count": 3,
-     "avg_ll": -5.617232326,
-     "bic_penalty_raw": 1.911615562,
-     "bic_score_explore": -6.095136217,
-     "bic_score_strict": -7.528847888,
-     "candidate_id": "<id3>",
-     "description": "variant_add_BankLendingTightening->CreditImpulseNegative",
-     "edge_structure": [
-      [
-       "BankLendingTightening",
-       "CreditImpulseNegative"
-      ],
-      [
-       "CreditImpulseNegative",
-       "InvestmentGradeSpread"
-      ],
-      [
-       "InvestmentGradeSpread",
-       "HYSpreadElevated"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.469201747,
-     "status": "ACTIVE",
-     "total_edge_count": 3
-    },
-    {
-     "active_edge_count": 2,
-     "avg_ll": -5.624440868,
-     "bic_penalty_raw": 1.911615562,
-     "bic_score_explore": -6.102344758,
-     "bic_score_strict": -7.53605643,
-     "candidate_id": "<id4>",
-     "description": "T_null: direct default-spread baseline",
-     "edge_structure": [
-      [
-       "BankLendingTightening",
-       "HYSpreadElevated"
-      ],
-      [
-       "CorporateDefaultRisk",
-       "HYSpreadElevated"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 0,
-     "is_dominant": false,
-     "log_score": -22.497924558,
-     "status": "ACTIVE",
-     "total_edge_count": 2
-    },
-    {
-     "active_edge_count": 3,
-     "avg_ll": -5.628009673,
-     "bic_penalty_raw": 1.911615562,
-     "bic_score_explore": -6.105913563,
-     "bic_score_strict": -7.539625234,
-     "candidate_id": "<id5>",
-     "description": "H2: default_cycle_beginning",
-     "edge_structure": [
-      [
-       "CorporateDefaultRisk",
-       "HYSpreadElevated"
-      ],
-      [
-       "HYSpreadElevated",
-       "InvestmentGradeSpread"
-      ],
-      [
-       "LeveragedLoanStress",
-       "CorporateDefaultRisk"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 0,
-     "is_dominant": false,
-     "log_score": -22.512247687,
-     "status": "ACTIVE",
-     "total_edge_count": 3
-    },
-    {
-     "active_edge_count": 3,
-     "avg_ll": -5.53471447,
-     "bic_penalty_raw": 2.085398795,
-     "bic_score_explore": -6.056064168,
-     "bic_score_strict": -7.620113264,
-     "candidate_id": "<id6>",
-     "description": "variant_add_InvestmentGradeSpread->HighYieldIssuanceFalling",
-     "edge_structure": [
-      [
-       "BankLendingTightening",
-       "HYSpreadElevated"
-      ],
-      [
-       "CorporateDefaultRisk",
-       "HYSpreadElevated"
-      ],
-      [
-       "InvestmentGradeSpread",
-       "HighYieldIssuanceFalling"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.140136778,
-     "status": "ACTIVE",
-     "total_edge_count": 3
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.560001487,
-     "bic_penalty_raw": 2.085398795,
-     "bic_score_explore": -6.081351186,
-     "bic_score_strict": -7.645400282,
-     "candidate_id": "<id7>",
-     "description": "variant_add_LeveragedLoanStress->InvestmentGradeSpread",
-     "edge_structure": [
-      [
-       "CreditImpulseNegative",
-       "HYSpreadElevated"
-      ],
-      [
-       "HYSpreadElevated",
-       "HighYieldIssuanceFalling"
-      ],
-      [
-       "HYSpreadElevated",
-       "RefinancingStress"
-      ],
-      [
-       "LeveragedLoanStress",
-       "InvestmentGradeSpread"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.240668989,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.592165792,
-     "bic_penalty_raw": 2.085398795,
-     "bic_score_explore": -6.11351549,
-     "bic_score_strict": -7.677564586,
-     "candidate_id": "<id8>",
-     "description": "variant_add_CorporateDefaultRisk->BankLendingTightening",
-     "edge_structure": [
-      [
-       "BankLendingTightening",
-       "LeveragedLoanStress"
-      ],
-      [
-       "BankLendingTightening",
-       "RefinancingStress"
-      ],
-      [
-       "CorporateDefaultRisk",
-       "BankLendingTightening"
-      ],
-      [
-       "LeveragedLoanStress",
-       "HYSpreadElevated"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.369771526,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.580389265,
-     "bic_penalty_raw": 2.259182028,
-     "bic_score_explore": -6.145184771,
-     "bic_score_strict": -7.839571292,
-     "candidate_id": "<id9>",
-     "description": "variant_add_LeveragedLoanStress->RefinancingStress",
-     "edge_structure": [
-      [
-       "BankLendingTightening",
-       "LeveragedLoanStress"
-      ],
-      [
-       "BankLendingTightening",
-       "RefinancingStress"
-      ],
-      [
-       "LeveragedLoanStress",
-       "HYSpreadElevated"
-      ],
-      [
-       "LeveragedLoanStress",
-       "RefinancingStress"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.322238884,
-     "status": "ACTIVE",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.56056941,
-     "bic_penalty_raw": 2.259182028,
-     "bic_score_explore": -6.125364916,
-     "bic_score_strict": -7.819751437,
-     "candidate_id": "<id15>",
-     "description": "variant_add_InvestmentGradeSpread->HYSpreadElevated",
-     "edge_structure": [
-      [
-       "CreditImpulseNegative",
-       "HYSpreadElevated"
-      ],
-      [
-       "HYSpreadElevated",
-       "HighYieldIssuanceFalling"
-      ],
-      [
-       "HYSpreadElevated",
-       "RefinancingStress"
-      ],
-      [
-       "InvestmentGradeSpread",
-       "HYSpreadElevated"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.242917248,
-     "status": "PRUNED",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.580938162,
-     "bic_penalty_raw": 2.259182028,
-     "bic_score_explore": -6.145733668,
-     "bic_score_strict": -7.840120189,
-     "candidate_id": "<id16>",
-     "description": "variant_add_CreditImpulseNegative->HYSpreadElevated",
-     "edge_structure": [
-      [
-       "BankLendingTightening",
-       "LeveragedLoanStress"
-      ],
-      [
-       "BankLendingTightening",
-       "RefinancingStress"
-      ],
-      [
-       "CreditImpulseNegative",
-       "HYSpreadElevated"
-      ],
-      [
-       "LeveragedLoanStress",
-       "HYSpreadElevated"
-      ]
-     ],
-     "evidence_count": 4,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -22.324411828,
-     "status": "PRUNED",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.697780711,
-     "bic_penalty_raw": 2.198545158,
-     "bic_score_explore": -6.247417,
-     "bic_score_strict": -7.896325868,
-     "candidate_id": "<id17>",
-     "description": "variant_add_CorporateDefaultRisk->CreditImpulseNegative",
-     "edge_structure": [
-      [
-       "CorporateDefaultRisk",
-       "CreditImpulseNegative"
-      ],
-      [
-       "CorporateDefaultRisk",
-       "HYSpreadElevated"
-      ],
-      [
-       "HYSpreadElevated",
-       "InvestmentGradeSpread"
-      ],
-      [
-       "LeveragedLoanStress",
-       "CorporateDefaultRisk"
-      ]
-     ],
-     "evidence_count": 3,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -17.090687666,
-     "status": "PRUNED",
-     "total_edge_count": 4
-    },
-    {
-     "active_edge_count": 4,
-     "avg_ll": -5.598931845,
-     "bic_penalty_raw": 2.381757254,
-     "bic_score_explore": -6.194371159,
-     "bic_score_strict": -7.980689099,
-     "candidate_id": "<id18>",
-     "description": "variant_add_LeveragedLoanStress->HighYieldIssuanceFalling",
-     "edge_structure": [
-      [
-       "CreditImpulseNegative",
-       "HYSpreadElevated"
-      ],
-      [
-       "HYSpreadElevated",
-       "HighYieldIssuanceFalling"
-      ],
-      [
-       "HYSpreadElevated",
-       "RefinancingStress"
-      ],
-      [
-       "LeveragedLoanStress",
-       "HighYieldIssuanceFalling"
-      ]
-     ],
-     "evidence_count": 3,
-     "generation": 1,
-     "is_dominant": false,
-     "log_score": -16.794632624,
-     "status": "PRUNED",
-     "total_edge_count": 4
+     "total_edge_count": 0
     }
    ],
    "domain": "Credit Cycle",
@@ -1281,9 +781,9 @@
    "env_mode": "strict",
    "last_mutation_cycle": {
     "dag_violations": 0,
-    "duplicate_rejections": 3,
-    "introduced": 2,
-    "total_attempts": 5
+    "duplicate_rejections": 0,
+    "introduced": 0,
+    "total_attempts": 0
    },
    "total_evidence_records": 4
   },
@@ -1295,7 +795,7 @@
    "records": [
     {
      "description": "fake@2026-03-01",
-     "id": "<id11>",
+     "id": "<id1>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
@@ -1303,7 +803,7 @@
     },
     {
      "description": "fake@2026-02-22",
-     "id": "<id12>",
+     "id": "<id2>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
@@ -1311,7 +811,7 @@
     },
     {
      "description": "fake@2026-02-15",
-     "id": "<id13>",
+     "id": "<id3>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
@@ -1319,7 +819,7 @@
     },
     {
      "description": "fake@2026-02-08",
-     "id": "<id14>",
+     "id": "<id4>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
@@ -1332,44 +832,14 @@
  "inference_dominant": {
   "body": {
    "candidate_id": "<id0>",
-   "edges": [
-    {
-     "probability": 0.38201202,
-     "source": "InvestmentGradeSpread",
-     "status": "explore",
-     "target": "HYSpreadElevated"
-    },
-    {
-     "probability": 0.381600486,
-     "source": "CreditImpulseNegative",
-     "status": "explore",
-     "target": "InvestmentGradeSpread"
-    }
-   ],
-   "frontier_edges": [
-    {
-     "explore_weight": 1.21550625,
-     "note": "existence_probability=0.382 in explore band [0.25, 0.75]",
-     "probability": 0.38201202,
-     "relation": "IG widening \u2192 HY spread compression reversal",
-     "source": "InvestmentGradeSpread",
-     "target": "HYSpreadElevated"
-    },
-    {
-     "explore_weight": 1.21550625,
-     "note": "existence_probability=0.382 in explore band [0.25, 0.75]",
-     "probability": 0.381600486,
-     "relation": "credit contraction \u2192 IG spread widening",
-     "source": "CreditImpulseNegative",
-     "target": "InvestmentGradeSpread"
-    }
-   ],
+   "edges": [],
+   "frontier_edges": [],
    "nodes": [
     {
      "id": "HYSpreadElevated",
      "label": "HYSpreadElevated",
      "observation": null,
-     "probability": 0.444354084,
+     "probability": 0.425833333,
      "status": "target"
     },
     {
@@ -1391,132 +861,6 @@
      "label": "CreditImpulseNegative",
      "observation": null,
      "probability": null,
-     "status": "exploring"
-    },
-    {
-     "id": "BankLendingTightening",
-     "label": "BankLendingTightening",
-     "observation": null,
-     "probability": null,
-     "status": "weak"
-    },
-    {
-     "id": "InvestmentGradeSpread",
-     "label": "InvestmentGradeSpread",
-     "observation": null,
-     "probability": null,
-     "status": "exploring"
-    },
-    {
-     "id": "HighYieldIssuanceFalling",
-     "label": "HighYieldIssuanceFalling",
-     "observation": null,
-     "probability": null,
-     "status": "weak"
-    },
-    {
-     "id": "RefinancingStress",
-     "label": "RefinancingStress",
-     "observation": null,
-     "probability": null,
-     "status": "weak"
-    }
-   ],
-   "target_probability": 0.444354084,
-   "target_variable": "HYSpreadElevated"
-  },
-  "status": 200
- },
- "inference_other_candidate": {
-  "body": {
-   "candidate_id": "<id9>",
-   "edges": [
-    {
-     "probability": 0.554532589,
-     "source": "BankLendingTightening",
-     "status": "explore",
-     "target": "LeveragedLoanStress"
-    },
-    {
-     "probability": 0.538950035,
-     "source": "LeveragedLoanStress",
-     "status": "explore",
-     "target": "HYSpreadElevated"
-    },
-    {
-     "probability": 0.429832443,
-     "source": "BankLendingTightening",
-     "status": "explore",
-     "target": "RefinancingStress"
-    },
-    {
-     "probability": 0.5,
-     "source": "LeveragedLoanStress",
-     "status": "explore",
-     "target": "RefinancingStress"
-    }
-   ],
-   "frontier_edges": [
-    {
-     "explore_weight": 1.21550625,
-     "note": "existence_probability=0.555 in explore band [0.25, 0.75]",
-     "probability": 0.554532589,
-     "relation": "bank tightening \u2192 leveraged loan stress",
-     "source": "BankLendingTightening",
-     "target": "LeveragedLoanStress"
-    },
-    {
-     "explore_weight": 1.21550625,
-     "note": "existence_probability=0.539 in explore band [0.25, 0.75]",
-     "probability": 0.538950035,
-     "relation": "leveraged loan stress \u2192 HY spread widening",
-     "source": "LeveragedLoanStress",
-     "target": "HYSpreadElevated"
-    },
-    {
-     "explore_weight": 1.21550625,
-     "note": "existence_probability=0.430 in explore band [0.25, 0.75]",
-     "probability": 0.429832443,
-     "relation": "bank tightening \u2192 higher refinancing cost",
-     "source": "BankLendingTightening",
-     "target": "RefinancingStress"
-    },
-    {
-     "explore_weight": 1.0,
-     "note": "existence_probability=0.500 in explore band [0.25, 0.75]",
-     "probability": 0.5,
-     "relation": "LeveragedLoanStress\u2192RefinancingStress",
-     "source": "LeveragedLoanStress",
-     "target": "RefinancingStress"
-    }
-   ],
-   "nodes": [
-    {
-     "id": "HYSpreadElevated",
-     "label": "HYSpreadElevated",
-     "observation": null,
-     "probability": 0.444237771,
-     "status": "target"
-    },
-    {
-     "id": "LeveragedLoanStress",
-     "label": "LeveragedLoanStress",
-     "observation": null,
-     "probability": null,
-     "status": "exploring"
-    },
-    {
-     "id": "CorporateDefaultRisk",
-     "label": "CorporateDefaultRisk",
-     "observation": null,
-     "probability": null,
-     "status": "weak"
-    },
-    {
-     "id": "CreditImpulseNegative",
-     "label": "CreditImpulseNegative",
-     "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
@@ -1524,7 +868,7 @@
      "label": "BankLendingTightening",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
     },
     {
      "id": "InvestmentGradeSpread",
@@ -1545,10 +889,66 @@
      "label": "RefinancingStress",
      "observation": null,
      "probability": null,
-     "status": "exploring"
+     "status": "weak"
+    },
+    {
+     "id": "HYSpreadElevated_prev",
+     "label": "HYSpreadElevated_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "LeveragedLoanStress_prev",
+     "label": "LeveragedLoanStress_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "CorporateDefaultRisk_prev",
+     "label": "CorporateDefaultRisk_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "CreditImpulseNegative_prev",
+     "label": "CreditImpulseNegative_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "BankLendingTightening_prev",
+     "label": "BankLendingTightening_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "InvestmentGradeSpread_prev",
+     "label": "InvestmentGradeSpread_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "HighYieldIssuanceFalling_prev",
+     "label": "HighYieldIssuanceFalling_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
+    },
+    {
+     "id": "RefinancingStress_prev",
+     "label": "RefinancingStress_prev",
+     "observation": null,
+     "probability": null,
+     "status": "weak"
     }
    ],
-   "target_probability": 0.444237771,
+   "target_probability": 0.425833333,
    "target_variable": "HYSpreadElevated"
   },
   "status": 200
@@ -1559,16 +959,10 @@
    "domain": "Credit Cycle",
    "events": [
     {
-     "description": "H4: credit_normalization",
-     "dominant_after": "H4: credit_normalization",
+     "description": "unconnected: no hypotheses yet",
+     "dominant_after": "unconnected: no hypotheses yet",
      "event_type": "current",
      "generation": 0
-    },
-    {
-     "description": "Became dominant candidate after 1 paradigm shift(s)",
-     "dominant_after": "H4: credit_normalization",
-     "event_type": "shift",
-     "generation": 9
     }
    ]
   },
@@ -1579,83 +973,20 @@
    "competing_candidates": {
     "candidates": [
      {
-      "edge_count": 2,
-      "log_score": -22.503197368,
-      "name": "H4: credit_normalization",
-      "score_normalized": 0.95,
-      "status": "dominant"
-     },
-     {
-      "edge_count": 3,
-      "log_score": -22.240668989,
-      "name": "H3: liquidity_withdrawal",
-      "score_normalized": 0.745785701,
-      "status": "rising"
-     },
-     {
-      "edge_count": 3,
-      "log_score": -22.322238884,
-      "name": "H1: monetary_tightening_transmission",
-      "score_normalized": 0.707233288,
-      "status": "rising"
-     },
-     {
-      "edge_count": 3,
-      "log_score": -22.469201747,
-      "name": "variant_add_BankLendingTightening->CreditImpulseNegative",
-      "score_normalized": 0.637564637,
-      "status": "neutral"
-     },
-     {
-      "edge_count": 2,
-      "log_score": -22.497924558,
-      "name": "T_null: direct default-spread baseline",
-      "score_normalized": 0.623933594,
-      "status": "neutral"
-     },
-     {
-      "edge_count": 3,
-      "log_score": -22.512247687,
-      "name": "H2: default_cycle_beginning",
-      "score_normalized": 0.617185137,
-      "status": "neutral"
-     },
-     {
-      "edge_count": 3,
-      "log_score": -22.140136778,
-      "name": "variant_add_InvestmentGradeSpread->HighYieldIssuanceFalling",
-      "score_normalized": 0.464985723,
-      "status": "falling"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -22.240668989,
-      "name": "variant_add_LeveragedLoanStress->InvestmentGradeSpread",
-      "score_normalized": 0.417169057,
-      "status": "falling"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -22.369771526,
-      "name": "variant_add_CorporateDefaultRisk->BankLendingTightening",
-      "score_normalized": 0.356347736,
-      "status": "falling"
-     },
-     {
-      "edge_count": 4,
-      "log_score": -22.322238884,
-      "name": "variant_add_LeveragedLoanStress->RefinancingStress",
+      "edge_count": 0,
+      "log_score": -22.506625049,
+      "name": "unconnected: no hypotheses yet",
       "score_normalized": 0.05,
-      "status": "falling"
+      "status": "dominant"
      }
     ],
-    "score_gap_to_dominant": 0.107995203
+    "score_gap_to_dominant": null
    },
    "current_regime_state": [
     {
      "boolean_state": false,
      "name": "HYSpreadElevated",
-     "probability": 0.444354084
+     "probability": 0.425833333
     },
     {
      "boolean_state": false,
@@ -1680,7 +1011,7 @@
     {
      "boolean_state": true,
      "name": "InvestmentGradeSpread",
-     "probability": 0.573745911
+     "probability": 0.5978
     },
     {
      "boolean_state": false,
@@ -1695,68 +1026,36 @@
    ],
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "edge_count": 2,
-    "edges": [
-     {
-      "existence_probability": 0.38201202,
-      "source": "InvestmentGradeSpread",
-      "target": "HYSpreadElevated"
-     },
-     {
-      "existence_probability": 0.381600486,
-      "source": "CreditImpulseNegative",
-      "target": "InvestmentGradeSpread"
-     }
-    ],
-    "generations_dominant": 4,
-    "log_score": -22.503197368,
-    "name": "H4: credit_normalization"
+    "edge_count": 0,
+    "edges": [],
+    "generations_dominant": 0,
+    "log_score": -22.506625049,
+    "name": "unconnected: no hypotheses yet"
    },
    "frontier": {
-    "frontier_edge_count": 2,
-    "frontier_edges": [
-     {
-      "probability": 0.38201202,
-      "relation": "IG widening \u2192 HY spread compression reversal",
-      "source": "InvestmentGradeSpread",
-      "target": "HYSpreadElevated"
-     },
-     {
-      "probability": 0.381600486,
-      "relation": "credit contraction \u2192 IG spread widening",
-      "source": "CreditImpulseNegative",
-      "target": "InvestmentGradeSpread"
-     }
-    ]
+    "frontier_edge_count": 0,
+    "frontier_edges": []
    },
    "interpretation_hints": [
-    "structure_entropy is high (2.201): engine has not converged; multiple causal stories remain plausible",
-    "dominant hypothesis has held for 9 generations",
-    "last paradigm shift was <ago>",
+    "structure_entropy is low (0.000): engine has converged on a single dominant causal story",
+    "dominant hypothesis was introduced in the current generation",
+    "no paradigm shifts recorded since shift logging was enabled",
     "evidence base is small (4 records); scores may not yet be reliable",
-    "2 edge(s) are in the explore band: causal structure is still being refined in these relations"
+    "no edges are in the explore band: dominant causal structure is well-determined"
    ],
    "metadata": {
-    "current_generation": 9,
+    "current_generation": 0,
     "domain": "Credit Cycle",
     "domain_module_id": "credit-cycle-v1",
     "evidence_count": 4,
     "timestamp": "<ts>"
    },
    "ontology_competition": {
-    "active_candidates": 10,
-    "entropy_interpretation": "high",
-    "paradigm_shifts_total": 1,
-    "recent_shifts": [
-     {
-      "evidence_date": "2026-02-08",
-      "from_name": "H1: monetary_tightening_transmission",
-      "generation": 5,
-      "timestamp": "<ts>",
-      "to_name": "H4: credit_normalization"
-     }
-    ],
-    "structure_entropy": 2.201073189
+    "active_candidates": 1,
+    "entropy_interpretation": "low",
+    "paradigm_shifts_total": 0,
+    "recent_shifts": [],
+    "structure_entropy": 0.0
    }
   },
   "status": 200
@@ -1765,41 +1064,27 @@
   "body": {
    "domain": "Credit Cycle",
    "domain_module_id": "credit-cycle-v1",
-   "events": [
-    {
-     "evidence_count_at_shift": 1,
-     "evidence_date": "2026-02-08",
-     "generation": 5,
-     "new_dominant_id": "<id0>",
-     "new_dominant_name": "H4: credit_normalization",
-     "new_programme": "H4",
-     "previous_dominant_id": "<id2>",
-     "previous_dominant_name": "H1: monetary_tightening_transmission",
-     "previous_programme": "H1",
-     "shift_id": "<id10>",
-     "timestamp": "<ts>"
-    }
-   ],
-   "total_shifts": 1
+   "events": [],
+   "total_shifts": 0
   },
   "status": 200
  },
  "status": {
   "body": {
-   "active_candidates": 10,
-   "current_generation": 9,
+   "active_candidates": 1,
+   "current_generation": 0,
    "domain": "Credit Cycle",
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "generations_dominant": 4,
-    "name": "H4: credit_normalization"
+    "generations_dominant": 0,
+    "name": "unconnected: no hypotheses yet"
    },
    "engine_status": "online",
-   "frontier_edge_count": 2,
+   "frontier_edge_count": 0,
    "last_evidence_cycle_ago": "<ago>",
    "max_candidates": 10,
-   "paradigm_shifts_this_window": 1,
-   "structure_entropy": 2.201073189
+   "paradigm_shifts_this_window": 0,
+   "structure_entropy": 0.0
   },
   "status": 200
  }
