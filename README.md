@@ -198,7 +198,7 @@ POST /v1/inference/query
 GET  /v1/population/lineage/{candidate_id}
 GET  /v1/population/shifts
 GET  /v1/evidence/recent
-POST /v1/ingest/trigger
+POST /v1/ingest/trigger                     # fetch and learn the latest week now; no auth (see below)
 POST /v1/ingest/backfill?days=N             # needs Authorization: Bearer $POE_ADMIN_TOKEN
 POST /v1/ingest/rebuild?domain=cc&days=730  # forget a domain and relearn it from its sources, in the background; admin token
 GET  /v1/ingest/rebuild?domain=cc           # progress, records learned, and any weeks it could not fetch; admin token
@@ -207,12 +207,20 @@ POST /v1/ingest/art/rebuild?months=36        # start forgetting art and relearni
 GET  /v1/ingest/art/rebuild                  # progress of the latest rebuild (idle / running / done / failed); admin token
 GET  /v1/export/narrative-snapshot
 GET  /v1/report/{domain}                     # read cached report (no LLM call)
-POST /v1/report/{domain}/refresh             # regenerate if snapshot changed (Fireworks)
+POST /v1/report/{domain}/refresh             # regenerate if snapshot changed (Fireworks); no auth (see below)
 GET  /v1/debug/entropy
 GET  /v1/debug/evidence-geometry
 GET  /v1/debug/learning
 GET  /v1/debug/structure
 ```
+
+`trigger` and `report/refresh` take no token, because the public dashboard
+calls them (FETCH NOW, report refresh). That is fine for a demo but not for
+a real deployment: anyone can make the server call the upstream APIs on its
+keys, and a refresh calls a paid model whenever the snapshot has changed.
+A week already stored is not learned twice, so repeated triggers cost API
+calls, not correctness. A real deployment would put both behind the admin
+token or a rate limit.
 
 ## Narrative Export Workflow
 

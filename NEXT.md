@@ -60,3 +60,10 @@ prices, so 91 observations is about 18 weeks. Credit's TOTCI had the
 opposite fault, three observations of a weekly series read as three
 months; it is fixed. Fixing macro's changes what the replays measured, so
 it waits for a replay that says what it changes.
+
+## Outside the epistemology
+
+Two write routes are open to anyone: `POST /v1/ingest/trigger` and
+`POST /v1/report/{domain}/refresh`, which the public dashboard calls.
+Acceptable for a demo; a real deployment would need the admin token or a
+rate limit on both (see the README's API section).
