@@ -100,6 +100,15 @@
        ],
        "title": "State",
        "type": "string"
+      },
+      "targets_missed": {
+       "default": [],
+       "items": {
+        "format": "date",
+        "type": "string"
+       },
+       "title": "Targets Missed",
+       "type": "array"
       }
      },
      "required": [
@@ -403,6 +412,15 @@
        ],
        "title": "State",
        "type": "string"
+      },
+      "targets_missed": {
+       "default": [],
+       "items": {
+        "format": "date",
+        "type": "string"
+       },
+       "title": "Targets Missed",
+       "type": "array"
       }
      },
      "required": [

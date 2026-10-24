@@ -35,6 +35,7 @@ def test_rebuild_refetches_the_window_and_replaces_the_history(monkeypatch):
         body = _finished(client, "cc")
         weeks = len(BY_KEY["cc"].cadence.window_targets(42, utcnow().date()))
         assert body["state"] == "done" and body["records_learned"] == weeks
+        assert body["targets_missed"] == []
         assert running_engine("cc").evidence_store.count("credit-cycle-v1") == weeks
     assert 0 < before < weeks
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Literal, Optional
@@ -126,13 +126,15 @@ class _DomainRebuild:
     started_at: datetime
     finished_at: Optional[datetime] = None
     records_learned: Optional[int] = None
+    targets_missed: list[date] = field(default_factory=list)
     error: Optional[str] = None
     state: Literal["running", "done", "failed"] = "running"
 
     def out(self, display_name: str) -> DomainRebuildOut:
         return DomainRebuildOut(domain=display_name, state=self.state, days_requested=self.days_requested,
                                 started_at=self.started_at, finished_at=self.finished_at,
-                                records_learned=self.records_learned, error=self.error)
+                                records_learned=self.records_learned, targets_missed=self.targets_missed,
+                                error=self.error)
 
 
 @router.post("/v1/ingest/rebuild", response_model=DomainRebuildOut, status_code=202,
@@ -162,8 +164,9 @@ async def rebuild_domain(request: Request, domain: str = Query(...),
     async def run() -> None:
         try:
             async with context.ingest_lock(state, domain_key):
-                job.records_learned = await rebuild(engine, domain_id, context.fetcher(domain_key), targets, [],
-                                                    pause_s=reg.backfill_pause_s)
+                result = await rebuild(engine, domain_id, context.fetcher(domain_key), targets, [],
+                                       pause_s=reg.backfill_pause_s)
+            job.records_learned, job.targets_missed = result.learned, result.missed
             job.state = "done"
         except asyncio.CancelledError:
             job.error, job.state = "cancelled: the service stopped", "failed"
@@ -220,6 +223,7 @@ class _RebuildJob:
     failed_reports: list[str]
     finished_at: Optional[datetime] = None
     records_learned: Optional[int] = None
+    targets_missed: list[date] = field(default_factory=list)
     error: Optional[str] = None
     state: Literal["running", "done", "failed"] = "running"
 
@@ -232,6 +236,7 @@ class _RebuildJob:
             finished_at=self.finished_at,
             reports_found=self.reports_found,
             records_learned=self.records_learned,
+            targets_missed=self.targets_missed,
             failed_reports=self.failed_reports,
             error=self.error,
         )
@@ -296,7 +301,8 @@ async def _run_rebuild(
 ) -> None:
     try:
         async with context.ingest_lock(state, "art"):
-            job.records_learned = await rebuild(engine, domain_id, context.fetcher("art"), targets, reports, pause_s=pause_s)
+            result = await rebuild(engine, domain_id, context.fetcher("art"), targets, reports, pause_s=pause_s)
+        job.records_learned, job.targets_missed = result.learned, result.missed
         job.state = "done"
     except asyncio.CancelledError:
         job.error, job.state = "cancelled: the service stopped", "failed"

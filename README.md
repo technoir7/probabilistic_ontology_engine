@@ -169,6 +169,8 @@ GET  /v1/population/shifts
 GET  /v1/evidence/recent
 POST /v1/ingest/trigger
 POST /v1/ingest/backfill?days=N             # needs Authorization: Bearer $POE_ADMIN_TOKEN
+POST /v1/ingest/rebuild?domain=cc&days=730  # forget a domain and relearn it from its sources, in the background; admin token
+GET  /v1/ingest/rebuild?domain=cc           # progress, records learned, and any weeks it could not fetch; admin token
 POST /v1/ingest/art/manual?path=...          # learn new report files; needs Authorization: Bearer $POE_ADMIN_TOKEN
 POST /v1/ingest/art/rebuild?months=36        # start forgetting art and relearning fetched months + reports, in the background; admin token
 GET  /v1/ingest/art/rebuild                  # progress of the latest rebuild (idle / running / done / failed); admin token

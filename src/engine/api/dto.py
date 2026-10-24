@@ -1,7 +1,7 @@
 """Request and response models of the HTTP API."""
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any, Literal, Optional
 
 from pydantic import BaseModel
@@ -234,6 +234,7 @@ class DomainRebuildOut(BaseModel):
     started_at: Optional[datetime] = None
     finished_at: Optional[datetime] = None
     records_learned: Optional[int] = None
+    targets_missed: list[date] = []  # periods with no record: no data, or fetch still failing after a retry
     error: Optional[str] = None
 
 
@@ -263,6 +264,7 @@ class ArtRebuildOut(BaseModel):
     finished_at: Optional[datetime] = None
     reports_found: Optional[int] = None
     records_learned: Optional[int] = None   # fetched months plus reports
+    targets_missed: list[date] = []          # months with no record: no data, or fetch still failing after a retry
     failed_reports: list[str] = []
     error: Optional[str] = None
 

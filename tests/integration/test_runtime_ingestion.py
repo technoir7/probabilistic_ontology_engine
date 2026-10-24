@@ -103,9 +103,10 @@ def test_rebuild_relearns_fetched_and_supplied_evidence_in_date_order():
         return soft_record(get_variables().values(), day, seed="fetched")
 
     targets = [date(2026, 3, 1), date(2026, 3, 8), failing_day]
-    learned = asyncio.run(rebuild(engine, DOMAIN_ID, fetch, targets, supplied, pause_s=0, sleep=_no_sleep))
+    result = asyncio.run(rebuild(engine, DOMAIN_ID, fetch, targets, supplied, pause_s=0, sleep=_no_sleep))
 
-    assert learned == 3  # two fetched days and the report; the failing day is skipped
+    assert result.learned == 3  # two fetched days and the report
+    assert result.missed == [failing_day]
     stored = engine.evidence_store.load_all(DOMAIN_ID)
     assert [r.timestamp.day for r in stored] == [1, 8, 10]  # the stale record is gone
     assert engine.get_population(DOMAIN_ID).dominant().evidence_count == 3
@@ -113,6 +114,32 @@ def test_rebuild_relearns_fetched_and_supplied_evidence_in_date_order():
 
 async def _no_sleep(_s):
     return None
+
+
+def test_a_rebuild_retries_a_failed_fetch_and_reports_what_it_still_missed():
+    """An upstream error is often momentary, so a failed target is tried once
+    more; one with no data to give is not retried. Whatever is still missing
+    is reported, so a history with holes in it is never mistaken for whole."""
+    engine = _engine()
+    flaky, down, empty = date(2026, 3, 8), date(2026, 3, 15), date(2026, 3, 22)
+    calls: dict[date, int] = {}
+
+    async def fetch(day):
+        calls[day] = calls.get(day, 0) + 1
+        if day == flaky and calls[day] == 1:
+            raise IOError("FRED API HTTP 500")
+        if day == down:
+            raise IOError("FRED API HTTP 500")
+        if day == empty:
+            raise EvidenceUnavailable("no input")
+        return soft_record(get_variables().values(), day, seed="fetched")
+
+    targets = [date(2026, 3, 1), flaky, down, empty]
+    result = asyncio.run(rebuild(engine, DOMAIN_ID, fetch, targets, [], pause_s=0, sleep=_no_sleep))
+
+    assert result.learned == 2
+    assert result.missed == [down, empty]
+    assert calls == {date(2026, 3, 1): 1, flaky: 2, down: 2, empty: 1}
 
 
 def test_a_rebuild_that_fetches_nothing_keeps_the_domain():

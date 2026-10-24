@@ -7,10 +7,12 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from dataclasses import dataclass
 from datetime import date
 from typing import Any, Awaitable, Callable, Iterable
 
 from ..engine import ProbabilisticOntologyEngine
+from ..model.errors import EvidenceUnavailable
 from ..schemas import EvidenceRecord
 
 logger = logging.getLogger(__name__)
@@ -122,6 +124,12 @@ def _same_state_as_latest(engine: ProbabilisticOntologyEngine, domain_id: str, r
     return bool(latest) and _state_signature(latest[0]) == _state_signature(record)
 
 
+@dataclass(frozen=True)
+class RebuildResult:
+    learned: int
+    missed: list[date]  # targets with no record: no data to give, or still failing after a retry
+
+
 async def rebuild(
     engine: ProbabilisticOntologyEngine,
     domain_id: str,
@@ -131,7 +139,7 @@ async def rebuild(
     *,
     pause_s: float,
     sleep: Callable[[float], Awaitable[None]] = asyncio.sleep,
-) -> int:
+) -> RebuildResult:
     """
     Forget the domain and relearn it from scratch: fetch every target, add the
     supplied records, and learn them all oldest first. Order matters, since
@@ -139,20 +147,38 @@ async def rebuild(
     records are merged before learning rather than learned source by source.
 
     Everything is fetched before the reset, so the domain keeps its state
-    until there is something to replace it with. A target that fails is
-    logged and skipped. The caller holds the lock.
+    until there is something to replace it with. A target whose fetch fails
+    is tried once more after the rest, since upstream errors are often
+    momentary; one that is EvidenceUnavailable is not. Targets still without
+    a record are returned as missed. The caller holds the lock.
     """
     fetched: list[EvidenceRecord] = []
-    for target in targets:
+    unavailable: list[date] = []
+    failed: list[date] = []
+
+    async def attempt(target: date) -> bool:
         try:
             fetched.append(await fetch(target))
+            return True
+        except EvidenceUnavailable as exc:
+            logger.warning("%s rebuild: no evidence for %s: %s", domain_id, target, exc)
+            unavailable.append(target)
+            return True
         except Exception as exc:  # noqa: BLE001 — one bad period must not stop a rebuild
             logger.error("%s rebuild: fetch failed for %s: %s", domain_id, target, exc, exc_info=True)
-        await sleep(pause_s)
+            return False
+        finally:
+            await sleep(pause_s)
+
+    for target in targets:
+        if not await attempt(target):
+            failed.append(target)
+    still_failed = [t for t in failed if not await attempt(t)]
+
     supplied = list(supplied)
     if not fetched and not supplied:
         # Nothing to replace it with: keep what the domain has.
         raise RuntimeError(f"{domain_id} rebuild: nothing fetched, domain kept as it was")
     engine.reset_domain(domain_id)
-    return learn_new_records(engine, domain_id, [*fetched, *supplied])
-
+    learned = learn_new_records(engine, domain_id, [*fetched, *supplied])
+    return RebuildResult(learned=learned, missed=sorted([*unavailable, *still_failed]))
