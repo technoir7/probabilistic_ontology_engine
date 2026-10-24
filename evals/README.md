@@ -618,3 +618,51 @@ window, written to `data/replay11/`. Compared with replay 10 throughout.
 What would count against the design: a leader that never holds most of
 the persistence links, a fit gap well below replay 10's, or a population
 that fills with programmes the evidence never refutes.
+
+### Replay 11 results
+
+Five seeds, 1,229 weeks each, about 110 seconds a seed. The seeds agree
+closely: what the engine forms depends far more on the evidence than on its
+blind variation.
+
+14. **It finds most of persistence, slowly, and only where the signal
+    moves.** Nothing was connected for the first 170 weeks (to mid-2006):
+    the weekly evidence is soft, and read as probabilities, "this week is
+    like last" is a faint pattern in a few dozen records. The first
+    persistence held was the dollar's (June 2006), then tech momentum's
+    (December 2006), credit's (November 2007), inflation's (late 2008) and
+    liquidity's (August 2009); the labour signal's in three seeds of five.
+    Once held, each was kept in 91% or more of the weeks after, except tech
+    momentum's in one seed (41%). Two were never held
+    in any seed. The yield curve matches the week before 98% of the time,
+    but it was inverted in few periods, and within any 100 weeks in which
+    it never changes, persistence predicts it no better than how often it
+    is inverted; there is nothing to learn from. Volatility is the softest
+    signal (mean confidence 0.67) and the least persistent (77%).
+15. **Nothing it forms explains the weeks better than given persistence
+    did.** The fit gap over independent signals is 0.44 to 0.51 nats a
+    week, against replay 10's 0.56, and the forecast from last week −3.60
+    to −3.70 nats, against −3.35. Most of the shortfall is the three years
+    with nothing connected and the persistence it never found. Every seed
+    held one link between different signals for about 955 weeks, last
+    week's credit stress bearing on the yield curve, first held in June
+    2008, from 100 weeks spanning the curve's 2006–07 inversion and the
+    credit stress that followed. Three seeds also held the dollar bearing on
+    the labour signal for 366 to 915 weeks. These are the first cross-signal links any replay has
+    kept, but they come with a worse fit, not a better one, so they are not
+    yet evidence that the signals bear on one another.
+16. **Its changes of programme do not follow the events.** Five to nine per
+    seed, all between 2006 and 2009, catching 0 to 2 of the ten events
+    within 26 weeks, no more than chance (p 0.48 to 1.0); five in each seed
+    came away from any event. After 2009 one programme led to the end.
+17. **It is better calibrated.** Against the evidence, 0.022 to 0.027,
+    against replay 10's 0.046 to 0.048: holding fewer links, it is less
+    often confidently wrong.
+
+Against the plan's tests: it holds most of the persistence links (five to
+six of eight), its fit gap is below replay 10's by 0.05 to 0.12 nats, and
+the population did not fill with unrefuted programmes (one alive from
+2013). Replay 10's verdict, that no account beats persistence, did not
+depend on the hand-written worldviews. The cost of not being told is three
+years of believing nothing, and two signals whose persistence a 100-week
+memory cannot see (NEXT.md problem 8).
