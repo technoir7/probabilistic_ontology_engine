@@ -7,7 +7,7 @@ philosophy of knowledge and science it takes, and where it falls short.
 Related documents:
 - [SPEC.md](SPEC.md) is the architecture.
 - [REFACTOR_SPEC.md](REFACTOR_SPEC.md) §8 records each design decision
-  (D1–D23), several of which were made for the reasons given here.
+  (D1–D24), several of which were made for the reasons given here.
 - [evals/README.md](evals/README.md) reports the replays that tested them.
 - [NEXT.md](NEXT.md) lists what remains open.
 
@@ -18,11 +18,11 @@ short, and the rest is paraphrase.
 ## 1. What the engine is
 
 The engine is a working argument about how beliefs should be held, revised
-and given up, written as software. It keeps rival explanations of a domain:
-for macro, how inflation, the yield curve, liquidity, credit, volatility,
-the dollar, unemployment and tech momentum bear on one another. It weighs
-each against the evidence, week by week, and changes its mind when the
-evidence requires it.
+and given up, written as software. It forms rival explanations of a domain
+from the evidence: for macro, how inflation, the yield curve, liquidity,
+credit, volatility, the dollar, unemployment and tech momentum bear on one
+another. It weighs each against the evidence, week by week, and changes its
+mind when the evidence requires it.
 
 It is not a forecaster and is not tuned to be one. Where good epistemic
 conduct and predictive accuracy pull apart, conduct wins. Its forecasts are
@@ -48,9 +48,10 @@ The engine works on the upper two steps and not the first:
   raw observations into signals ("inflation shock", "credit spread
   stress") using rules a person wrote. The engine receives concepts
   already formed.
-- **From concepts to knowledge: the engine's work.** It learns which
-  concepts bear on which, how strongly, and how sure it can be that each
-  relation exists at all (levels 1 and 2, section 4).
+- **From concepts to knowledge: the engine's work.** It forms its own
+  hypotheses about which concepts bear on which (section 2), and learns how
+  strongly, and how sure it can be that each relation exists at all
+  (levels 1 and 2, section 4).
 - **From knowledge to science: the engine's work.** It holds whole
   explanations as rival systems and asks which systematic whole the
   evidence supports (level 3, sections 4 to 8).
@@ -58,10 +59,10 @@ The engine works on the upper two steps and not the first:
 That the first step is done by hand is the engine's deepest limitation.
 Section 11 returns to it.
 
-## 2. Hypotheses are conjectures
+## 2. Where hypotheses come from
 
 Where hypotheses come from is the oldest question this engine takes a side
-on.
+on, and the one on which it has changed its mind.
 
 One tradition holds that there is a logic of discovery: that good hypotheses
 can be read off, or reasoned toward, from the data. Peirce's abduction is
@@ -74,32 +75,166 @@ Reichenbach's distinction says the same thing in other words: the *context
 of discovery* belongs to psychology, and only the *context of
 justification* belongs to epistemology (*Experience and Prediction*, 1938).
 
-**The engine takes the second side, deliberately.** It was built with a
-service that would have proposed relations by screening the data for them,
-using mutual information, temporal precedence and residual error (SPEC
-§5.2). That service was deleted unused, for this reason. In its place, a
-hypothesis enters the engine in two ways only:
+### Popper's side, and why the engine left it
 
-1. **As a worldview stated in advance.** Each domain's author writes a
-   handful of rival explanations before any evidence is seen. For macro
-   these are:
-   - monetary transmission;
-   - credit markets as the leading signal;
-   - an AI productivity boom;
-   - a recessionary tightening cascade;
-   - a sparse baseline in which volatility is the only structure;
-   - persistence alone.
-2. **As a blind variant of a survivor.** A variant adds or removes one
-   admissible relation, chosen at random. Campbell called this *blind
-   variation and selective retention* (*Psychological Review*, 1960).
-   Popper took the same view of how knowledge grows (*Objective
-   Knowledge*, 1972): variation does not anticipate what will survive;
-   selection by the evidence does all the work of judgment.
+The engine was first built on Popper's side. A service that would have
+proposed relations by screening the data was deleted unused (D3), and
+hypotheses entered in two ways: as rival worldviews written by each
+domain's author, and as blind variants of whichever survived. For macro the
+worldviews were monetary transmission, credit as the leading signal, an AI
+productivity boom, a recessionary cascade, a sparse baseline, and
+persistence.
 
-What the engine never does is let the data suggest the hypothesis it will
-then be judged by. That would let the evidence count twice, once to
-propose and once to confirm, and the engine would be grading its own
-homework.
+Those worldviews were said to be stated in advance. They came before the
+engine saw any evidence, but not before history happened. They were written
+in 2026 by someone who knew how 2003–2026 turned out; nobody would have
+written the AI-boom worldview in 2003. By Popper's own standard, a test
+counts only if the conjecture was made before the outcome was known and
+could have failed. A hypothesis written with hindsight and then tested on
+the history it was written from is not a test of that hypothesis. So on the
+hypothesis side the replays carried hindsight, though on the evidence side
+they were careful to use only figures as first published (section 3).
+
+The engine now gives no hypotheses at all (D24). It begins with none, and
+forms its own from the evidence.
+
+### What it begins with
+
+It does not begin with nothing. Locke held that the mind begins as a blank
+sheet, and that every idea comes from sensation or from reflection on it
+(*Essay Concerning Human Understanding*, II.i.2). Kant answered that
+although all cognition begins with experience, it does not all arise from
+experience (B1): the mind brings forms of its own, and experience supplies
+their content. The engine is built on Kant's answer. It begins with:
+- **Concepts.** Each domain's signals, defined by a person. This is the
+  limit set out in section 1: the step from percepts to concepts is not
+  the engine's.
+- **The form of time.** Every signal comes with a companion holding its
+  value one period earlier, which may ground a judgment about now and is
+  never itself judged: nothing points into the past. For Kant, time is the
+  form of all appearances, given before any of them (A34/B50). Every
+  domain whose evidence arrives in time has this form; only the synthetic
+  test domain, whose records are drawn independently, does not.
+- **The form of a connection.** What it is for one concept to bear on
+  another: a directed dependence, with conditional probabilities for its
+  strength and a probability that it exists at all. This is the category
+  of relation as a form without content (A80/B106). No particular
+  connection is given.
+- **Rules of judgment.** How it scores, when it refutes, and how much a
+  pattern must explain before chance is ruled out (sections 5 and 6).
+
+It holds one explanation at the start: every concept unconnected. That is
+not a hypothesis about the world but the absence of one. It predicts each
+signal by how often that signal has occurred, and asserts nothing about how
+any of them bear on another. In Kant's terms it is the manifold before
+synthesis.
+
+### Synthesis: how a hypothesis is formed
+
+For Kant, knowledge requires that the manifold be combined, and combination
+is never given by the senses. It is an act of the understanding (B129–130),
+and every combination stands under the unity of one self-consciousness
+(B131–132). The engine's act of combination works like this. Each week, for
+the best explanation in each research programme, it asks: which connection
+that this explanation lacks, or holds the wrong way round, would best have
+explained the evidence it remembers? Its memory is the last 100 records, the
+span its scores mostly attend to (section 5). It offers the best such
+change if what the change explains exceeds what its extra parameters could
+fit by chance, by the same penalty that ranks explanations (Schwarz's BIC).
+
+Three features keep this a synthesis and not a search for patterns:
+- **It is judged within the whole.** What a connection would explain is
+  measured given everything the concept already depends on in that
+  explanation. A connection is proposed as part of one structure, never as
+  a pattern on its own (section 4).
+- **It reproduces what it remembers.** When a connection is formed, the
+  engine re-reads the evidence it remembers under the new connection,
+  rather than starting that connection's probabilities from nothing. Kant
+  held that combining a present representation with past ones requires
+  reproducing the past ones (the synthesis of reproduction, A100–102).
+  Without it, a correct new connection began by predicting worse than the
+  explanation it improved on, and was lost.
+- **It is offered, not believed.** Forming a hypothesis is not accepting
+  it. Every proposal joins the population as a rival, and only later
+  evidence decides it.
+
+Peirce described abduction as reasoning from a surprising fact C to a
+hypothesis A such that, were A true, C would be a matter of course (*CP*
+5.189). The engine's version is plainer. It does not wait to be surprised;
+it asks which connection would have made what it saw least surprising.
+
+### Direction
+
+From nothing, a connection's direction is undecided. "A bears on C" and "C
+bears on A" explain exactly the same evidence when nothing else is known
+(Verma and Pearl, 1990). So a programme founded on a connection is named
+for the pair it connects, written "A–C", not for a direction.
+
+The engine turns a connection round only when the evidence prefers the
+other direction. Two cases settle it:
+- **Time.** Last period's value can only be a ground of this period's.
+- **A meeting of independent grounds.** When two signals are independent of
+  each other but each bears on a third, the pattern fixes both arrows into
+  the third.
+
+This follows Kant's Second Analogy, which concerns the order of time, not
+its lapse: a cause may be simultaneous with its effect, and what fixes
+their order is the rule by which one depends on the other (A202–203/
+B247–248). The engine claims a direction where a rule in the evidence
+orders the two, and otherwise keeps the one it happens to hold, without
+claiming it (section 11).
+
+### Why this does not grade its own homework
+
+The reason given for D3 was that a hypothesis suggested by the data, then
+judged by the same data, would count the evidence twice. The answer is in
+how the engine judges (section 5). A hypothesis is scored only on evidence
+that arrives after it is formed. It inherits its parent's score, so the
+evidence that prompted it counts equally for the parent and the child; the
+two differ only by how they predict from then on. The past suggests; only
+the future confirms. Reichenbach's line between discovery and justification
+is kept. What has changed is that discovery now has a method, and the
+method can be stated and examined.
+
+### Blind variation, in its place
+
+The engine still varies blindly. A blind variant adds or removes one
+relation at random. Campbell called this *blind variation and selective
+retention* (*Psychological Review*, 1960), and Popper took the same view of
+how knowledge grows (*Objective Knowledge*, 1972). It now has two limits:
+- **It only revises.** It varies hypotheses the evidence has prompted. A
+  random connection of the unconnected would be a hypothesis from nowhere,
+  and the engine makes none.
+- **The evidence is heard first.** Each programme's best explanation takes
+  the change the evidence most prompts, and blind variants fill the places
+  left. In the synthetic test, this did better than giving every free place
+  to the evidence (19 runs of 20 against 17), and it keeps blind variation
+  alive.
+
+### What it costs
+
+Not being told costs something. In the synthetic test domain, whose true
+structure is known, the engine was formerly given that structure as one of
+its starting hypotheses. Starting from nothing:
+- after 300 records it holds all four of the strong dependences in 11 runs
+  of 20, and the one the change of regime will overturn in all 20;
+- it notices the change of regime, and takes up the new dependence, within
+  200 records in 19 runs of 20, against the 16 required (D14);
+- it rarely finds the weakest dependence at all. That dependence carries
+  about 0.04 nats a record, less than the engine's memory can tell from
+  chance. A given hypothesis could include it without having earned it; a
+  formed one must earn it.
+
+The engine accepts this cost. A believer told the answer in advance has
+learned nothing from finding it again.
+
+These figures are not an independent test of the design, because the design
+was settled against them. Three features were added after this test
+failed, each for a reason stated above: re-reading what is remembered,
+turning connections round, and never varying the unconnected. A fourth,
+one evidence-prompted change per programme a week, was chosen because it
+did better here. By the engine's own method (section 9), the independent
+test is the next replay, on evidence the design has not seen.
 
 ## 3. What is given: evidence
 
@@ -310,10 +445,11 @@ revised to meet the evidence, and a heuristic for revising them
 *degenerating* when they only accommodate.
 
 In the engine:
-- **Programme:** each worldview stated in advance, together with every
-  variant descended from it.
-- **Hard core:** the worldview's founding commitments.
-- **Protective belt:** the relations its variants add and remove.
+- **Programme:** a connection the evidence prompted from the unconnected
+  start, together with every explanation descended from it (section 2).
+- **Hard core:** that founding connection, between two concepts.
+- **Protective belt:** the relations its descendants add, remove and turn
+  round.
 
 ### Rivals live until refuted
 
@@ -343,19 +479,25 @@ encounter with difficulty.
 
 ### A claim no rival denies is not held against anyone
 
-Every macro worldview, whatever else it claims, can accept that signals
+Every macro worldview, whatever else it claimed, could accept that signals
 tend to persist from one week to the next. Before D23, the causal
 worldviews lacked that assumption, and were refuted for not knowing it by a
 programme that claimed nothing else. That was a verdict on a shared
-auxiliary, not on what the worldviews actually disputed. Now every causal
-programme assumes persistence, and they compete on what they add to it.
-Persistence alone is a programme of its own, the baseline the others must
-beat.
+auxiliary, not on what the worldviews disputed, so D23 gave every causal
+programme persistence as an assumption.
 
-Replay 10 asks whether the trial is now fair. It is: the rivals lived for
-years and most revised themselves. Those that died were refuted by
+Replay 10 asked whether the trial was then fair. It was: the rivals lived
+for years and most revised themselves. Those that died were refuted by
 evidence, and two survived to the end in some runs. But none led (section
 7).
+
+D24 removed that assumption along with every other given hypothesis.
+Persistence is now something the engine must find, not something it is
+told. In a test where signals persist and are otherwise unrelated, it is
+the first thing the evidence prompts. Since every programme now grows from
+the evidence, a pattern all of them need is one each must find for itself;
+whether that makes the trial less fair to some is a question for the next
+replay.
 
 ## 7. Changing its mind
 
@@ -378,6 +520,9 @@ shift (SPEC §3.1). It also marks which kind of change it is:
 Through 2003–2026, after the trial was made fair, the leading programme
 never changed. Persistence led every week. None of the worldviews, given
 that signals persist, explained the weeks better than persistence alone.
+These runs began from the hand-written worldviews of section 2. Whether an
+engine that forms its own hypotheses finds more is the question of the next
+replay, planned but not yet run.
 
 This can be put in Kant's terms. The First Analogy of Experience
 (A182/B224) is the principle that in all change something persists. The
@@ -484,21 +629,26 @@ learned from (SPEC §15). The engine's beliefs come only from evidence.
 These are known, and each is either an open problem (NEXT.md) or a
 deliberate cost:
 
-1. **Its concepts are given.** The engine never forms a concept. Every
-   signal it reasons with was defined by a person, so the step from
-   percepts to concepts (section 1) is outside it. Whether the vocabulary
-   is the reason no worldview beats persistence cannot be answered from
-   inside the engine. A companion engine that forms its own concepts from
-   the same observations is planned for that question.
-2. **Any relation is admissible.** A variant may relate any two concepts,
-   in either direction. Domain knowledge that some relations are
+1. **Its concepts are given.** The engine forms its own hypotheses but
+   never a concept. Every signal it reasons with was defined by a person,
+   so the step from percepts to concepts (section 1) is outside it. The
+   vocabulary also carries the hindsight that D24 removed from the
+   hypotheses: a signal for tech momentum was chosen by someone who knew
+   there would be an AI boom. Whether the vocabulary is the reason no
+   worldview beats persistence cannot be answered from inside the engine.
+   A companion engine that forms its own concepts from the same
+   observations is planned for that question.
+2. **Any relation is admissible.** A hypothesis may relate any two
+   concepts, in either direction. Domain knowledge that some relations are
    impossible, such as an exogenous series having no causes within its
    domain, is not expressed (NEXT.md problem 4).
 3. **Direction is not marked as undetermined.** From observation alone,
    "A bears on B" and "B bears on A" often predict exactly the same
-   evidence (Verma and Pearl, 1990). When two such explanations tie, the
-   engine keeps whichever happens to lead, and does not say that the
-   evidence could not decide between them.
+   evidence (Verma and Pearl, 1990). The engine names programmes without
+   a direction and turns a connection round only when the evidence orders
+   it (section 2). But within an explanation, a connection the evidence
+   cannot orient keeps whichever direction it was formed with, and the
+   explanation does not say that the evidence could not decide.
 4. **The razor is partly practical.** BIC ranks explanations partly because
    structures must stay small enough to compute (section 5).
 5. **Uncertainty is rounded where it should not be.** Last week's values
@@ -512,6 +662,11 @@ deliberate cost:
    two-year half-life, the crisis threshold and the halving are
    conventional choices, fixed before the replays that tested them. They
    are not derived from anything deeper.
+8. **Weak dependences go unfound.** A hypothesis is formed from the last
+   100 records and must explain more than chance could. A real dependence
+   weaker than about 0.04 nats a record is rarely formed, and if formed,
+   rarely outscores its parent within the score's memory (section 2). A
+   longer memory would find it and notice change more slowly (D14).
 
 ## Glossary
 
@@ -521,7 +676,8 @@ deliberate cost:
 | Soft evidence | a week's observation of a concept, recorded as the probability that it applies |
 | Relation (edge) | a dependence of one concept on another, with a probability that it exists |
 | Explanation (candidate) | one whole structure: concepts, relations and strengths |
-| Programme (lineage) | a worldview stated in advance, and every variant descended from it |
+| Programme (lineage) | a connection prompted from the unconnected start, named for its pair ("A–C"), and every explanation descended from it |
+| Synthesis | forming a hypothesis: the connection the remembered evidence most prompts, offered when it explains more than chance |
 | Leader | the explanation ranked best on recent evidence |
 | Paradigm shift | any change of leader |
 | Worldview change / revision | a shift between programmes / within one |
@@ -551,6 +707,10 @@ deliberate cost:
 - Lakatos, I. "Falsification and the Methodology of Scientific Research
   Programmes." In Lakatos and Musgrave (eds.), *Criticism and the Growth of
   Knowledge*. Cambridge, 1970.
+- Locke, J. *An Essay Concerning Human Understanding*. London, 1690,
+  II.i.2.
+- Peirce, C. S. *Collected Papers*, ed. Hartshorne and Weiss. Cambridge,
+  Mass., 1931–35, 5.189.
 - Popper, K. R. *The Logic of Scientific Discovery* (1934; English 1959),
   §§65–68; *Conjectures and Refutations* (1963); *Objective Knowledge*
   (1972).
