@@ -1773,12 +1773,14 @@
     "paradigm_shifts_total": 2,
     "recent_shifts": [
      {
+      "evidence_date": "2026-02-15",
       "from_name": "H1: us_fiscal_stress",
       "generation": 5,
       "timestamp": "<ts>",
       "to_name": "H4: global_liquidity_crunch"
      },
      {
+      "evidence_date": "2026-02-22",
       "from_name": "H4: global_liquidity_crunch",
       "generation": 7,
       "timestamp": "<ts>",
@@ -1797,6 +1799,7 @@
    "events": [
     {
      "evidence_count_at_shift": 2,
+     "evidence_date": "2026-02-15",
      "generation": 5,
      "new_dominant_id": "<id1>",
      "new_dominant_name": "H4: global_liquidity_crunch",
@@ -1807,6 +1810,7 @@
     },
     {
      "evidence_count_at_shift": 3,
+     "evidence_date": "2026-02-22",
      "generation": 7,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "H1: us_fiscal_stress",

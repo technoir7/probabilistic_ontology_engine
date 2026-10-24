@@ -155,6 +155,7 @@ def build_snapshot(
     recent_shifts = [
         NarrativeRecentShiftOut(
             timestamp=ev["shift_ts"],
+            evidence_date=ev["evidence_ts"][:10] if ev["evidence_ts"] else None,
             from_name=ev["prev_dominant_name"],
             to_name=ev["new_dominant_name"],
             generation=ev["generation"],

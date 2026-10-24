@@ -2586,6 +2586,7 @@
     "paradigm_shifts_total": 1,
     "recent_shifts": [
      {
+      "evidence_date": "2026-02-11",
       "from_name": "T*: demand-chain",
       "generation": 7,
       "timestamp": "<ts>",
@@ -2604,6 +2605,7 @@
    "events": [
     {
      "evidence_count_at_shift": 1,
+     "evidence_date": "2026-02-11",
      "generation": 7,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "null: storage-only",

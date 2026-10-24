@@ -1782,6 +1782,7 @@
     "paradigm_shifts_total": 1,
     "recent_shifts": [
      {
+      "evidence_date": "2026-02-15",
       "from_name": "H1: supply_shock",
       "generation": 5,
       "timestamp": "<ts>",
@@ -1800,6 +1801,7 @@
    "events": [
     {
      "evidence_count_at_shift": 2,
+     "evidence_date": "2026-02-15",
      "generation": 5,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "H2: demand_driven",

@@ -98,7 +98,7 @@ def run_learning_cycle(ps, ls, ees, pm, batch, batch_idx=0):
 
     pm.prune_low_scorers(DOMAIN_ID)
     pm.introduce_variants(DOMAIN_ID)
-    pm.end_cycle(DOMAIN_ID)
+    pm.end_cycle(DOMAIN_ID, evidence_ts=max(r.timestamp for r in batch))
 
 
 # ---------------------------------------------------------------------------

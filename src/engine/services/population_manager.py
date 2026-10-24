@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import math
 import random
+from datetime import datetime
 from uuid import UUID, uuid4
 
 
@@ -465,9 +466,10 @@ class PopulationManager:
     # Post-cycle bookkeeping
     # ------------------------------------------------------------------
 
-    def end_cycle(self, domain_module_id: str) -> dict:
+    def end_cycle(self, domain_module_id: str, *, evidence_ts: datetime) -> dict:
         """
-        Call at end of each learning cycle:
+        Call at end of each learning cycle; *evidence_ts* is the latest
+        evidence the cycle learned, which dates any shift it records:
           1. Detect dominant-candidate change and persist a ParadigmShiftEvent.
           2. Update dominant candidate pointer in the population.
           3. Save population metadata.
@@ -511,6 +513,7 @@ class PopulationManager:
                         or str(new_dom.candidate_id)[:8]
                     ),
                     evidence_count_at_shift=new_dom.evidence_count,
+                    evidence_ts=evidence_ts,
                 )
 
         self.pop_store.save_population(pop)

@@ -5139,12 +5139,14 @@
     "paradigm_shifts_total": 2,
     "recent_shifts": [
      {
+      "evidence_date": "2026-01-31",
       "from_name": "H1: CraftAuraBacklash \u2014 AI saturation \u2192 aura premium \u2192 craft/figurative institutionalisation",
       "generation": 5,
       "timestamp": "<ts>",
       "to_name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy"
      },
      {
+      "evidence_date": "2026-02-28",
       "from_name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
       "generation": 5,
       "timestamp": "<ts>",
@@ -5163,6 +5165,7 @@
    "events": [
     {
      "evidence_count_at_shift": 1,
+     "evidence_date": "2026-01-31",
      "generation": 5,
      "new_dominant_id": "<id1>",
      "new_dominant_name": "H2: AINormalization \u2014 AI saturation absorbed into institutional legitimacy",
@@ -5173,6 +5176,7 @@
     },
     {
      "evidence_count_at_shift": 2,
+     "evidence_date": "2026-02-28",
      "generation": 5,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "H4: PrestigeFragmentation \u2014 attention dispersal fractures hierarchy \u2192 regional momentum",

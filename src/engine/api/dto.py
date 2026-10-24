@@ -111,6 +111,7 @@ class ParadigmShiftEventOut(BaseModel):
     new_dominant_id: str
     new_dominant_name: str
     evidence_count_at_shift: int
+    evidence_date: Optional[str] = None  # date of the evidence that caused it; None if recorded before this was kept
 
 
 class ParadigmShiftsOut(BaseModel):
@@ -166,6 +167,7 @@ class NarrativeCompetingCandidatesOut(BaseModel):
 
 class NarrativeRecentShiftOut(BaseModel):
     timestamp: str
+    evidence_date: Optional[str] = None
     from_name: str
     to_name: str
     generation: int

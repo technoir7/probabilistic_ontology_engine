@@ -15,7 +15,7 @@ TEST-PSE-10 : shift event evidence_count_at_shift is positive after learning
 from __future__ import annotations
 
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytest
 from fastapi.testclient import TestClient
@@ -80,7 +80,7 @@ def _run_cycle(ps, ls, ees, pm, batch, idx=0):
         pm.update_score(DOMAIN_ID, c.candidate_id, ll, idx, batch_size=len(batch))
     pm.prune_low_scorers(DOMAIN_ID)
     pm.introduce_variants(DOMAIN_ID)
-    pm.end_cycle(DOMAIN_ID)
+    pm.end_cycle(DOMAIN_ID, evidence_ts=max(r.timestamp for r in batch))
 
 
 def _chunk(lst, n):
@@ -113,6 +113,29 @@ def test_pse_01_shift_event_written_on_dominant_change():
 
     events = pop_store.load_shift_events(DOMAIN_ID)
     assert len(events) >= 1, "Expected at least one shift event after regime switch"
+
+
+def test_a_shift_is_dated_by_the_evidence_that_caused_it():
+    """A shift belongs to the history it happened in, not to when the server
+    learned it: a rebuild relearns twenty years in minutes."""
+    gen = SyntheticDataGenerator(graph="T*", random_seed=7)
+    ps, ls, ees, pm, pop_store = _make_stack(
+        [make_tstar_candidate(DOMAIN_ID), make_talt_candidate(DOMAIN_ID), make_null_candidate(DOMAIN_ID)])
+
+    def dated(batch, week):
+        day = datetime(2003, 1, 5) + timedelta(weeks=week)
+        return [r.model_copy(update={"timestamp": day}) for r in batch]
+
+    for i, batch in enumerate(_chunk(gen.sample(n=300), 30)):
+        _run_cycle(ps, ls, ees, pm, dated(batch, i), i)
+    gen.switch_regime("T_alt")
+    for i, batch in enumerate(_chunk(gen.sample(n=300), 30)):
+        _run_cycle(ps, ls, ees, pm, dated(batch, 10 + i), 10 + i)
+
+    events = pop_store.load_shift_events(DOMAIN_ID)
+    assert events
+    for e in events:
+        assert e["evidence_ts"].startswith("2003-")
 
 
 # ---------------------------------------------------------------------------
@@ -239,7 +262,7 @@ def test_pse_04_domain_isolation():
             pm.update_score(DOMAIN_A, c.candidate_id, ll, i, len(batch))
         pm.prune_low_scorers(DOMAIN_A)
         pm.introduce_variants(DOMAIN_A)
-        pm.end_cycle(DOMAIN_A)
+        pm.end_cycle(DOMAIN_A, evidence_ts=datetime(2026, 1, 4))
 
     gen_a.switch_regime("T_alt")
     for i, batch in enumerate(_chunk(gen_a.sample(n=300), 30)):
@@ -250,7 +273,7 @@ def test_pse_04_domain_isolation():
             pm.update_score(DOMAIN_A, c.candidate_id, ll, 10+i, len(batch))
         pm.prune_low_scorers(DOMAIN_A)
         pm.introduce_variants(DOMAIN_A)
-        pm.end_cycle(DOMAIN_A)
+        pm.end_cycle(DOMAIN_A, evidence_ts=datetime(2026, 1, 4))
 
     events_a = pop_store.load_shift_events(DOMAIN_A)
     events_b = pop_store.load_shift_events(DOMAIN_B)

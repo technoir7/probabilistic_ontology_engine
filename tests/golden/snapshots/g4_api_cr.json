@@ -1723,6 +1723,7 @@
     "paradigm_shifts_total": 1,
     "recent_shifts": [
      {
+      "evidence_date": "2026-02-08",
       "from_name": "H1: liquidity_overflow",
       "generation": 5,
       "timestamp": "<ts>",
@@ -1741,6 +1742,7 @@
    "events": [
     {
      "evidence_count_at_shift": 1,
+     "evidence_date": "2026-02-08",
      "generation": 5,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "T_null: btc-altcoin baseline",

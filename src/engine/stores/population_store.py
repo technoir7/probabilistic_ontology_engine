@@ -314,6 +314,7 @@ class PopulationStore:
         new_dominant_id: UUID,
         new_dominant_name: str,
         evidence_count_at_shift: int,
+        evidence_ts: datetime,
     ) -> None:
         """Persist one paradigm-shift event (dominant candidate changed)."""
         from uuid import uuid4
@@ -323,8 +324,8 @@ class PopulationStore:
               (shift_id, domain_module_id, generation, shift_ts,
                prev_dominant_id, prev_dominant_name,
                new_dominant_id, new_dominant_name,
-               evidence_count_at_shift)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+               evidence_count_at_shift, evidence_ts)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 str(uuid4()),
@@ -336,6 +337,7 @@ class PopulationStore:
                 str(new_dominant_id),
                 new_dominant_name,
                 evidence_count_at_shift,
+                evidence_ts.isoformat(),
             ),
         )
         self._db.commit()
@@ -354,14 +356,15 @@ class PopulationStore:
         Each dict contains:
             shift_id, domain_module_id, generation, shift_ts,
             prev_dominant_id, prev_dominant_name,
-            new_dominant_id, new_dominant_name, evidence_count_at_shift
+            new_dominant_id, new_dominant_name, evidence_count_at_shift,
+            evidence_ts (None for shifts recorded before it was kept)
         """
         cur = self._conn.execute(
             """
             SELECT shift_id, domain_module_id, generation, shift_ts,
                    prev_dominant_id, prev_dominant_name,
                    new_dominant_id, new_dominant_name,
-                   evidence_count_at_shift
+                   evidence_count_at_shift, evidence_ts
             FROM paradigm_shifts
             WHERE domain_module_id = ?
             ORDER BY shift_ts DESC

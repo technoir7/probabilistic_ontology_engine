@@ -439,7 +439,7 @@ class ProbabilisticOntologyEngine:
         )
 
         # End of cycle
-        summary = self.population_manager.end_cycle(domain)
+        summary = self.population_manager.end_cycle(domain, evidence_ts=max(r.timestamp for r in batch))
 
         # Persist everything this cycle changed so a restart resumes it.
         changed = {c.candidate_id: c for c in active_at_start + pop.active_candidates()}

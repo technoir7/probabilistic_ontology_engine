@@ -1273,6 +1273,17 @@
     },
     "NarrativeRecentShiftOut": {
      "properties": {
+      "evidence_date": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Evidence Date"
+      },
       "from_name": {
        "title": "From Name",
        "type": "string"
@@ -1439,6 +1450,17 @@
       "evidence_count_at_shift": {
        "title": "Evidence Count At Shift",
        "type": "integer"
+      },
+      "evidence_date": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Evidence Date"
       },
       "generation": {
        "title": "Generation",

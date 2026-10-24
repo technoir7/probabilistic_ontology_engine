@@ -3643,6 +3643,7 @@
     "paradigm_shifts_total": 1,
     "recent_shifts": [
      {
+      "evidence_date": "2026-02-08",
       "from_name": "T_monetary: inflation-driven tightening chain",
       "generation": 4,
       "timestamp": "<ts>",
@@ -3661,6 +3662,7 @@
    "events": [
     {
      "evidence_count_at_shift": 1,
+     "evidence_date": "2026-02-08",
      "generation": 4,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "T_persistence: each signal follows its own last week",

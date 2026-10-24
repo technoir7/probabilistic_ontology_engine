@@ -1749,6 +1749,7 @@
     "paradigm_shifts_total": 1,
     "recent_shifts": [
      {
+      "evidence_date": "2026-02-08",
       "from_name": "H1: infrastructure_buildout \u2014 rational capex \u2192 productivity chain",
       "generation": 6,
       "timestamp": "<ts>",
@@ -1767,6 +1768,7 @@
    "events": [
     {
      "evidence_count_at_shift": 1,
+     "evidence_date": "2026-02-08",
      "generation": 6,
      "new_dominant_id": "<id0>",
      "new_dominant_name": "H3: winner_take_all \u2014 concentration drives capex and valuation",

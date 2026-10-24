@@ -222,6 +222,7 @@ async def population_shifts(
             new_dominant_id=row["new_dominant_id"],
             new_dominant_name=row["new_dominant_name"],
             evidence_count_at_shift=row["evidence_count_at_shift"],
+            evidence_date=row["evidence_ts"][:10] if row["evidence_ts"] else None,
         )
         for row in raw
     ]
