@@ -42,7 +42,8 @@ seed 0 of replay 10 below exactly.
 ## How it holds beliefs
 
 Belief lives at three levels, each revised by Bayesian updating
-([SPEC.md](SPEC.md) §3):
+([SPEC.md](SPEC.md) §3). The philosophy behind each rule, and where it falls
+short, is set out in [EPISTEMOLOGY.md](EPISTEMOLOGY.md).
 
 - **How strong is a relationship?** Each explanation's conditional
   probability tables, learned from the evidence.
