@@ -195,3 +195,18 @@ def test_rows_round_trip_gzipped(tmp_path):
     rows = [{"week": "2024-01-05", "family": "T_null"}, {"week": "2024-01-12", "family": "T_credit"}]
     replay.write_rows(tmp_path / "seed0.jsonl.gz", rows)
     assert replay.read_rows(tmp_path / "seed0.jsonl.gz") == rows
+
+
+def test_records_only_the_links_the_leader_uses():
+    # Level 2 switches a link off when the evidence makes it unlikely to exist;
+    # the engine no longer reasons with it, so the replay must not count it held.
+    from uuid import uuid4
+    from src.domains.test_domain_v1.domain import _var_list
+    from src.engine.schemas import DependencyEdge
+    from src.engine.services.programmes import unconnected
+    start = unconnected("test-domain-v1", _var_list())
+    a, b, c = (start.get_variable_by_name(n).variable_id for n in "ABC")
+    used = DependencyEdge(edge_id=uuid4(), parent_variable_id=a, child_variable_id=b)
+    off = DependencyEdge(edge_id=uuid4(), parent_variable_id=b, child_variable_id=c, enabled=False)
+    leader = start.model_copy(update={"edges": [used, off]})
+    assert replay.held_links(leader) == [f"{a}>{b}"]

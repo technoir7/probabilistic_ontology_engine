@@ -80,7 +80,7 @@ def run(history: dict, seed: int, start: date, end: date, credit: str = fh.CREDI
             "week": week.isoformat(),
             "leader": str(now.candidate_id),
             "family": now.lineage,
-            "edges": sorted(f"{e.parent_variable_id}>{e.child_variable_id}" for e in now.edges),
+            "edges": held_links(now),
             "leader_ll": leader_ll,
             "independent_ll": independent_ll,
             "observed": sum(a.missingness.value != "MISSING" for a in record.observed_assignments),
@@ -97,6 +97,13 @@ def run(history: dict, seed: int, start: date, end: date, credit: str = fh.CREDI
     return rows
 
 
+def held_links(candidate: OntologyCandidate) -> list[str]:
+    """The links CANDIDATE reasons with, as "parent_id>child_id". Not those
+    edge existence has switched off: replays 11–14 as first run counted
+    those as held."""
+    return sorted(f"{e.parent_variable_id}>{e.child_variable_id}" for e in candidate.get_active_edges())
+
+
 def programmes(active: list[OntologyCandidate], leader: OntologyCandidate) -> dict:
     """Each surviving programme's best candidate: the evidence for the leader
     over it (what pruning judges), its links, the evidence it has been scored
@@ -108,7 +115,7 @@ def programmes(active: list[OntologyCandidate], leader: OntologyCandidate) -> di
     for family, c in sorted(best.items()):
         pair = family.split("–") if "–" in family else None
         held = {frozenset(e) for e in c.edge_structure_signature()}
-        out[family] = {"log_bf": round(log_bayes_factor(leader, c), 3), "edges": len(c.edges),
+        out[family] = {"log_bf": round(log_bayes_factor(leader, c), 3), "edges": len(c.get_active_edges()),
                        "window": round(c.window_evidence, 1),
                        "core_kept": frozenset(pair) in held if pair else None}
     return out
