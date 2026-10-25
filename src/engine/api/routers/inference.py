@@ -50,8 +50,7 @@ async def inference_query(request: Request, body: QueryBodyIn) -> InferenceOut:
     # the dominant one, whatever was asked. The graph is the candidate's either way.
     raw = engine.query(iq) if weighted else engine.inference_service.query_candidate(cand, iq)
     dist = raw.get("posteriors", {}).get(target_var.name, {})
-    # P(True) for BOOLEAN variables; first value otherwise
-    target_prob = presenters.p_true(dist)
+    target_level, target_degree = presenters.reading(dist, target_var)
 
     # Build graph
     thresholds = engine.thresholds(domain_id)
@@ -60,13 +59,10 @@ async def inference_query(request: Request, body: QueryBodyIn) -> InferenceOut:
     nodes: list[GraphNodeOut] = []
     for v in cand.variables:
         node_status = presenters.node_status_label(v.name, target_var.name, cand, explore_lo, explore_hi)
-        prob: float | None = None
-        if v.name == target_var.name:
-            prob = target_prob
         nodes.append(GraphNodeOut(
             id=v.name,
             label=v.name,
-            probability=prob,
+            degree=target_degree if v.name == target_var.name else None,
             status=node_status,
         ))
 
@@ -98,7 +94,9 @@ async def inference_query(request: Request, body: QueryBodyIn) -> InferenceOut:
     return InferenceOut(
         candidate_id=str(cand.candidate_id),
         target_variable=target_var.name,
-        target_probability=target_prob,
+        target_level=target_level,
+        target_degree=target_degree,
+        target_distribution={str(k): float(p) for k, p in dist.items()},
         nodes=nodes,
         edges=edges,
         frontier_edges=frontier,

@@ -11,7 +11,7 @@ from src.domains.sovereign_debt_v1.domain import SovereignDebtV1, get_variables
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.model.errors import EvidenceUnavailable
 from src.engine.runtime.ingestion import ingest_and_learn, learn_new_records, rebuild
-from tests.fakes import soft_record
+from tests.fakes import fake_record
 
 DOMAIN_ID = "sovereign-debt-v1"
 
@@ -24,7 +24,7 @@ def _engine():
 
 
 def _same_observations_every_week(target: date):
-    record = soft_record(get_variables().values(), date(2026, 1, 4), seed="same")
+    record = fake_record(get_variables().values(), date(2026, 1, 4), seed="same")
     return record.model_copy(update={"timestamp": record.timestamp.replace(day=target.day, month=target.month)})
 
 
@@ -47,7 +47,7 @@ def test_a_failed_learn_does_not_keep_the_record(monkeypatch):
     engine = _engine()
 
     async def fetch(target):
-        return soft_record(get_variables().values(), target, seed="x")
+        return fake_record(get_variables().values(), target, seed="x")
 
     def broken_learn(*_args, **_kwargs):
         raise RuntimeError("learn exploded")
@@ -63,13 +63,13 @@ def test_a_record_from_another_source_on_the_same_day_does_not_block_ingest():
     on a month end must not make the month's fetched record look already stored."""
     engine = _engine()
     target = date(2026, 3, 1)
-    report = soft_record(get_variables().values(), target, seed="report").model_copy(
+    report = fake_record(get_variables().values(), target, seed="report").model_copy(
         update={"evidence_id": uuid4(), "source_ref": "report:x"}
     )
     engine.ingest(report)
 
     async def fetch(day):
-        return soft_record(get_variables().values(), day, seed="fetched")
+        return fake_record(get_variables().values(), day, seed="fetched")
 
     assert asyncio.run(ingest_and_learn(engine, DOMAIN_ID, fetch, target)) == 1
     assert asyncio.run(ingest_and_learn(engine, DOMAIN_ID, fetch, target)) == 0
@@ -77,7 +77,7 @@ def test_a_record_from_another_source_on_the_same_day_does_not_block_ingest():
 
 def test_learn_new_records_learns_unseen_records_oldest_first(monkeypatch):
     engine = _engine()
-    records = [soft_record(get_variables().values(), date(2026, 3, d), seed=d) for d in (15, 1, 8)]
+    records = [fake_record(get_variables().values(), date(2026, 3, d), seed=d) for d in (15, 1, 8)]
     learned_order = []
     real_learn = engine.learn
     monkeypatch.setattr(engine, "learn", lambda batch, domain: (learned_order.extend(r.timestamp.day for r in batch), real_learn(batch, domain))[1])
@@ -90,17 +90,17 @@ def test_learn_new_records_learns_unseen_records_oldest_first(monkeypatch):
 
 def test_rebuild_relearns_fetched_and_supplied_evidence_in_date_order():
     engine = _engine()
-    stale = soft_record(get_variables().values(), date(2025, 1, 5), seed="stale")
+    stale = fake_record(get_variables().values(), date(2025, 1, 5), seed="stale")
     engine.ingest(stale)
     engine.learn([stale], DOMAIN_ID)
-    supplied = [soft_record(get_variables().values(), date(2026, 3, 10), seed="report").model_copy(
+    supplied = [fake_record(get_variables().values(), date(2026, 3, 10), seed="report").model_copy(
         update={"evidence_id": uuid4(), "source_ref": "report:x"})]
     failing_day = date(2026, 3, 15)
 
     async def fetch(day):
         if day == failing_day:
             raise EvidenceUnavailable("no input")
-        return soft_record(get_variables().values(), day, seed="fetched")
+        return fake_record(get_variables().values(), day, seed="fetched")
 
     targets = [date(2026, 3, 1), date(2026, 3, 8), failing_day]
     result = asyncio.run(rebuild(engine, DOMAIN_ID, fetch, targets, supplied, pause_s=0, sleep=_no_sleep))
@@ -132,7 +132,7 @@ def test_a_rebuild_retries_a_failed_fetch_and_reports_what_it_still_missed():
             raise IOError("FRED API HTTP 500")
         if day == empty:
             raise EvidenceUnavailable("no input")
-        return soft_record(get_variables().values(), day, seed="fetched")
+        return fake_record(get_variables().values(), day, seed="fetched")
 
     targets = [date(2026, 3, 1), flaky, down, empty]
     result = asyncio.run(rebuild(engine, DOMAIN_ID, fetch, targets, [], pause_s=0, sleep=_no_sleep))
@@ -147,7 +147,7 @@ def test_a_rebuild_that_fetches_nothing_keeps_the_domain():
     it is kept rather than reset to empty."""
     import pytest
     engine = _engine()
-    kept = soft_record(get_variables().values(), date(2025, 1, 5), seed="kept")
+    kept = fake_record(get_variables().values(), date(2025, 1, 5), seed="kept")
     engine.ingest(kept)
     engine.learn([kept], DOMAIN_ID)
 
@@ -164,14 +164,14 @@ def test_a_rebuild_whose_fetches_mostly_fail_keeps_the_domain():
     the window. Relearning from the few days it gave would throw away a
     longer history, so the domain is kept."""
     engine = _engine()
-    kept = soft_record(get_variables().values(), date(2025, 1, 5), seed="kept")
+    kept = fake_record(get_variables().values(), date(2025, 1, 5), seed="kept")
     engine.ingest(kept)
     engine.learn([kept], DOMAIN_ID)
     recent = date(2026, 3, 22)
 
     async def fetch(day):
         if day == recent:
-            return soft_record(get_variables().values(), day, seed="fetched")
+            return fake_record(get_variables().values(), day, seed="fetched")
         raise IOError("only the last week is served")
 
     targets = [date(2026, 3, 1), date(2026, 3, 8), date(2026, 3, 15), recent]

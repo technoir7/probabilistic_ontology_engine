@@ -2,131 +2,59 @@
  "assignments": [
   [
    "UnemploymentRising",
-   false,
-   "SOFT_OBSERVED",
+   "low",
+   "OBSERVED",
    0.5,
-   [
-    [
-     "False",
-     0.95
-    ],
-    [
-     "True",
-     0.05
-    ]
-   ]
+   []
   ],
   [
    "WageInflationPersistent",
-   false,
-   "SOFT_OBSERVED",
+   "mid",
+   "OBSERVED",
    0.55,
-   [
-    [
-     "False",
-     0.617
-    ],
-    [
-     "True",
-     0.383
-    ]
-   ]
+   []
   ],
   [
    "JobOpeningsFalling",
-   true,
-   "SOFT_OBSERVED",
+   "high",
+   "OBSERVED",
    0.6,
-   [
-    [
-     "False",
-     0.284
-    ],
-    [
-     "True",
-     0.716
-    ]
-   ]
+   []
   ],
   [
    "LayoffCycleBeginning",
-   false,
-   "SOFT_OBSERVED",
+   "low",
+   "OBSERVED",
    0.65,
-   [
-    [
-     "False",
-     0.851
-    ],
-    [
-     "True",
-     0.149
-    ]
-   ]
+   []
   ],
   [
    "LaborProductivityWeak",
-   false,
-   "SOFT_OBSERVED",
+   "mid",
+   "OBSERVED",
    0.7,
-   [
-    [
-     "False",
-     0.518
-    ],
-    [
-     "True",
-     0.482
-    ]
-   ]
+   []
   ],
   [
    "ParticipationRateFalling",
-   true,
-   "SOFT_OBSERVED",
+   "high",
+   "OBSERVED",
    0.75,
-   [
-    [
-     "False",
-     0.185
-    ],
-    [
-     "True",
-     0.815
-    ]
-   ]
+   []
   ],
   [
    "RealWageGrowthPositive",
-   false,
-   "SOFT_OBSERVED",
+   "low",
+   "OBSERVED",
    0.8,
-   [
-    [
-     "False",
-     0.752
-    ],
-    [
-     "True",
-     0.248
-    ]
-   ]
+   []
   ],
   [
    "TightLaborMarket",
-   true,
-   "SOFT_OBSERVED",
+   "mid",
+   "OBSERVED",
    0.85,
-   [
-    [
-     "False",
-     0.419
-    ],
-    [
-     "True",
-     0.581
-    ]
-   ]
+   []
   ]
  ],
  "confidence": 0.675,

@@ -17,6 +17,7 @@ from . import fred_history as fh
 from . import scoring
 from .replay import DATA, fridays, read_rows
 from src.domains.macro_regime_v1.ingestion.pipeline import compute_snapshot
+from src.domains.sources.grades import level_of
 
 SEEDS = range(5)
 DOCS = Path(__file__).parents[1] / "docs"
@@ -67,10 +68,10 @@ def credit_agreement(history: dict) -> dict:
     for w in weeks:
         a = compute_snapshot(fh.week_inputs(history, w, fh.CREDIT_STAND_IN), w)
         b = compute_snapshot(fh.week_inputs(history, w, fh.CREDIT), w)
-        if "CreditSpreadStress" in a.missing or "CreditSpreadStress" in b.missing:
+        if "CreditSpreadStress" not in a.signals or "CreditSpreadStress" not in b.signals:
             continue
         total += 1
-        same += a.credit_spread_stress == b.credit_spread_stress
+        same += level_of(a.signals["CreditSpreadStress"]) == level_of(b.signals["CreditSpreadStress"])
     return {"weeks": total, "same_state": same}
 
 

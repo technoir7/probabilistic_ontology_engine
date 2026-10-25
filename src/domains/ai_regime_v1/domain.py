@@ -7,51 +7,53 @@ Track which causal story best explains the current AI investment cycle.
 This is an interpretive analysis domain, not a prediction engine.
 The engine forms its own hypotheses about how these signals connect.
 
-Variables (all BOOLEAN)
------------------------
+Variables (levels: low, mid, high; REFACTOR_SPEC D25)
+-----------------------------------------------------
+Each is read as how far its signal lies from the line below (high: well
+above it, mid: near it, low: well below). The lines:
 SemiconductorMomentum
-    True  = SOX index 13-week return z-score > 0.5 (sustained chip demand)
-    False = SOX momentum at or below trend
+    high  = SOX index 13-week return z-score > 0.5 (sustained chip demand)
+    low   = SOX momentum at or below trend
     Signal: semiconductor sector as the physical infrastructure signal
 
 MarketConcentrationExtreme
-    True  = QQQ/RSP (equal-weight S&P) ratio 13-week z-score > 0.5
+    high  = QQQ/RSP (equal-weight S&P) ratio 13-week z-score > 0.5
             (tech outperforming broad market on a concentration basis)
-    False = market breadth normal; gains are distributed
+    low   = market breadth normal; gains are distributed
     Signal: capital concentration in AI/tech names
 
 HyperscalerCapexAccelerating
-    True  = Average YoY capex growth for MSFT/GOOGL/AMZN/META > 20%
-    False = capex growth below 20% threshold
+    high  = Average YoY capex growth for MSFT/GOOGL/AMZN/META > 20%
+    low   = capex growth below 20% threshold
     Signal: actual dollars being deployed in AI infrastructure; observable
             from SEC EDGAR 10-Q filings
 
 TechValuationDetached
-    True  = QQQ price z-score vs 3-year history > 1.0
+    high  = QQQ price z-score vs 3-year history > 1.0
             (proxy for elevated P/E vs recent history)
-    False = tech valuations within 1σ of recent 3-year range
+    low   = tech valuations within 1σ of recent 3-year range
     Signal: narrative premium; markets pricing in future AI gains that
             have not yet materialised in earnings
 
 IPInvestmentRising
-    True  = FRED Y033RC1Q027SBEA 4-quarter growth rate > historical median
-    False = IP investment growth below historical median
+    high  = FRED Y033RC1Q027SBEA 4-quarter growth rate > historical median
+    low   = IP investment growth below historical median
     Signal: business investment in intellectual property (software, R&D,
             database assets); the productive deployment channel
 
 LaborProductivityImproving
-    True  = FRED PRS85006092 (nonfarm business labor productivity) YoY > 2.0%
-    False = productivity growth at or below threshold
+    high  = FRED PRS85006092 (nonfarm business labor productivity) YoY > 2.0%
+    low   = productivity growth at or below threshold
     Signal: whether AI is actually showing up in measured economic productivity
 
 BroadEconomicLift
-    True  = FRED A191RL1Q225SBEA (real GDP growth, annualized) > 2.5%
-    False = GDP growth at or below threshold
+    high  = FRED A191RL1Q225SBEA (real GDP growth, annualized) > 2.5%
+    low   = GDP growth at or below threshold
     Signal: whether the AI cycle is lifting the broad economy
 
 AIRiskPremiumCompressed
-    True  = VIX level z-score (inverted) signals VIX below historical average
-    False = VIX elevated; risk premium not compressed
+    high  = VIX level z-score (inverted) signals VIX below historical average
+    low   = VIX elevated; risk premium not compressed
     Signal: market-implied risk appetite; compressed risk premium is a
             necessary (not sufficient) condition for sustained AI narrative
 
@@ -89,7 +91,8 @@ Reasoning:
 """
 from __future__ import annotations
 
-from ..sources.structure import boolean_variables, with_lags
+from ..sources.grades import graded_variables
+from ..sources.structure import with_lags
 from ...engine.schemas import (
     EdgeExistenceThresholdConfig,
     Variable,
@@ -117,7 +120,7 @@ _VAR_NAMES = [
     "AIRiskPremiumCompressed",
 ]
 
-_VARIABLE_DEFS: dict[str, Variable] = boolean_variables(_MODULE_ID, _VAR_NAMES)
+_VARIABLE_DEFS: dict[str, Variable] = graded_variables(_MODULE_ID, _VAR_NAMES)
 
 
 def get_variables() -> dict[str, Variable]:

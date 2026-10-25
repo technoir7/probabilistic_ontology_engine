@@ -57,13 +57,13 @@ def persistence_candidate(engine):
 def test_the_first_week_is_scored_without_last_weeks_values():
     engine = ProbabilisticOntologyEngine(db_path=":memory:", random_seed=0)
     engine.register_domain(MacroRegimeV1())
-    current = {n: True for n in get_variables_with_lags() if not n.endswith("_prev")}
+    current = {n: "mid" for n in get_variables_with_lags() if not n.endswith("_prev")}
     ll = engine.learning_service.compute_log_likelihood([record(current)], persistence_candidate(engine))
-    assert math.isclose(ll, 8 * math.log(0.5))  # even tables: one bit a signal, not zero
+    assert math.isclose(ll, 8 * math.log(1 / 3))  # even tables over three levels, not zero
 
 
 def test_last_weeks_values_alone_are_not_scored():
     engine = ProbabilisticOntologyEngine(db_path=":memory:", random_seed=0)
     engine.register_domain(MacroRegimeV1())
-    lags = {n: True for n in get_variables_with_lags() if n.endswith("_prev")}
+    lags = {n: "mid" for n in get_variables_with_lags() if n.endswith("_prev")}
     assert engine.learning_service.compute_log_likelihood([record(lags)], persistence_candidate(engine)) == 0.0

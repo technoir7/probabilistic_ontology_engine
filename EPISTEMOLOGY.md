@@ -240,36 +240,98 @@ test is the next replay, on evidence the design has not seen.
 
 ### Concepts applied by judgment
 
-Each week, a domain reads its sources and decides, for each of its concepts,
-whether the world falls under it: whether the yield curve is inverted, or
-whether volatility is above its usual level. Kant calls this *determining
-judgment*: subsuming a case under a concept already given (*Critique of
-the Power of Judgment*, Introduction IV). The rules for it, such as which
-threshold and which window, are written by the domain's author. The engine
-inherits them as given.
+Each week, a domain reads its sources and judges, for each of its concepts,
+where the world stands under it: how far the yield curve is from inverting,
+or how far volatility is above or below its usual level. Kant calls this
+*determining judgment*: subsuming a case under a concept already given
+(*Critique of the Power of Judgment*, Introduction IV). The rules for it,
+such as which line and which window, are written by the domain's author.
+The engine inherits them as given.
 
-### Evidence is uncertain, and is kept uncertain
+### Degree, not doubt
 
-A judgment near its threshold is not certain. Volatility a hair above its
-usual level is barely "elevated". So the domain does not record true or
-false. It records a probability that the concept applies, which rises
-smoothly with distance past the threshold. The engine learns from that
-probability as it stands, by fractional counts, rather than rounding it.
+A measured signal is a precise number. Volatility this week is 2.3 of its
+usual spreads above its median; nobody is unsure of that. What a judgment
+near the line is unsure of is not the number but the *word*: whether 2.3
+spreads is "elevated". The engine used to treat this as a doubt. It turned
+the distance past the line into a probability that the concept applied
+(0.73, say) and learned from it as if the world were either elevated or not
+and the evidence only blurry about which. That was a category mistake: a
+degree passed off as ignorance. It also did harm. Taking each signal's
+"probability" apart from every other's, the engine counted two signals that
+always moved together, each read at 70%, as disagreeing in 42% of weeks
+(0.7 × 0.3 twice). Relations were blurred toward independence, and the
+engine held fewer than its evidence supported: on macro's last 100 weeks, 3
+links where the same weeks read as levels support 8.
 
-Classical conditioning assumes evidence is certain: one learns that E,
-and conditions on it. Richard Jeffrey argued that experience often does not
-make anything certain; it shifts our probabilities over a partition without
+Three views of what such a concept is were weighed (D25):
+- **A sharp fact, unseen.** "Credit stress" is on or off, and the readings
+  are blurry glimpses of which. This is epistemicism about vagueness: a
+  vague word has a sharp cut-off we cannot know (Williamson, *Vagueness*,
+  1994). In economics it is the regime-switching view (Hamilton,
+  *Econometrica*, 1989). It makes a real claim that can be tested: if the
+  regimes are there, the raw numbers should fall into two humps. In macro's
+  23 years none does. Every signal lies on one hump or one hump with a long
+  tail; the two that looked two-sided did so only because their scale ran
+  most weeks off its ends.
+- **A matter of degree.** There is only more or less, and the line is drawn
+  by us. Locke says this of most of our sorts: their boundaries are "the
+  workmanship of the understanding" (*Essay* III.iii.13–14). Kant goes
+  further in the Anticipations of Perception: in every appearance the real
+  that is sensed has an intensive magnitude, a degree, with a continuum of
+  lesser degrees between it and nothing (*Critique of Pure Reason*,
+  A166/B207). Peirce made continuity a principle of method (synechism, CP
+  6.169).
+- **What the engine did:** neither, coherently.
+
+The engine now takes the second view for every measured signal. A signal is
+read as one of three levels, observed exactly: low (more than half a unit
+below its line), middle (within half a unit) and high (more than half a unit
+above), where the unit is the signal's own scale (a z-score, or a unit the
+domain sets). Three is not arbitrary. Kant's table gives quality three
+moments, reality, negation and *limitation* (A80/B106); a yes/no concept
+uses only the first two, and limitation, the real present in some degree,
+is what was missing. Half a unit splits a standardised signal into three
+roughly equal bands, so each level carries as much as it can. The cut was
+fixed in advance on that ground, and it was also the better of the two
+tried on macro (8 links at 100 weeks, against 7 at a whole unit); the
+choice was not tuned further.
+
+Two costs are conceded:
+- **A level is coarser than the number.** 0.6 and 2.9 units above the line
+  are both "high". Finer grades would lose less, but each costs evidence.
+- **Levels cost evidence.** A relation between two three-level signals has
+  four times the free parameters of one between two yes/no signals, so
+  BIC's penalty is larger and a weak relation takes longer to earn. Finer
+  concepts make the engine believe less, for longer: an old empiricist
+  point.
+
+### Testimony is doubt, and is kept as doubt
+
+Not every input is a measurement. Art's reports are read by a language model,
+which labels each concept true or false with a confidence that the label is
+right. That is testimony, and its confidence is a doubt about a yes/no claim,
+so art's concepts stay yes/no and its readings stay probabilities.
+
+Classical conditioning assumes evidence is certain: one learns that E, and
+conditions on it. Richard Jeffrey argued that experience often does not make
+anything certain; it shifts our probabilities over a partition without
 settling any cell of it, and belief should move accordingly (*The Logic of
-Decision*, 1965, ch. 11). The engine's handling of soft evidence is in this
-spirit: an observation moves the engine's counts as far as it warrants and
-no further.
+Decision*, 1965, ch. 11). Testimony is such experience. The engine learns
+from it by fractional counts, moving as far as the testimony warrants and no
+further. One flaw remains: each label's doubt is counted apart from the
+others', which blurs relations between testified concepts as it once blurred
+measured ones. The cure is to treat the true value as hidden and each label
+as evidence about it (Pearl's virtual evidence), learned by expectation
+maximisation (NEXT.md problem 9).
 
-The principle has a corollary the engine was made to honour: **a belief
-should be judged against the evidence it was given, not against a
-sharpened version of it.** Judged against signals rounded to true or false,
-the engine looked timid. Judged against the probabilities the evidence
-actually gave, it was well calibrated (D21; replay 9). The timidity was in
-the measure, not the believer.
+A corollary, learned on macro while its signals were still read as
+probabilities, holds for testimony: **a belief should be judged against the
+evidence it was given, not against a sharpened version of it.** Judged
+against signals rounded to true or false, the engine looked timid. Judged
+against the probabilities the evidence actually gave, it was well
+calibrated (D21; replay 9). The timidity was in the measure, not the
+believer.
 
 ### Absence of evidence is not evidence of indifference
 
@@ -574,10 +636,12 @@ probability it gave each signal before seeing it, then how often signals
 given that probability came true.
 
 It is judged in two ways:
-- **Against what the evidence said:** the standard it should meet, because
-  its evidence is soft (section 3).
-- **Against the evidence rounded to true or false:** kept so that the
-  difference between the two is visible.
+- **Against what the evidence said:** the standard it should meet where its
+  evidence is testimony, which is uncertain (section 3).
+- **Against what came:** for a measured signal the level is observed
+  exactly, so the two judgments are one. A graded signal is judged level by
+  level: the probability it gave each of low, middle and high, against
+  whether that level came (D25).
 
 Leading with persistence, it is calibrated to within about five points. It
 is slightly unsure in the middle, saying 56% where the evidence says 65%
@@ -651,13 +715,20 @@ deliberate cost:
    explanation does not say that the evidence could not decide.
 4. **The razor is partly practical.** BIC ranks explanations partly because
    structures must stay small enough to compute (section 5).
-5. **Uncertainty is rounded where it should not be.** Last week's values
-   are given to this week's judgments rounded to true or false, though they
-   were observed as probabilities. This is the likely cause of its
-   uncertainty in the middle range (NEXT.md problem 2).
-6. **Finer evidence costs too much.** Reading each signal in five degrees
-   made the engine better calibrated, but it could then afford only two or
-   three relations (replay 8, reverted; NEXT.md problem 3).
+5. **Testimony is rounded where it should not be.** For art, whose
+   readings are testimony, last week's labels are given to this week's
+   judgments rounded to true or false, and each label's doubt is counted
+   apart from the others' (section 3; NEXT.md problems 2 and 9). Measured
+   signals no longer have this flaw: their levels are observed exactly
+   (D25).
+6. **Finer concepts cost evidence.** A relation is priced by every cell of
+   its table. Five levels, still read as probabilities, left room for only
+   two or three relations (replay 8, reverted). Three exact levels (D25)
+   cost less, a third of five's price per cause, but a relation between
+   two different signals is still dear, and most of what the engine can
+   afford is each signal's persistence. Tables that price a relation by
+   the levels' order would cost a few numbers per cause (NEXT.md problem
+   3).
 7. **The conventions are conventions.** The 100-to-1 threshold, the
    two-year half-life, the crisis threshold and the halving are
    conventional choices, fixed before the replays that tested them. They
@@ -673,7 +744,8 @@ deliberate cost:
 | Term | Meaning here |
 |---|---|
 | Concept (signal) | a domain's variable, such as "inflation shock", defined by its author |
-| Soft evidence | a week's observation of a concept, recorded as the probability that it applies |
+| Level | how far a measured signal lies from the line that names its concept: low, middle or high, observed exactly (D25) |
+| Soft evidence | testimony about a concept (art's reports), recorded as the probability that it applies |
 | Relation (edge) | a dependence of one concept on another, with a probability that it exists |
 | Explanation (candidate) | one whole structure: concepts, relations and strengths |
 | Programme (lineage) | a connection prompted from the unconnected start, named for its pair ("A–C"), and every explanation descended from it |
@@ -696,6 +768,8 @@ deliberate cost:
   the Royal Statistical Society A* 147 (1984).
 - Duhem, P. *The Aim and Structure of Physical Theory* (1906).
 - Feyerabend, P. *Against Method*. London, 1975.
+- Hamilton, J. D. "A new approach to the economic analysis of nonstationary
+  time series and the business cycle." *Econometrica* 57 (1989).
 - Hanson, N. R. *Patterns of Discovery*. Cambridge, 1958.
 - Jeffrey, R. C. *The Logic of Decision*. New York, 1965, ch. 11.
 - Jeffreys, H. *Theory of Probability*. Oxford, 1939; 3rd ed. 1961.
@@ -708,9 +782,11 @@ deliberate cost:
   Programmes." In Lakatos and Musgrave (eds.), *Criticism and the Growth of
   Knowledge*. Cambridge, 1970.
 - Locke, J. *An Essay Concerning Human Understanding*. London, 1690,
-  II.i.2.
+  II.i.2, III.iii.13–14.
 - Peirce, C. S. *Collected Papers*, ed. Hartshorne and Weiss. Cambridge,
-  Mass., 1931–35, 5.189.
+  Mass., 1931–35, 5.189, 6.169.
+- Pearl, J. *Probabilistic Reasoning in Intelligent Systems*. San Mateo,
+  1988.
 - Popper, K. R. *The Logic of Scientific Discovery* (1934; English 1959),
   §§65–68; *Conjectures and Refutations* (1963); *Objective Knowledge*
   (1972).
@@ -721,3 +797,4 @@ deliberate cost:
   6 (1978).
 - Verma, T. and Pearl, J. "Equivalence and synthesis of causal models."
   *Proceedings of UAI*, 1990.
+- Williamson, T. *Vagueness*. London, 1994.

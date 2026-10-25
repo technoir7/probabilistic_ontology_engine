@@ -8,45 +8,47 @@ tightening cycles, layoff cycle inception, structural labor force shifts, and
 wage-price spiral dynamics.  Variables bridge labor market conditions with
 inflation and productivity outcomes.
 
-Variables (all BOOLEAN)
------------------------
+Variables (levels: low, mid, high; REFACTOR_SPEC D25)
+-----------------------------------------------------
+Each is read as how far its signal lies from the line below (high: well
+above it, mid: near it, low: well below). The lines:
 UnemploymentRising
-    True  = UNRATE z-score vs 12-month mean is positive (unemployment rising)
-    False = unemployment stable or falling
+    high  = UNRATE z-score vs 12-month mean is positive (unemployment rising)
+    low   = unemployment stable or falling
 
 WageInflationPersistent
-    True  = CES0500000003 YoY growth rate above historical mean
-    False = wage growth at or below trend
+    high  = CES0500000003 YoY growth rate above historical mean
+    low   = wage growth at or below trend
     Signal: labor market pricing power flowing to workers
 
 JobOpeningsFalling
-    True  = JTSJOL z-score is negative (job openings declining vs history)
-    False = job openings at or above historical level
+    high  = JTSJOL z-score is negative (job openings declining vs history)
+    low   = job openings at or above historical level
     Signal: falling openings = demand for labor weakening (inverted z-score)
 
 LayoffCycleBeginning
-    True  = ICSA (initial claims) z-score >= +1.0 (claims rising)
-    False = initial claims within normal range
+    high  = ICSA (initial claims) z-score >= +1.0 (claims rising)
+    low   = initial claims within normal range
     Signal: rising layoffs = early recessionary labor signal
 
 LaborProductivityWeak
-    True  = PRS85006092 (nonfarm business real output/hour) YoY < historical mean
-    False = productivity growing at or above trend
+    high  = PRS85006092 (nonfarm business real output/hour) YoY < historical mean
+    low   = productivity growing at or above trend
     Signal: weak productivity = wage growth not matched by output
 
 ParticipationRateFalling
-    True  = CIVPART z-score is negative (participation declining)
-    False = participation stable or rising
+    high  = CIVPART z-score is negative (participation declining)
+    low   = participation stable or rising
     Signal: structural exit from labor force (inverted z-score)
 
 RealWageGrowthPositive
-    True  = CES0500000003 YoY minus CPIAUCSL YoY is positive
-    False = real wages flat or falling
+    high  = CES0500000003 YoY minus CPIAUCSL YoY is positive
+    low   = real wages flat or falling
     Signal: workers gaining purchasing power in real terms
 
 TightLaborMarket
-    True  = UNRATE inverted z-score + JTSJOL z-score composite is positive
-    False = labor market conditions loosening
+    high  = UNRATE inverted z-score + JTSJOL z-score composite is positive
+    low   = labor market conditions loosening
     Signal: dual confirmation of labor market tightness
 
 FRED series used
@@ -64,7 +66,8 @@ Cadence: WEEKLY (every Monday at 09:00 UTC; monthly/quarterly series
 """
 from __future__ import annotations
 
-from ..sources.structure import boolean_variables, with_lags
+from ..sources.grades import graded_variables
+from ..sources.structure import with_lags
 from ...engine.schemas import (
     EdgeExistenceThresholdConfig,
     Variable,
@@ -83,7 +86,7 @@ _VAR_NAMES = [
     "TightLaborMarket",
 ]
 
-_VARIABLE_DEFS: dict[str, Variable] = boolean_variables(_MODULE_ID, _VAR_NAMES)
+_VARIABLE_DEFS: dict[str, Variable] = graded_variables(_MODULE_ID, _VAR_NAMES)
 
 
 def get_variables() -> dict[str, Variable]:

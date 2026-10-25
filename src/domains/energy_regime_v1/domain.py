@@ -5,49 +5,51 @@ Purpose
 -------
 Tracks evolving causal narratives in global energy markets: supply shocks,
 demand-driven price surges, geopolitical risk premiums, and the structural
-transition toward renewables.  All variables are Boolean regime indicators
-derived from futures prices, ETF momentum, and macro data.
+transition toward renewables.  All variables are regime indicators, read
+as levels, derived from futures prices, ETF momentum, and macro data.
 
-Variables (all BOOLEAN)
------------------------
+Variables (levels: low, mid, high; REFACTOR_SPEC D25)
+-----------------------------------------------------
+Each is read as how far its signal lies from the line below (high: well
+above it, mid: near it, low: well below). The lines:
 OilPriceSurge
-    True  = CL=F (WTI crude) 13-week return z-score >= +1.0
-    False = crude prices stable or falling
+    high  = CL=F (WTI crude) 13-week return z-score >= +1.0
+    low   = crude prices stable or falling
     Signal: sustained oil price rally vs recent history
 
 NatGasPriceSurge
-    True  = NG=F 13-week return z-score >= +1.0
-    False = gas prices stable or falling
+    high  = NG=F 13-week return z-score >= +1.0
+    low   = gas prices stable or falling
     Signal: sustained natural gas price rally
 
 EnergyEquityMomentum
-    True  = XLE 13-week return z-score >= +0.5 (energy sector outperforming)
-    False = energy equities lagging
+    high  = XLE 13-week return z-score >= +0.5 (energy sector outperforming)
+    low   = energy equities lagging
     Signal: market expects sustained energy profitability
 
 OPECSupplyConstraint
-    True  = DCOILWTICO (WTI FRED) 13-week momentum is positive and above historical mean
-    False = oil prices not trending up (supply not constrained)
+    high  = DCOILWTICO (WTI FRED) 13-week momentum is positive and above historical mean
+    low   = oil prices not trending up (supply not constrained)
     Signal: supply-side constraint driving price momentum
 
 RenewablesDisplacement
-    True  = ICLN/XLE price ratio above its 52-week z-score (+1.0)
-    False = traditional energy outperforming renewables
+    high  = ICLN/XLE price ratio above its 52-week z-score (+1.0)
+    low   = traditional energy outperforming renewables
     Signal: clean energy momentum relative to fossil fuel sector
 
 EnergyInflationPersistent
-    True  = CPIENGSL (energy CPI) 12-month YoY > 5%
-    False = energy price inflation contained
+    high  = CPIENGSL (energy CPI) 12-month YoY > 5%
+    low   = energy price inflation contained
     Signal: energy prices driving CPI volatility
 
 GeopoliticalRiskElevated
-    True  = DCOILWTICO 90-day return volatility above historical 75th percentile
-    False = oil price volatility within normal range
+    high  = DCOILWTICO 90-day return volatility above historical 75th percentile
+    low   = oil price volatility within normal range
     Signal: geopolitical uncertainty driving oil price swings
 
 DemandDestructionRisk
-    True  = INDPRO 3-month change is negative AND UNRATE is rising
-    False = industrial production stable or unemployment not rising
+    high  = INDPRO 3-month change is negative AND UNRATE is rising
+    low   = industrial production stable or unemployment not rising
     Signal: economic slowdown reducing energy demand
 
 Data sources
@@ -59,7 +61,8 @@ Cadence: WEEKLY (every Monday at 09:00 UTC)
 """
 from __future__ import annotations
 
-from ..sources.structure import boolean_variables, with_lags
+from ..sources.grades import graded_variables
+from ..sources.structure import with_lags
 from ...engine.schemas import (
     EdgeExistenceThresholdConfig,
     Variable,
@@ -78,7 +81,7 @@ _VAR_NAMES = [
     "DemandDestructionRisk",
 ]
 
-_VARIABLE_DEFS: dict[str, Variable] = boolean_variables(_MODULE_ID, _VAR_NAMES)
+_VARIABLE_DEFS: dict[str, Variable] = graded_variables(_MODULE_ID, _VAR_NAMES)
 
 
 def get_variables() -> dict[str, Variable]:

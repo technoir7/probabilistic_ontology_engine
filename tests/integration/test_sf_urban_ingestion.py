@@ -4,23 +4,21 @@ Integration tests — SF urban domain ingestion pipeline.
 Test inventory
 --------------
 TEST-SF-01  Variable IDs stable across imports
-TEST-SF-04  _soft_bool clamped to [0.01, 0.99]
-TEST-SF-05  compute_snapshot falls back to 0.5 with empty data
-TEST-SF-06  High crime count → P(CrimeIndexElevated) > 0.5
-TEST-SF-07  Low crime count → P(CrimeIndexElevated) < 0.5
+TEST-SF-05  compute_snapshot with empty data gives no signal (all MISSING)
+TEST-SF-06  High crime count → CrimeIndexElevated high
+TEST-SF-07  Low crime count → CrimeIndexElevated low
 TEST-SF-08  build_evidence_record maps all 8 UUIDs
-TEST-SF-09  build_evidence_record produces SOFT_OBSERVED
+TEST-SF-09  build_evidence_record observes every variable exactly, at a level (D25)
 TEST-SF-11  Existence thresholds valid
 TEST-SF-12  Domain registers in engine, evidence ingested
 TEST-SF-14  SFGovClient returns empty lists on HTTP error (graceful failure)
 TEST-SF-15  Full pipeline fetch_evidence with mocked clients
-TEST-SF-16  Rising tech employment → P(TechHiringAccelerating) > 0.5
-TEST-SF-17  Falling tech employment → P(TechHiringAccelerating) < 0.5
+TEST-SF-16  Rising tech employment → TechHiringAccelerating high
+TEST-SF-17  Falling tech employment → TechHiringAccelerating low
 """
 from __future__ import annotations
 
 import asyncio
-import math
 import os
 import sys
 from datetime import date, timedelta
@@ -29,9 +27,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
-import pytest
-
-from src.domains.sources.soft_evidence import sigmoid as _sigmoid
+from src.domains.sources.grades import LEVELS, level_of
 from src.domains.sf_urban_v1.domain import (
     SFUrbanV1,
     get_variables,
@@ -45,7 +41,6 @@ from src.domains.sf_urban_v1.ingestion.pipeline import (
     SFUrbanPipeline,
     SFUrbanSnapshot,
     compute_snapshot,
-    _soft_bool,
 )
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import EvidenceRecord, MissingnessType
@@ -145,54 +140,44 @@ def test_variable_ids_are_stable():
 
 
 # ---------------------------------------------------------------------------
-# TEST-SF-04 — _soft_bool clamped to [0.01, 0.99]
+# TEST-SF-05 — compute_snapshot with empty data gives no signal
 # ---------------------------------------------------------------------------
 
-@pytest.mark.parametrize("signal", [-100.0, -10.0, 0.0, 10.0, 100.0])
-def test_soft_bool_clamped(signal: float):
-    result = _soft_bool(signal)
-    assert 0.01 <= result <= 0.99
-    assert not math.isnan(result)
+def test_compute_snapshot_has_no_signal_with_empty_data():
+    """No input is MISSING, never a middle reading."""
+    assert compute_snapshot({}, {}, _TARGET_DATE).signals == {}
 
 
-# ---------------------------------------------------------------------------
-# TEST-SF-05 — compute_snapshot falls back to 0.5 with empty data
-# ---------------------------------------------------------------------------
-
-def test_compute_snapshot_falls_back_with_empty_data():
-    snap = compute_snapshot({}, {}, _TARGET_DATE)
-    assert snap.p_tech_hiring_accelerating == 0.5
-    assert snap.p_office_vacancy_falling == 0.5
-    assert snap.p_retail_closure_elevated == 0.5
-    assert snap.p_permit_activity_rising == 0.5
-    assert snap.p_crime_index_elevated == 0.5
-    assert snap.p_startup_formation_rising == 0.5
-    assert snap.p_foot_traffic_recovering == 0.5
-    assert snap.p_population_flow_positive == 0.5
+def test_a_sfgov_outage_leaves_its_variables_missing():
+    """SFGovClient returns [] on failure; the variables it feeds are MISSING."""
+    _, fred_data = _make_full_data()
+    snapshot = compute_snapshot({}, fred_data, _TARGET_DATE)
+    assert set(snapshot.signals) == {"TechHiringAccelerating", "FootTrafficRecovering", "PopulationFlowPositive"}
+    record = SFUrbanPipeline.build_evidence_record(snapshot)
+    missing = [a for a in record.observed_assignments if a.missingness == MissingnessType.MISSING]
+    assert len(missing) == 5
 
 
 # ---------------------------------------------------------------------------
-# TEST-SF-06 — High crime count → P(CrimeIndexElevated) > 0.5
+# TEST-SF-06 — High crime count → CrimeIndexElevated high
 # ---------------------------------------------------------------------------
 
 def test_high_crime_drives_crime_signal_high():
-    """Recent month with much higher incidents → P(CrimeIndexElevated) > 0.5."""
+    """Recent month with much higher incidents → CrimeIndexElevated high."""
     sfgov_data, fred_data = _make_full_data(crime_level="high")
     snap = compute_snapshot(sfgov_data, fred_data, _TARGET_DATE)
-    assert snap.p_crime_index_elevated > 0.5, \
-        f"Expected P > 0.5 for high crime, got {snap.p_crime_index_elevated:.3f}"
+    assert level_of(snap.signals["CrimeIndexElevated"]) == "high"
 
 
 # ---------------------------------------------------------------------------
-# TEST-SF-07 — Low crime count → P(CrimeIndexElevated) < 0.5
+# TEST-SF-07 — Low crime count → CrimeIndexElevated low
 # ---------------------------------------------------------------------------
 
 def test_low_crime_drives_crime_signal_low():
-    """Recent month with much lower incidents → P(CrimeIndexElevated) < 0.5."""
+    """Recent month with much lower incidents → CrimeIndexElevated low."""
     sfgov_data, fred_data = _make_full_data(crime_level="low")
     snap = compute_snapshot(sfgov_data, fred_data, _TARGET_DATE)
-    assert snap.p_crime_index_elevated < 0.5, \
-        f"Expected P < 0.5 for low crime, got {snap.p_crime_index_elevated:.3f}"
+    assert level_of(snap.signals["CrimeIndexElevated"]) == "low"
 
 
 # ---------------------------------------------------------------------------
@@ -211,20 +196,17 @@ def test_build_evidence_record_maps_all_uuids():
 
 
 # ---------------------------------------------------------------------------
-# TEST-SF-09 — build_evidence_record produces SOFT_OBSERVED
+# TEST-SF-09 — build_evidence_record observes every variable at a level
 # ---------------------------------------------------------------------------
 
-def test_build_evidence_record_all_soft_observed():
+def test_build_evidence_record_observes_every_variable_at_a_level():
     sfgov_data, fred_data = _make_full_data()
     snapshot = compute_snapshot(sfgov_data, fred_data, _TARGET_DATE)
     record = SFUrbanPipeline.build_evidence_record(snapshot)
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED
-        assert a.probabilities is not None
-        assert set(a.probabilities.keys()) == {True, False}
-        p_true = a.probabilities[True]
-        assert 0.01 <= p_true <= 0.99
-        assert abs(a.probabilities[True] + a.probabilities[False] - 1.0) < 0.01
+        assert a.missingness == MissingnessType.OBSERVED
+        assert a.probabilities is None
+        assert a.observed_value in LEVELS
 
 
 # ---------------------------------------------------------------------------
@@ -304,18 +286,18 @@ def test_fetch_evidence_full_pipeline_mocked():
     assert "FRED" in record.source_ref
 
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED
+        assert a.missingness == MissingnessType.OBSERVED
 
     mock_sfgov.fetch_all.assert_called_once_with(end_date=_TARGET_DATE)
     mock_fred.fetch_all_series.assert_called_once_with(end_date=_TARGET_DATE)
 
 
 # ---------------------------------------------------------------------------
-# TEST-SF-16 — Rising tech employment → P(TechHiringAccelerating) > 0.5
+# TEST-SF-16 — Rising tech employment → TechHiringAccelerating high
 # ---------------------------------------------------------------------------
 
 def test_rising_tech_employment_drives_signal_high():
-    """FRED info employment rising strongly YoY → P(TechHiringAccelerating) > 0.5.
+    """FRED info employment rising strongly YoY → TechHiringAccelerating high.
 
     Build a series where recent YoY growth is much higher than historical YoY
     growth, so the z-score is positive. Create variance in historical changes
@@ -345,16 +327,15 @@ def test_rising_tech_employment_drives_signal_high():
     sfgov_data = _sfgov(_make_incidents(80, [80, 82, 79, 81]))
 
     snap = compute_snapshot(sfgov_data, fred_data, _TARGET_DATE)
-    assert snap.p_tech_hiring_accelerating > 0.5, \
-        f"Expected P > 0.5 for rising tech employment, got {snap.p_tech_hiring_accelerating:.3f}"
+    assert level_of(snap.signals["TechHiringAccelerating"]) == "high"
 
 
 # ---------------------------------------------------------------------------
-# TEST-SF-17 — Falling tech employment → P(TechHiringAccelerating) < 0.5
+# TEST-SF-17 — Falling tech employment → TechHiringAccelerating low
 # ---------------------------------------------------------------------------
 
 def test_falling_tech_employment_drives_signal_low():
-    """FRED info employment falling YoY → P(TechHiringAccelerating) < 0.5."""
+    """FRED info employment falling YoY → TechHiringAccelerating low."""
     # Build employment data where recent < year-ago
     info_emp = []
     for i in range(24):
@@ -371,5 +352,4 @@ def test_falling_tech_employment_drives_signal_low():
     sfgov_data = _sfgov(_make_incidents(80, [80, 82, 79, 81]))
 
     snap = compute_snapshot(sfgov_data, fred_data, _TARGET_DATE)
-    assert snap.p_tech_hiring_accelerating < 0.5, \
-        f"Expected P < 0.5 for falling tech employment, got {snap.p_tech_hiring_accelerating:.3f}"
+    assert level_of(snap.signals["TechHiringAccelerating"]) == "low"

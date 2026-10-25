@@ -85,17 +85,23 @@ Four rules, each added after a replay showed the engine needed it
 - **Beliefs about change.** Each signal's value last week is available as a
   cause. That signals persist is not assumed: like any connection, the
   engine must find it in the evidence.
+- **Degree is not doubt.** A measured signal is a precise number, so it is
+  read as how far it lies from the line that names it: low, middle or high,
+  observed exactly. Only testimony (art's reports, read by a language
+  model) is kept as a probability, because only there is the doubt real
+  (D25).
 - **Know your own confidence.** Each week the engine records whether its
-  70% beliefs come true 70% of the time, judged both against each signal
-  rounded and against the probability the evidence gave it, and whether its
-  whole population, weighted by belief, explains the week better than its
-  favourite.
+  70% beliefs come true 70% of the time, level by level, judged against
+  what the evidence said, and whether its whole population, weighted by
+  belief, explains the week better than its favourite.
 
 ## What 23 years of evidence did to it
 
 Replayed week by week through 2003–2026 of real FRED data (macro domain,
-five seeds, each replay planned in writing before it ran). These replays
-ran the earlier engine, which began from six hand-written worldviews. Fit is measured
+five seeds, each replay planned in writing before it ran). Replays 1–10
+ran the earlier engine, which began from six hand-written worldviews;
+replays 11 and 12 begin from nothing (D24), and 12 reads signals as levels
+(D25). Fit is measured
 in nats, the log of how surprised the engine was by a week's evidence: one
 nat less surprise means it gave what happened about 2.7 times the
 probability. A Bayes factor above 100 is the conventional threshold for
@@ -141,6 +147,13 @@ probability. A Bayes factor above 100 is the conventional threshold for
   (BIC) left the leader 2–3 links where it had held 8–13. The engine went
   back to yes/no; ordinal tables, which price a relationship by its order,
   are the next thing to try.
+- **Read as degrees, the evidence carried more.** Replay 12 read each
+  signal as low, middle or high, observed exactly, instead of as a
+  probability of "true" (D25). Starting from nothing, the engine found every
+  signal's persistence in every seed, mostly within three years (replay 11
+  had never found two of them), and every seed held one link between
+  signals for twenty years: last week's unemployment trend bears on NASDAQ
+  momentum. It settled in 2003 and has had no rival programme since 2008.
 - **The replays found six bugs, now fixed**: an inverted dollar signal, a
   CPI lookback that dropped inflation in about half of all weeks, an engine
   seed that never reached the code it was meant to seed, the double
@@ -168,7 +181,7 @@ Eleven domains are live and registered in the API:
 | `sf` | `sf-urban-v1` | Weekly | SF Open Data + FRED |
 | `art` | `art_prestige_regime_v1` | Monthly | GDELT news coverage, Art Institute of Chicago acquisitions, hand-labelled reports |
 
-Most domains track eight Boolean variables, each with its value last period; the art domain tracks 25. No domain gives any hypothesis about how its variables connect. Every domain's variables and sources: [docs/domains.md](docs/domains.md).
+Most domains track eight measured signals, each read as low, middle or high and each with its value last period; the art domain tracks 25 yes/no concepts, mostly from testimony. No domain gives any hypothesis about how its variables connect. Every domain's variables and sources: [docs/domains.md](docs/domains.md).
 
 ## Architecture
 
@@ -177,7 +190,7 @@ The engine has three belief levels:
 ```
 Level 3 - Structure:  population of candidate DAGs; dominant hypothesis and paradigm shifts
 Level 2 - Edges:      edge existence probabilities updated from evidence
-Level 1 - Parameters: CPT counts learned from hard, missing, and soft evidence
+Level 1 - Parameters: CPT counts learned from exact levels, missing values, and soft testimony
 ```
 
 Core services:

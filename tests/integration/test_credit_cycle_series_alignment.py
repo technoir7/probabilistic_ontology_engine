@@ -24,17 +24,17 @@ def test_refinancing_stress_pairs_observations_by_date():
     days = [TARGET - timedelta(days=i) for i in range(120)]
     dgs5 = _series("DGS5", days, lambda i: 4.0 + 0.5 * math.sin(i / 5))
     hy = _series("BAMLH0A0HYM2", days, lambda i: 3.0 + 0.8 * math.cos(i / 7))
-    aligned = compute_snapshot({"DGS5": dgs5, "BAMLH0A0HYM2": hy}, TARGET).p_refinancing_stress
+    aligned = compute_snapshot({"DGS5": dgs5, "BAMLH0A0HYM2": hy}, TARGET).signals.get("RefinancingStress")
 
     # A Treasury holiday: drop one recent DGS5 day that HY still has.
     holiday = days[3]
     dgs5_with_gap = [o for o in dgs5 if o.obs_date != holiday]
     hy_without_holiday = [o for o in hy if o.obs_date != holiday]
 
-    with_gap = compute_snapshot({"DGS5": dgs5_with_gap, "BAMLH0A0HYM2": hy}, TARGET).p_refinancing_stress
+    with_gap = compute_snapshot({"DGS5": dgs5_with_gap, "BAMLH0A0HYM2": hy}, TARGET).signals.get("RefinancingStress")
     both_dropped = compute_snapshot(
         {"DGS5": dgs5_with_gap, "BAMLH0A0HYM2": hy_without_holiday}, TARGET
-    ).p_refinancing_stress
+    ).signals.get("RefinancingStress")
 
-    assert aligned != 0.5
+    assert aligned is not None
     assert with_gap == both_dropped

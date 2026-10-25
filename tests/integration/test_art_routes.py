@@ -22,9 +22,9 @@ from tests.fakes import (
     domain_variables,
     freeze_clock,
     patch_evidence_fetch,
-    patch_soft_evidence_for_all_domains,
+    patch_fake_evidence_for_all_domains,
     running_engine,
-    soft_record,
+    fake_record,
 )
 
 DOMAIN_ID = "art_prestige_regime_v1"
@@ -69,7 +69,7 @@ def _gated_fetch(monkeypatch) -> threading.Event:
 
     async def fetch(domain_key, target_date):
         await asyncio.to_thread(gate.wait, 15)
-        return soft_record(domain_variables(domain_key), target_date, seed=domain_key)
+        return fake_record(domain_variables(domain_key), target_date, seed=domain_key)
 
     patch_evidence_fetch(monkeypatch, fetch)
     return gate
@@ -83,7 +83,7 @@ def test_no_rebuild_yet_is_idle():
 
 def test_rebuild_relearns_months_and_reports_in_date_order(monkeypatch, tmp_path):
     freeze_clock(monkeypatch, datetime(2026, 6, 15, tzinfo=timezone.utc))
-    calls = patch_soft_evidence_for_all_domains(monkeypatch)
+    calls = patch_fake_evidence_for_all_domains(monkeypatch)
     _report(tmp_path, published="2026-04-10")
     with TestClient(api_app.app, headers=ADMIN) as client:
         client.post("/v1/ingest/art/manual")  # learned before the rebuild; must not survive twice
@@ -118,7 +118,7 @@ def test_a_second_rebuild_is_refused_while_one_runs(monkeypatch, tmp_path):
 
 
 def test_a_rebuild_that_fails_says_so(monkeypatch, tmp_path):
-    patch_soft_evidence_for_all_domains(monkeypatch)
+    patch_fake_evidence_for_all_domains(monkeypatch)
     with TestClient(api_app.app, headers=ADMIN) as client:
         def broken_reset(domain_id):
             raise RuntimeError("disk full")

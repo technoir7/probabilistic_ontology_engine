@@ -44,21 +44,24 @@ class EpistemicHealth:
         judged = [a for a in record.observed_assignments
                   if a.missingness.value in _SEEN and str(a.variable_id) in names]
         seen = {names[str(a.variable_id)]: a.observed_value for a in judged}
-        evidence = {names[str(a.variable_id)]: _p_true(a) for a in judged}
+        evidence = {names[str(a.variable_id)]: a for a in judged}
         self._last[domain]["forecast_ll"] = self.inference.forecast_log_prob(leader, seen)
         lead = self.inference.leave_one_out(leader, seen)
         heavy = [(c, w) for c, w in zip(candidates, weights) if w > _NEGLIGIBLE_WEIGHT]
         total = sum(w for _, w in heavy)
-        mixed: dict[str, float] = {}
+        mixed: dict[str, dict] = {}
         for c, w in heavy:
-            for name, p in self.inference.leave_one_out(c, seen).items():
-                mixed[name] = mixed.get(name, 0.0) + w / total * p
+            for name, dist in self.inference.leave_one_out(c, seen).items():
+                for value, p in dist.items():
+                    mixed.setdefault(name, {})[value] = mixed.get(name, {}).get(value, 0.0) + w / total * p
         for name, value in seen.items():
             if name not in lead:
                 continue  # last period's values are not judged (D19)
-            self.leader_calibration(domain).observe(lead[name], bool(value))
-            self.population_calibration(domain).observe(mixed[name], bool(value))
-            self.leader_calibration_vs_evidence(domain).observe(lead[name], evidence[name])
+            for level in _judged_values(lead[name]):
+                self.leader_calibration(domain).observe(lead[name][level], value == level)
+                self.population_calibration(domain).observe(mixed[name][level], value == level)
+                self.leader_calibration_vs_evidence(domain).observe(
+                    lead[name][level], _evidence_for(evidence[name], level))
 
     def leader_calibration(self, domain: str) -> Calibration:
         return self._leader.setdefault(domain, Calibration())
@@ -91,8 +94,15 @@ class EpistemicHealth:
             d.pop(domain, None)
 
 
-def _p_true(assignment) -> float:
-    """The probability the evidence gave the signal being true."""
+def _judged_values(dist: dict) -> list:
+    """The values a forecast is judged on: True alone for a yes/no (False is
+    its complement and would count the same forecast twice), every level of
+    a graded signal (D25)."""
+    return [True] if set(dist) == {True, False} else list(dist)
+
+
+def _evidence_for(assignment, value) -> float:
+    """The probability the evidence gave VALUE."""
     if assignment.probabilities:
-        return assignment.probabilities[True]
-    return float(bool(assignment.observed_value))
+        return assignment.probabilities.get(value, 0.0)
+    return float(assignment.observed_value == value)

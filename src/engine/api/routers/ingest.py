@@ -15,7 +15,7 @@ from ...runtime.ingestion import backfill, learn_new_records, rebuild
 from ...runtime.registry import BY_KEY
 from ...runtime.settings import Settings
 from ...engine import ProbabilisticOntologyEngine
-from ...schemas import EvidenceRecord
+from ...schemas import EvidenceRecord, MissingnessType, Variable
 from .. import context, presenters
 from ..auth import require_admin
 from ..dto import (
@@ -114,6 +114,9 @@ async def ingest_replace(request: Request, domain: str = Query(...)) -> IngestRe
         records = [EvidenceRecord.model_validate(r) for r in body]
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+    unfit = _values_outside_support(records, engine.get_population(domain_id).candidates[0].variables)
+    if unfit:
+        raise HTTPException(status_code=422, detail="values the variables cannot take: " + "; ".join(unfit[:10]))
     async with context.ingest_lock(request.app.state, domain_key):
         engine.reset_domain(domain_id)
         learned = learn_new_records(engine, domain_id, records)
@@ -312,3 +315,19 @@ async def _run_rebuild(
         job.error, job.state = f"{type(exc).__name__}: {exc}", "failed"
     finally:
         job.finished_at = context.utcnow()
+
+
+def _values_outside_support(records: list[EvidenceRecord], variables: list[Variable]) -> list[str]:
+    """Each observed value, or soft-evidence key, that its variable cannot
+    take: checked before a replace forgets the domain, since learning would
+    fail on it only after the reset."""
+    support = {v.variable_id: (v.name, v.support) for v in variables}
+    out = []
+    for r in records:
+        for a in r.observed_assignments:
+            if a.variable_id not in support or a.missingness == MissingnessType.MISSING:
+                continue
+            name, allowed = support[a.variable_id]
+            values = list(a.probabilities) if a.probabilities else [a.observed_value]
+            out += [f"{name}={v!r} at {r.timestamp.date()}" for v in values if v not in allowed]
+    return out

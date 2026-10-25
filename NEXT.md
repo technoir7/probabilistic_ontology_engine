@@ -13,24 +13,28 @@ persistence alone. Is that the verdict on these worldviews, or on weekly
 yes/no signals, which may be too coarse to carry how credit or money moves
 the rest? Monthly evidence, or degrees (problem 2), would say.
 
-The engine now forms its own hypotheses (D24), so the question has to be
-asked again: does anything it forms beat persistence, and does it even
-find persistence? That is replay 11, which needs planning in writing
-before it runs (evals/README.md).
+The engine now forms its own hypotheses (D24). In replay 11 it found
+persistence for most signals and held a few links between signals, but fit
+the weeks a little worse than replay 10's persistence; replay 12 asks the
+same with levels (D25).
 
 ## 2. Unsure in the middle
 
 Leading with persistence, it says 0.56 where the evidence says 0.65
-(calibration error 0.047, replay 10). Each judgement conditions on last
-week's values rounded to true or false; conditioning on them as soft
-evidence would test whether that is the cause.
+(calibration error 0.047, replay 10). Each judgement conditioned on last
+week's values rounded to true or false. Measured signals are now levels
+observed exactly (D25), so nothing is rounded for them; art's testimony
+still is.
 
 ## 3. Finer evidence costs too much structure
 
-Five ordered levels per signal made it better calibrated but left it able
-to afford 2–3 links (replay 8, reverted). An ordinal table, which prices a
-relationship by its order rather than by every cell, would cost a few
-parameters per cause instead of 20. Code for the levels: commit 1290d1c6.
+Five ordered levels per signal, read as probabilities, made it better
+calibrated but left it able to afford 2–3 links (replay 8, reverted).
+Measured signals are now three levels observed exactly (D25): a cause costs
+6 parameters per three-level child, not 20, and persistence is affordable,
+but a relation between two different signals is still dear. An ordinal
+table, which prices a relationship by its order rather than by every cell,
+would cost a few parameters per cause.
 
 ## 4. Any link is admissible
 
@@ -78,6 +82,17 @@ failure (G2, xfail). A longer memory would find it but notice a change of
 regime more slowly (D14); forming hypotheses from a longer memory than the
 score's is the obvious thing to try, and the replays would have to show it
 does not slow the response to change.
+
+## 9. Testimony is counted label by label
+
+Art's reports are testimony: each label is a doubt about a yes/no claim,
+and art keeps soft evidence for it (EPISTEMOLOGY section 3). But each
+label's doubt is counted apart from the others', which blurs relations
+between testified concepts toward independence, as it once blurred
+measured ones (on macro, 3 links in 100 weeks where the same weeks as
+levels support 8). The cure is to treat each concept's true value as
+hidden and each label as evidence about it (Pearl's virtual evidence),
+learning the tables by expectation maximisation.
 
 ## Outside the epistemology
 

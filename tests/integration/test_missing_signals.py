@@ -33,7 +33,7 @@ def test_unavailable_inputs_become_missing_assignments():
         if a.missingness == MissingnessType.MISSING:
             assert a.probabilities is None and a.observed_value is None
     # The five SF Open Data variables had no input; the three FRED ones did.
-    assert by_kind == {"SOFT_OBSERVED": 3, "MISSING": 5}
+    assert by_kind == {"OBSERVED": 3, "MISSING": 5}
 
 
 def test_no_input_at_all_is_not_recorded():

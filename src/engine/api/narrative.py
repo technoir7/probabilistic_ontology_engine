@@ -53,8 +53,8 @@ def build_snapshot(
     )
 
     # ── current_regime_state: marginal inference per variable ─────────────────
-    # Matches RegimeStatePanel: call inference for each variable and use the
-    # real posterior P(var=True) rather than raw soft-evidence weights.
+    # Matches RegimeStatePanel: call inference for each variable and read its
+    # posterior (presenters.reading) rather than the raw evidence.
     regime_state: list[NarrativeRegimeVariableOut] = []
     # The regime is this period's signals; last period's are inputs (D19).
     variables = [v for v in pop.candidates[0].variables if not v.lag_of] if pop.candidates else []
@@ -64,7 +64,7 @@ def build_snapshot(
         # that scores are prior-only.
         for v in variables:
             regime_state.append(NarrativeRegimeVariableOut(
-                name=v.name, boolean_state=None, probability=None
+                name=v.name, level=None, degree=None
             ))
     else:
         for v in variables:
@@ -76,12 +76,8 @@ def build_snapshot(
             )
             raw_inf = engine.inference_service.query(iq, pop)
             dist = raw_inf.get("posteriors", {}).get(v.name, {})
-            prob: float = presenters.p_true(dist)
-            regime_state.append(NarrativeRegimeVariableOut(
-                name=v.name,
-                boolean_state=prob > 0.5,
-                probability=prob,
-            ))
+            level, degree = presenters.reading(dist, v)
+            regime_state.append(NarrativeRegimeVariableOut(name=v.name, level=level, degree=degree))
 
     # ── dominant_hypothesis ───────────────────────────────────────────────────
     dominant_out: Optional[NarrativeDominantHypothesisOut] = None

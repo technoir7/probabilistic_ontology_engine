@@ -2,18 +2,19 @@
 Integration tests — natural gas domain ingestion pipeline.
 
 Tests the full mapping from NOAA + EIA API responses to EvidenceRecord
-assignments.  Both external APIs are mocked via injected httpx.AsyncClient;
+assignments, each observed at a level (D25).  Both external APIs are mocked via injected httpx.AsyncClient;
 no network calls are made.
 
 Test inventory
 --------------
 TEST-NG-01  build_evidence_record maps all 4 variable UUIDs correctly
-TEST-NG-02  temp below monthly normal  → TempAnom=False, HeatingDem=True
-TEST-NG-03  temp above monthly normal and above HDD base → TempAnom=True, HeatingDem=False
-TEST-NG-04  storage decreases week-over-week → StorageDraw=True
-TEST-NG-05  storage increases week-over-week → StorageDraw=False
-TEST-NG-06  latest price above 28-day median → PriceUp=True
-TEST-NG-07  latest price at or below 28-day median → PriceUp=False
+TEST-NG-01b every variable is observed exactly, at a level
+TEST-NG-02  temp below monthly normal  → TempAnom low, HeatingDem high
+TEST-NG-03  temp above monthly normal and above HDD base → TempAnom high, HeatingDem low
+TEST-NG-04  storage decreases week-over-week → StorageDraw high
+TEST-NG-05  storage increases week-over-week → StorageDraw low
+TEST-NG-06  latest price above 28-day median → PriceUp high
+TEST-NG-07  latest price below 28-day median → PriceUp low; at it → mid
 TEST-NG-08  station confidence scales with stations_used
 TEST-NG-09  EIA variables always carry confidence=1.0
 TEST-NG-10  full async fetch_evidence via mocked httpx clients
@@ -32,6 +33,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 import pytest
 
 from src.domains.natural_gas_v1.domain import get_variables
+from src.domains.sources.grades import LEVELS
+from src.engine.schemas import MissingnessType
 from src.domains.natural_gas_v1.ingestion.eia_client import EIAClient, NatGasSnapshot
 from src.domains.natural_gas_v1.ingestion.noaa_client import (
     DailyClimateObs,
@@ -119,14 +122,27 @@ def test_build_evidence_record_maps_all_uuids():
 
 
 # ---------------------------------------------------------------------------
-# TEST-NG-02 — TempAnom=False when below monthly normal
+# TEST-NG-01b — every variable observed exactly, at a level
+# ---------------------------------------------------------------------------
+
+def test_build_evidence_record_observes_every_variable_at_a_level():
+    record = NaturalGasPipeline.build_evidence_record(_make_climate_obs(temp_c=0.0), _make_gas_snapshot())
+
+    for a in record.observed_assignments:
+        assert a.missingness == MissingnessType.OBSERVED
+        assert a.probabilities is None
+        assert a.observed_value in LEVELS
+
+
+# ---------------------------------------------------------------------------
+# TEST-NG-02 — TempAnom low when below monthly normal
 # ---------------------------------------------------------------------------
 
 def test_temp_below_normal_january():
     """
     January normal = 1.5°C.  Setting temp_c = 0.0°C gives:
-        TempAnom  = False   (0.0 < 1.5)
-        HeatingDem = True   (HDD = 18.33 - 0.0 = 18.33 > 0)
+        TempAnom   low   ((0.0 - 1.5) / 2 = -0.75)
+        HeatingDem high  (HDD = 18.33, (18.33 - 5) / 5 = 2.67)
     """
     variables = get_variables()
     obs  = _make_climate_obs(temp_c=0.0, target_date=_JAN_1_2025)
@@ -134,19 +150,19 @@ def test_temp_below_normal_january():
     record = NaturalGasPipeline.build_evidence_record(obs, snap)
     amap = _assignment_map(record)
 
-    assert amap[variables["TempAnom"].variable_id].observed_value  is False
-    assert amap[variables["HeatingDem"].variable_id].observed_value is True
+    assert amap[variables["TempAnom"].variable_id].observed_value   == "low"
+    assert amap[variables["HeatingDem"].variable_id].observed_value == "high"
 
 
 # ---------------------------------------------------------------------------
-# TEST-NG-03 — TempAnom=True and HeatingDem=False in summer heat
+# TEST-NG-03 — TempAnom high and HeatingDem low in summer heat
 # ---------------------------------------------------------------------------
 
 def test_temp_above_normal_july():
     """
     July normal = 25.0°C.  HDD base = 18.33°C.  Setting temp_c = 30.0°C:
-        TempAnom   = True   (30.0 > 25.0)
-        HeatingDem = False  (HDD = max(0, 18.33 - 30.0) = 0)
+        TempAnom   high  ((30.0 - 25.0) / 2 = 2.5)
+        HeatingDem low   (HDD = 0, (0 - 5) / 5 = -1)
     """
     variables = get_variables()
     obs  = _make_climate_obs(temp_c=30.0, target_date=_JUL_1_2025)
@@ -154,68 +170,69 @@ def test_temp_above_normal_july():
     record = NaturalGasPipeline.build_evidence_record(obs, snap)
     amap = _assignment_map(record)
 
-    assert amap[variables["TempAnom"].variable_id].observed_value   is True
-    assert amap[variables["HeatingDem"].variable_id].observed_value is False
+    assert amap[variables["TempAnom"].variable_id].observed_value   == "high"
+    assert amap[variables["HeatingDem"].variable_id].observed_value == "low"
 
 
 # ---------------------------------------------------------------------------
-# TEST-NG-04 — StorageDraw=True when storage decreases
+# TEST-NG-04 — StorageDraw high when storage decreases
 # ---------------------------------------------------------------------------
 
 def test_storage_draw_when_decrease():
-    """current_bcf < prev_bcf  →  StorageDraw=True."""
+    """current_bcf < prev_bcf  →  StorageDraw high."""
     variables = get_variables()
     obs  = _make_climate_obs(temp_c=0.0)
     snap = _make_gas_snapshot(current_bcf=1900.0, prev_bcf=2000.0)   # draw of 100 Bcf
     record = NaturalGasPipeline.build_evidence_record(obs, snap)
     amap = _assignment_map(record)
 
-    assert amap[variables["StorageDraw"].variable_id].observed_value is True
+    assert amap[variables["StorageDraw"].variable_id].observed_value == "high"
 
 
 # ---------------------------------------------------------------------------
-# TEST-NG-05 — StorageDraw=False when storage increases
+# TEST-NG-05 — StorageDraw low when storage increases
 # ---------------------------------------------------------------------------
 
 def test_storage_build_when_increase():
-    """current_bcf > prev_bcf  →  StorageDraw=False."""
+    """current_bcf > prev_bcf  →  StorageDraw low."""
     variables = get_variables()
     obs  = _make_climate_obs(temp_c=25.0, target_date=_JUL_1_2025)
     snap = _make_gas_snapshot(current_bcf=2100.0, prev_bcf=2000.0)   # build of 100 Bcf
     record = NaturalGasPipeline.build_evidence_record(obs, snap)
     amap = _assignment_map(record)
 
-    assert amap[variables["StorageDraw"].variable_id].observed_value is False
+    assert amap[variables["StorageDraw"].variable_id].observed_value == "low"
 
 
 # ---------------------------------------------------------------------------
-# TEST-NG-06 — PriceUp=True when latest > median
+# TEST-NG-06 — PriceUp high when latest > median
 # ---------------------------------------------------------------------------
 
 def test_price_up_when_above_median():
-    """latest_price > median_price  →  PriceUp=True."""
+    """latest_price > median_price  →  PriceUp high."""
     variables = get_variables()
     obs  = _make_climate_obs(temp_c=0.0)
     snap = _make_gas_snapshot(latest_price=5.0, median_price=4.0)
     record = NaturalGasPipeline.build_evidence_record(obs, snap)
     amap = _assignment_map(record)
 
-    assert amap[variables["PriceUp"].variable_id].observed_value is True
+    assert amap[variables["PriceUp"].variable_id].observed_value == "high"
 
 
 # ---------------------------------------------------------------------------
-# TEST-NG-07 — PriceUp=False when latest ≤ median
+# TEST-NG-07 — PriceUp low below the median, mid at it
 # ---------------------------------------------------------------------------
 
-def test_price_not_up_when_at_or_below_median():
-    """latest_price ≤ median_price  →  PriceUp=False."""
+@pytest.mark.parametrize("latest_price, level", [(3.0, "low"), (4.0, "mid")])
+def test_price_below_median_is_low_and_at_it_is_mid(latest_price: float, level: str):
+    """Signal = (latest - median) / (5% of median): 3.0 vs 4.0 is -5, 4.0 vs 4.0 is 0."""
     variables = get_variables()
     obs  = _make_climate_obs(temp_c=0.0)
-    snap = _make_gas_snapshot(latest_price=4.0, median_price=4.0)  # equal → False
+    snap = _make_gas_snapshot(latest_price=latest_price, median_price=4.0)
     record = NaturalGasPipeline.build_evidence_record(obs, snap)
     amap = _assignment_map(record)
 
-    assert amap[variables["PriceUp"].variable_id].observed_value is False
+    assert amap[variables["PriceUp"].variable_id].observed_value == level
 
 
 # ---------------------------------------------------------------------------
@@ -349,10 +366,10 @@ def _make_historical_eia_http_response(series_id_fragment: str) -> MagicMock:
         resp.json = MagicMock(return_value={
             "response": {
                 "data": [
-                    {"period": "2025-01-20", "value": "120.0"},
-                    {"period": "2025-01-13", "value": "130.0"},
+                    {"period": "2025-01-20", "value": "160.0"},
+                    {"period": "2025-01-13", "value": "190.0"},
                     {"period": "2025-01-06", "value": "100.0"},
-                    {"period": "2024-12-30", "value": "90.0"},
+                    {"period": "2024-12-30", "value": "70.0"},
                 ]
             }
         })
@@ -383,7 +400,7 @@ def _make_historical_eia_http_response(series_id_fragment: str) -> MagicMock:
     return resp
 
 
-def _natural_gas_values(record) -> dict[str, bool]:
+def _natural_gas_values(record) -> dict[str, str]:
     variables = get_variables()
     by_id = {v.variable_id: name for name, v in variables.items()}
     return {
@@ -400,12 +417,12 @@ def test_fetch_evidence_full_async():
     Setup:
         NOAA: all 5 stations report a high and low of 0.0°C (January baseline)
             → CONUS mean = 0.0°C
-            → TempAnom  = False  (0.0 < 1.5 = Jan normal)
-            → HeatingDem = True  (HDD = 18.33 > 0)
+            → TempAnom   low   (0.0 < 1.5 = Jan normal)
+            → HeatingDem high  (HDD = 18.33)
         EIA storage: 1900 Bcf current, 2000 Bcf previous
-            → StorageDraw = True  (draw of 100 Bcf)
+            → StorageDraw high  (draw of 100 Bcf)
         EIA price: latest=5.0, 27 readings at 4.0 → median=4.0
-            → PriceUp = True  (5.0 > 4.0)
+            → PriceUp high  (5.0 > 4.0)
     """
     variables = get_variables()
 
@@ -433,10 +450,10 @@ def test_fetch_evidence_full_async():
     assert set(amap.keys()) == {v.variable_id for v in variables.values()}
 
     # --- value checks ---
-    assert amap[variables["TempAnom"].variable_id].observed_value   is False
-    assert amap[variables["HeatingDem"].variable_id].observed_value is True
-    assert amap[variables["StorageDraw"].variable_id].observed_value is True
-    assert amap[variables["PriceUp"].variable_id].observed_value    is True
+    assert amap[variables["TempAnom"].variable_id].observed_value   == "low"
+    assert amap[variables["HeatingDem"].variable_id].observed_value == "high"
+    assert amap[variables["StorageDraw"].variable_id].observed_value == "high"
+    assert amap[variables["PriceUp"].variable_id].observed_value    == "high"
 
     # --- confidence checks ---
     # All 5 stations → weather confidence = 1.0
@@ -494,13 +511,13 @@ def test_eia_fetch_snapshot_uses_historical_target_date():
     jan_20 = asyncio.run(eia.fetch_snapshot(date(2025, 1, 20)))
 
     assert jan_10.storage_current_bcf == 100.0
-    assert jan_10.storage_prev_bcf == 90.0
+    assert jan_10.storage_prev_bcf == 70.0
     assert jan_10.storage_draw is False
     assert jan_10.latest_price == 2.0
     assert jan_10.price_up is False
 
-    assert jan_20.storage_current_bcf == 120.0
-    assert jan_20.storage_prev_bcf == 130.0
+    assert jan_20.storage_current_bcf == 160.0
+    assert jan_20.storage_prev_bcf == 190.0
     assert jan_20.storage_draw is True
     assert jan_20.latest_price == 6.0
     assert jan_20.price_up is True
@@ -537,10 +554,10 @@ def test_backfill_style_fetches_do_not_duplicate_latest_eia_values():
     jan_10_values = _natural_gas_values(jan_10_record)
     jan_20_values = _natural_gas_values(jan_20_record)
 
-    assert jan_10_values["StorageDraw"] is False
-    assert jan_10_values["PriceUp"] is False
-    assert jan_20_values["StorageDraw"] is True
-    assert jan_20_values["PriceUp"] is True
+    assert jan_10_values["StorageDraw"] == "low"
+    assert jan_10_values["PriceUp"] == "low"
+    assert jan_20_values["StorageDraw"] == "high"
+    assert jan_20_values["PriceUp"] == "high"
     assert jan_10_values != jan_20_values
 
 

@@ -10,7 +10,7 @@ from fastapi.testclient import TestClient
 from src.engine.api import app as api_app
 from src.engine.api.context import utcnow
 from src.engine.runtime.registry import BY_KEY
-from tests.fakes import ADMIN_TOKEN, patch_soft_evidence_for_all_domains, running_engine
+from tests.fakes import ADMIN_TOKEN, patch_fake_evidence_for_all_domains, running_engine
 
 H = {"Authorization": f"Bearer {ADMIN_TOKEN}"}
 
@@ -26,7 +26,7 @@ def _finished(client, domain, timeout_s=15.0):
 
 
 def test_rebuild_refetches_the_window_and_replaces_the_history(monkeypatch):
-    patch_soft_evidence_for_all_domains(monkeypatch)
+    patch_fake_evidence_for_all_domains(monkeypatch)
     with TestClient(api_app.app) as client:
         client.post("/v1/ingest/backfill", params={"domain": "cc", "days": 21}, headers=H)
         before = running_engine("cc").evidence_store.count("credit-cycle-v1")

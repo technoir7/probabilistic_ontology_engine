@@ -4,14 +4,13 @@ Integration tests — crypto regime domain ingestion pipeline.
 Test inventory
 --------------
 TEST-CR-01  Variable IDs stable across imports
-TEST-CR-04  _soft_bool clamped to [0.01, 0.99]
-TEST-CR-05  compute_snapshot falls back to 0.5 with empty data
-TEST-CR-06  BTC positive 13w return → P(BTCMomentumPositive) > 0.5
-TEST-CR-07  BTC negative 13w return → P(BTCMomentumPositive) < 0.5
-TEST-CR-08  Low BTC dominance (40%) → P(AltcoinSeasonActive) > 0.5
-TEST-CR-09  High BTC dominance (65%) → P(AltcoinSeasonActive) < 0.5
+TEST-CR-05  compute_snapshot with empty data gives no signal (all MISSING)
+TEST-CR-06  BTC positive 13w return → BTCMomentumPositive high
+TEST-CR-07  BTC negative 13w return → BTCMomentumPositive low
+TEST-CR-08  Low BTC dominance (40%) → AltcoinSeasonActive high
+TEST-CR-09  High BTC dominance (65%) → AltcoinSeasonActive low
 TEST-CR-10  build_evidence_record maps all 8 UUIDs
-TEST-CR-11  build_evidence_record produces SOFT_OBSERVED
+TEST-CR-11  build_evidence_record observes every variable exactly, at a level (D25)
 TEST-CR-13  Existence thresholds valid
 TEST-CR-14  Domain registers in engine, evidence ingested
 TEST-CR-16  CoinGeckoClient parses mocked market chart response
@@ -30,7 +29,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 import pytest
 
-from src.domains.sources.soft_evidence import sigmoid as _sigmoid
+from src.domains.sources.grades import LEVELS, level_of
 from src.domains.crypto_regime_v1.domain import (
     CryptoRegimeV1,
     get_variables,
@@ -52,7 +51,6 @@ from src.domains.crypto_regime_v1.ingestion.pipeline import (
     CryptoRegimePipeline,
     CryptoRegimeSnapshot,
     compute_snapshot,
-    _soft_bool,
 )
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import EvidenceRecord, MissingnessType
@@ -174,38 +172,30 @@ def test_variable_ids_are_stable():
 
 
 # ---------------------------------------------------------------------------
-# TEST-CR-04 — _soft_bool clamped to [0.01, 0.99]
+# TEST-CR-05 — compute_snapshot with empty data gives no signal
 # ---------------------------------------------------------------------------
 
-@pytest.mark.parametrize("signal", [-100.0, -10.0, 0.0, 10.0, 100.0])
-def test_soft_bool_clamped(signal: float):
-    result = _soft_bool(signal)
-    assert 0.01 <= result <= 0.99
-    assert not math.isnan(result)
+def test_compute_snapshot_has_no_signal_with_empty_data():
+    """No input is MISSING, never a middle reading."""
+    assert compute_snapshot({}, {}, {}, _TARGET_DATE).signals == {}
 
 
-# ---------------------------------------------------------------------------
-# TEST-CR-05 — compute_snapshot falls back to 0.5 with empty data
-# ---------------------------------------------------------------------------
-
-def test_compute_snapshot_falls_back_with_empty_data():
-    snap = compute_snapshot({}, {}, {}, _TARGET_DATE)
-    assert snap.p_btc_momentum_positive == 0.5
-    assert snap.p_altcoin_season_active == 0.5
-    assert snap.p_onchain_activity_elevated == 0.5
-    assert snap.p_stablecoin_flow_positive == 0.5
-    assert snap.p_crypto_volatility_shock == 0.5
-    assert snap.p_risk_asset_correlation == 0.5
-    assert snap.p_narrative_momentum == 0.5
-    assert snap.p_dollar_debasement_narrative == 0.5
+def test_a_variable_without_input_is_missing():
+    cg_data, yf_data, fred_data = _make_full_data()
+    del yf_data["QQQ"]
+    snapshot = compute_snapshot(cg_data, yf_data, fred_data, _TARGET_DATE)
+    assert "RiskAssetCorrelation" not in snapshot.signals
+    record = CryptoRegimePipeline.build_evidence_record(snapshot)
+    missing = [a for a in record.observed_assignments if a.missingness == MissingnessType.MISSING]
+    assert [a.variable_id for a in missing] == [get_variables()["RiskAssetCorrelation"].variable_id]
 
 
 # ---------------------------------------------------------------------------
-# TEST-CR-06 — BTC positive return → P(BTCMomentumPositive) > 0.5
+# TEST-CR-06 — BTC positive return → BTCMomentumPositive high
 # ---------------------------------------------------------------------------
 
 def test_btc_positive_return_drives_momentum_high():
-    """BTC price much higher now than 90 days ago → positive 13w return → P(BTCMomentumPositive) > 0.5.
+    """BTC price much higher now than 90 days ago → positive 13w return → BTCMomentumPositive high.
 
     Since obs are newest-first (i=0 is most recent), a positive return means
     prices[0] (current) > prices[90] (90 days ago). The z-score computes
@@ -236,12 +226,11 @@ def test_btc_positive_return_drives_momentum_high():
     fred_data = {"DEXUSEU": _make_fred_obs()}
 
     snap = compute_snapshot(cg_data, yf_data, fred_data, _TARGET_DATE)
-    assert snap.p_btc_momentum_positive > 0.5, \
-        f"Expected P > 0.5 for positive BTC trend, got {snap.p_btc_momentum_positive:.3f}"
+    assert level_of(snap.signals["BTCMomentumPositive"]) == "high"
 
 
 # ---------------------------------------------------------------------------
-# TEST-CR-07 — BTC negative return → P(BTCMomentumPositive) < 0.5
+# TEST-CR-07 — BTC negative return → BTCMomentumPositive low
 # ---------------------------------------------------------------------------
 
 def test_btc_negative_return_drives_momentum_low():
@@ -264,32 +253,29 @@ def test_btc_negative_return_drives_momentum_low():
     fred_data = {"DEXUSEU": _make_fred_obs()}
 
     snap = compute_snapshot(cg_data, yf_data, fred_data, _TARGET_DATE)
-    assert snap.p_btc_momentum_positive < 0.5, \
-        f"Expected P < 0.5 for negative BTC trend, got {snap.p_btc_momentum_positive:.3f}"
+    assert level_of(snap.signals["BTCMomentumPositive"]) == "low"
 
 
 # ---------------------------------------------------------------------------
-# TEST-CR-08 — Low BTC dominance (40%) → P(AltcoinSeasonActive) > 0.5
+# TEST-CR-08 — Low BTC dominance (40%) → AltcoinSeasonActive high
 # ---------------------------------------------------------------------------
 
 def test_low_btc_dominance_signals_altcoin_season():
-    """BTC dominance at 40% (well below 52% mean) → P(AltcoinSeasonActive) > 0.5."""
+    """BTC dominance at 40% (well below 52% mean) → AltcoinSeasonActive high."""
     cg_data, yf_data, fred_data = _make_full_data(btc_dominance=40.0)
     snap = compute_snapshot(cg_data, yf_data, fred_data, _TARGET_DATE)
-    assert snap.p_altcoin_season_active > 0.5, \
-        f"Expected P > 0.5 for low dominance (40%), got {snap.p_altcoin_season_active:.3f}"
+    assert level_of(snap.signals["AltcoinSeasonActive"]) == "high"
 
 
 # ---------------------------------------------------------------------------
-# TEST-CR-09 — High BTC dominance (65%) → P(AltcoinSeasonActive) < 0.5
+# TEST-CR-09 — High BTC dominance (65%) → AltcoinSeasonActive low
 # ---------------------------------------------------------------------------
 
 def test_high_btc_dominance_suppresses_altcoin_season():
-    """BTC dominance at 65% (well above 52% mean) → P(AltcoinSeasonActive) < 0.5."""
+    """BTC dominance at 65% (well above 52% mean) → AltcoinSeasonActive low."""
     cg_data, yf_data, fred_data = _make_full_data(btc_dominance=65.0)
     snap = compute_snapshot(cg_data, yf_data, fred_data, _TARGET_DATE)
-    assert snap.p_altcoin_season_active < 0.5, \
-        f"Expected P < 0.5 for high dominance (65%), got {snap.p_altcoin_season_active:.3f}"
+    assert level_of(snap.signals["AltcoinSeasonActive"]) == "low"
 
 
 # ---------------------------------------------------------------------------
@@ -308,20 +294,17 @@ def test_build_evidence_record_maps_all_uuids():
 
 
 # ---------------------------------------------------------------------------
-# TEST-CR-11 — build_evidence_record produces SOFT_OBSERVED
+# TEST-CR-11 — build_evidence_record observes every variable at a level
 # ---------------------------------------------------------------------------
 
-def test_build_evidence_record_all_soft_observed():
+def test_build_evidence_record_observes_every_variable_at_a_level():
     cg_data, yf_data, fred_data = _make_full_data()
     snapshot = compute_snapshot(cg_data, yf_data, fred_data, _TARGET_DATE)
     record = CryptoRegimePipeline.build_evidence_record(snapshot)
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED
-        assert a.probabilities is not None
-        assert set(a.probabilities.keys()) == {True, False}
-        p_true = a.probabilities[True]
-        assert 0.01 <= p_true <= 0.99
-        assert abs(a.probabilities[True] + a.probabilities[False] - 1.0) < 0.01
+        assert a.missingness == MissingnessType.OBSERVED
+        assert a.probabilities is None
+        assert a.observed_value in LEVELS
 
 
 # ---------------------------------------------------------------------------
@@ -426,7 +409,7 @@ def test_fetch_evidence_full_pipeline_mocked():
     assert "FRED" in record.source_ref
 
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED
+        assert a.missingness == MissingnessType.OBSERVED
 
     mock_cg.fetch_all.assert_called_once_with(end_date=_TARGET_DATE)
     mock_yf.fetch_all.assert_called_once_with(end_date=_TARGET_DATE)

@@ -38,9 +38,9 @@ async def ingest_and_learn(
     The caller holds the domain's lock.
     """
     record = await fetch(target)
-    # By date and source, not evidence_id: natural-gas still issues a fresh
-    # uuid4 per fetch, and records stored before ids became deterministic
-    # have random ones. Re-running a day must not store and learn it twice.
+    # By date and source, not evidence_id: records stored before ids became
+    # deterministic have random ones. Re-running a day must not store and
+    # learn it twice.
     if engine.has_evidence_at(record.timestamp, record.source_ref, domain_id):
         logger.info("Skipping %s: evidence for %s already stored", domain_id, record.timestamp.date())
         return 0

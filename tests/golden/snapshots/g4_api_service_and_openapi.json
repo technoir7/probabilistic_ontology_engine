@@ -661,6 +661,17 @@
     },
     "GraphNodeOut": {
      "properties": {
+      "degree": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Degree"
+      },
       "id": {
        "title": "Id",
        "type": "string"
@@ -679,17 +690,6 @@
         }
        ],
        "title": "Observation"
-      },
-      "probability": {
-       "anyOf": [
-        {
-         "type": "number"
-        },
-        {
-         "type": "null"
-        }
-       ],
-       "title": "Probability"
       },
       "status": {
        "enum": [
@@ -750,9 +750,34 @@
        "title": "Nodes",
        "type": "array"
       },
-      "target_probability": {
-       "title": "Target Probability",
-       "type": "number"
+      "target_degree": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Target Degree"
+      },
+      "target_distribution": {
+       "additionalProperties": {
+        "type": "number"
+       },
+       "title": "Target Distribution",
+       "type": "object"
+      },
+      "target_level": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Target Level"
       },
       "target_variable": {
        "title": "Target Variable",
@@ -762,7 +787,9 @@
      "required": [
       "candidate_id",
       "target_variable",
-      "target_probability",
+      "target_level",
+      "target_degree",
+      "target_distribution",
       "nodes",
       "edges",
       "frontier_edges"
@@ -1326,22 +1353,7 @@
     },
     "NarrativeRegimeVariableOut": {
      "properties": {
-      "boolean_state": {
-       "anyOf": [
-        {
-         "type": "boolean"
-        },
-        {
-         "type": "null"
-        }
-       ],
-       "title": "Boolean State"
-      },
-      "name": {
-       "title": "Name",
-       "type": "string"
-      },
-      "probability": {
+      "degree": {
        "anyOf": [
         {
          "type": "number"
@@ -1350,13 +1362,28 @@
          "type": "null"
         }
        ],
-       "title": "Probability"
+       "title": "Degree"
+      },
+      "level": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Level"
+      },
+      "name": {
+       "title": "Name",
+       "type": "string"
       }
      },
      "required": [
       "name",
-      "boolean_state",
-      "probability"
+      "level",
+      "degree"
      ],
      "title": "NarrativeRegimeVariableOut",
      "type": "object"

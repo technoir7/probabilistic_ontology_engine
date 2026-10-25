@@ -7,73 +7,55 @@ All three sources are fetched concurrently (yfinance and FRED) or
 sequentially with cache (EDGAR).  One EvidenceRecord is produced per
 weekly call.
 
-Variable mapping and soft-evidence calibration
-----------------------------------------------
-All eight Boolean assignments are emitted as SOFT_OBSERVED with
-sigmoid-calibrated probability distributions.  The boolean MAP value
-is preserved in observed_value for compatibility with upstream callers.
+Variable mapping (REFACTOR_SPEC D25)
+------------------------------------
+Each variable gets a signed signal: its distance from the line that names
+it, in the unit given below. The signal is read as a level, observed
+exactly (sources.grades): low below -0.5, mid within ±0.5, high above +0.5.
 
 SemiconductorMomentum
-    Source  : yfinance ^SOX
-    Signal  : z-score of current 13-week (91-day) price return vs
-              historical distribution of 13-week returns (2-year window)
-    P(True) : sigmoid(z_score − 0.5)
-              True threshold at z = 0.5; at z=0.5 P ≈ 0.50 (boundary)
-              at z=1.5 P ≈ 0.73; at z=2.5 P ≈ 0.88
+    Source : yfinance ^SOX
+    Signal : z-score of current 13-week (91-day) price return vs the
+             historical distribution of 13-week returns (2-year window),
+             minus 0.5 (the line sits at z = 0.5)
 
 MarketConcentrationExtreme
-    Source  : yfinance QQQ and RSP
-    Signal  : z-score of current 13-week return of QQQ/RSP price ratio
-              vs historical distribution of 13-week ratio returns
-    P(True) : sigmoid(z_score − 0.5)
-              True when tech-cap ETF meaningfully outperforms equal-weight
+    Source : yfinance QQQ and RSP
+    Signal : z-score of current 13-week return of the QQQ/RSP price ratio
+             vs its historical distribution, minus 0.5
 
 HyperscalerCapexAccelerating
-    Source  : SEC EDGAR (MSFT, GOOGL, AMZN, META)
-    Signal  : (avg_yoy_growth_pct − 20.0) / 10.0
-              Scale: 10pp around 20% threshold
-    P(True) : sigmoid(signal)
-              At 20%: P ≈ 0.50; at 30%: P ≈ 0.73; at 10%: P ≈ 0.27
+    Source : SEC EDGAR (MSFT, GOOGL, AMZN, META)
+    Signal : (avg_yoy_growth_pct − 20.0) / 10.0
+    high   : above 25%; low: below 15%
 
 TechValuationDetached
-    Source  : yfinance QQQ
-    Signal  : z-score of current QQQ price vs 3-year (750-day) price
-              history, minus 1.0 (threshold at z = 1.0)
-    P(True) : sigmoid(z_score − 1.0)
-              At z=1.0: P ≈ 0.50; at z=2.0: P ≈ 0.73; at z=0: P ≈ 0.27
+    Source : yfinance QQQ
+    Signal : z-score of current QQQ price vs 3-year (750-day) price
+             history, minus 1.0 (the line sits at z = 1.0)
     Rationale: QQQ price elevation vs own 3-year trend is a reasonable
                proxy for stretched P/E, since aggregate earnings grow
                more smoothly than price.
 
 IPInvestmentRising
-    Source  : FRED Y033RC1Q027SBEA (quarterly)
-    Signal  : (current_4q_growth − median_4q_growth) / max(iqr, 0.5)
-              4-quarter growth = (latest / 4q_ago − 1) * 100
-    P(True) : sigmoid(signal)
-              True when current growth exceeds historical median
+    Source : FRED Y033RC1Q027SBEA (quarterly)
+    Signal : (current_4q_growth − median_4q_growth) / max(iqr, 0.5)
+             4-quarter growth = (latest / 4q_ago − 1) * 100
 
 LaborProductivityImproving
-    Source  : FRED PRS85006092 (quarterly)
-    Signal  : (yoy_pct − 2.0) / 0.5
-    P(True) : sigmoid(signal)
-              At 2.0%: P ≈ 0.50; at 3.0%: P ≈ 0.88; at 1.0%: P ≈ 0.12
+    Source : FRED PRS85006092 (quarterly)
+    Signal : (yoy_pct − 2.0) / 0.5
+    high   : above 2.25%; low: below 1.75%
 
 BroadEconomicLift
-    Source  : FRED A191RL1Q225SBEA (quarterly, already annualised %)
-    Signal  : (growth_pct − 2.5) / 0.5
-    P(True) : sigmoid(signal)
-              At 2.5%: P ≈ 0.50; at 3.5%: P ≈ 0.88; at 1.5%: P ≈ 0.12
+    Source : FRED A191RL1Q225SBEA (quarterly, already annualised %)
+    Signal : (growth_pct − 2.5) / 0.5
+    high   : above 2.75%; low: below 2.25%
 
 AIRiskPremiumCompressed
-    Source  : yfinance ^VIX
-    Signal  : − z_score of current VIX vs 2-year rolling distribution
-              (inverted: low VIX → positive signal → compressed premium)
-    P(True) : sigmoid(−z_score)
-              At z=0 (VIX at mean): P ≈ 0.50
-              At z=−1 (VIX below mean): P ≈ 0.73
-              At z=+1 (VIX above mean): P ≈ 0.27
-
-All P(True) values are clamped to [0.01, 0.99].
+    Source : yfinance ^VIX
+    Signal : − z_score of current VIX vs 2-year rolling distribution
+             (inverted: low VIX → positive signal → compressed premium)
 
 Cadence
 -------
@@ -84,10 +66,9 @@ EDGAR data is cached 6 hours.  yfinance and FRED calls happen on each run.
 
 Missing data handling
 ---------------------
-If any source returns insufficient data, the affected signal defaults
-to 0.0 (→ P = 0.50, maximum uncertainty) and the assignment confidence
-is degraded to 0.5.  This prevents hard failures during data outages
-while signalling genuine uncertainty to the ontology.
+A variable whose source has too little data for its signal is MISSING in
+the record (decision D10), never a middle reading: "no input" is not "near
+the line".
 """
 from __future__ import annotations
 
@@ -111,17 +92,10 @@ from .fred_client import (
     FREDObservation,
 )
 from .yfinance_client import AIYFinanceClient, YFObservation
-from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
+from ...sources.grades import build_graded_record, level_of
+from ...sources.soft_evidence import zscore as _zscore
 
 logger = logging.getLogger(__name__)
-
-# ---------------------------------------------------------------------------
-# Calibration constants
-# ---------------------------------------------------------------------------
-
-_CLAMP_LO: float = 0.01
-_CLAMP_HI: float = 0.99
-
 
 # ---------------------------------------------------------------------------
 # Snapshot dataclass — carries all derived signals
@@ -131,12 +105,11 @@ _CLAMP_HI: float = 0.99
 @dataclass(slots=True)
 class AIRegimeSnapshot:
     """
-    Derived signals and soft-probability calibrations for one evidence week.
+    Derived signals for one evidence week.
 
-    Each *_signal field is the pre-sigmoid score fed into _soft_bool().
-    Each *_p_true field is the calibrated P(True) ∈ [0.01, 0.99].
-    Each *_bool field is the hard MAP boolean (observed_value).
-    Each *_confidence field reflects data availability (1.0 if complete).
+    *signals* holds each variable's signed signal (read as a level when the
+    record is built); a variable without one is MISSING. The raw fields are
+    for logging and diagnostics.
     """
 
     # Raw signals for diagnostics / logging
@@ -149,42 +122,11 @@ class AIRegimeSnapshot:
     gdp_growth_pct: Optional[float] = None
     vix_zscore: Optional[float] = None
 
-    # Derived soft probabilities
-    p_semiconductor_momentum: float = 0.5
-    p_market_concentration_extreme: float = 0.5
-    p_hyperscaler_capex_accelerating: float = 0.5
-    p_tech_valuation_detached: float = 0.5
-    p_ip_investment_rising: float = 0.5
-    p_labor_productivity_improving: float = 0.5
-    p_broad_economic_lift: float = 0.5
-    p_ai_risk_premium_compressed: float = 0.5
-
-    # Hard MAP booleans
-    semiconductor_momentum: bool = False
-    market_concentration_extreme: bool = False
-    hyperscaler_capex_accelerating: bool = False
-    tech_valuation_detached: bool = False
-    ip_investment_rising: bool = False
-    labor_productivity_improving: bool = False
-    broad_economic_lift: bool = False
-    ai_risk_premium_compressed: bool = False
-
-    # Data confidence per variable (1.0 = full data, 0.5 = degraded/fallback)
-    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
-    missing: set[str] = field(default_factory=set)
+    signals: dict[str, float] = field(default_factory=dict)
     confidence: dict[str, float] = field(default_factory=dict)
 
     # Target date for this evidence record
     target_date: Optional[date] = None
-
-
-# ---------------------------------------------------------------------------
-# Sigmoid and soft-bool helpers
-# ---------------------------------------------------------------------------
-
-
-def _soft_bool(signal: float) -> float:
-    return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
 
 
 def _values_from_obs(obs: list[FREDObservation]) -> list[float]:
@@ -314,9 +256,6 @@ def _compute_capex_signal(
     Compute HyperscalerCapexAccelerating signal from EDGAR snapshot.
 
     Signal: (avg_yoy_growth_pct − 20.0) / 10.0
-    At 20%: signal = 0.0 → P ≈ 0.50
-    At 30%: signal = 1.0 → P ≈ 0.73
-    At 10%: signal = −1.0 → P ≈ 0.27
 
     Returns (signal, confidence).
     """
@@ -338,10 +277,7 @@ def _compute_valuation_zscore(
     when QQQ price is significantly above its 3-year rolling mean, it
     implies elevated valuation multiples.
 
-    Signal: z_score − 1.0 (threshold: z = 1.0)
-    At z=1.0: signal = 0 → P ≈ 0.50
-    At z=2.0: signal = 1 → P ≈ 0.73
-    At z=0:   signal = −1 → P ≈ 0.27
+    Signal: z_score − 1.0 (the line sits at z = 1.0)
 
     Returns (signal, confidence).
     """
@@ -370,7 +306,7 @@ def _compute_ip_investment_signal(
     Signal: (current_4q_growth − median_historical_4q_growth) /
              max(iqr_4q_growth, 0.5)
 
-    True when current 4q growth exceeds historical median.
+    Positive when current 4q growth exceeds the historical median.
 
     Returns (signal, confidence).
     """
@@ -398,7 +334,7 @@ def _compute_ip_investment_signal(
             historical_growths.append((v_now / v_4q - 1.0) * 100.0)
 
     if len(historical_growths) < 4:
-        # Insufficient history: compare to zero (positive growth = True)
+        # Insufficient history: compare to zero growth instead
         signal = current_growth / 2.0
         return signal, 0.6
 
@@ -462,7 +398,7 @@ def _compute_vix_signal(
     Compute AIRiskPremiumCompressed signal from ^VIX.
 
     Signal: − z_score of current VIX vs 2-year rolling distribution.
-    Inverted so that low VIX (below mean) → positive signal → True.
+    Inverted so that low VIX (below mean) → positive signal.
 
     Returns (signal, confidence).
     """
@@ -491,7 +427,7 @@ def compute_snapshot(
     target_date: date,
 ) -> AIRegimeSnapshot:
     """
-    Derive all signals and soft probabilities from raw data observations.
+    Derive every variable's signal from raw data observations.
 
     Parameters
     ----------
@@ -507,108 +443,51 @@ def compute_snapshot(
     Returns
     -------
     AIRegimeSnapshot
-        Fully populated snapshot with soft probabilities and hard booleans.
+        The signals, raw diagnostics and per-variable confidence; a variable
+        whose source has too little data has no signal.
     """
     snap = AIRegimeSnapshot(target_date=target_date)
     confidence: dict[str, float] = {}
 
-    # ---- SemiconductorMomentum (^SOX) ------------------------------------
-    sox_obs = yf_data.get("^SOX", [])
-    sox_sig, sox_conf = _compute_13w_return_zscore(sox_obs, "^SOX")
+    def take(name: str, signal: Optional[float], conf: float) -> None:
+        confidence[name] = conf
+        if signal is not None:
+            snap.signals[name] = signal
+
+    # SOX and concentration lines sit at z = 0.5, hence the offset.
+    sox_sig, conf = _compute_13w_return_zscore(yf_data.get("^SOX", []), "^SOX")
+    take("SemiconductorMomentum", sox_sig - 0.5 if sox_sig is not None else None, conf)
     snap.sox_return_zscore = sox_sig
-    if sox_sig is None:
-        snap.missing.add("SemiconductorMomentum")
-        # No data → maximum uncertainty
-        snap.p_semiconductor_momentum = 0.5
-    else:
-        # Threshold at z = 0.5 → signal = z - 0.5
-        snap.p_semiconductor_momentum = _soft_bool(sox_sig - 0.5)
-    snap.semiconductor_momentum = snap.p_semiconductor_momentum > 0.5
-    confidence["SemiconductorMomentum"] = sox_conf
 
-    # ---- MarketConcentrationExtreme (QQQ/RSP) ----------------------------
     qqq_obs = yf_data.get("QQQ", [])
-    rsp_obs = yf_data.get("RSP", [])
-    conc_sig, conc_conf = _compute_concentration_ratio_zscore(qqq_obs, rsp_obs)
+    conc_sig, conf = _compute_concentration_ratio_zscore(qqq_obs, yf_data.get("RSP", []))
+    take("MarketConcentrationExtreme", conc_sig - 0.5 if conc_sig is not None else None, conf)
     snap.concentration_ratio_zscore = conc_sig
-    if conc_sig is None:
-        snap.missing.add("MarketConcentrationExtreme")
-        # No data → maximum uncertainty
-        snap.p_market_concentration_extreme = 0.5
-    else:
-        # Threshold at z = 0.5 → signal = z - 0.5
-        snap.p_market_concentration_extreme = _soft_bool(conc_sig - 0.5)
-    snap.market_concentration_extreme = snap.p_market_concentration_extreme > 0.5
-    confidence["MarketConcentrationExtreme"] = conc_conf
 
-    # ---- HyperscalerCapexAccelerating (EDGAR) ----------------------------
-    capex_sig, capex_conf = _compute_capex_signal(capex)
-    if capex_sig is None:
-        snap.missing.add("HyperscalerCapexAccelerating")
-        capex_sig = 0.0
+    capex_sig, conf = _compute_capex_signal(capex)
+    take("HyperscalerCapexAccelerating", capex_sig, conf)
     snap.capex_avg_yoy_pct = capex.avg_yoy_growth_pct
-    snap.p_hyperscaler_capex_accelerating = _soft_bool(capex_sig)
-    snap.hyperscaler_capex_accelerating = snap.p_hyperscaler_capex_accelerating > 0.5
-    confidence["HyperscalerCapexAccelerating"] = capex_conf
 
-    # ---- TechValuationDetached (QQQ price z-score) -----------------------
-    val_sig, val_conf = _compute_valuation_zscore(qqq_obs)
-    # val_sig is already (raw_z - 1.0); restore raw z for diagnostics
-    snap.qqq_valuation_zscore = (val_sig + 1.0) if val_sig is not None else None
-    if val_sig is None:
-        snap.missing.add("TechValuationDetached")
-        # No data → maximum uncertainty
-        snap.p_tech_valuation_detached = 0.5
-    else:
-        snap.p_tech_valuation_detached = _soft_bool(val_sig)
-    snap.tech_valuation_detached = snap.p_tech_valuation_detached > 0.5
-    confidence["TechValuationDetached"] = val_conf
+    # val_sig is already (raw_z - 1.0); the raw z is kept for diagnostics
+    val_sig, conf = _compute_valuation_zscore(qqq_obs)
+    take("TechValuationDetached", val_sig, conf)
+    snap.qqq_valuation_zscore = val_sig + 1.0 if val_sig is not None else None
 
-    # ---- IPInvestmentRising (FRED Y033RC1Q027SBEA) -----------------------
-    ip_obs = fred_data.get("Y033RC1Q027SBEA", [])
-    ip_sig, ip_conf = _compute_ip_investment_signal(ip_obs)
-    if ip_sig is None:
-        snap.missing.add("IPInvestmentRising")
-        ip_sig = 0.0
+    ip_sig, conf = _compute_ip_investment_signal(fred_data.get("Y033RC1Q027SBEA", []))
+    take("IPInvestmentRising", ip_sig, conf)
     snap.ip_investment_signal = ip_sig
-    snap.p_ip_investment_rising = _soft_bool(ip_sig)
-    snap.ip_investment_rising = snap.p_ip_investment_rising > 0.5
-    confidence["IPInvestmentRising"] = ip_conf
 
-    # ---- LaborProductivityImproving (FRED PRS85006092) -------------------
-    prod_obs = fred_data.get("PRS85006092", [])
-    prod_sig, prod_conf = _compute_labor_productivity_signal(prod_obs)
-    if prod_sig is None:
-        snap.missing.add("LaborProductivityImproving")
-        prod_sig = 0.0
-    snap.labor_prod_yoy_pct = (
-        (prod_sig * 0.5 + 2.0) if prod_sig is not None else None
-    )
-    snap.p_labor_productivity_improving = _soft_bool(prod_sig)
-    snap.labor_productivity_improving = snap.p_labor_productivity_improving > 0.5
-    confidence["LaborProductivityImproving"] = prod_conf
+    prod_sig, conf = _compute_labor_productivity_signal(fred_data.get("PRS85006092", []))
+    take("LaborProductivityImproving", prod_sig, conf)
+    snap.labor_prod_yoy_pct = prod_sig * 0.5 + 2.0 if prod_sig is not None else None
 
-    # ---- BroadEconomicLift (FRED A191RL1Q225SBEA) ------------------------
-    gdp_obs = fred_data.get("A191RL1Q225SBEA", [])
-    gdp_sig, gdp_conf = _compute_gdp_signal(gdp_obs)
-    if gdp_sig is None:
-        snap.missing.add("BroadEconomicLift")
-        gdp_sig = 0.0
-    snap.gdp_growth_pct = (gdp_sig * 0.5 + 2.5) if gdp_sig is not None else None
-    snap.p_broad_economic_lift = _soft_bool(gdp_sig)
-    snap.broad_economic_lift = snap.p_broad_economic_lift > 0.5
-    confidence["BroadEconomicLift"] = gdp_conf
+    gdp_sig, conf = _compute_gdp_signal(fred_data.get("A191RL1Q225SBEA", []))
+    take("BroadEconomicLift", gdp_sig, conf)
+    snap.gdp_growth_pct = gdp_sig * 0.5 + 2.5 if gdp_sig is not None else None
 
-    # ---- AIRiskPremiumCompressed (^VIX) ----------------------------------
-    vix_obs = yf_data.get("^VIX", [])
-    vix_sig, vix_conf = _compute_vix_signal(vix_obs)
-    if vix_sig is None:
-        snap.missing.add("AIRiskPremiumCompressed")
-        vix_sig = 0.0
-    snap.vix_zscore = -vix_sig  # store raw z (un-inverted) for diagnostics
-    snap.p_ai_risk_premium_compressed = _soft_bool(vix_sig)
-    snap.ai_risk_premium_compressed = snap.p_ai_risk_premium_compressed > 0.5
-    confidence["AIRiskPremiumCompressed"] = vix_conf
+    vix_sig, conf = _compute_vix_signal(yf_data.get("^VIX", []))
+    take("AIRiskPremiumCompressed", vix_sig, conf)
+    snap.vix_zscore = -vix_sig if vix_sig is not None else None  # raw z, un-inverted
 
     snap.confidence = confidence
     return snap
@@ -663,7 +542,7 @@ class AIRegimePipeline:
         Returns
         -------
         EvidenceRecord
-            Fully-populated record with 8 soft BOOLEAN assignments.
+            One record: each variable observed at its level, or MISSING.
         """
 
         # Fetch yfinance and FRED concurrently; EDGAR uses its own cache
@@ -716,25 +595,15 @@ class AIRegimePipeline:
         """
         Map an AIRegimeSnapshot to an EvidenceRecord.
 
-        Produces SOFT_OBSERVED assignments with sigmoid-calibrated
-        probability distributions.  Synchronous; no external dependencies.
+        Each variable with a signal is observed at its level (D25); the
+        rest are MISSING. Synchronous; no external dependencies.
         """
         target_date = snapshot.target_date
-        return build_soft_record(
+        return build_graded_record(
             module_id="ai-regime-v1",
             variables=get_variables(),
-            states=[
-                ("SemiconductorMomentum", snapshot.semiconductor_momentum, snapshot.p_semiconductor_momentum),
-                ("MarketConcentrationExtreme", snapshot.market_concentration_extreme, snapshot.p_market_concentration_extreme),
-                ("HyperscalerCapexAccelerating", snapshot.hyperscaler_capex_accelerating, snapshot.p_hyperscaler_capex_accelerating),
-                ("TechValuationDetached", snapshot.tech_valuation_detached, snapshot.p_tech_valuation_detached),
-                ("IPInvestmentRising", snapshot.ip_investment_rising, snapshot.p_ip_investment_rising),
-                ("LaborProductivityImproving", snapshot.labor_productivity_improving, snapshot.p_labor_productivity_improving),
-                ("BroadEconomicLift", snapshot.broad_economic_lift, snapshot.p_broad_economic_lift),
-                ("AIRiskPremiumCompressed", snapshot.ai_risk_premium_compressed, snapshot.p_ai_risk_premium_compressed),
-            ],
+            signals=snapshot.signals,
             confidence=snapshot.confidence,
-            missing=snapshot.missing,
             target_date=target_date,
             source_ref="AI-REGIME:yfinance(^SOX,QQQ,RSP,^VIX)"
             "+EDGAR(MSFT,GOOGL,AMZN,META)"
@@ -751,28 +620,7 @@ class AIRegimePipeline:
 def _log_snapshot(snapshot: AIRegimeSnapshot, target_date: date) -> None:
     """Log a one-line summary of the evidence snapshot."""
     logger.info(
-        (
-            "AIRegime evidence week-ending=%s: "
-            "SM=%s(p=%.2f) MCE=%s(p=%.2f) HCA=%s(p=%.2f) TVD=%s(p=%.2f) "
-            "IPR=%s(p=%.2f) LPI=%s(p=%.2f) BEL=%s(p=%.2f) ARPC=%s(p=%.2f) | "
-            "sox_z=%.2f conc_z=%.2f capex_yoy=%.1f qqq_val_z=%.2f "
-            "ip_sig=%.2f prod_yoy=%.2f gdp_pct=%.2f vix_z=%.2f"
-        ),
+        "AIRegime evidence week-ending=%s: %s",
         target_date,
-        snapshot.semiconductor_momentum,     snapshot.p_semiconductor_momentum,
-        snapshot.market_concentration_extreme, snapshot.p_market_concentration_extreme,
-        snapshot.hyperscaler_capex_accelerating, snapshot.p_hyperscaler_capex_accelerating,
-        snapshot.tech_valuation_detached,     snapshot.p_tech_valuation_detached,
-        snapshot.ip_investment_rising,        snapshot.p_ip_investment_rising,
-        snapshot.labor_productivity_improving, snapshot.p_labor_productivity_improving,
-        snapshot.broad_economic_lift,         snapshot.p_broad_economic_lift,
-        snapshot.ai_risk_premium_compressed,  snapshot.p_ai_risk_premium_compressed,
-        snapshot.sox_return_zscore or float("nan"),
-        snapshot.concentration_ratio_zscore or float("nan"),
-        snapshot.capex_avg_yoy_pct or float("nan"),
-        snapshot.qqq_valuation_zscore or float("nan"),
-        snapshot.ip_investment_signal or float("nan"),
-        snapshot.labor_prod_yoy_pct or float("nan"),
-        snapshot.gdp_growth_pct or float("nan"),
-        snapshot.vix_zscore or float("nan"),
+        " ".join(f"{name}={level_of(sig)}({sig:+.2f})" for name, sig in snapshot.signals.items()) or "no signals",
     )

@@ -5,12 +5,12 @@ from __future__ import annotations
 
 import math
 from datetime import datetime, timezone
-from typing import Callable, Literal
+from typing import Callable, Literal, Optional
 from uuid import UUID
 
 from ..engine import ProbabilisticOntologyEngine
 from ..model.scoring import candidate_score
-from ..schemas import OntologyCandidate
+from ..schemas import DomainType, OntologyCandidate, Variable
 from . import context
 from .dto import (
     DominantHypothesis,
@@ -189,6 +189,16 @@ def candidate_name(c: OntologyCandidate) -> str:
     return c.description or f"Candidate {str(c.candidate_id)[:8]}"
 
 
-def p_true(dist: dict) -> float:
-    """P(True) from a posterior keyed by str(value); the first value for non-boolean variables."""
-    return float(dist.get("True", dist.get("true", next(iter(dist.values()), 0.5))))
+def reading(dist: dict, variable: Variable) -> tuple[Optional[str], Optional[float]]:
+    """A posterior keyed by str(value), read as its most likely value and a
+    degree from 0 to 1: P(True) for a yes/no, the mean position from the
+    lowest level to the highest for a graded signal (D25). (None, None)
+    when there is no posterior."""
+    if not dist:
+        return None, None
+    likeliest = max(dist, key=dist.get)
+    if variable.domain_type == DomainType.BOOLEAN:
+        return likeliest, float(dist.get("True", 0.0))
+    top = len(variable.support) - 1
+    degree = sum(float(dist.get(str(value), 0.0)) * i / top for i, value in enumerate(variable.support))
+    return likeliest, degree

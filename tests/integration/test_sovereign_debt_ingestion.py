@@ -4,16 +4,15 @@ Integration tests — sovereign debt domain ingestion pipeline.
 Test inventory
 --------------
 TEST-SD-01  All 8 variable IDs are stable across module imports
-TEST-SD-04  Soft probabilities are clamped to [0.01, 0.99] for all signals
-TEST-SD-05  Sigmoid calibration: deeply inverted dollar (USD strong) → P(DollarStrengthening) > 0.6
-TEST-SD-06  Active Fed QT → P(FedBalanceSheetShrinking) > 0.9
-TEST-SD-07  HY OAS above 6.5% → P(CreditDefaultRisk) > 0.5
-TEST-SD-08  HY OAS below 4.5% → P(CreditDefaultRisk) < 0.5
+TEST-SD-05  USD strong (DEXUSEU far below its mean) → DollarStrengthening high
+TEST-SD-06  Active Fed QT → FedBalanceSheetShrinking high
+TEST-SD-07  HY OAS above 6.5% → CreditDefaultRisk high
+TEST-SD-08  HY OAS below 4.5% → CreditDefaultRisk low
 TEST-SD-09  build_evidence_record maps all 8 variable UUIDs correctly
-TEST-SD-10  build_evidence_record produces SOFT_OBSERVED missingness on all assignments
+TEST-SD-10  build_evidence_record observes every variable exactly, at a level
 TEST-SD-11  FRED client fetch_series with mocked HTTP returns correct observations
 TEST-SD-12  FRED client skips missing (".") values
-TEST-SD-13  compute_snapshot falls back gracefully with insufficient data
+TEST-SD-13  compute_snapshot with no data gives no signal (all MISSING)
 TEST-SD-15  Existence thresholds are within valid ranges
 TEST-SD-16  Domain registers and activates in the engine
 TEST-SD-18  Full pipeline fetch_evidence with mocked FREDClient
@@ -21,7 +20,6 @@ TEST-SD-18  Full pipeline fetch_evidence with mocked FREDClient
 from __future__ import annotations
 
 import asyncio
-import math
 import os
 import sys
 from datetime import date, timedelta
@@ -31,7 +29,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 import pytest
 
-from src.domains.sources.soft_evidence import sigmoid as _sigmoid
+from src.domains.sources.grades import LEVELS, level_of
 from src.domains.sovereign_debt_v1.domain import (
     SovereignDebtV1,
     get_variables,
@@ -45,7 +43,6 @@ from src.domains.sovereign_debt_v1.ingestion.pipeline import (
     SovereignDebtPipeline,
     SovereignDebtSnapshot,
     compute_snapshot,
-    _soft_bool,
     _compute_fed_balance_sheet_shrinking,
     _compute_credit_default_risk,
 )
@@ -155,26 +152,37 @@ def test_variable_ids_are_stable():
 
 
 # ---------------------------------------------------------------------------
-# TEST-SD-04 — Soft probabilities clamped
-# ---------------------------------------------------------------------------
-
-@pytest.mark.parametrize("signal", [-100.0, -10.0, 0.0, 10.0, 100.0])
-def test_soft_bool_clamped(signal: float):
-    result = _soft_bool(signal)
-    assert 0.01 <= result <= 0.99
-    assert not math.isnan(result)
-
-
-# ---------------------------------------------------------------------------
 # TEST-SD-05 — DollarStrengthening calibration
 # ---------------------------------------------------------------------------
 
+def test_a_high_ten_year_yield_is_us_yield_spiking():
+    """DGS10 at 5.5 against a two-year mean near 3.5 → USYieldSpiking high."""
+    from src.domains.sovereign_debt_v1.ingestion.pipeline import _compute_us_yield_spiking
+    obs = [
+        FREDObservation(obs_date=date(2024, 5, 3) - timedelta(days=i), value=(5.5 if i == 0 else 3.5),
+                        series_id="DGS10")
+        for i in range(400)
+    ]
+    sig, _ = _compute_us_yield_spiking(obs)
+    assert sig is not None and level_of(sig) == "high"
+
+
+def test_global_liquidity_from_one_series_is_that_series_not_a_third_less():
+    """With M2 missing, the composite is the balance sheet's own signal: the
+    missing half is not averaged in as a zero reading (D10, D25)."""
+    from src.domains.sovereign_debt_v1.ingestion.pipeline import _compute_global_liquidity_contracting
+    walcl = [FREDObservation(obs_date=date(2024, 5, 3) - timedelta(weeks=i), value=(97.0 if i == 0 else 100.0),
+                             series_id="WALCL") for i in range(20)]
+    alone, conf = _compute_global_liquidity_contracting(walcl, [])
+    assert alone == pytest.approx(15.0)  # a 3% fall over 13 weeks, times 5
+    assert conf == 0.5  # one of its two inputs
+
+
 def test_strong_usd_produces_high_dollar_strengthening_p():
-    """USD very strong (DEXUSEU far below mean) → P(DollarStrengthening) > 0.6."""
+    """USD very strong (DEXUSEU far below mean) → DollarStrengthening high."""
     obs = _make_full_observations(dexuseu_current=0.95, dexuseu_mean=1.15)
     snap = compute_snapshot(obs, _TARGET_DATE)
-    assert snap.p_dollar_strengthening > 0.6, \
-        f"Expected P > 0.6 for strong USD, got {snap.p_dollar_strengthening:.3f}"
+    assert level_of(snap.signals["DollarStrengthening"]) == "high"
 
 
 # ---------------------------------------------------------------------------
@@ -182,7 +190,7 @@ def test_strong_usd_produces_high_dollar_strengthening_p():
 # ---------------------------------------------------------------------------
 
 def test_active_qt_produces_high_fed_shrinking_p():
-    """WALCL falls 3% over 13 weeks (active QT) → P(FedBalanceSheetShrinking) > 0.9."""
+    """WALCL falls 3% over 13 weeks (active QT) → FedBalanceSheetShrinking high."""
     walcl_values = [7_800.0] + [7_900.0 + 15.0 * i for i in range(13)] + [8_100.0] * 6
     obs = [
         FREDObservation(
@@ -194,8 +202,7 @@ def test_active_qt_produces_high_fed_shrinking_p():
     ]
     sig, _ = _compute_fed_balance_sheet_shrinking(obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p > 0.9, f"Expected P > 0.9 for active QT, got {p:.3f}"
+    assert level_of(sig) == "high"
 
 
 # ---------------------------------------------------------------------------
@@ -203,22 +210,19 @@ def test_active_qt_produces_high_fed_shrinking_p():
 # ---------------------------------------------------------------------------
 
 def test_high_hy_spread_produces_high_credit_default_risk():
-    """BAMLH0A0HYM2 = 7.0% (above 6.0% threshold) → P(CreditDefaultRisk) > 0.5."""
+    """BAMLH0A0HYM2 = 7.0% (above 6.0% threshold) → CreditDefaultRisk high."""
     obs = _make_obs("BAMLH0A0HYM2", [7.0] * 5)
     sig, _ = _compute_credit_default_risk(obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p > 0.5, f"Expected P > 0.5 for HY spread at 7.0%, got {p:.3f}"
-    assert p > 0.8, f"Expected P > 0.8 for HY spread at 7.0%, got {p:.3f}"
+    assert level_of(sig) == "high"
 
 
 def test_low_hy_spread_produces_low_credit_default_risk():
-    """BAMLH0A0HYM2 = 3.5% (well below threshold) → P(CreditDefaultRisk) < 0.5."""
+    """BAMLH0A0HYM2 = 3.5% (well below threshold) → CreditDefaultRisk low."""
     obs = _make_obs("BAMLH0A0HYM2", [3.5] * 5)
     sig, _ = _compute_credit_default_risk(obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p < 0.5, f"Expected P < 0.5 for HY spread at 3.5%, got {p:.3f}"
+    assert level_of(sig) == "low"
 
 
 # ---------------------------------------------------------------------------
@@ -237,20 +241,17 @@ def test_build_evidence_record_maps_all_uuids():
 
 
 # ---------------------------------------------------------------------------
-# TEST-SD-10 — All assignments are SOFT_OBSERVED
+# TEST-SD-10 — Every variable observed exactly, at a level
 # ---------------------------------------------------------------------------
 
-def test_build_evidence_record_all_soft_observed():
+def test_build_evidence_record_observes_every_variable_at_a_level():
     observations = _make_full_observations()
     snapshot = compute_snapshot(observations, _TARGET_DATE)
     record = SovereignDebtPipeline.build_evidence_record(snapshot)
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED
-        assert a.probabilities is not None
-        assert set(a.probabilities.keys()) == {True, False}
-        p_true = a.probabilities[True]
-        assert 0.01 <= p_true <= 0.99
-        assert abs(a.probabilities[True] + a.probabilities[False] - 1.0) < 0.01
+        assert a.missingness == MissingnessType.OBSERVED
+        assert a.probabilities is None
+        assert a.observed_value in LEVELS
 
 
 # ---------------------------------------------------------------------------
@@ -301,19 +302,22 @@ def test_fred_client_skips_missing_values():
 
 
 # ---------------------------------------------------------------------------
-# TEST-SD-13 — Graceful fallback with insufficient data
+# TEST-SD-13 — No data: no signal, so every variable is MISSING
 # ---------------------------------------------------------------------------
 
 def test_compute_snapshot_falls_back_gracefully_with_no_data():
-    snapshot = compute_snapshot({}, _TARGET_DATE)
-    assert snapshot.p_us_yield_spiking == 0.5
-    assert snapshot.p_spread_widening == 0.5
-    assert snapshot.p_dollar_strengthening == 0.5
-    assert snapshot.p_fed_balance_sheet_shrinking == 0.5
-    assert snapshot.p_em_stress_elevated == 0.5
-    assert snapshot.p_fiscal_dominance_risk == 0.5
-    assert snapshot.p_credit_default_risk == 0.5
-    assert snapshot.p_global_liquidity_contracting == 0.5
+    """No input is MISSING, never a middle reading."""
+    assert compute_snapshot({}, _TARGET_DATE).signals == {}
+
+
+def test_compute_snapshot_partial_data_leaves_the_rest_missing():
+    full = _make_full_observations()
+    snapshot = compute_snapshot({"DGS10": full["DGS10"]}, _TARGET_DATE)
+
+    assert set(snapshot.signals) == {"USYieldSpiking"}
+    record = SovereignDebtPipeline.build_evidence_record(snapshot)
+    missing = [a for a in record.observed_assignments if a.missingness == MissingnessType.MISSING]
+    assert len(missing) == 7
 
 
 # ---------------------------------------------------------------------------
@@ -358,9 +362,9 @@ def test_fetch_evidence_full_pipeline_mocked():
     variables = get_variables()
     mock_fred = AsyncMock(spec=FREDClient)
     observations = _make_full_observations(
-        walcl_now=7_800.0,   # QT → FedBalanceSheetShrinking=True
+        walcl_now=7_800.0,   # QT → FedBalanceSheetShrinking high
         walcl_13w=8_100.0,
-        hy_spread_current=7.0,  # > 6.0% threshold → CreditDefaultRisk=True
+        hy_spread_current=7.0,  # > 6.0% threshold → CreditDefaultRisk high
     )
     mock_fred.fetch_all_series = AsyncMock(return_value=observations)
 
@@ -373,6 +377,9 @@ def test_fetch_evidence_full_pipeline_mocked():
     assert "FRED" in record.source_ref
 
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED
+        assert a.missingness == MissingnessType.OBSERVED
+    amap = {a.variable_id: a.observed_value for a in record.observed_assignments}
+    assert amap[variables["FedBalanceSheetShrinking"].variable_id] == "high"
+    assert amap[variables["CreditDefaultRisk"].variable_id] == "high"
 
     mock_fred.fetch_all_series.assert_called_once_with(end_date=_TARGET_DATE)

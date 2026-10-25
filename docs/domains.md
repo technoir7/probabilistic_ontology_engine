@@ -1,5 +1,11 @@
 # The domains and their variables
 
+Every domain except art reads each variable from a measured number, as low,
+middle or high: how far the number lies from the line the variable's name
+describes, cut at half a unit of its own scale either side (REFACTOR_SPEC
+D25). Art's variables are yes/no, mostly from testimony, and kept as
+probabilities.
+
 **`macro-regime-v1`**: `YieldCurveInverted`, `InflationShock`, `LiquidityStress`, `CreditSpreadStress`, `VolatilityShock`, `DollarStrength`, `EquityRiskOn`, `AIRiskOn`
 — FRED series: `T10Y2Y`, `CPIAUCSL`, `WALCL`, `BAMLH0A0HYM2`, `VIXCLS`, `DEXUSEU`, `UNRATE`, `NASDAQCOM`
 

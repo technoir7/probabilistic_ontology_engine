@@ -117,19 +117,19 @@ class InferenceService:
         return result
 
     # ------------------------------------------------------------------
-    def leave_one_out(self, candidate: OntologyCandidate, observed: dict[str, Any]) -> dict[str, float]:
-        """P(each observed variable is true | every other observed one), one
-        model built for all of them (D18 calibration)."""
+    def leave_one_out(self, candidate: OntologyCandidate, observed: dict[str, Any]) -> dict[str, dict[Any, float]]:
+        """P(each value of each observed variable | every other observed one),
+        one model built for all of them (D18 calibration)."""
         ve = VariableElimination(self._build_pgmpy_model(candidate))
         out = {}
         for name, _ in observed.items():
             var = candidate.get_variable_by_name(name)
-            if var is None or var.lag_of or True not in var.support:
+            if var is None or var.lag_of:
                 continue
             evidence = {n: encode_value(v, candidate.get_variable_by_name(n).support)
                         for n, v in observed.items() if n != name and candidate.get_variable_by_name(n)}
             q = ve.query([name], evidence=evidence, show_progress=False)
-            out[name] = float(q.values[var.support.index(True)])
+            out[name] = {value: float(q.values[i]) for i, value in enumerate(var.support)}
         return out
 
     def forecast_log_prob(self, candidate: OntologyCandidate, observed: dict[str, Any]) -> float | None:

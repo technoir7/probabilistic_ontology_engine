@@ -5,69 +5,39 @@ This pipeline is the single point that owns the mapping from raw FRED API
 data to domain variable UUIDs.  It fetches all required series concurrently
 and produces one EvidenceRecord per weekly call.
 
-Variable mapping and calibration
----------------------------------
-All eight Boolean assignments are emitted as SOFT_OBSERVED with
-sigmoid-calibrated probability distributions.  The boolean MAP value is
-preserved in observed_value for compatibility with callers reading the hard
-field.
+Variable mapping (REFACTOR_SPEC D25)
+------------------------------------
+Each variable gets a signed signal: its distance from the line that names
+it, in the unit given below. The signal is read as a level, observed
+exactly (sources.grades): low below -0.5, mid within ±0.5, high above +0.5.
 
 YieldCurveInverted
-    Signal  : weekly median T10Y2Y (percentage points)
-    P(True) : sigmoid(-median_t10y2y / 0.30)
-    At 0%:     P ≈ 0.50  (boundary case, genuine uncertainty)
-    At -0.30%: P ≈ 0.73  (modestly inverted)
-    At -1.00%: P ≈ 0.97  (deeply inverted)
-    At +1.00%: P ≈ 0.04  (steep normal curve)
+    Signal : -(weekly median T10Y2Y) / 0.30 percentage points
+    high   : inverted by more than 0.15 points; low: positive by more than 0.15
 
 InflationShock
-    Signal  : CPIAUCSL 12-month year-over-year % change
-    P(True) : sigmoid((yoy_pct - 3.5) / 0.75)
-    At 3.5%: P ≈ 0.50  (threshold)
-    At 5.0%: P ≈ 0.87
-    At 2.0%: P ≈ 0.12
+    Signal : (CPIAUCSL 12-month % change - 3.5) / 0.75
+    high   : above 3.875%; low: below 3.125%
 
 LiquidityStress
-    Signal  : WALCL 13-week percentage change (QT = negative)
-    P(True) : sigmoid(-walcl_13w_chg_pct * 5.0)
-    At 0%:    P ≈ 0.50  (neutral balance sheet)
-    At -2%:   P ≈ 0.99  (active QT)
-    At +2%:   P ≈ 0.01  (active QE)
+    Signal : -(WALCL 13-week % change) * 5
+    high   : balance sheet shrinking by more than 0.1%; low: growing by more
 
 CreditSpreadStress
-    Signal  : BAMLH0A0HYM2 52-week rolling z-score
-    P(True) : sigmoid(z_score)
-    At z=0:   P ≈ 0.50
-    At z=+2:  P ≈ 0.88
-    At z=-1:  P ≈ 0.27
+    Signal : BAMLH0A0HYM2 52-week rolling z-score
 
 VolatilityShock
-    Signal  : (current VIX - rolling 90d median) / rolling 90d IQR
-    P(True) : sigmoid(signal)
-    At median VIX: P ≈ 0.50
-    At 2 IQR above median: P ≈ 0.88
+    Signal : (VIX - rolling 90-day median) / rolling 90-day IQR
 
 DollarStrength
-    Signal  : DEXUSEU 52-week rolling z-score (higher DEXUSEU = stronger USD)
-    P(True) : sigmoid(z_score)
-    At z=0:   P ≈ 0.50
-    At z=+1:  P ≈ 0.73  (USD above trend)
+    Signal : DEXUSEU 52-week rolling z-score, sign flipped (dollar strong when
+             a euro buys fewer dollars)
 
 EquityRiskOn
-    Signal  : -(UNRATE_latest - UNRATE_12m_mean) / 0.30
-    P(True) : sigmoid(signal)
-    When UNRATE at mean: P ≈ 0.50
-    When UNRATE -0.30% below mean (falling): P ≈ 0.73 (risk-on)
-    When UNRATE +0.50% above mean (rising):  P ≈ 0.19 (risk-off)
+    Signal : -(UNRATE latest - its 12-month mean) / 0.30
 
 AIRiskOn
-    Signal  : z-score of NASDAQCOM 13-week price return vs historical returns
-    P(True) : sigmoid(z_score)
-    At z=0:   P ≈ 0.50  (average tech momentum)
-    At z=+1:  P ≈ 0.73  (tech outperforming)
-    At z=-1:  P ≈ 0.27  (tech underperforming)
-
-All P(True) values are clamped to [0.01, 0.99].
+    Signal : z-score of the NASDAQCOM 13-week return against its history
 
 Cadence
 -------
@@ -76,10 +46,9 @@ using data from the prior week (observation_end = previous Friday).
 
 Missing data handling
 ---------------------
-If a FRED series returns insufficient data for a signal computation, the
-signal defaults to 0.0 (→ P(True) = 0.50, maximum uncertainty) and the
-assignment confidence is degraded to 0.5.  This prevents hard failures
-during data outages while signalling genuine uncertainty to the ontology.
+A variable whose series has too little data for its signal is MISSING in
+the record (decision D10), never a middle reading: "no input" is not "near
+the line".
 """
 from __future__ import annotations
 
@@ -96,20 +65,13 @@ from ....engine.schemas import (
 )
 from ..domain import get_variables
 from .fred_client import FREDClient, FREDObservation
-from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
+from ...sources.grades import build_graded_record, level_of
+from ...sources.soft_evidence import zscore as _zscore
 
 logger = logging.getLogger(__name__)
 
-# ---------------------------------------------------------------------------
-# Calibration constants
-# ---------------------------------------------------------------------------
-
-_CLAMP_LO: float = 0.01
-_CLAMP_HI: float = 0.99
-
-# Minimum observations required to compute each signal reliably.
-# If fewer are available, the signal falls back to 0.0 (maximum uncertainty)
-# and the confidence weight is degraded.
+# Minimum observations required to compute each signal reliably; with fewer,
+# the variable is MISSING.
 _MIN_OBS: dict[str, int] = {
     "T10Y2Y":        5,    # at least 1 full business week
     "CPIAUCSL":      13,   # 13 months for 12m YoY
@@ -130,12 +92,11 @@ _MIN_OBS: dict[str, int] = {
 @dataclass(slots=True)
 class MacroRegimeSnapshot:
     """
-    Derived signals and soft-probability calibrations for one evidence week.
+    Derived signals for one evidence week.
 
-    Each *_signal field is the pre-sigmoid score fed into _soft_bool().
-    Each *_p_true field is the calibrated P(True) ∈ [0.01, 0.99].
-    Each *_bool field is the hard MAP boolean (observed_value).
-    Each *_confidence field reflects data availability (1.0 if complete).
+    *signals* holds each variable's signed signal (read as a level when the
+    record is built); a variable without one is MISSING. The raw fields are
+    for logging and diagnostics.
     """
 
     # Raw values for logging / diagnostics
@@ -148,42 +109,11 @@ class MacroRegimeSnapshot:
     unrate_signal: Optional[float] = None       # -(delta_3m) / 0.30
     nasdaq_return_zscore: Optional[float] = None
 
-    # Derived soft probabilities
-    p_yield_curve_inverted: float = 0.5
-    p_inflation_shock: float = 0.5
-    p_liquidity_stress: float = 0.5
-    p_credit_spread_stress: float = 0.5
-    p_volatility_shock: float = 0.5
-    p_dollar_strength: float = 0.5
-    p_equity_risk_on: float = 0.5
-    p_ai_risk_on: float = 0.5
-
-    # Hard MAP booleans (for observed_value in assignments)
-    yield_curve_inverted: bool = False
-    inflation_shock: bool = False
-    liquidity_stress: bool = False
-    credit_spread_stress: bool = False
-    volatility_shock: bool = False
-    dollar_strength: bool = False
-    equity_risk_on: bool = False
-    ai_risk_on: bool = False
-
-    # Data confidence per variable (1.0 = full data, 0.5 = degraded/fallback)
-    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
-    missing: set[str] = field(default_factory=set)
+    signals: dict[str, float] = field(default_factory=dict)
     confidence: dict[str, float] = field(default_factory=dict)
 
     # Target date for this evidence record
     target_date: Optional[date] = None
-
-
-# ---------------------------------------------------------------------------
-# Sigmoid and soft-bool helpers
-# ---------------------------------------------------------------------------
-
-
-def _soft_bool(signal: float) -> float:
-    return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
 
 
 def _values_from_obs(obs: list[FREDObservation]) -> list[float]:
@@ -421,116 +351,61 @@ def compute_snapshot(
     target_date: date,
 ) -> MacroRegimeSnapshot:
     """
-    Derive all signals and soft probabilities from raw FRED observations.
+    Derive every variable's signal from raw FRED observations.
 
     Parameters
     ----------
     observations : dict[str, list[FREDObservation]]
         Mapping from FRED series_id → observations (newest-first).
         Series may be absent or have insufficient data; in that case the
-        affected signal defaults to 0.0 and confidence to 0.5.
+        affected variable has no signal and is recorded MISSING.
     target_date : date
         The week-ending date for this evidence record.
 
     Returns
     -------
     MacroRegimeSnapshot
-        Fully populated snapshot with soft probabilities and hard booleans.
+        The signals, raw diagnostics and per-variable confidence.
     """
     snap = MacroRegimeSnapshot(target_date=target_date)
     confidence: dict[str, float] = {}
 
-    # ---- YieldCurveInverted ------------------------------------------------
-    t10y2y_obs = observations.get("T10Y2Y", [])
-    t10y2y_sig, t10y2y_conf = _compute_yield_curve_signal(t10y2y_obs, target_date)
-    if t10y2y_sig is None:
-        snap.missing.add("YieldCurveInverted")
-        t10y2y_sig = 0.0
-    snap.t10y2y_weekly_median = (
-        -t10y2y_sig * 0.30 if t10y2y_sig is not None else None
-    )
-    snap.p_yield_curve_inverted = _soft_bool(t10y2y_sig)
-    snap.yield_curve_inverted = snap.p_yield_curve_inverted > 0.5
-    confidence["YieldCurveInverted"] = t10y2y_conf
+    def take(name: str, signal: Optional[float], conf: float) -> None:
+        confidence[name] = conf
+        if signal is not None:
+            snap.signals[name] = signal
 
-    # ---- InflationShock ----------------------------------------------------
-    cpi_obs = observations.get("CPIAUCSL", [])
-    infl_sig, infl_conf = _compute_inflation_signal(cpi_obs)
-    if infl_sig is None:
-        snap.missing.add("InflationShock")
-        infl_sig = 0.0
-    snap.cpi_yoy_pct = (infl_sig * 0.75 + 3.5) if infl_sig is not None else None
-    snap.p_inflation_shock = _soft_bool(infl_sig)
-    snap.inflation_shock = snap.p_inflation_shock > 0.5
-    confidence["InflationShock"] = infl_conf
+    t10y2y_sig, conf = _compute_yield_curve_signal(observations.get("T10Y2Y", []), target_date)
+    take("YieldCurveInverted", t10y2y_sig, conf)
+    snap.t10y2y_weekly_median = -t10y2y_sig * 0.30 if t10y2y_sig is not None else None
 
-    # ---- LiquidityStress ---------------------------------------------------
-    walcl_obs = observations.get("WALCL", [])
-    liq_sig, liq_conf = _compute_liquidity_signal(walcl_obs)
-    if liq_sig is None:
-        snap.missing.add("LiquidityStress")
-        liq_sig = 0.0
-    snap.walcl_13w_change_pct = (
-        -liq_sig / 5.0 if liq_sig is not None else None
-    )
-    snap.p_liquidity_stress = _soft_bool(liq_sig)
-    snap.liquidity_stress = snap.p_liquidity_stress > 0.5
-    confidence["LiquidityStress"] = liq_conf
+    infl_sig, conf = _compute_inflation_signal(observations.get("CPIAUCSL", []))
+    take("InflationShock", infl_sig, conf)
+    snap.cpi_yoy_pct = infl_sig * 0.75 + 3.5 if infl_sig is not None else None
 
-    # ---- CreditSpreadStress ------------------------------------------------
-    hy_obs = observations.get("BAMLH0A0HYM2", [])
-    credit_sig, credit_conf = _compute_credit_signal(hy_obs)
-    if credit_sig is None:
-        snap.missing.add("CreditSpreadStress")
-        credit_sig = 0.0
+    liq_sig, conf = _compute_liquidity_signal(observations.get("WALCL", []))
+    take("LiquidityStress", liq_sig, conf)
+    snap.walcl_13w_change_pct = -liq_sig / 5.0 if liq_sig is not None else None
+
+    credit_sig, conf = _compute_credit_signal(observations.get("BAMLH0A0HYM2", []))
+    take("CreditSpreadStress", credit_sig, conf)
     snap.hy_spread_zscore = credit_sig
-    snap.p_credit_spread_stress = _soft_bool(credit_sig)
-    snap.credit_spread_stress = snap.p_credit_spread_stress > 0.5
-    confidence["CreditSpreadStress"] = credit_conf
 
-    # ---- VolatilityShock ---------------------------------------------------
-    vix_obs = observations.get("VIXCLS", [])
-    vol_sig, vol_conf = _compute_volatility_signal(vix_obs)
-    if vol_sig is None:
-        snap.missing.add("VolatilityShock")
-        vol_sig = 0.0
+    vol_sig, conf = _compute_volatility_signal(observations.get("VIXCLS", []))
+    take("VolatilityShock", vol_sig, conf)
     snap.vix_signal = vol_sig
-    snap.p_volatility_shock = _soft_bool(vol_sig)
-    snap.volatility_shock = snap.p_volatility_shock > 0.5
-    confidence["VolatilityShock"] = vol_conf
 
-    # ---- DollarStrength ----------------------------------------------------
-    dex_obs = observations.get("DEXUSEU", [])
-    dol_sig, dol_conf = _compute_dollar_signal(dex_obs)
-    if dol_sig is None:
-        snap.missing.add("DollarStrength")
-        dol_sig = 0.0
+    dol_sig, conf = _compute_dollar_signal(observations.get("DEXUSEU", []))
+    take("DollarStrength", dol_sig, conf)
     snap.dexuseu_zscore = dol_sig
-    snap.p_dollar_strength = _soft_bool(dol_sig)
-    snap.dollar_strength = snap.p_dollar_strength > 0.5
-    confidence["DollarStrength"] = dol_conf
 
-    # ---- EquityRiskOn ------------------------------------------------------
-    unrate_obs = observations.get("UNRATE", [])
-    eq_sig, eq_conf = _compute_equity_signal(unrate_obs)
-    if eq_sig is None:
-        snap.missing.add("EquityRiskOn")
-        eq_sig = 0.0
+    eq_sig, conf = _compute_equity_signal(observations.get("UNRATE", []))
+    take("EquityRiskOn", eq_sig, conf)
     snap.unrate_signal = eq_sig
-    snap.p_equity_risk_on = _soft_bool(eq_sig)
-    snap.equity_risk_on = snap.p_equity_risk_on > 0.5
-    confidence["EquityRiskOn"] = eq_conf
 
-    # ---- AIRiskOn ----------------------------------------------------------
-    nasdaq_obs = observations.get("NASDAQCOM", [])
-    ai_sig, ai_conf = _compute_ai_signal(nasdaq_obs)
-    if ai_sig is None:
-        snap.missing.add("AIRiskOn")
-        ai_sig = 0.0
+    ai_sig, conf = _compute_ai_signal(observations.get("NASDAQCOM", []))
+    take("AIRiskOn", ai_sig, conf)
     snap.nasdaq_return_zscore = ai_sig
-    snap.p_ai_risk_on = _soft_bool(ai_sig)
-    snap.ai_risk_on = snap.p_ai_risk_on > 0.5
-    confidence["AIRiskOn"] = ai_conf
 
     snap.confidence = confidence
     return snap
@@ -574,7 +449,7 @@ class MacroRegimePipeline:
         Returns
         -------
         EvidenceRecord
-            Fully-populated record with 8 soft BOOLEAN assignments.
+            One record: each variable observed at its level, or MISSING.
 
         Raises
         ------
@@ -599,28 +474,17 @@ class MacroRegimePipeline:
         """
         Map a MacroRegimeSnapshot to an EvidenceRecord.
 
-        Produces SOFT_OBSERVED assignments with sigmoid-calibrated probability
-        distributions.  The boolean MAP value is preserved in observed_value
-        for backward compatibility.
+        Each variable with a signal is observed at its level (D25); the
+        rest are MISSING.
 
         This method is synchronous and has no external dependencies.
         """
         target_date = snapshot.target_date
-        return build_soft_record(
+        return build_graded_record(
             module_id="macro-regime-v1",
             variables=get_variables(),
-            states=[
-                ("YieldCurveInverted", snapshot.yield_curve_inverted, snapshot.p_yield_curve_inverted),
-                ("InflationShock", snapshot.inflation_shock, snapshot.p_inflation_shock),
-                ("LiquidityStress", snapshot.liquidity_stress, snapshot.p_liquidity_stress),
-                ("CreditSpreadStress", snapshot.credit_spread_stress, snapshot.p_credit_spread_stress),
-                ("VolatilityShock", snapshot.volatility_shock, snapshot.p_volatility_shock),
-                ("DollarStrength", snapshot.dollar_strength, snapshot.p_dollar_strength),
-                ("EquityRiskOn", snapshot.equity_risk_on, snapshot.p_equity_risk_on),
-                ("AIRiskOn", snapshot.ai_risk_on, snapshot.p_ai_risk_on),
-            ],
+            signals=snapshot.signals,
             confidence=snapshot.confidence,
-            missing=snapshot.missing,
             target_date=target_date,
             source_ref="FRED:T10Y2Y+CPIAUCSL+WALCL+BAMLH0A0HYM2"
             "+VIXCLS+DEXUSEU+UNRATE+NASDAQCOM"
@@ -636,28 +500,7 @@ class MacroRegimePipeline:
 def _log_snapshot(snapshot: MacroRegimeSnapshot, target_date: date) -> None:
     """Log a one-line summary of the evidence snapshot for debugging."""
     logger.info(
-        (
-            "MacroRegime evidence week-ending=%s: "
-            "YCI=%s(p=%.2f) IS=%s(p=%.2f) LS=%s(p=%.2f) CSS=%s(p=%.2f) "
-            "VS=%s(p=%.2f) DS=%s(p=%.2f) ERO=%s(p=%.2f) AIRO=%s(p=%.2f) | "
-            "t10y2y_med=%.3f cpi_yoy=%.2f walcl_13w=%.2f "
-            "hy_z=%.2f vix_sig=%.2f dex_z=%.2f unrate_sig=%.2f nasdaq_z=%.2f"
-        ),
+        "MacroRegime evidence week-ending=%s: %s",
         target_date,
-        snapshot.yield_curve_inverted, snapshot.p_yield_curve_inverted,
-        snapshot.inflation_shock, snapshot.p_inflation_shock,
-        snapshot.liquidity_stress, snapshot.p_liquidity_stress,
-        snapshot.credit_spread_stress, snapshot.p_credit_spread_stress,
-        snapshot.volatility_shock, snapshot.p_volatility_shock,
-        snapshot.dollar_strength, snapshot.p_dollar_strength,
-        snapshot.equity_risk_on, snapshot.p_equity_risk_on,
-        snapshot.ai_risk_on, snapshot.p_ai_risk_on,
-        snapshot.t10y2y_weekly_median or float("nan"),
-        snapshot.cpi_yoy_pct or float("nan"),
-        snapshot.walcl_13w_change_pct or float("nan"),
-        snapshot.hy_spread_zscore or float("nan"),
-        snapshot.vix_signal or float("nan"),
-        snapshot.dexuseu_zscore or float("nan"),
-        snapshot.unrate_signal or float("nan"),
-        snapshot.nasdaq_return_zscore or float("nan"),
+        " ".join(f"{name}={level_of(sig)}({sig:+.2f})" for name, sig in snapshot.signals.items()) or "no signals",
     )

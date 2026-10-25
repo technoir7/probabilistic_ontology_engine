@@ -1,39 +1,36 @@
 """
 CryptoRegimePipeline — CoinGecko + yfinance + FRED observations → EvidenceRecords.
 
-Variable calibrations (all SOFT_OBSERVED, sigmoid-based)
-----------------------------------------------------------
+Variable signals (REFACTOR_SPEC D25)
+------------------------------------
+Each variable gets a signed signal, read as a level observed exactly
+(sources.grades): low below -0.5, mid within ±0.5, high above +0.5. A
+variable whose inputs are too thin for its signal is MISSING (D10).
+
 BTCMomentumPositive
-    Signal  : BTC 13-week return z-score vs rolling year
-    P(True) : sigmoid(z_score)
+    Signal : BTC 13-week return z-score vs rolling year
 
 AltcoinSeasonActive
-    Signal  : -(btc_dominance - 52.0) / 5.0  (or ETH/BTC ratio z-score)
-    P(True) : sigmoid(signal)  [low dominance = alts winning]
+    Signal : -(btc_dominance - 52.0) / 5.0  (or ETH/BTC ratio z-score)
+             [low dominance = alts winning]
 
 OnChainActivityElevated
-    Signal  : BTC 30-day avg volume z-score vs full year
-    P(True) : sigmoid(z_score)
+    Signal : BTC 30-day avg volume z-score vs full year
 
 StablecoinFlowPositive
-    Signal  : (usdt+usdc mcap[-1]) / (usdt+usdc mcap[-28]) - 1, z-scored
-    P(True) : sigmoid(z_score)
+    Signal : (usdt+usdc mcap[-1]) / (usdt+usdc mcap[-28]) - 1, z-scored
 
 CryptoVolatilityShock
-    Signal  : BTC log-return 28-day std z-scored vs full year
-    P(True) : sigmoid(z_score)
+    Signal : BTC log-return 28-day std z-scored vs full year
 
 RiskAssetCorrelation
-    Signal  : BTC-USD / QQQ 91-day return correlation z-score
-    P(True) : sigmoid(z_score)
+    Signal : BTC-USD / QQQ 91-day return correlation z-score
 
 NarrativeMomentum
-    Signal  : ETH/BTC price ratio z-score over 365 days
-    P(True) : sigmoid(z_score)
+    Signal : ETH/BTC price ratio z-score over 365 days
 
 DollarDebasementNarrative
-    Signal  : (-DEXUSEU_zscore + GLD_13w_return_zscore) / 2
-    P(True) : sigmoid(composite)
+    Signal : (-DEXUSEU_zscore + GLD_13w_return_zscore) / 2
 """
 from __future__ import annotations
 
@@ -52,54 +49,26 @@ from ..domain import get_variables
 from .coingecko_client import CoinGeckoClient, CGObs, CGGlobal
 from .yfinance_client import CryptoYFinanceClient, CryptoYFObs
 from .fred_client import FREDClient
-from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
+from ...sources.grades import build_graded_record
+from ...sources.soft_evidence import zscore as _zscore
 
 logger = logging.getLogger(__name__)
-
-_CLAMP_LO: float = 0.01
-_CLAMP_HI: float = 0.99
 
 
 # slots: a misspelled field name raises instead of silently adding a field.
 @dataclass(slots=True)
 class CryptoRegimeSnapshot:
-    """Derived signals and soft probabilities for one evidence week."""
+    """
+    Derived signals for one evidence week.
 
-    # Soft probabilities
-    p_btc_momentum_positive: float = 0.5
-    p_altcoin_season_active: float = 0.5
-    p_onchain_activity_elevated: float = 0.5
-    p_stablecoin_flow_positive: float = 0.5
-    p_crypto_volatility_shock: float = 0.5
-    p_risk_asset_correlation: float = 0.5
-    p_narrative_momentum: float = 0.5
-    p_dollar_debasement_narrative: float = 0.5
+    *signals* holds each variable's signed signal (read as a level when the
+    record is built); a variable without one is MISSING.
+    """
 
-    # Hard MAP booleans
-    btc_momentum_positive: bool = False
-    altcoin_season_active: bool = False
-    onchain_activity_elevated: bool = False
-    stablecoin_flow_positive: bool = False
-    crypto_volatility_shock: bool = False
-    risk_asset_correlation: bool = False
-    narrative_momentum: bool = False
-    dollar_debasement_narrative: bool = False
-
-    # Data confidence per variable
-    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
-    missing: set[str] = field(default_factory=set)
+    signals: dict[str, float] = field(default_factory=dict)
     confidence: dict[str, float] = field(default_factory=dict)
 
     target_date: Optional[date] = None
-
-
-# ---------------------------------------------------------------------------
-# Signal helpers
-# ---------------------------------------------------------------------------
-
-
-def _soft_bool(signal: float) -> float:
-    return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
 
 
 # ---------------------------------------------------------------------------
@@ -397,14 +366,10 @@ def compute_snapshot(
     snap = CryptoRegimeSnapshot(target_date=target_date)
     confidence: dict[str, float] = {}
 
-    def _apply(var_name: str, sig: Optional[float], conf: float, p_attr: str, bool_attr: str) -> None:
-        if sig is None:
-            snap.missing.add(var_name)
-        s = sig if sig is not None else 0.0
-        p = _soft_bool(s)
-        setattr(snap, p_attr, p)
-        setattr(snap, bool_attr, p > 0.5)
+    def _apply(var_name: str, sig: Optional[float], conf: float) -> None:
         confidence[var_name] = conf
+        if sig is not None:
+            snap.signals[var_name] = sig
 
     btc_obs = cg_data.get("btc", [])
     eth_obs = cg_data.get("eth", [])
@@ -417,35 +382,35 @@ def compute_snapshot(
 
     # BTCMomentumPositive
     sig, conf = _compute_btc_momentum(btc_obs)
-    _apply("BTCMomentumPositive", sig, conf, "p_btc_momentum_positive", "btc_momentum_positive")
+    _apply("BTCMomentumPositive", sig, conf)
 
     # AltcoinSeasonActive
     sig, conf = _compute_altcoin_season(global_data, eth_obs, btc_obs)
-    _apply("AltcoinSeasonActive", sig, conf, "p_altcoin_season_active", "altcoin_season_active")
+    _apply("AltcoinSeasonActive", sig, conf)
 
     # OnChainActivityElevated
     sig, conf = _compute_onchain_activity(btc_obs)
-    _apply("OnChainActivityElevated", sig, conf, "p_onchain_activity_elevated", "onchain_activity_elevated")
+    _apply("OnChainActivityElevated", sig, conf)
 
     # StablecoinFlowPositive
     sig, conf = _compute_stablecoin_flow(usdt_obs, usdc_obs)
-    _apply("StablecoinFlowPositive", sig, conf, "p_stablecoin_flow_positive", "stablecoin_flow_positive")
+    _apply("StablecoinFlowPositive", sig, conf)
 
     # CryptoVolatilityShock
     sig, conf = _compute_crypto_volatility(btc_obs)
-    _apply("CryptoVolatilityShock", sig, conf, "p_crypto_volatility_shock", "crypto_volatility_shock")
+    _apply("CryptoVolatilityShock", sig, conf)
 
     # RiskAssetCorrelation
     sig, conf = _compute_risk_asset_correlation(btc_yf, qqq_yf)
-    _apply("RiskAssetCorrelation", sig, conf, "p_risk_asset_correlation", "risk_asset_correlation")
+    _apply("RiskAssetCorrelation", sig, conf)
 
     # NarrativeMomentum
     sig, conf = _compute_narrative_momentum(eth_obs, btc_obs)
-    _apply("NarrativeMomentum", sig, conf, "p_narrative_momentum", "narrative_momentum")
+    _apply("NarrativeMomentum", sig, conf)
 
     # DollarDebasementNarrative
     sig, conf = _compute_dollar_debasement(fred_data, gld_yf)
-    _apply("DollarDebasementNarrative", sig, conf, "p_dollar_debasement_narrative", "dollar_debasement_narrative")
+    _apply("DollarDebasementNarrative", sig, conf)
 
     snap.confidence = confidence
     return snap
@@ -486,21 +451,11 @@ class CryptoRegimePipeline:
     @staticmethod
     def build_evidence_record(snapshot: CryptoRegimeSnapshot) -> EvidenceRecord:
         target_date = snapshot.target_date
-        return build_soft_record(
+        return build_graded_record(
             module_id="crypto-regime-v1",
             variables=get_variables(),
-            states=[
-                ("BTCMomentumPositive", snapshot.btc_momentum_positive, snapshot.p_btc_momentum_positive),
-                ("AltcoinSeasonActive", snapshot.altcoin_season_active, snapshot.p_altcoin_season_active),
-                ("OnChainActivityElevated", snapshot.onchain_activity_elevated, snapshot.p_onchain_activity_elevated),
-                ("StablecoinFlowPositive", snapshot.stablecoin_flow_positive, snapshot.p_stablecoin_flow_positive),
-                ("CryptoVolatilityShock", snapshot.crypto_volatility_shock, snapshot.p_crypto_volatility_shock),
-                ("RiskAssetCorrelation", snapshot.risk_asset_correlation, snapshot.p_risk_asset_correlation),
-                ("NarrativeMomentum", snapshot.narrative_momentum, snapshot.p_narrative_momentum),
-                ("DollarDebasementNarrative", snapshot.dollar_debasement_narrative, snapshot.p_dollar_debasement_narrative),
-            ],
+            signals=snapshot.signals,
             confidence=snapshot.confidence,
-            missing=snapshot.missing,
             target_date=target_date,
             source_ref="CoinGecko:BTC+ETH+USDT+USDC"
             "|yfinance:BTC-USD+QQQ+GLD"

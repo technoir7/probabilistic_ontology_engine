@@ -4,23 +4,20 @@ Integration tests — geopolitics domain ingestion pipeline.
 Test inventory
 --------------
 TEST-GP-01  Variable IDs stable across imports
-TEST-GP-04  _soft_bool clamped to [0.05, 0.95] (geopolitics clamp)
-TEST-GP-05  compute_snapshot falls back to 0.5 with empty data
-TEST-GP-06  High conflict volume → P(ConflictIntensityElevated) > 0.5
-TEST-GP-07  Low conflict volume → P(ConflictIntensityElevated) < 0.5
+TEST-GP-05  compute_snapshot with empty data gives no signal (all MISSING)
+TEST-GP-06  High conflict volume → ConflictIntensityElevated high
+TEST-GP-07  Low conflict volume → ConflictIntensityElevated low
 TEST-GP-08  build_evidence_record maps all 8 UUIDs
-TEST-GP-09  build_evidence_record produces SOFT_OBSERVED
+TEST-GP-09  build_evidence_record observes every variable exactly, at a level (D25)
 TEST-GP-11  Existence thresholds valid
 TEST-GP-12  Domain registers in engine, evidence ingested
 TEST-GP-14  GDELTClient parses mocked response
 TEST-GP-15  GDELTClient returns empty list on HTTP error (graceful failure)
 TEST-GP-16  Full pipeline fetch_evidence with mocked clients
-TEST-GP-17  Prob clamp is [0.05, 0.95] for geopolitics
 """
 from __future__ import annotations
 
 import asyncio
-import math
 import os
 import sys
 from datetime import date, timedelta
@@ -28,9 +25,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
-import pytest
-
-from src.domains.sources.soft_evidence import sigmoid as _sigmoid
+from src.domains.sources.grades import LEVELS, level_of
 from src.domains.geopolitics_v1.domain import (
     GeopoliticsV1,
     get_variables,
@@ -47,9 +42,6 @@ from src.domains.geopolitics_v1.ingestion.pipeline import (
     GeopoliticsPipeline,
     GeopoliticsSnapshot,
     compute_snapshot,
-    _soft_bool,
-    _CLAMP_LO,
-    _CLAMP_HI,
 )
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import EvidenceRecord, MissingnessType
@@ -123,58 +115,52 @@ def test_variable_ids_are_stable():
 
 
 # ---------------------------------------------------------------------------
-# TEST-GP-04 — _soft_bool clamped to [0.05, 0.95]
+# TEST-GP-05 — compute_snapshot with empty data gives no signal
 # ---------------------------------------------------------------------------
 
-@pytest.mark.parametrize("signal", [-100.0, -10.0, 0.0, 10.0, 100.0])
-def test_soft_bool_clamped_to_geopolitics_range(signal: float):
-    result = _soft_bool(signal)
-    assert _CLAMP_LO <= result <= _CLAMP_HI
-    assert not math.isnan(result)
+def test_compute_snapshot_has_no_signal_with_empty_data():
+    """No input is MISSING, never a middle reading."""
+    assert compute_snapshot({}, {}, _TARGET_DATE).signals == {}
 
 
-# ---------------------------------------------------------------------------
-# TEST-GP-05 — compute_snapshot falls back to 0.5 with empty data
-# ---------------------------------------------------------------------------
-
-def test_compute_snapshot_falls_back_with_empty_data():
-    snap = compute_snapshot({}, {}, _TARGET_DATE)
-    assert snap.p_conflict_intensity_elevated == 0.5
-    assert snap.p_trade_disruption_risk == 0.5
-    assert snap.p_sanctions_pressure_elevated == 0.5
-    assert snap.p_diplomatic_tension_high == 0.5
-    assert snap.p_supply_chain_stress == 0.5
-    assert snap.p_currency_war_signal == 0.5
-    assert snap.p_energy_weaponization_risk == 0.5
-    assert snap.p_global_trade_volume_weak == 0.5
+def test_a_gdelt_outage_leaves_its_variables_missing():
+    """GDELT returns [] on failure; the variables it alone feeds are MISSING."""
+    gdelt_data, fred_data = _make_full_data()
+    for label in ("conflict", "sanctions", "diplomatic"):
+        gdelt_data[label] = []
+    snapshot = compute_snapshot(gdelt_data, fred_data, _TARGET_DATE)
+    gone = {"ConflictIntensityElevated", "SanctionsPressureElevated", "DiplomaticTensionHigh"}
+    assert gone.isdisjoint(snapshot.signals)
+    record = GeopoliticsPipeline.build_evidence_record(snapshot)
+    variables = get_variables()
+    missing = {a.variable_id for a in record.observed_assignments if a.missingness == MissingnessType.MISSING}
+    assert missing == {variables[name].variable_id for name in gone}
 
 
 # ---------------------------------------------------------------------------
-# TEST-GP-06 — High conflict volume → P(ConflictIntensityElevated) > 0.5
+# TEST-GP-06 — High conflict volume → ConflictIntensityElevated high
 # ---------------------------------------------------------------------------
 
 def test_high_conflict_volume_drives_conflict_signal_high():
-    """GDELT conflict values much higher than mean → P(ConflictIntensityElevated) > 0.5."""
+    """GDELT conflict values much higher than mean → ConflictIntensityElevated high."""
     # Recent values very high, history low
     values = [10.0] * 28 + [1.0] * 62  # recent 28 days = 10, history = 1
     gdelt_data, fred_data = _make_full_data(conflict_values=values)
     snap = compute_snapshot(gdelt_data, fred_data, _TARGET_DATE)
-    assert snap.p_conflict_intensity_elevated > 0.5, \
-        f"Expected P > 0.5 for high conflict, got {snap.p_conflict_intensity_elevated:.3f}"
+    assert level_of(snap.signals["ConflictIntensityElevated"]) == "high"
 
 
 # ---------------------------------------------------------------------------
-# TEST-GP-07 — Low conflict volume → P(ConflictIntensityElevated) < 0.5
+# TEST-GP-07 — Low conflict volume → ConflictIntensityElevated low
 # ---------------------------------------------------------------------------
 
 def test_low_conflict_volume_drives_conflict_signal_low():
-    """GDELT conflict values much lower than mean → P(ConflictIntensityElevated) < 0.5."""
+    """GDELT conflict values much lower than mean → ConflictIntensityElevated low."""
     # Recent values very low, history high
     values = [0.1] * 28 + [8.0] * 62  # recent 28 days = 0.1, history = 8
     gdelt_data, fred_data = _make_full_data(conflict_values=values)
     snap = compute_snapshot(gdelt_data, fred_data, _TARGET_DATE)
-    assert snap.p_conflict_intensity_elevated < 0.5, \
-        f"Expected P < 0.5 for low conflict, got {snap.p_conflict_intensity_elevated:.3f}"
+    assert level_of(snap.signals["ConflictIntensityElevated"]) == "low"
 
 
 # ---------------------------------------------------------------------------
@@ -193,20 +179,17 @@ def test_build_evidence_record_maps_all_uuids():
 
 
 # ---------------------------------------------------------------------------
-# TEST-GP-09 — build_evidence_record produces SOFT_OBSERVED
+# TEST-GP-09 — build_evidence_record observes every variable at a level
 # ---------------------------------------------------------------------------
 
-def test_build_evidence_record_all_soft_observed():
+def test_build_evidence_record_observes_every_variable_at_a_level():
     gdelt_data, fred_data = _make_full_data()
     snapshot = compute_snapshot(gdelt_data, fred_data, _TARGET_DATE)
     record = GeopoliticsPipeline.build_evidence_record(snapshot)
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED
-        assert a.probabilities is not None
-        assert set(a.probabilities.keys()) == {True, False}
-        p_true = a.probabilities[True]
-        assert _CLAMP_LO <= p_true <= _CLAMP_HI
-        assert abs(a.probabilities[True] + a.probabilities[False] - 1.0) < 0.01
+        assert a.missingness == MissingnessType.OBSERVED
+        assert a.probabilities is None
+        assert a.observed_value in LEVELS
 
 
 # ---------------------------------------------------------------------------
@@ -328,23 +311,8 @@ def test_fetch_evidence_full_pipeline_mocked():
     assert "FRED" in record.source_ref
 
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED
+        assert a.missingness == MissingnessType.OBSERVED
 
     mock_gdelt.fetch_all.assert_called_once_with(end_date=_TARGET_DATE)
     mock_fred.fetch_all_series.assert_called_once_with(end_date=_TARGET_DATE)
 
-
-# ---------------------------------------------------------------------------
-# TEST-GP-17 — Prob clamp is [0.05, 0.95] for geopolitics
-# ---------------------------------------------------------------------------
-
-def test_geopolitics_prob_clamp_is_wider():
-    """Verify that _CLAMP_LO=0.05 and _CLAMP_HI=0.95 for geopolitics."""
-    assert _CLAMP_LO == 0.05, f"Expected _CLAMP_LO=0.05, got {_CLAMP_LO}"
-    assert _CLAMP_HI == 0.95, f"Expected _CLAMP_HI=0.95, got {_CLAMP_HI}"
-
-    # Verify extreme signals are clamped at these values
-    extreme_lo = _soft_bool(-1000.0)
-    extreme_hi = _soft_bool(1000.0)
-    assert extreme_lo == 0.05
-    assert extreme_hi == 0.95

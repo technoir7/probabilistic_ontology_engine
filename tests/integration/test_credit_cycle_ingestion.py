@@ -4,15 +4,14 @@ Integration tests — credit cycle domain ingestion pipeline.
 Test inventory
 --------------
 TEST-CC-01  All 8 variable IDs are stable across module imports
-TEST-CC-04  Soft probabilities are clamped to [0.01, 0.99]
-TEST-CC-05  HY OAS above 7% → P(CorporateDefaultRisk) > 0.8
-TEST-CC-06  HY OAS below 4% → P(CorporateDefaultRisk) < 0.2
-TEST-CC-07  Negative credit impulse → P(CreditImpulseNegative) > 0.5
+TEST-CC-05  HY OAS above 7% → CorporateDefaultRisk high
+TEST-CC-06  HY OAS below 4% → CorporateDefaultRisk low
+TEST-CC-07  Negative credit impulse → CreditImpulseNegative high
 TEST-CC-08  build_evidence_record maps all 8 variable UUIDs correctly
-TEST-CC-09  build_evidence_record produces SOFT_OBSERVED missingness
+TEST-CC-09  build_evidence_record observes every variable exactly, at a level (D25)
 TEST-CC-10  FRED client fetch_series with mocked HTTP returns correct observations
 TEST-CC-11  FRED client skips missing values
-TEST-CC-12  compute_snapshot falls back gracefully with no data
+TEST-CC-12  compute_snapshot gives no signal (MISSING) for variables without data
 TEST-CC-14  Existence thresholds are within valid ranges
 TEST-CC-15  Domain registers in engine and evidence is ingested
 TEST-CC-17  Full pipeline fetch_evidence with mocked FREDClient
@@ -20,7 +19,6 @@ TEST-CC-17  Full pipeline fetch_evidence with mocked FREDClient
 from __future__ import annotations
 
 import asyncio
-import math
 import os
 import sys
 from datetime import date, timedelta
@@ -38,10 +36,10 @@ from src.domains.credit_cycle_v1.ingestion.fred_client import FREDClient, FREDOb
 from src.domains.credit_cycle_v1.ingestion.pipeline import (
     CreditCyclePipeline,
     compute_snapshot,
-    _soft_bool,
     _compute_corporate_default_risk,
     _compute_credit_impulse_negative,
 )
+from src.domains.sources.grades import LEVELS, level_of
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import MissingnessType
 
@@ -113,41 +111,31 @@ def test_variable_ids_are_stable():
         assert vars1[name].variable_id == domain_vars[name]
 
 
-@pytest.mark.parametrize("signal", [-100.0, -10.0, 0.0, 10.0, 100.0])
-def test_soft_bool_clamped(signal: float):
-    result = _soft_bool(signal)
-    assert 0.01 <= result <= 0.99
-    assert not math.isnan(result)
-
-
 def test_high_hy_spread_produces_high_corporate_default_risk():
-    """HY OAS at 7.0% → P(CorporateDefaultRisk) > 0.8."""
+    """HY OAS at 7.0% → CorporateDefaultRisk high."""
     obs = _make_obs("BAMLH0A0HYM2", [7.0] * 5)
     sig, _ = _compute_corporate_default_risk(obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p > 0.8, f"Expected P > 0.8 for HY at 7.0%, got {p:.3f}"
+    assert level_of(sig) == "high"
 
 
 def test_low_hy_spread_produces_low_corporate_default_risk():
-    """HY OAS at 3.5% → P(CorporateDefaultRisk) < 0.2."""
+    """HY OAS at 3.5% → CorporateDefaultRisk low."""
     obs = _make_obs("BAMLH0A0HYM2", [3.5] * 5)
     sig, _ = _compute_corporate_default_risk(obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p < 0.2, f"Expected P < 0.2 for HY at 3.5%, got {p:.3f}"
+    assert level_of(sig) == "low"
 
 
 def test_negative_credit_impulse():
-    """TOTCI declining → P(CreditImpulseNegative) > 0.5."""
+    """TOTCI declining → CreditImpulseNegative high."""
     obs = [
         FREDObservation(obs_date=_TARGET_DATE - timedelta(days=i * 30), value=(950.0 if i == 0 else 1000.0), series_id="TOTCI")
         for i in range(6)
     ]
     sig, _ = _compute_credit_impulse_negative(obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p > 0.5, f"Expected P > 0.5 for declining credit, got {p:.3f}"
+    assert level_of(sig) == "high"
 
 
 def test_credit_impulse_compares_three_months_of_a_weekly_series():
@@ -158,7 +146,7 @@ def test_credit_impulse_compares_three_months_of_a_weekly_series():
     obs = [FREDObservation(obs_date=_TARGET_DATE - timedelta(weeks=w), value=v, series_id="TOTCI")
            for w, v in enumerate(weekly)]
     sig, _ = _compute_credit_impulse_negative(obs)
-    assert sig is not None and _soft_bool(sig) > 0.5
+    assert sig is not None and level_of(sig) == "high"
 
 
 def test_build_evidence_record_maps_all_uuids():
@@ -171,16 +159,15 @@ def test_build_evidence_record_maps_all_uuids():
     assert {a.variable_id for a in record.observed_assignments} == expected_ids
 
 
-def test_build_evidence_record_all_soft_observed():
+def test_build_evidence_record_observes_every_variable_at_a_level():
+    """With full data every variable is observed exactly, at one of its levels (D25)."""
     observations = _make_full_observations()
     snapshot = compute_snapshot(observations, _TARGET_DATE)
     record = CreditCyclePipeline.build_evidence_record(snapshot)
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED
-        assert a.probabilities is not None
-        assert set(a.probabilities.keys()) == {True, False}
-        p_true = a.probabilities[True]
-        assert 0.01 <= p_true <= 0.99
+        assert a.missingness == MissingnessType.OBSERVED
+        assert a.probabilities is None
+        assert a.observed_value in LEVELS
 
 
 def test_fred_client_fetch_series_returns_observations():
@@ -220,15 +207,18 @@ def test_fred_client_skips_missing_values():
 
 
 def test_compute_snapshot_falls_back_gracefully_with_no_data():
-    snapshot = compute_snapshot({}, _TARGET_DATE)
-    assert snapshot.p_hy_spread_elevated == 0.5
-    assert snapshot.p_leveraged_loan_stress == 0.5
-    assert snapshot.p_corporate_default_risk == 0.5
-    assert snapshot.p_credit_impulse_negative == 0.5
-    assert snapshot.p_bank_lending_tightening == 0.5
-    assert snapshot.p_investment_grade_spread == 0.5
-    assert snapshot.p_high_yield_issuance_falling == 0.5
-    assert snapshot.p_refinancing_stress == 0.5
+    """No input is MISSING, never a middle reading."""
+    assert compute_snapshot({}, _TARGET_DATE).signals == {}
+
+
+def test_variables_without_data_are_missing():
+    """Only TOTCI given: CreditImpulseNegative is observed, the other seven MISSING."""
+    partial = {"TOTCI": _make_full_observations()["TOTCI"]}
+    snapshot = compute_snapshot(partial, _TARGET_DATE)
+    assert set(snapshot.signals) == {"CreditImpulseNegative"}
+    record = CreditCyclePipeline.build_evidence_record(snapshot)
+    missing = [a for a in record.observed_assignments if a.missingness == MissingnessType.MISSING]
+    assert len(missing) == 7
 
 
 def test_existence_thresholds_are_valid():
@@ -265,5 +255,7 @@ def test_fetch_evidence_full_pipeline_mocked():
     assert {a.variable_id for a in record.observed_assignments} == {v.variable_id for v in variables.values()}
     assert "FRED" in record.source_ref
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED
+        assert a.missingness == MissingnessType.OBSERVED
+    amap = {a.variable_id: a for a in record.observed_assignments}
+    assert amap[variables["CorporateDefaultRisk"].variable_id].observed_value == "high"
     mock_fred.fetch_all_series.assert_called_once_with(end_date=_TARGET_DATE)

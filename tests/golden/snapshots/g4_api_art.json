@@ -3964,357 +3964,362 @@
    "frontier_edges": [],
    "nodes": [
     {
+     "degree": 0.454225,
      "id": "InstitutionalRiskAversion",
      "label": "InstitutionalRiskAversion",
      "observation": null,
-     "probability": 0.454225,
      "status": "target"
     },
     {
+     "degree": null,
      "id": "MuseumFigurativeAcceptance",
      "label": "MuseumFigurativeAcceptance",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "ConceptualDominance",
      "label": "ConceptualDominance",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "AIArtInstitutionalAcceptance",
      "label": "AIArtInstitutionalAcceptance",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "CuratorialMaterialityShift",
      "label": "CuratorialMaterialityShift",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "CraftPrestigeRising",
      "label": "CraftPrestigeRising",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "PrestigeFragmentation",
      "label": "PrestigeFragmentation",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "RegionalSceneMomentum",
      "label": "RegionalSceneMomentum",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "BlueChipInstitutionalCapture",
      "label": "BlueChipInstitutionalCapture",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "BiennialFatigue",
      "label": "BiennialFatigue",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "MuseumAcquisitionMomentum",
      "label": "MuseumAcquisitionMomentum",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "BlueChipConcentration",
      "label": "BlueChipConcentration",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "AuctionSpeculationElevated",
      "label": "AuctionSpeculationElevated",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "CollectorFlightToSafety",
      "label": "CollectorFlightToSafety",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "FigurativeAuctionMomentum",
      "label": "FigurativeAuctionMomentum",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "EmergingMarketLiquidity",
      "label": "EmergingMarketLiquidity",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "MarketPolarization",
      "label": "MarketPolarization",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "MarketUncertainty",
      "label": "MarketUncertainty",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "RitualAuraPremium",
      "label": "RitualAuraPremium",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "EmbodimentDiscourseRising",
      "label": "EmbodimentDiscourseRising",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "AntiDigitalSentiment",
      "label": "AntiDigitalSentiment",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "AIImageSaturation",
      "label": "AIImageSaturation",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "AuthenticityPremium",
      "label": "AuthenticityPremium",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "NeoAcademicResurgence",
      "label": "NeoAcademicResurgence",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "AttentionFragmentation",
      "label": "AttentionFragmentation",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "InstitutionalRiskAversion_prev",
      "label": "InstitutionalRiskAversion_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "MuseumFigurativeAcceptance_prev",
      "label": "MuseumFigurativeAcceptance_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "ConceptualDominance_prev",
      "label": "ConceptualDominance_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "AIArtInstitutionalAcceptance_prev",
      "label": "AIArtInstitutionalAcceptance_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "CuratorialMaterialityShift_prev",
      "label": "CuratorialMaterialityShift_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "CraftPrestigeRising_prev",
      "label": "CraftPrestigeRising_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "PrestigeFragmentation_prev",
      "label": "PrestigeFragmentation_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "RegionalSceneMomentum_prev",
      "label": "RegionalSceneMomentum_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "BlueChipInstitutionalCapture_prev",
      "label": "BlueChipInstitutionalCapture_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "BiennialFatigue_prev",
      "label": "BiennialFatigue_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "MuseumAcquisitionMomentum_prev",
      "label": "MuseumAcquisitionMomentum_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "BlueChipConcentration_prev",
      "label": "BlueChipConcentration_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "AuctionSpeculationElevated_prev",
      "label": "AuctionSpeculationElevated_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "CollectorFlightToSafety_prev",
      "label": "CollectorFlightToSafety_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "FigurativeAuctionMomentum_prev",
      "label": "FigurativeAuctionMomentum_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "EmergingMarketLiquidity_prev",
      "label": "EmergingMarketLiquidity_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "MarketPolarization_prev",
      "label": "MarketPolarization_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "MarketUncertainty_prev",
      "label": "MarketUncertainty_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "RitualAuraPremium_prev",
      "label": "RitualAuraPremium_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "EmbodimentDiscourseRising_prev",
      "label": "EmbodimentDiscourseRising_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "AntiDigitalSentiment_prev",
      "label": "AntiDigitalSentiment_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "AIImageSaturation_prev",
      "label": "AIImageSaturation_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "AuthenticityPremium_prev",
      "label": "AuthenticityPremium_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "NeoAcademicResurgence_prev",
      "label": "NeoAcademicResurgence_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "AttentionFragmentation_prev",
      "label": "AttentionFragmentation_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     }
    ],
-   "target_probability": 0.454225,
+   "target_degree": 0.454225,
+   "target_distribution": {
+    "False": 0.545775,
+    "True": 0.454225
+   },
+   "target_level": "False",
    "target_variable": "InstitutionalRiskAversion"
   },
   "status": 200
@@ -4350,129 +4355,129 @@
    },
    "current_regime_state": [
     {
-     "boolean_state": false,
-     "name": "InstitutionalRiskAversion",
-     "probability": 0.454225
+     "degree": 0.454225,
+     "level": "False",
+     "name": "InstitutionalRiskAversion"
     },
     {
-     "boolean_state": true,
-     "name": "MuseumFigurativeAcceptance",
-     "probability": 0.671225
+     "degree": 0.671225,
+     "level": "True",
+     "name": "MuseumFigurativeAcceptance"
     },
     {
-     "boolean_state": false,
-     "name": "ConceptualDominance",
-     "probability": 0.347675
+     "degree": 0.347675,
+     "level": "False",
+     "name": "ConceptualDominance"
     },
     {
-     "boolean_state": true,
-     "name": "AIArtInstitutionalAcceptance",
-     "probability": 0.579475
+     "degree": 0.579475,
+     "level": "True",
+     "name": "AIArtInstitutionalAcceptance"
     },
     {
-     "boolean_state": true,
-     "name": "CuratorialMaterialityShift",
-     "probability": 0.629575
+     "degree": 0.629575,
+     "level": "True",
+     "name": "CuratorialMaterialityShift"
     },
     {
-     "boolean_state": true,
-     "name": "CraftPrestigeRising",
-     "probability": 0.5191
+     "degree": 0.5191,
+     "level": "True",
+     "name": "CraftPrestigeRising"
     },
     {
-     "boolean_state": true,
-     "name": "PrestigeFragmentation",
-     "probability": 0.521575
+     "degree": 0.521575,
+     "level": "True",
+     "name": "PrestigeFragmentation"
     },
     {
-     "boolean_state": true,
-     "name": "RegionalSceneMomentum",
-     "probability": 0.545975
+     "degree": 0.545975,
+     "level": "True",
+     "name": "RegionalSceneMomentum"
     },
     {
-     "boolean_state": true,
-     "name": "BlueChipInstitutionalCapture",
-     "probability": 0.52765
+     "degree": 0.52765,
+     "level": "True",
+     "name": "BlueChipInstitutionalCapture"
     },
     {
-     "boolean_state": true,
-     "name": "BiennialFatigue",
-     "probability": 0.524975
+     "degree": 0.524975,
+     "level": "True",
+     "name": "BiennialFatigue"
     },
     {
-     "boolean_state": true,
-     "name": "MuseumAcquisitionMomentum",
-     "probability": 0.599125
+     "degree": 0.599125,
+     "level": "True",
+     "name": "MuseumAcquisitionMomentum"
     },
     {
-     "boolean_state": false,
-     "name": "BlueChipConcentration",
-     "probability": 0.4033
+     "degree": 0.4033,
+     "level": "False",
+     "name": "BlueChipConcentration"
     },
     {
-     "boolean_state": true,
-     "name": "AuctionSpeculationElevated",
-     "probability": 0.673375
+     "degree": 0.673375,
+     "level": "True",
+     "name": "AuctionSpeculationElevated"
     },
     {
-     "boolean_state": false,
-     "name": "CollectorFlightToSafety",
-     "probability": 0.345475
+     "degree": 0.345475,
+     "level": "False",
+     "name": "CollectorFlightToSafety"
     },
     {
-     "boolean_state": false,
-     "name": "FigurativeAuctionMomentum",
-     "probability": 0.478875
+     "degree": 0.478875,
+     "level": "False",
+     "name": "FigurativeAuctionMomentum"
     },
     {
-     "boolean_state": false,
-     "name": "EmergingMarketLiquidity",
-     "probability": 0.459825
+     "degree": 0.459825,
+     "level": "False",
+     "name": "EmergingMarketLiquidity"
     },
     {
-     "boolean_state": false,
-     "name": "MarketPolarization",
-     "probability": 0.457725
+     "degree": 0.457725,
+     "level": "False",
+     "name": "MarketPolarization"
     },
     {
-     "boolean_state": true,
-     "name": "MarketUncertainty",
-     "probability": 0.535225
+     "degree": 0.535225,
+     "level": "True",
+     "name": "MarketUncertainty"
     },
     {
-     "boolean_state": true,
-     "name": "RitualAuraPremium",
-     "probability": 0.56995
+     "degree": 0.56995,
+     "level": "True",
+     "name": "RitualAuraPremium"
     },
     {
-     "boolean_state": true,
-     "name": "EmbodimentDiscourseRising",
-     "probability": 0.5436
+     "degree": 0.5436,
+     "level": "True",
+     "name": "EmbodimentDiscourseRising"
     },
     {
-     "boolean_state": false,
-     "name": "AntiDigitalSentiment",
-     "probability": 0.447825
+     "degree": 0.447825,
+     "level": "False",
+     "name": "AntiDigitalSentiment"
     },
     {
-     "boolean_state": true,
-     "name": "AIImageSaturation",
-     "probability": 0.63495
+     "degree": 0.63495,
+     "level": "True",
+     "name": "AIImageSaturation"
     },
     {
-     "boolean_state": false,
-     "name": "AuthenticityPremium",
-     "probability": 0.4099
+     "degree": 0.4099,
+     "level": "False",
+     "name": "AuthenticityPremium"
     },
     {
-     "boolean_state": true,
-     "name": "NeoAcademicResurgence",
-     "probability": 0.519025
+     "degree": 0.519025,
+     "level": "True",
+     "name": "NeoAcademicResurgence"
     },
     {
-     "boolean_state": false,
-     "name": "AttentionFragmentation",
-     "probability": 0.4768
+     "degree": 0.4768,
+     "level": "False",
+     "name": "AttentionFragmentation"
     }
    ],
    "dominant_hypothesis": {

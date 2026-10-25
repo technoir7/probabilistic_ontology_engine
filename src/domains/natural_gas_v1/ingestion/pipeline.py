@@ -3,27 +3,18 @@ NaturalGasPipeline — combines NOAA + EIA observations into EvidenceRecords.
 
 The pipeline is the single point that owns the mapping from raw API data to
 domain variable UUIDs.  It fetches both sources concurrently and produces one
-EvidenceRecord per call, containing all four Boolean assignments.
+EvidenceRecord per call, with all four variables observed at a level.
 
-Variable mapping
-----------------
-    TempAnom    ← DailyClimateObs.temp_anom / mean_temp_c vs monthly normal
-    HeatingDem  ← DailyClimateObs.heating_dem / hdd magnitude
-    StorageDraw ← NatGasSnapshot.storage_draw / storage_change_bcf magnitude
-    PriceUp     ← NatGasSnapshot.price_up / price vs median distance
+Variable mapping (REFACTOR_SPEC D25)
+------------------------------------
+Each variable gets a signed signal: its distance from the line that names
+it, in the unit given below. The signal is read as a level, observed exactly
+(sources.grades): low below -0.5, mid within ±0.5, high above +0.5.
 
-Soft evidence
--------------
-All four Boolean assignments are emitted as SOFT_OBSERVED with sigmoid-
-calibrated probability distributions.  The boolean MAP value is preserved
-in observed_value for backward compatibility.  Calibration functions:
-
-    TempAnom   : P(True) = sigmoid((temp_c − monthly_normal) / 2.0)
-    HeatingDem : P(True) = sigmoid((hdd − 5.0) / 5.0)
-    StorageDraw: P(True) = sigmoid(−storage_change_bcf / 20.0)
-    PriceUp    : P(True) = sigmoid((price − median) / (0.05 × median))
-
-All P(True) values are clamped to [0.01, 0.99].
+    TempAnom   : (temp_c − monthly_normal) / 2.0 °C
+    HeatingDem : (hdd − 5.0) / 5.0
+    StorageDraw: −storage_change_bcf / 20.0 Bcf
+    PriceUp    : (price − median) / (0.05 × median)
 
 Usage
 -----
@@ -35,33 +26,15 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import date, datetime, timezone
-from uuid import uuid4
+from datetime import date
 
-from ....engine.schemas import (
-    EvidenceRecord,
-    MissingnessType,
-    ObservedAssignment,
-    SourceType,
-)
+from ....engine.schemas import EvidenceRecord
 from ..domain import get_variables
 from .eia_client import EIAClient, NatGasSnapshot
 from .noaa_client import DailyClimateObs, MONTHLY_NORMALS_C, NOAAClient
-from ...sources.soft_evidence import soft_bool
+from ...sources.grades import build_graded_record
 
 logger = logging.getLogger(__name__)
-
-# ---------------------------------------------------------------------------
-# Sigmoid calibration helpers
-# ---------------------------------------------------------------------------
-
-
-_CLAMP_LO: float = 0.01
-_CLAMP_HI: float = 0.99
-
-
-def _soft_bool(signal: float) -> float:
-    return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
 
 
 class NaturalGasPipeline:
@@ -106,29 +79,15 @@ class NaturalGasPipeline:
             self._eia.fetch_snapshot(eia_target_date),
         )
         record = self.build_evidence_record(climate_obs, gas_snapshot)
-        # Retrieve soft probabilities from assignments for logging
-        amap = {a.variable_id: a for a in record.observed_assignments}
-        variables = get_variables()
-
-        def _p(varname: str) -> float:
-            a = amap.get(variables[varname].variable_id)
-            if a and a.probabilities:
-                return a.probabilities.get(True, float("nan"))
-            return float("nan")
-
+        names = {v.variable_id: name for name, v in get_variables().items()}
         logger.info(
             (
-                "Evidence for %s [soft]: "
-                "TempAnom=%s(p=%.2f) HeatingDem=%s(p=%.2f) "
-                "StorageDraw=%s(p=%.2f) PriceUp=%s(p=%.2f) | "
+                "Evidence for %s: %s | "
                 "latest_price=%.3f median_price=%.3f "
                 "storage_current=%.1f storage_previous=%.1f"
             ),
             target_date,
-            climate_obs.temp_anom, _p("TempAnom"),
-            climate_obs.heating_dem, _p("HeatingDem"),
-            gas_snapshot.storage_draw, _p("StorageDraw"),
-            gas_snapshot.price_up, _p("PriceUp"),
+            " ".join(f"{names[a.variable_id]}={a.observed_value}" for a in record.observed_assignments),
             gas_snapshot.latest_price,
             gas_snapshot.median_price,
             gas_snapshot.storage_current_bcf,
@@ -146,86 +105,35 @@ class NaturalGasPipeline:
         gas_snapshot: NatGasSnapshot,
     ) -> EvidenceRecord:
         """
-        Map DailyClimateObs + NatGasSnapshot to an EvidenceRecord.
-
-        Produces SOFT_OBSERVED assignments with sigmoid-calibrated probability
-        distributions.  The boolean MAP value is preserved in ``observed_value``
-        for backward compatibility with callers that only read the hard field.
+        Map DailyClimateObs + NatGasSnapshot to an EvidenceRecord, each
+        variable observed at the level of its signal (D25).
 
         This method is synchronous and has no external dependencies.
         It is the primary target for unit tests.
         """
-        variables = get_variables()
         station_conf = _station_confidence(climate_obs.stations_used)
-
-        # --- TempAnom: P(True) ∝ distance above monthly normal ---
         monthly_normal = MONTHLY_NORMALS_C.get(climate_obs.target_date.month, 12.0)
-        p_temp_anom = _soft_bool(
-            (climate_obs.mean_temp_c - monthly_normal) / 2.0
-        )
-
-        # --- HeatingDem: P(True) ∝ HDD magnitude ---
-        p_heating_dem = _soft_bool(
-            (climate_obs.hdd - 5.0) / 5.0
-        )
-
-        # --- StorageDraw: P(True) ∝ magnitude of draw (negative change) ---
-        p_storage_draw = _soft_bool(
-            -gas_snapshot.storage_change_bcf / 20.0
-        )
-
-        # --- PriceUp: P(True) ∝ distance above rolling median (5 % scale) ---
         median_safe = max(abs(gas_snapshot.median_price), 0.01)
-        p_price_up = _soft_bool(
-            (gas_snapshot.latest_price - gas_snapshot.median_price) / (0.05 * median_safe)
-        )
-
-        assignments = [
-            ObservedAssignment(
-                variable_id=variables["TempAnom"].variable_id,
-                observed_value=climate_obs.temp_anom,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=station_conf,
-                probabilities={True: p_temp_anom, False: 1.0 - p_temp_anom},
-            ),
-            ObservedAssignment(
-                variable_id=variables["HeatingDem"].variable_id,
-                observed_value=climate_obs.heating_dem,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=station_conf,
-                probabilities={True: p_heating_dem, False: 1.0 - p_heating_dem},
-            ),
-            ObservedAssignment(
-                variable_id=variables["StorageDraw"].variable_id,
-                observed_value=gas_snapshot.storage_draw,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=1.0,
-                probabilities={True: p_storage_draw, False: 1.0 - p_storage_draw},
-            ),
-            ObservedAssignment(
-                variable_id=variables["PriceUp"].variable_id,
-                observed_value=gas_snapshot.price_up,
-                missingness=MissingnessType.SOFT_OBSERVED,
-                confidence=1.0,
-                probabilities={True: p_price_up, False: 1.0 - p_price_up},
-            ),
-        ]
-
-        return EvidenceRecord(
-            evidence_id=uuid4(),
-            timestamp=datetime(
-                climate_obs.target_date.year,
-                climate_obs.target_date.month,
-                climate_obs.target_date.day,
-                tzinfo=timezone.utc,
-            ),
-            observed_assignments=assignments,
-            source_type=SourceType.API,
+        return build_graded_record(
+            module_id="natural-gas-v1",
+            variables=get_variables(),
+            signals={
+                "TempAnom": (climate_obs.mean_temp_c - monthly_normal) / 2.0,
+                "HeatingDem": (climate_obs.hdd - 5.0) / 5.0,
+                "StorageDraw": -gas_snapshot.storage_change_bcf / 20.0,
+                "PriceUp": (gas_snapshot.latest_price - gas_snapshot.median_price) / (0.05 * median_safe),
+            },
+            confidence={
+                "TempAnom": station_conf,
+                "HeatingDem": station_conf,
+                "StorageDraw": 1.0,
+                "PriceUp": 1.0,
+            },
+            target_date=climate_obs.target_date,
             source_ref=(
                 f"NOAA:ncei.daily-summaries+EIA:NG.NW2_EPG0_SWO_R48_BCF.W"
                 f"+NG.RNGWHHD.D@{climate_obs.target_date}"
             ),
-            confidence=_station_confidence(climate_obs.stations_used),
         )
 
 

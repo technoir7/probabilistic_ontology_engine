@@ -2,32 +2,31 @@
 Integration tests — ai-regime-v1 domain ingestion pipeline.
 
 Tests the full mapping from API responses to EvidenceRecords, variable
-stability, ontology registration, soft evidence calibration, EDGAR
+stability, ontology registration, levels of degree (D25), EDGAR
 ingestion logic, and cadence logic.
 
 Test inventory
 --------------
 TEST-AI-01  All 8 variable IDs are stable across module imports
-TEST-AI-04  Soft probabilities are clamped to [0.01, 0.99] for all signals
-TEST-AI-05  SemiconductorMomentum: high SOX momentum → P > 0.5
-TEST-AI-06  SemiconductorMomentum: low SOX momentum → P < 0.5
-TEST-AI-07  MarketConcentrationExtreme: QQQ outperforming RSP → P > 0.5
-TEST-AI-08  HyperscalerCapexAccelerating: 35% YoY avg → P > 0.5
-TEST-AI-09  HyperscalerCapexAccelerating: 5% YoY avg → P < 0.5
-TEST-AI-10  TechValuationDetached: elevated QQQ → P > 0.5
-TEST-AI-11  LaborProductivityImproving: YoY > 2% → P > 0.5
-TEST-AI-12  LaborProductivityImproving: YoY < 2% → P < 0.5
-TEST-AI-13  BroadEconomicLift: GDP > 2.5% → P > 0.5
-TEST-AI-14  BroadEconomicLift: GDP < 2.5% → P < 0.5
-TEST-AI-15  AIRiskPremiumCompressed: low VIX → P > 0.5
-TEST-AI-16  AIRiskPremiumCompressed: high VIX → P < 0.5
+TEST-AI-05  SemiconductorMomentum: high SOX momentum → high
+TEST-AI-06  SemiconductorMomentum: low SOX momentum → low
+TEST-AI-07  MarketConcentrationExtreme: QQQ outperforming RSP → high
+TEST-AI-08  HyperscalerCapexAccelerating: 35% YoY avg → high
+TEST-AI-09  HyperscalerCapexAccelerating: 5% YoY avg → low
+TEST-AI-10  TechValuationDetached: elevated QQQ → high
+TEST-AI-11  LaborProductivityImproving: YoY > 2% → high
+TEST-AI-12  LaborProductivityImproving: YoY < 2% → low
+TEST-AI-13  BroadEconomicLift: GDP > 2.5% → high
+TEST-AI-14  BroadEconomicLift: GDP < 2.5% → low
+TEST-AI-15  AIRiskPremiumCompressed: low VIX → high
+TEST-AI-16  AIRiskPremiumCompressed: high VIX → low
 TEST-AI-17  build_evidence_record maps all 8 variable UUIDs correctly
-TEST-AI-18  build_evidence_record produces SOFT_OBSERVED on all assignments
+TEST-AI-18  build_evidence_record observes every variable exactly, at a level
 TEST-AI-19  EDGAR _extract_capex_entries parses realistic JSON correctly
 TEST-AI-20  EDGAR _compute_yoy_growth returns correct result and handles missing prior
 TEST-AI-21  EDGAR client caches responses (second call does not hit HTTP)
 TEST-AI-22  Weekly backfill date computation is correct and idempotent
-TEST-AI-24  compute_snapshot falls back gracefully with no data
+TEST-AI-24  compute_snapshot with no data gives no signal (all MISSING)
 TEST-AI-25  compute_snapshot partial data does not raise
 TEST-AI-26  Full pipeline fetch_evidence with fully mocked clients
 TEST-AI-27  Domain registers and activates in the engine
@@ -50,7 +49,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 import pytest
 
-from src.domains.sources.soft_evidence import sigmoid as _sigmoid, zscore as _zscore
+from src.domains.sources.grades import LEVELS, level_of
+from src.domains.sources.soft_evidence import zscore as _zscore
 from src.domains.ai_regime_v1.domain import (
     AIRegimeV1,
     get_variables,
@@ -77,7 +77,6 @@ from src.domains.ai_regime_v1.ingestion.fred_client import (
 from src.domains.ai_regime_v1.ingestion.pipeline import (
     AIRegimePipeline,
     AIRegimeSnapshot,
-    _soft_bool,
     compute_snapshot,
     _compute_13w_return_zscore,
     _compute_concentration_ratio_zscore,
@@ -204,6 +203,12 @@ def _make_full_data() -> tuple[
     return yf_data, fred_data, capex
 
 
+def _no_capex() -> HyperscalerCapexSnapshot:
+    return HyperscalerCapexSnapshot(
+        companies={}, avg_yoy_growth_pct=None, companies_with_data=0, confidence=0.0
+    )
+
+
 # ---------------------------------------------------------------------------
 # TEST-AI-01 — Stable variable IDs
 # ---------------------------------------------------------------------------
@@ -223,28 +228,12 @@ def test_variable_ids_are_stable():
 
 
 # ---------------------------------------------------------------------------
-# TEST-AI-04 — Soft probabilities clamped to [0.01, 0.99]
-# ---------------------------------------------------------------------------
-
-@pytest.mark.parametrize("signal", [
-    -100.0, -10.0, -1.0, 0.0, 1.0, 10.0, 100.0,
-    float("inf"), -float("inf"),
-])
-def test_soft_bool_clamped(signal: float):
-    """_soft_bool must never return values outside [0.01, 0.99]."""
-    safe_signal = max(-700.0, min(700.0, signal)) if math.isinf(signal) else signal
-    result = _soft_bool(safe_signal)
-    assert 0.01 <= result <= 0.99, f"_soft_bool({signal}) = {result} out of range"
-    assert not math.isnan(result), f"_soft_bool({signal}) returned NaN"
-
-
-# ---------------------------------------------------------------------------
 # TEST-AI-05 & 06 — SemiconductorMomentum calibration
 # ---------------------------------------------------------------------------
 
 def test_high_sox_momentum_produces_high_p():
     """
-    SOX strongly above trend (high 13w return z-score) → P(SemiconductorMomentum) > 0.5.
+    SOX strongly above trend (high 13w return z-score) → SemiconductorMomentum high.
     """
     # Create price history: strong uptrend (13w return = large positive)
     # Flat history with a big recent surge
@@ -253,25 +242,21 @@ def test_high_sox_momentum_produces_high_p():
     for i in range(65):
         prices[i] = 130.0  # surge: 30% up from the stable 100 base
     obs = _make_yf_obs("^SOX", prices)
-    z, _ = _compute_13w_return_zscore(obs, "^SOX")
-    assert z is not None
-    p = _soft_bool(z - 0.5)
-    assert p > 0.5, f"Expected P > 0.5 for high SOX momentum, got {p:.3f}"
+    snap = compute_snapshot({"^SOX": obs}, {}, _no_capex(), _TARGET_DATE)
+    assert level_of(snap.signals["SemiconductorMomentum"]) == "high"
 
 
 def test_low_sox_momentum_produces_low_p():
     """
-    SOX well below trend (low 13w return z-score) → P(SemiconductorMomentum) < 0.5.
+    SOX well below trend (low 13w return z-score) → SemiconductorMomentum low.
     """
     # Falling prices: strong 13w downtrend
     prices = [100.0] * 300
     for i in range(65):
         prices[i] = 70.0  # 30% below stable base → strongly negative return
     obs = _make_yf_obs("^SOX", prices)
-    z, _ = _compute_13w_return_zscore(obs, "^SOX")
-    assert z is not None
-    p = _soft_bool(z - 0.5)
-    assert p < 0.5, f"Expected P < 0.5 for low SOX momentum, got {p:.3f}"
+    snap = compute_snapshot({"^SOX": obs}, {}, _no_capex(), _TARGET_DATE)
+    assert level_of(snap.signals["SemiconductorMomentum"]) == "low"
 
 
 # ---------------------------------------------------------------------------
@@ -279,7 +264,7 @@ def test_low_sox_momentum_produces_low_p():
 # ---------------------------------------------------------------------------
 
 def test_qqq_outperforming_rsp_produces_high_concentration_p():
-    """QQQ strongly outperforming RSP → P(MarketConcentrationExtreme) > 0.5."""
+    """QQQ strongly outperforming RSP → MarketConcentrationExtreme high."""
     # QQQ rising, RSP flat → ratio rising strongly
     qqq_prices = [100.0] * 300
     rsp_prices = [50.0] * 300
@@ -288,10 +273,8 @@ def test_qqq_outperforming_rsp_produces_high_concentration_p():
         rsp_prices[i] = 50.5   # RSP barely moves
     qqq_obs = _make_yf_obs("QQQ", qqq_prices)
     rsp_obs = _make_yf_obs("RSP", rsp_prices)
-    z, _ = _compute_concentration_ratio_zscore(qqq_obs, rsp_obs)
-    assert z is not None
-    p = _soft_bool(z - 0.5)
-    assert p > 0.5, f"Expected P > 0.5 for QQQ outperforming RSP, got {p:.3f}"
+    snap = compute_snapshot({"QQQ": qqq_obs, "RSP": rsp_obs}, {}, _no_capex(), _TARGET_DATE)
+    assert level_of(snap.signals["MarketConcentrationExtreme"]) == "high"
 
 
 # ---------------------------------------------------------------------------
@@ -299,21 +282,19 @@ def test_qqq_outperforming_rsp_produces_high_concentration_p():
 # ---------------------------------------------------------------------------
 
 def test_high_capex_growth_produces_high_p():
-    """Average YoY capex growth = 35% (above 20%) → P > 0.5."""
+    """Average YoY capex growth = 35% (above 20%) → high."""
     capex = _make_capex_snapshot(avg_yoy=35.0)
     sig, _ = _compute_capex_signal(capex)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p > 0.5, f"Expected P > 0.5 for 35% capex growth, got {p:.3f}"
+    assert level_of(sig) == "high"
 
 
 def test_low_capex_growth_produces_low_p():
-    """Average YoY capex growth = 5% (below 20%) → P < 0.5."""
+    """Average YoY capex growth = 5% (below 20%) → low."""
     capex = _make_capex_snapshot(avg_yoy=5.0)
     sig, _ = _compute_capex_signal(capex)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p < 0.5, f"Expected P < 0.5 for 5% capex growth, got {p:.3f}"
+    assert level_of(sig) == "low"
 
 
 # ---------------------------------------------------------------------------
@@ -321,7 +302,7 @@ def test_low_capex_growth_produces_low_p():
 # ---------------------------------------------------------------------------
 
 def test_elevated_qqq_produces_high_valuation_p():
-    """QQQ price significantly above 3-year history → P(TechValuationDetached) > 0.5."""
+    """QQQ price significantly above 3-year history → high."""
     # Build 750 days of price history; current price is 2 std devs above mean
     rng = np.random.default_rng(42)
     base_prices = list(rng.normal(100.0, 5.0, 750).tolist())
@@ -333,8 +314,7 @@ def test_elevated_qqq_produces_high_valuation_p():
     obs = _make_yf_obs("QQQ", prices)
     sig, _ = _compute_valuation_zscore(obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p > 0.5, f"Expected P > 0.5 for elevated QQQ price, got {p:.3f}"
+    assert level_of(sig) == "high"
 
 
 # ---------------------------------------------------------------------------
@@ -342,24 +322,22 @@ def test_elevated_qqq_produces_high_valuation_p():
 # ---------------------------------------------------------------------------
 
 def test_high_productivity_growth_produces_high_p():
-    """Productivity YoY = 3.0% (above 2%) → P(LaborProductivityImproving) > 0.5."""
+    """Productivity YoY = 3.0% (above 2%) → high."""
     # obs[0] = 103.0, obs[4] = 100.0 → YoY ≈ 3%
     values = [103.0, 102.5, 102.0, 101.5, 100.0, 99.5, 99.0, 98.5]
     obs = _make_fred_obs("PRS85006092", values)
     sig, _ = _compute_labor_productivity_signal(obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p > 0.5, f"Expected P > 0.5 for 3% productivity growth, got {p:.3f}"
+    assert level_of(sig) == "high"
 
 
 def test_low_productivity_growth_produces_low_p():
-    """Productivity YoY = 0.5% (below 2%) → P(LaborProductivityImproving) < 0.5."""
+    """Productivity YoY = 0.5% (below 2%) → low."""
     values = [100.5, 100.3, 100.2, 100.1, 100.0, 99.8, 99.6, 99.4]
     obs = _make_fred_obs("PRS85006092", values)
     sig, _ = _compute_labor_productivity_signal(obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p < 0.5, f"Expected P < 0.5 for 0.5% productivity growth, got {p:.3f}"
+    assert level_of(sig) == "low"
 
 
 # ---------------------------------------------------------------------------
@@ -367,21 +345,19 @@ def test_low_productivity_growth_produces_low_p():
 # ---------------------------------------------------------------------------
 
 def test_high_gdp_growth_produces_high_p():
-    """GDP growth = 3.5% (above 2.5%) → P(BroadEconomicLift) > 0.5."""
+    """GDP growth = 3.5% (above 2.5%) → high."""
     obs = _make_fred_obs("A191RL1Q225SBEA", [3.5] * 8)
     sig, _ = _compute_gdp_signal(obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p > 0.5, f"Expected P > 0.5 for 3.5% GDP growth, got {p:.3f}"
+    assert level_of(sig) == "high"
 
 
 def test_low_gdp_growth_produces_low_p():
-    """GDP growth = 1.0% (below 2.5%) → P(BroadEconomicLift) < 0.5."""
+    """GDP growth = 1.0% (below 2.5%) → low."""
     obs = _make_fred_obs("A191RL1Q225SBEA", [1.0] * 8)
     sig, _ = _compute_gdp_signal(obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p < 0.5, f"Expected P < 0.5 for 1.0% GDP growth, got {p:.3f}"
+    assert level_of(sig) == "low"
 
 
 # ---------------------------------------------------------------------------
@@ -389,7 +365,7 @@ def test_low_gdp_growth_produces_low_p():
 # ---------------------------------------------------------------------------
 
 def test_low_vix_produces_high_risk_premium_compressed_p():
-    """VIX well below historical average → P(AIRiskPremiumCompressed) > 0.5."""
+    """VIX well below historical average → high."""
     rng = np.random.default_rng(42)
     # Historical VIX mean ~20; current VIX = 12 (well below mean)
     vix_history = [20.0 + rng.normal(0, 2) for _ in range(300)]
@@ -397,12 +373,11 @@ def test_low_vix_produces_high_risk_premium_compressed_p():
     obs = _make_yf_obs("^VIX", vix_history)
     sig, _ = _compute_vix_signal(obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p > 0.5, f"Expected P > 0.5 for low VIX, got {p:.3f}"
+    assert level_of(sig) == "high"
 
 
 def test_high_vix_produces_low_risk_premium_compressed_p():
-    """VIX well above historical average → P(AIRiskPremiumCompressed) < 0.5."""
+    """VIX well above historical average → low."""
     rng = np.random.default_rng(42)
     # Historical VIX mean ~15; current VIX = 35 (well above mean)
     vix_history = [15.0 + rng.normal(0, 2) for _ in range(300)]
@@ -410,8 +385,7 @@ def test_high_vix_produces_low_risk_premium_compressed_p():
     obs = _make_yf_obs("^VIX", vix_history)
     sig, _ = _compute_vix_signal(obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p < 0.5, f"Expected P < 0.5 for elevated VIX, got {p:.3f}"
+    assert level_of(sig) == "low"
 
 
 # ---------------------------------------------------------------------------
@@ -437,24 +411,19 @@ def test_build_evidence_record_maps_all_uuids():
 
 
 # ---------------------------------------------------------------------------
-# TEST-AI-18 — All assignments are SOFT_OBSERVED
+# TEST-AI-18 — Every variable observed exactly, at a level
 # ---------------------------------------------------------------------------
 
-def test_build_evidence_record_all_soft_observed():
-    """Every assignment must carry SOFT_OBSERVED missingness and probabilities dict."""
+def test_build_evidence_record_observes_every_variable_at_a_level():
+    """With full data every variable is observed exactly, at one of its levels (D25)."""
     yf_data, fred_data, capex = _make_full_data()
     snapshot = compute_snapshot(yf_data, fred_data, capex, _TARGET_DATE)
     record = AIRegimePipeline.build_evidence_record(snapshot)
 
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED, \
-            f"Assignment for {a.variable_id} has missingness {a.missingness}"
-        assert a.probabilities is not None, \
-            f"Assignment for {a.variable_id} missing probabilities dict"
-        assert set(a.probabilities.keys()) == {True, False}
-        p_true = a.probabilities[True]
-        assert 0.01 <= p_true <= 0.99
-        assert abs(a.probabilities[True] + a.probabilities[False] - 1.0) < 0.01
+        assert a.missingness == MissingnessType.OBSERVED
+        assert a.probabilities is None
+        assert a.observed_value in LEVELS
 
 
 # ---------------------------------------------------------------------------
@@ -627,20 +596,11 @@ def test_edgar_client_caches_responses():
 # ---------------------------------------------------------------------------
 
 def test_compute_snapshot_falls_back_with_no_data():
-    """compute_snapshot with empty inputs must not raise; all P = 0.5."""
-    capex_empty = HyperscalerCapexSnapshot(
-        companies={}, avg_yoy_growth_pct=None, companies_with_data=0, confidence=0.0
-    )
-    snapshot = compute_snapshot({}, {}, capex_empty, _TARGET_DATE)
-
-    assert snapshot.p_semiconductor_momentum == 0.5
-    assert snapshot.p_market_concentration_extreme == 0.5
-    assert snapshot.p_hyperscaler_capex_accelerating == 0.5
-    assert snapshot.p_tech_valuation_detached == 0.5
-    assert snapshot.p_ip_investment_rising == 0.5
-    assert snapshot.p_labor_productivity_improving == 0.5
-    assert snapshot.p_broad_economic_lift == 0.5
-    assert snapshot.p_ai_risk_premium_compressed == 0.5
+    """
+    compute_snapshot with empty inputs must not raise, and gives no signal
+    for any variable: no input is MISSING, never a middle reading.
+    """
+    assert compute_snapshot({}, {}, _no_capex(), _TARGET_DATE).signals == {}
 
 
 # ---------------------------------------------------------------------------
@@ -648,24 +608,23 @@ def test_compute_snapshot_falls_back_with_no_data():
 # ---------------------------------------------------------------------------
 
 def test_compute_snapshot_partial_data_does_not_raise():
-    """compute_snapshot with only some sources populated must not raise."""
-    capex_empty = HyperscalerCapexSnapshot(
-        companies={}, avg_yoy_growth_pct=None, companies_with_data=0, confidence=0.0
-    )
-    # Provide only VIX data (below mean → ARPC should be non-neutral)
+    """
+    compute_snapshot with only some sources populated must not raise; the
+    variables without data have no signal and are MISSING in the record.
+    """
+    # Provide only VIX data, clearly below its mean
     rng = np.random.default_rng(42)
     vix_prices = [20.0 + rng.normal(0, 2) for _ in range(300)]
     vix_prices[0] = 10.0  # clearly below mean
     yf_partial = {"^VIX": _make_yf_obs("^VIX", vix_prices)}
 
-    snapshot = compute_snapshot(yf_partial, {}, capex_empty, _TARGET_DATE)
+    snapshot = compute_snapshot(yf_partial, {}, _no_capex(), _TARGET_DATE)
 
-    # VIX provided → ARPC should be non-neutral
-    assert snapshot.p_ai_risk_premium_compressed != 0.5, \
-        "ARPC should have a non-neutral probability with VIX data"
-    # Others should fall back to 0.5
-    assert snapshot.p_semiconductor_momentum == 0.5
-    assert snapshot.p_hyperscaler_capex_accelerating == 0.5
+    assert set(snapshot.signals) == {"AIRiskPremiumCompressed"}
+    assert level_of(snapshot.signals["AIRiskPremiumCompressed"]) == "high"
+    record = AIRegimePipeline.build_evidence_record(snapshot)
+    missing = [a for a in record.observed_assignments if a.missingness == MissingnessType.MISSING]
+    assert len(missing) == 7
 
 
 # ---------------------------------------------------------------------------
@@ -676,7 +635,7 @@ def test_fetch_evidence_full_pipeline_mocked():
     """
     AIRegimePipeline.fetch_evidence with fully mocked clients.
 
-    Verifies: 8 assignments, correct UUIDs, all SOFT_OBSERVED, source ref.
+    Verifies: 8 assignments, correct UUIDs, all observed at a level, source ref.
     """
     variables = get_variables()
 
@@ -710,9 +669,9 @@ def test_fetch_evidence_full_pipeline_mocked():
     assert "EDGAR" in record.source_ref
     assert "FRED" in record.source_ref
 
-    # All SOFT_OBSERVED
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED
+        assert a.missingness == MissingnessType.OBSERVED
+        assert a.observed_value in LEVELS
 
     # Calls were made
     mock_yf.fetch_all.assert_called_once()

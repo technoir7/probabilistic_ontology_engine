@@ -1,39 +1,38 @@
 """
 CreditCyclePipeline — FRED observations → EvidenceRecords for credit-cycle-v1.
 
-Variable calibrations
-----------------------
+Variable mapping (REFACTOR_SPEC D25)
+------------------------------------
+Each variable gets a signed signal: its distance from the line that names
+it, in the unit given below. The signal is read as a level, observed
+exactly (sources.grades): low below -0.5, mid within ±0.5, high above +0.5.
+A variable whose series has too little data is MISSING (D10), never a
+middle reading.
+
 HYSpreadElevated
-    Signal  : BAMLH0A0HYM2 52-week z-score
-    P(True) : sigmoid(z_score)
+    Signal : BAMLH0A0HYM2 52-week z-score
 
 LeveragedLoanStress
-    Signal  : DRTSCILM historical z-score (higher = more tightening/delinquency)
-    P(True) : sigmoid(z_score)
+    Signal : DRTSCILM historical z-score (higher = more tightening/delinquency)
 
 CorporateDefaultRisk
-    Signal  : (BAMLH0A0HYM2 level - 5.5) / 0.5
-    P(True) : sigmoid(signal)  [5.5% absolute threshold]
+    Signal : (BAMLH0A0HYM2 level - 5.5) / 0.5  [5.5% absolute threshold]
+    high   : above 5.75%; low: below 5.25%
 
 CreditImpulseNegative
-    Signal  : -(TOTCI 3-month growth %) * 10.0  [negative growth → positive signal]
-    P(True) : sigmoid(signal)
+    Signal : -(TOTCI 3-month growth %) * 10.0  [negative growth → positive signal]
 
 BankLendingTightening
-    Signal  : DRTSCILM z-score (same series as LeveragedLoanStress; slightly different scale)
-    P(True) : sigmoid(z_score * 0.8)  [softer threshold]
+    Signal : DRTSCILM z-score * 0.8 (same series as LeveragedLoanStress, softer)
 
 InvestmentGradeSpread
-    Signal  : BAMLC0A0CM 52-week z-score
-    P(True) : sigmoid(z_score)
+    Signal : BAMLC0A0CM 52-week z-score
 
 HighYieldIssuanceFalling
-    Signal  : BAMLH0A0HYM2 3-month momentum (recent - prior; rising = issuance falling)
-    P(True) : sigmoid(momentum * 2.0)
+    Signal : BAMLH0A0HYM2 3-month momentum * 2.0 (recent - prior; rising = issuance falling)
 
 RefinancingStress
-    Signal  : (DGS5 + BAMLH0A0HYM2) / 2 vs historical composite z-score
-    P(True) : sigmoid(z_score)
+    Signal : (DGS5 + BAMLH0A0HYM2) / 2 historical z-score
 """
 from __future__ import annotations
 
@@ -48,12 +47,10 @@ from ....engine.schemas import (
 )
 from ..domain import get_variables
 from .fred_client import FREDClient, FREDObservation
-from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
+from ...sources.grades import build_graded_record
+from ...sources.soft_evidence import zscore as _zscore
 
 logger = logging.getLogger(__name__)
-
-_CLAMP_LO: float = 0.01
-_CLAMP_HI: float = 0.99
 
 _MIN_OBS: dict[str, int] = {
     "BAMLH0A0HYM2": 52,
@@ -67,32 +64,15 @@ _MIN_OBS: dict[str, int] = {
 # slots: a misspelled field name raises instead of silently adding a field.
 @dataclass(slots=True)
 class CreditCycleSnapshot:
-    p_hy_spread_elevated: float = 0.5
-    p_leveraged_loan_stress: float = 0.5
-    p_corporate_default_risk: float = 0.5
-    p_credit_impulse_negative: float = 0.5
-    p_bank_lending_tightening: float = 0.5
-    p_investment_grade_spread: float = 0.5
-    p_high_yield_issuance_falling: float = 0.5
-    p_refinancing_stress: float = 0.5
+    """
+    Derived signals for one evidence week. *signals* holds each variable's
+    signed signal (read as a level when the record is built); a variable
+    without one is MISSING.
+    """
 
-    hy_spread_elevated: bool = False
-    leveraged_loan_stress: bool = False
-    corporate_default_risk: bool = False
-    credit_impulse_negative: bool = False
-    bank_lending_tightening: bool = False
-    investment_grade_spread: bool = False
-    high_yield_issuance_falling: bool = False
-    refinancing_stress: bool = False
-
-    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
-    missing: set[str] = field(default_factory=set)
+    signals: dict[str, float] = field(default_factory=dict)
     confidence: dict[str, float] = field(default_factory=dict)
     target_date: Optional[date] = None
-
-
-def _soft_bool(signal: float) -> float:
-    return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
 
 
 def _values_from_obs(obs: list[FREDObservation]) -> list[float]:
@@ -125,7 +105,7 @@ def _compute_corporate_default_risk(obs: list[FREDObservation]) -> tuple[Optiona
 
 
 def _compute_credit_impulse_negative(obs: list[FREDObservation]) -> tuple[Optional[float], float]:
-    """TOTCI: negative 3-month growth rate → CreditImpulseNegative = True.
+    """TOTCI: negative 3-month growth rate → CreditImpulseNegative high.
 
     Found by date, not position: TOTCI is weekly, so three observations
     back would be three weeks.
@@ -199,41 +179,37 @@ def compute_snapshot(
     snap = CreditCycleSnapshot(target_date=target_date)
     confidence: dict[str, float] = {}
 
-    def _apply(var_name: str, sig: Optional[float], conf: float, p_attr: str, bool_attr: str) -> None:
-        if sig is None:
-            snap.missing.add(var_name)
-        s = sig if sig is not None else 0.0
-        p = _soft_bool(s)
-        setattr(snap, p_attr, p)
-        setattr(snap, bool_attr, p > 0.5)
+    def _apply(var_name: str, sig: Optional[float], conf: float) -> None:
         confidence[var_name] = conf
+        if sig is not None:
+            snap.signals[var_name] = sig
 
     hy_obs = observations.get("BAMLH0A0HYM2", [])
     drtscilm_obs = observations.get("DRTSCILM", [])
 
     sig, conf = _compute_hy_spread_elevated(hy_obs)
-    _apply("HYSpreadElevated", sig, conf, "p_hy_spread_elevated", "hy_spread_elevated")
+    _apply("HYSpreadElevated", sig, conf)
 
     sig, conf = _compute_leveraged_loan_stress(drtscilm_obs)
-    _apply("LeveragedLoanStress", sig, conf, "p_leveraged_loan_stress", "leveraged_loan_stress")
+    _apply("LeveragedLoanStress", sig, conf)
 
     sig, conf = _compute_corporate_default_risk(hy_obs)
-    _apply("CorporateDefaultRisk", sig, conf, "p_corporate_default_risk", "corporate_default_risk")
+    _apply("CorporateDefaultRisk", sig, conf)
 
     sig, conf = _compute_credit_impulse_negative(observations.get("TOTCI", []))
-    _apply("CreditImpulseNegative", sig, conf, "p_credit_impulse_negative", "credit_impulse_negative")
+    _apply("CreditImpulseNegative", sig, conf)
 
     sig, conf = _compute_bank_lending_tightening(drtscilm_obs)
-    _apply("BankLendingTightening", sig, conf, "p_bank_lending_tightening", "bank_lending_tightening")
+    _apply("BankLendingTightening", sig, conf)
 
     sig, conf = _compute_investment_grade_spread(observations.get("BAMLC0A0CM", []))
-    _apply("InvestmentGradeSpread", sig, conf, "p_investment_grade_spread", "investment_grade_spread")
+    _apply("InvestmentGradeSpread", sig, conf)
 
     sig, conf = _compute_hy_issuance_falling(hy_obs)
-    _apply("HighYieldIssuanceFalling", sig, conf, "p_high_yield_issuance_falling", "high_yield_issuance_falling")
+    _apply("HighYieldIssuanceFalling", sig, conf)
 
     sig, conf = _compute_refinancing_stress(observations.get("DGS5", []), hy_obs)
-    _apply("RefinancingStress", sig, conf, "p_refinancing_stress", "refinancing_stress")
+    _apply("RefinancingStress", sig, conf)
 
     snap.confidence = confidence
     return snap
@@ -253,21 +229,11 @@ class CreditCyclePipeline:
     @staticmethod
     def build_evidence_record(snapshot: CreditCycleSnapshot) -> EvidenceRecord:
         target_date = snapshot.target_date
-        return build_soft_record(
+        return build_graded_record(
             module_id="credit-cycle-v1",
             variables=get_variables(),
-            states=[
-                ("HYSpreadElevated", snapshot.hy_spread_elevated, snapshot.p_hy_spread_elevated),
-                ("LeveragedLoanStress", snapshot.leveraged_loan_stress, snapshot.p_leveraged_loan_stress),
-                ("CorporateDefaultRisk", snapshot.corporate_default_risk, snapshot.p_corporate_default_risk),
-                ("CreditImpulseNegative", snapshot.credit_impulse_negative, snapshot.p_credit_impulse_negative),
-                ("BankLendingTightening", snapshot.bank_lending_tightening, snapshot.p_bank_lending_tightening),
-                ("InvestmentGradeSpread", snapshot.investment_grade_spread, snapshot.p_investment_grade_spread),
-                ("HighYieldIssuanceFalling", snapshot.high_yield_issuance_falling, snapshot.p_high_yield_issuance_falling),
-                ("RefinancingStress", snapshot.refinancing_stress, snapshot.p_refinancing_stress),
-            ],
+            signals=snapshot.signals,
             confidence=snapshot.confidence,
-            missing=snapshot.missing,
             target_date=target_date,
             source_ref="FRED:BAMLH0A0HYM2+DRTSCILM+TOTCI+BAMLC0A0CM+DGS5"
             f"@week-ending-{target_date}",

@@ -12,160 +12,176 @@
   "variables": [
    [
     "SemiconductorMomentum",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "MarketConcentrationExtreme",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "HyperscalerCapexAccelerating",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "TechValuationDetached",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "IPInvestmentRising",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "LaborProductivityImproving",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "BroadEconomicLift",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "AIRiskPremiumCompressed",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "SemiconductorMomentum_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "MarketConcentrationExtreme_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "HyperscalerCapexAccelerating_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "TechValuationDetached_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "IPInvestmentRising_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "LaborProductivityImproving_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "BroadEconomicLift_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "AIRiskPremiumCompressed_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
@@ -698,160 +714,176 @@
   "variables": [
    [
     "HYSpreadElevated",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "LeveragedLoanStress",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "CorporateDefaultRisk",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "CreditImpulseNegative",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "BankLendingTightening",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "InvestmentGradeSpread",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "HighYieldIssuanceFalling",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "RefinancingStress",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "HYSpreadElevated_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "LeveragedLoanStress_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "CorporateDefaultRisk_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "CreditImpulseNegative_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "BankLendingTightening_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "InvestmentGradeSpread_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "HighYieldIssuanceFalling_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "RefinancingStress_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
@@ -871,160 +903,176 @@
   "variables": [
    [
     "BTCMomentumPositive",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "AltcoinSeasonActive",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "OnChainActivityElevated",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "StablecoinFlowPositive",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "CryptoVolatilityShock",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "RiskAssetCorrelation",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "NarrativeMomentum",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "DollarDebasementNarrative",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "BTCMomentumPositive_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "AltcoinSeasonActive_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "OnChainActivityElevated_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "StablecoinFlowPositive_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "CryptoVolatilityShock_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "RiskAssetCorrelation_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "NarrativeMomentum_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "DollarDebasementNarrative_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
@@ -1044,160 +1092,176 @@
   "variables": [
    [
     "OilPriceSurge",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "NatGasPriceSurge",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "EnergyEquityMomentum",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "OPECSupplyConstraint",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "RenewablesDisplacement",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "EnergyInflationPersistent",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "GeopoliticalRiskElevated",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "DemandDestructionRisk",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "OilPriceSurge_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "NatGasPriceSurge_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "EnergyEquityMomentum_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "OPECSupplyConstraint_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "RenewablesDisplacement_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "EnergyInflationPersistent_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "GeopoliticalRiskElevated_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "DemandDestructionRisk_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
@@ -1217,160 +1281,176 @@
   "variables": [
    [
     "ConflictIntensityElevated",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "TradeDisruptionRisk",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "SanctionsPressureElevated",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "DiplomaticTensionHigh",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "SupplyChainStress",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "CurrencyWarSignal",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "EnergyWeaponizationRisk",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "GlobalTradeVolumeWeak",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "ConflictIntensityElevated_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "TradeDisruptionRisk_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "SanctionsPressureElevated_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "DiplomaticTensionHigh_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "SupplyChainStress_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "CurrencyWarSignal_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "EnergyWeaponizationRisk_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "GlobalTradeVolumeWeak_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
@@ -1390,160 +1470,176 @@
   "variables": [
    [
     "UnemploymentRising",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "WageInflationPersistent",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "JobOpeningsFalling",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "LayoffCycleBeginning",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "LaborProductivityWeak",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "ParticipationRateFalling",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "RealWageGrowthPositive",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "TightLaborMarket",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "UnemploymentRising_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "WageInflationPersistent_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "JobOpeningsFalling_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "LayoffCycleBeginning_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "LaborProductivityWeak_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "ParticipationRateFalling_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "RealWageGrowthPositive_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "TightLaborMarket_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
@@ -1563,160 +1659,176 @@
   "variables": [
    [
     "YieldCurveInverted",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "InflationShock",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "LiquidityStress",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "CreditSpreadStress",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "VolatilityShock",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "DollarStrength",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "EquityRiskOn",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "AIRiskOn",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "YieldCurveInverted_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "InflationShock_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "LiquidityStress_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "CreditSpreadStress_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "VolatilityShock_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "DollarStrength_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "EquityRiskOn_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "AIRiskOn_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
@@ -1736,80 +1848,88 @@
   "variables": [
    [
     "TempAnom",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "HeatingDem",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "StorageDraw",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "PriceUp",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "TempAnom_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "HeatingDem_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "StorageDraw_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "PriceUp_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
@@ -1829,160 +1949,176 @@
   "variables": [
    [
     "TechHiringAccelerating",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "OfficeVacancyFalling",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "RetailClosureElevated",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "PermitActivityRising",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "CrimeIndexElevated",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "StartupFormationRising",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "FootTrafficRecovering",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "PopulationFlowPositive",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "TechHiringAccelerating_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "OfficeVacancyFalling_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "RetailClosureElevated_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "PermitActivityRising_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "CrimeIndexElevated_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "StartupFormationRising_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "FootTrafficRecovering_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "PopulationFlowPositive_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
@@ -2002,160 +2138,176 @@
   "variables": [
    [
     "USYieldSpiking",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "SpreadWidening",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "DollarStrengthening",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "FedBalanceSheetShrinking",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "EMStressElevated",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "FiscalDominanceRisk",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "CreditDefaultRisk",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "GlobalLiquidityContracting",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "USYieldSpiking_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "SpreadWidening_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "DollarStrengthening_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "FedBalanceSheetShrinking_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "EMStressElevated_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "FiscalDominanceRisk_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "CreditDefaultRisk_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "GlobalLiquidityContracting_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false

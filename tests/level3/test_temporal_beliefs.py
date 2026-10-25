@@ -64,15 +64,17 @@ def test_every_domain_but_the_synthetic_one_has_last_periods_values():
 
 
 def persisting_weeks(n, seed=0):
-    """Each signal keeps last week's value nine times in ten, independently."""
+    """Each signal keeps last week's level nine times in ten, independently."""
     import random
+    from src.domains.sources.grades import LEVELS
     rng = random.Random(seed)
     v = get_variables_with_lags()
     names = [name for name in v if not name.endswith("_prev")]
-    state = {name: rng.random() < 0.5 for name in names}
+    state = {name: rng.choice(LEVELS) for name in names}
     out = []
     for week in range(n):
-        state = {name: x if rng.random() < 0.9 else not x for name, x in state.items()}
+        state = {name: x if rng.random() < 0.9 else rng.choice([lv for lv in LEVELS if lv != x])
+                 for name, x in state.items()}
         out.append(record(v, state, 7 * week))
     return out
 

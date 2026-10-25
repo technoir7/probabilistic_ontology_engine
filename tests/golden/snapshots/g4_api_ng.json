@@ -15,14 +15,104 @@
      "evidence_count": 21,
      "generation_introduced": 0,
      "id": "<id0>",
-     "log_score": -58.945927736,
+     "log_score": -97.848534645,
      "name": "unconnected: no hypotheses yet",
-     "score_normalized": 0.05,
+     "score_normalized": 0.95,
      "status": "dominant"
+    },
+    {
+     "edge_count": 1,
+     "evidence_count": 21,
+     "generation_introduced": 1,
+     "id": "<id1>",
+     "log_score": -96.481194191,
+     "name": "prompted_add_HeatingDem_prev->PriceUp",
+     "score_normalized": 0.918568562,
+     "status": "rising"
+    },
+    {
+     "edge_count": 2,
+     "evidence_count": 21,
+     "generation_introduced": 2,
+     "id": "<id2>",
+     "log_score": -96.1138283,
+     "name": "variant_add_HeatingDem->StorageDraw",
+     "score_normalized": 0.737103295,
+     "status": "rising"
+    },
+    {
+     "edge_count": 1,
+     "evidence_count": 21,
+     "generation_introduced": 1,
+     "id": "<id3>",
+     "log_score": -98.487747406,
+     "name": "prompted_add_PriceUp_prev->HeatingDem",
+     "score_normalized": 0.613622507,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 2,
+     "evidence_count": 21,
+     "generation_introduced": 2,
+     "id": "<id4>",
+     "log_score": -96.888212015,
+     "name": "variant_add_HeatingDem_prev->HeatingDem",
+     "score_normalized": 0.610945405,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 2,
+     "evidence_count": 21,
+     "generation_introduced": 2,
+     "id": "<id5>",
+     "log_score": -96.914189565,
+     "name": "variant_add_TempAnom->StorageDraw",
+     "score_normalized": 0.609202006,
+     "status": "neutral"
+    },
+    {
+     "edge_count": 2,
+     "evidence_count": 21,
+     "generation_introduced": 2,
+     "id": "<id6>",
+     "log_score": -97.368913357,
+     "name": "variant_add_HeatingDem_prev->TempAnom",
+     "score_normalized": 0.534014573,
+     "status": "falling"
+    },
+    {
+     "edge_count": 2,
+     "evidence_count": 21,
+     "generation_introduced": 2,
+     "id": "<id7>",
+     "log_score": -97.413697724,
+     "name": "variant_add_TempAnom_prev->HeatingDem",
+     "score_normalized": 0.530114674,
+     "status": "falling"
+    },
+    {
+     "edge_count": 2,
+     "evidence_count": 21,
+     "generation_introduced": 2,
+     "id": "<id8>",
+     "log_score": -98.487747406,
+     "name": "prompted_add_HeatingDem_prev->PriceUp",
+     "score_normalized": 0.371615221,
+     "status": "falling"
+    },
+    {
+     "edge_count": 3,
+     "evidence_count": 21,
+     "generation_introduced": 3,
+     "id": "<id9>",
+     "log_score": -97.368913357,
+     "name": "variant_add_TempAnom->PriceUp",
+     "score_normalized": 0.05,
+     "status": "falling"
     }
    ],
    "domain": "Natural Gas",
-   "generation": 0
+   "generation": 37
   },
   "status": 200
  },
@@ -33,38 +123,38 @@
    "domain_module_id": "natural-gas-v1",
    "pairwise_mutual_information": [
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 21,
+     "mutual_information": 0.028624245,
      "variable_x": "TempAnom",
      "variable_y": "HeatingDem"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 21,
+     "mutual_information": 0.114022292,
      "variable_x": "TempAnom",
      "variable_y": "StorageDraw"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 21,
+     "mutual_information": 0.070990287,
      "variable_x": "TempAnom",
      "variable_y": "PriceUp"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 21,
+     "mutual_information": 0.172347358,
      "variable_x": "HeatingDem",
      "variable_y": "StorageDraw"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 21,
+     "mutual_information": 0.070024281,
      "variable_x": "HeatingDem",
      "variable_y": "PriceUp"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 21,
+     "mutual_information": 0.055428734,
      "variable_x": "StorageDraw",
      "variable_y": "PriceUp"
     }
@@ -72,39 +162,199 @@
    "total_evidence_rows": 21,
    "unique_observed_patterns": [
     {
-     "count": 21,
+     "count": 3,
      "pattern": {
-      "HeatingDem": null,
-      "PriceUp": null,
-      "StorageDraw": null,
-      "TempAnom": null
+      "HeatingDem": "high",
+      "PriceUp": "mid",
+      "StorageDraw": "low",
+      "TempAnom": "mid"
+     }
+    },
+    {
+     "count": 2,
+     "pattern": {
+      "HeatingDem": "low",
+      "PriceUp": "mid",
+      "StorageDraw": "mid",
+      "TempAnom": "low"
+     }
+    },
+    {
+     "count": 2,
+     "pattern": {
+      "HeatingDem": "high",
+      "PriceUp": "low",
+      "StorageDraw": "mid",
+      "TempAnom": "mid"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": "high",
+      "PriceUp": "high",
+      "StorageDraw": "high",
+      "TempAnom": "high"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": "high",
+      "PriceUp": "mid",
+      "StorageDraw": "mid",
+      "TempAnom": "high"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": "low",
+      "PriceUp": "high",
+      "StorageDraw": "mid",
+      "TempAnom": "high"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": "mid",
+      "PriceUp": "low",
+      "StorageDraw": "mid",
+      "TempAnom": "high"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": "high",
+      "PriceUp": "high",
+      "StorageDraw": "high",
+      "TempAnom": "low"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": "high",
+      "PriceUp": "low",
+      "StorageDraw": "low",
+      "TempAnom": "low"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": "mid",
+      "PriceUp": "mid",
+      "StorageDraw": "high",
+      "TempAnom": "low"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": "mid",
+      "PriceUp": "high",
+      "StorageDraw": "low",
+      "TempAnom": "low"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": "high",
+      "PriceUp": "mid",
+      "StorageDraw": "high",
+      "TempAnom": "mid"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": "low",
+      "PriceUp": "high",
+      "StorageDraw": "high",
+      "TempAnom": "mid"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": "low",
+      "PriceUp": "low",
+      "StorageDraw": "high",
+      "TempAnom": "mid"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": "low",
+      "PriceUp": "mid",
+      "StorageDraw": "mid",
+      "TempAnom": "mid"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": "mid",
+      "PriceUp": "low",
+      "StorageDraw": "high",
+      "TempAnom": "mid"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": "mid",
+      "PriceUp": "high",
+      "StorageDraw": "mid",
+      "TempAnom": "mid"
      }
     }
    ],
    "variables": {
     "HeatingDem": {
-     "entropy": 0.0,
-     "missing_count": 21,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 1.519046164,
+     "missing_count": 0,
+     "observed_count": 21,
+     "value_counts": {
+      "high": 10,
+      "low": 6,
+      "mid": 5
+     }
     },
     "PriceUp": {
-     "entropy": 0.0,
-     "missing_count": 21,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 1.556656707,
+     "missing_count": 0,
+     "observed_count": 21,
+     "value_counts": {
+      "high": 6,
+      "low": 6,
+      "mid": 9
+     }
     },
     "StorageDraw": {
-     "entropy": 0.0,
-     "missing_count": 21,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 1.54515314,
+     "missing_count": 0,
+     "observed_count": 21,
+     "value_counts": {
+      "high": 7,
+      "low": 5,
+      "mid": 9
+     }
     },
     "TempAnom": {
-     "entropy": 0.0,
-     "missing_count": 21,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 1.460721099,
+     "missing_count": 0,
+     "observed_count": 21,
+     "value_counts": {
+      "high": 4,
+      "low": 6,
+      "mid": 11
+     }
     }
    }
   },
@@ -112,30 +362,30 @@
  },
  "debug_evidence-geometry": {
   "body": {
-   "average_pairwise_mi": 0.017394797,
+   "average_pairwise_mi": 0.085239533,
    "cadence_detected": "daily",
    "compression_ratio_daily_to_weekly": 1.105263158,
    "daily_state_count": 21,
-   "daily_transition_count": 19,
-   "daily_unique_state_count": 12,
+   "daily_transition_count": 20,
+   "daily_unique_state_count": 17,
    "domain": "Natural Gas",
    "domain_key": "ng",
    "domain_module_id": "natural-gas-v1",
-   "effective_state_density": 0.571428571,
-   "effective_transitions_per_month": 28.915625,
+   "effective_state_density": 0.80952381,
+   "effective_transitions_per_month": 30.4375,
    "highest_entropy_variable": {
-    "shannon_entropy": 0.998363673,
-    "variable": "StorageDraw"
+    "shannon_entropy": 1.556656707,
+    "variable": "PriceUp"
    },
    "highest_mi_variable_pair": {
     "joint_observed_count": 21,
-    "mutual_information": 0.039718535,
+    "mutual_information": 0.172347358,
     "variable_x": "HeatingDem",
     "variable_y": "StorageDraw"
    },
    "lowest_entropy_variable": {
-    "shannon_entropy": 0.958711883,
-    "variable": "HeatingDem"
+    "shannon_entropy": 1.460721099,
+    "variable": "TempAnom"
    },
    "pairwise_joint_observed_counts": {
     "HeatingDem": {
@@ -165,28 +415,28 @@
    },
    "pairwise_mutual_information_matrix": {
     "HeatingDem": {
-     "HeatingDem": 0.958711883,
-     "PriceUp": 0.039718535,
-     "StorageDraw": 0.039718535,
-     "TempAnom": 0.005231522
+     "HeatingDem": 1.519046164,
+     "PriceUp": 0.070024281,
+     "StorageDraw": 0.172347358,
+     "TempAnom": 0.028624245
     },
     "PriceUp": {
-     "HeatingDem": 0.039718535,
-     "PriceUp": 0.998363673,
-     "StorageDraw": 0.015323755,
-     "TempAnom": 0.002188218
+     "HeatingDem": 0.070024281,
+     "PriceUp": 1.556656707,
+     "StorageDraw": 0.055428734,
+     "TempAnom": 0.070990287
     },
     "StorageDraw": {
-     "HeatingDem": 0.039718535,
-     "PriceUp": 0.015323755,
-     "StorageDraw": 0.998363673,
-     "TempAnom": 0.002188218
+     "HeatingDem": 0.172347358,
+     "PriceUp": 0.055428734,
+     "StorageDraw": 1.54515314,
+     "TempAnom": 0.114022292
     },
     "TempAnom": {
-     "HeatingDem": 0.005231522,
-     "PriceUp": 0.002188218,
-     "StorageDraw": 0.002188218,
-     "TempAnom": 0.985228136
+     "HeatingDem": 0.028624245,
+     "PriceUp": 0.070990287,
+     "StorageDraw": 0.114022292,
+     "TempAnom": 1.460721099
     }
    },
    "position_fallback_assignment_count": 0,
@@ -194,97 +444,97 @@
     {
      "count": 3,
      "pattern": {
-      "HeatingDem": false,
-      "PriceUp": true,
-      "StorageDraw": false,
-      "TempAnom": false
-     }
-    },
-    {
-     "count": 3,
-     "pattern": {
-      "HeatingDem": true,
-      "PriceUp": false,
-      "StorageDraw": true,
-      "TempAnom": false
-     }
-    },
-    {
-     "count": 3,
-     "pattern": {
-      "HeatingDem": true,
-      "PriceUp": true,
-      "StorageDraw": true,
-      "TempAnom": true
+      "HeatingDem": "high",
+      "PriceUp": "mid",
+      "StorageDraw": "low",
+      "TempAnom": "mid"
      }
     },
     {
      "count": 2,
      "pattern": {
-      "HeatingDem": true,
-      "PriceUp": false,
-      "StorageDraw": false,
-      "TempAnom": false
+      "HeatingDem": "low",
+      "PriceUp": "mid",
+      "StorageDraw": "mid",
+      "TempAnom": "low"
      }
     },
     {
      "count": 2,
      "pattern": {
-      "HeatingDem": false,
-      "PriceUp": false,
-      "StorageDraw": false,
-      "TempAnom": true
-     }
-    },
-    {
-     "count": 2,
-     "pattern": {
-      "HeatingDem": true,
-      "PriceUp": false,
-      "StorageDraw": false,
-      "TempAnom": true
+      "HeatingDem": "high",
+      "PriceUp": "low",
+      "StorageDraw": "mid",
+      "TempAnom": "mid"
      }
     },
     {
      "count": 1,
      "pattern": {
-      "HeatingDem": false,
-      "PriceUp": false,
-      "StorageDraw": true,
-      "TempAnom": false
+      "HeatingDem": "high",
+      "PriceUp": "high",
+      "StorageDraw": "high",
+      "TempAnom": "high"
      }
     },
     {
      "count": 1,
      "pattern": {
-      "HeatingDem": false,
-      "PriceUp": true,
-      "StorageDraw": true,
-      "TempAnom": false
+      "HeatingDem": "high",
+      "PriceUp": "mid",
+      "StorageDraw": "mid",
+      "TempAnom": "high"
      }
     },
     {
      "count": 1,
      "pattern": {
-      "HeatingDem": true,
-      "PriceUp": true,
-      "StorageDraw": false,
-      "TempAnom": false
+      "HeatingDem": "low",
+      "PriceUp": "high",
+      "StorageDraw": "mid",
+      "TempAnom": "high"
      }
     },
     {
      "count": 1,
      "pattern": {
-      "HeatingDem": true,
-      "PriceUp": true,
-      "StorageDraw": true,
-      "TempAnom": false
+      "HeatingDem": "mid",
+      "PriceUp": "low",
+      "StorageDraw": "mid",
+      "TempAnom": "high"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": "high",
+      "PriceUp": "high",
+      "StorageDraw": "high",
+      "TempAnom": "low"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": "high",
+      "PriceUp": "low",
+      "StorageDraw": "low",
+      "TempAnom": "low"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "HeatingDem": "mid",
+      "PriceUp": "mid",
+      "StorageDraw": "high",
+      "TempAnom": "low"
      }
     }
    ],
    "total_assignment_count": 168,
    "total_evidence_records": 21,
-   "unique_observed_assignment_patterns": 12,
+   "unique_observed_assignment_patterns": 17,
    "unique_state_retention_ratio": 1.0,
    "used_assignment_position_fallback": false,
    "variable_id_match_count": 84,
@@ -296,12 +546,13 @@
      "missing_ratio": 0.0,
      "observed_count": 21,
      "observed_ratio": 1.0,
-     "shannon_entropy": 0.958711883,
-     "transition_count": 6,
-     "unique_value_count": 2,
+     "shannon_entropy": 1.519046164,
+     "transition_count": 13,
+     "unique_value_count": 3,
      "value_distribution": {
-      "False": 8,
-      "True": 13
+      "high": 10,
+      "low": 6,
+      "mid": 5
      }
     },
     "PriceUp": {
@@ -309,12 +560,13 @@
      "missing_ratio": 0.0,
      "observed_count": 21,
      "observed_ratio": 1.0,
-     "shannon_entropy": 0.998363673,
-     "transition_count": 14,
-     "unique_value_count": 2,
+     "shannon_entropy": 1.556656707,
+     "transition_count": 17,
+     "unique_value_count": 3,
      "value_distribution": {
-      "False": 11,
-      "True": 10
+      "high": 6,
+      "low": 6,
+      "mid": 9
      }
     },
     "StorageDraw": {
@@ -322,12 +574,13 @@
      "missing_ratio": 0.0,
      "observed_count": 21,
      "observed_ratio": 1.0,
-     "shannon_entropy": 0.998363673,
-     "transition_count": 7,
-     "unique_value_count": 2,
+     "shannon_entropy": 1.54515314,
+     "transition_count": 12,
+     "unique_value_count": 3,
      "value_distribution": {
-      "False": 10,
-      "True": 11
+      "high": 7,
+      "low": 5,
+      "mid": 9
      }
     },
     "TempAnom": {
@@ -335,12 +588,13 @@
      "missing_ratio": 0.0,
      "observed_count": 21,
      "observed_ratio": 1.0,
-     "shannon_entropy": 0.985228136,
-     "transition_count": 9,
-     "unique_value_count": 2,
+     "shannon_entropy": 1.460721099,
+     "transition_count": 10,
+     "unique_value_count": 3,
      "value_distribution": {
-      "False": 12,
-      "True": 9
+      "high": 4,
+      "low": 6,
+      "mid": 11
      }
     }
    },
@@ -354,19 +608,19 @@
       {
        "count": 1,
        "pattern": {
-        "HeatingDem": true,
-        "PriceUp": false,
-        "StorageDraw": true,
-        "TempAnom": true
+        "HeatingDem": "high",
+        "PriceUp": "mid",
+        "StorageDraw": "high",
+        "TempAnom": "mid"
        }
       },
       {
        "count": 1,
        "pattern": {
-        "HeatingDem": true,
-        "PriceUp": true,
-        "StorageDraw": true,
-        "TempAnom": true
+        "HeatingDem": "high",
+        "PriceUp": "low",
+        "StorageDraw": "mid",
+        "TempAnom": "mid"
        }
       }
      ],
@@ -374,67 +628,76 @@
      "week_start_date": "2026-02-02"
     },
     {
-     "compressed_state_count": 6,
+     "compressed_state_count": 7,
      "daily_state_count": 7,
      "iso_week": 7,
      "iso_year": 2026,
      "top_patterns": [
       {
-       "count": 2,
+       "count": 1,
        "pattern": {
-        "HeatingDem": true,
-        "PriceUp": false,
-        "StorageDraw": true,
-        "TempAnom": false
+        "HeatingDem": "high",
+        "PriceUp": "high",
+        "StorageDraw": "high",
+        "TempAnom": "high"
        }
       },
       {
        "count": 1,
        "pattern": {
-        "HeatingDem": false,
-        "PriceUp": false,
-        "StorageDraw": true,
-        "TempAnom": false
+        "HeatingDem": "high",
+        "PriceUp": "mid",
+        "StorageDraw": "low",
+        "TempAnom": "mid"
        }
       },
       {
        "count": 1,
        "pattern": {
-        "HeatingDem": false,
-        "PriceUp": true,
-        "StorageDraw": true,
-        "TempAnom": false
+        "HeatingDem": "high",
+        "PriceUp": "low",
+        "StorageDraw": "mid",
+        "TempAnom": "mid"
        }
       },
       {
        "count": 1,
        "pattern": {
-        "HeatingDem": false,
-        "PriceUp": false,
-        "StorageDraw": false,
-        "TempAnom": true
+        "HeatingDem": "low",
+        "PriceUp": "high",
+        "StorageDraw": "high",
+        "TempAnom": "mid"
        }
       },
       {
        "count": 1,
        "pattern": {
-        "HeatingDem": true,
-        "PriceUp": false,
-        "StorageDraw": false,
-        "TempAnom": true
+        "HeatingDem": "low",
+        "PriceUp": "low",
+        "StorageDraw": "high",
+        "TempAnom": "mid"
        }
       },
       {
        "count": 1,
        "pattern": {
-        "HeatingDem": true,
-        "PriceUp": true,
-        "StorageDraw": true,
-        "TempAnom": true
+        "HeatingDem": "low",
+        "PriceUp": "mid",
+        "StorageDraw": "mid",
+        "TempAnom": "mid"
+       }
+      },
+      {
+       "count": 1,
+       "pattern": {
+        "HeatingDem": "mid",
+        "PriceUp": "low",
+        "StorageDraw": "high",
+        "TempAnom": "mid"
        }
       }
      ],
-     "unique_state_count": 6,
+     "unique_state_count": 7,
      "week_start_date": "2026-02-09"
     },
     {
@@ -446,55 +709,55 @@
       {
        "count": 2,
        "pattern": {
-        "HeatingDem": false,
-        "PriceUp": true,
-        "StorageDraw": false,
-        "TempAnom": false
+        "HeatingDem": "low",
+        "PriceUp": "mid",
+        "StorageDraw": "mid",
+        "TempAnom": "low"
        }
       },
       {
        "count": 1,
        "pattern": {
-        "HeatingDem": true,
-        "PriceUp": false,
-        "StorageDraw": false,
-        "TempAnom": false
+        "HeatingDem": "high",
+        "PriceUp": "mid",
+        "StorageDraw": "mid",
+        "TempAnom": "high"
        }
       },
       {
        "count": 1,
        "pattern": {
-        "HeatingDem": true,
-        "PriceUp": true,
-        "StorageDraw": true,
-        "TempAnom": false
+        "HeatingDem": "low",
+        "PriceUp": "high",
+        "StorageDraw": "mid",
+        "TempAnom": "high"
        }
       },
       {
        "count": 1,
        "pattern": {
-        "HeatingDem": false,
-        "PriceUp": false,
-        "StorageDraw": false,
-        "TempAnom": true
+        "HeatingDem": "mid",
+        "PriceUp": "low",
+        "StorageDraw": "mid",
+        "TempAnom": "high"
        }
       },
       {
        "count": 1,
        "pattern": {
-        "HeatingDem": false,
-        "PriceUp": true,
-        "StorageDraw": true,
-        "TempAnom": true
+        "HeatingDem": "high",
+        "PriceUp": "high",
+        "StorageDraw": "high",
+        "TempAnom": "low"
        }
       },
       {
        "count": 1,
        "pattern": {
-        "HeatingDem": true,
-        "PriceUp": true,
-        "StorageDraw": true,
-        "TempAnom": true
+        "HeatingDem": "high",
+        "PriceUp": "low",
+        "StorageDraw": "low",
+        "TempAnom": "low"
        }
       }
      ],
@@ -502,58 +765,49 @@
      "week_start_date": "2026-02-16"
     },
     {
-     "compressed_state_count": 5,
+     "compressed_state_count": 4,
      "daily_state_count": 5,
      "iso_week": 9,
      "iso_year": 2026,
      "top_patterns": [
       {
-       "count": 1,
+       "count": 2,
        "pattern": {
-        "HeatingDem": false,
-        "PriceUp": true,
-        "StorageDraw": false,
-        "TempAnom": false
+        "HeatingDem": "high",
+        "PriceUp": "mid",
+        "StorageDraw": "low",
+        "TempAnom": "mid"
        }
       },
       {
        "count": 1,
        "pattern": {
-        "HeatingDem": true,
-        "PriceUp": false,
-        "StorageDraw": false,
-        "TempAnom": false
+        "HeatingDem": "mid",
+        "PriceUp": "mid",
+        "StorageDraw": "high",
+        "TempAnom": "low"
        }
       },
       {
        "count": 1,
        "pattern": {
-        "HeatingDem": true,
-        "PriceUp": true,
-        "StorageDraw": false,
-        "TempAnom": false
+        "HeatingDem": "mid",
+        "PriceUp": "high",
+        "StorageDraw": "low",
+        "TempAnom": "low"
        }
       },
       {
        "count": 1,
        "pattern": {
-        "HeatingDem": true,
-        "PriceUp": false,
-        "StorageDraw": true,
-        "TempAnom": false
-       }
-      },
-      {
-       "count": 1,
-       "pattern": {
-        "HeatingDem": true,
-        "PriceUp": false,
-        "StorageDraw": false,
-        "TempAnom": true
+        "HeatingDem": "mid",
+        "PriceUp": "high",
+        "StorageDraw": "mid",
+        "TempAnom": "mid"
        }
       }
      ],
-     "unique_state_count": 5,
+     "unique_state_count": 4,
      "week_start_date": "2026-02-23"
     }
    ],
@@ -562,21 +816,21 @@
    "weekly_compression_ratio": 1.105263158,
    "weekly_retention_ratio": 0.904761905,
    "weekly_transition_count": 18,
-   "weekly_unique_state_count": 12
+   "weekly_unique_state_count": 17
   },
   "status": 200
  },
  "debug_learning": {
   "body": {
-   "active_candidates": 1,
-   "current_generation": 0,
+   "active_candidates": 10,
+   "current_generation": 37,
    "domain": "Natural Gas",
    "domain_module_id": "natural-gas-v1",
    "dominant_evidence_count": 21,
-   "dominant_log_score": -58.945927736,
+   "dominant_log_score": -97.848534645,
    "last_learn_timestamp": "<ts>",
-   "last_mutation_introduced": 0,
-   "last_mutation_total_attempts": 0,
+   "last_mutation_introduced": 2,
+   "last_mutation_total_attempts": 6,
    "learn_calls_this_session": 21,
    "pipeline_status": {
     "backfill_calls_learn": true,
@@ -593,19 +847,984 @@
    "candidates": [
     {
      "active_edge_count": 0,
-     "avg_ll": -2.807736573,
+     "avg_ll": -4.668817596,
      "bic_penalty_raw": 0.607025661,
-     "bic_score_explore": -2.959492988,
-     "bic_score_strict": -3.414762234,
+     "bic_score_explore": -4.820574012,
+     "bic_score_strict": -5.275843257,
      "candidate_id": "<id0>",
      "description": "unconnected: no hypotheses yet",
      "edge_structure": [],
      "evidence_count": 21,
      "generation": 0,
      "is_dominant": true,
-     "log_score": -58.945927736,
+     "log_score": -97.848534645,
      "status": "ACTIVE",
      "total_edge_count": 0
+    },
+    {
+     "active_edge_count": 1,
+     "avg_ll": -4.602794304,
+     "bic_penalty_raw": 0.682903868,
+     "bic_score_explore": -4.773520271,
+     "bic_score_strict": -5.285698172,
+     "candidate_id": "<id1>",
+     "description": "prompted_add_HeatingDem_prev->PriceUp",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -96.481194191,
+     "status": "ACTIVE",
+     "total_edge_count": 1
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.583812148,
+     "bic_penalty_raw": 0.758782076,
+     "bic_score_explore": -4.773507667,
+     "bic_score_strict": -5.342594224,
+     "candidate_id": "<id2>",
+     "description": "variant_add_HeatingDem->StorageDraw",
+     "edge_structure": [
+      [
+       "HeatingDem",
+       "StorageDraw"
+      ],
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -96.1138283,
+     "status": "ACTIVE",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 1,
+     "avg_ll": -4.698406136,
+     "bic_penalty_raw": 0.682903868,
+     "bic_score_explore": -4.869132103,
+     "bic_score_strict": -5.381310004,
+     "candidate_id": "<id3>",
+     "description": "prompted_add_PriceUp_prev->HeatingDem",
+     "edge_structure": [
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -98.487747406,
+     "status": "ACTIVE",
+     "total_edge_count": 1
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.623367298,
+     "bic_penalty_raw": 0.758782076,
+     "bic_score_explore": -4.813062817,
+     "bic_score_strict": -5.382149374,
+     "candidate_id": "<id4>",
+     "description": "variant_add_HeatingDem_prev->HeatingDem",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "HeatingDem"
+      ],
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -96.888212015,
+     "status": "ACTIVE",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.623913918,
+     "bic_penalty_raw": 0.758782076,
+     "bic_score_explore": -4.813609437,
+     "bic_score_strict": -5.382695994,
+     "candidate_id": "<id5>",
+     "description": "variant_add_TempAnom->StorageDraw",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "TempAnom",
+       "StorageDraw"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -96.914189565,
+     "status": "ACTIVE",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.647487951,
+     "bic_penalty_raw": 0.758782076,
+     "bic_score_explore": -4.83718347,
+     "bic_score_strict": -5.406270027,
+     "candidate_id": "<id6>",
+     "description": "variant_add_HeatingDem_prev->TempAnom",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "HeatingDem_prev",
+       "TempAnom"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -97.368913357,
+     "status": "ACTIVE",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.648710713,
+     "bic_penalty_raw": 0.758782076,
+     "bic_score_explore": -4.838406232,
+     "bic_score_strict": -5.407492789,
+     "candidate_id": "<id7>",
+     "description": "variant_add_TempAnom_prev->HeatingDem",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "TempAnom_prev",
+       "HeatingDem"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -97.413697724,
+     "status": "ACTIVE",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.698406136,
+     "bic_penalty_raw": 0.758782076,
+     "bic_score_explore": -4.888101655,
+     "bic_score_strict": -5.457188211,
+     "candidate_id": "<id8>",
+     "description": "prompted_add_HeatingDem_prev->PriceUp",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -98.487747406,
+     "status": "ACTIVE",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -4.647487951,
+     "bic_penalty_raw": 0.910538491,
+     "bic_score_explore": -4.875122574,
+     "bic_score_strict": -5.558026442,
+     "candidate_id": "<id9>",
+     "description": "variant_add_TempAnom->PriceUp",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "HeatingDem_prev",
+       "TempAnom"
+      ],
+      [
+       "TempAnom",
+       "PriceUp"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 3,
+     "is_dominant": false,
+     "log_score": -97.368913357,
+     "status": "ACTIVE",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.680759652,
+     "bic_penalty_raw": 0.758782076,
+     "bic_score_explore": -4.870455171,
+     "bic_score_strict": -5.439541728,
+     "candidate_id": "<id33>",
+     "description": "prompted_add_HeatingDem_prev->PriceUp",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -98.141682997,
+     "status": "PRUNED",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.610804852,
+     "bic_penalty_raw": 0.834660283,
+     "bic_score_explore": -4.819469922,
+     "bic_score_strict": -5.445465135,
+     "candidate_id": "<id34>",
+     "description": "variant_add_TempAnom->PriceUp",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "TempAnom",
+       "PriceUp"
+      ]
+     ],
+     "evidence_count": 21,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -96.638288697,
+     "status": "PRUNED",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.223006849,
+     "bic_penalty_raw": 1.239055026,
+     "bic_score_explore": -4.532770606,
+     "bic_score_strict": -5.462061875,
+     "candidate_id": "<id35>",
+     "description": "variant_add_StorageDraw_prev->StorageDraw",
+     "edge_structure": [
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ],
+      [
+       "StorageDraw_prev",
+       "StorageDraw"
+      ]
+     ],
+     "evidence_count": 9,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -38.033196139,
+     "status": "PRUNED",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.696442446,
+     "bic_penalty_raw": 0.781915288,
+     "bic_score_explore": -4.891921268,
+     "bic_score_strict": -5.478357733,
+     "candidate_id": "<id36>",
+     "description": "variant_add_TempAnom_prev->StorageDraw",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "TempAnom_prev",
+       "StorageDraw"
+      ]
+     ],
+     "evidence_count": 20,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -93.627047896,
+     "status": "PRUNED",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -4.137034294,
+     "bic_penalty_raw": 1.362960529,
+     "bic_score_explore": -4.477774426,
+     "bic_score_strict": -5.499994823,
+     "candidate_id": "<id37>",
+     "description": "variant_add_TempAnom_prev->StorageDraw",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ],
+      [
+       "TempAnom_prev",
+       "StorageDraw"
+      ]
+     ],
+     "evidence_count": 9,
+     "generation": 3,
+     "is_dominant": false,
+     "log_score": -37.2788495,
+     "status": "PRUNED",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -4.601595642,
+     "bic_penalty_raw": 0.917287878,
+     "bic_score_explore": -4.830917611,
+     "bic_score_strict": -5.518883519,
+     "candidate_id": "<id38>",
+     "description": "variant_add_HeatingDem_prev->TempAnom",
+     "edge_structure": [
+      [
+       "HeatingDem",
+       "StorageDraw"
+      ],
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "HeatingDem_prev",
+       "TempAnom"
+      ]
+     ],
+     "evidence_count": 18,
+     "generation": 3,
+     "is_dominant": false,
+     "log_score": -82.650581593,
+     "status": "PRUNED",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.371958963,
+     "bic_penalty_raw": 1.171549248,
+     "bic_score_explore": -4.664846274,
+     "bic_score_strict": -5.54350821,
+     "candidate_id": "<id39>",
+     "description": "variant_add_HeatingDem->PriceUp",
+     "edge_structure": [
+      [
+       "HeatingDem",
+       "PriceUp"
+      ],
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ]
+     ],
+     "evidence_count": 10,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -43.698577844,
+     "status": "PRUNED",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -4.262221775,
+     "bic_penalty_raw": 1.288704173,
+     "bic_score_explore": -4.584397818,
+     "bic_score_strict": -5.550925947,
+     "candidate_id": "<id40>",
+     "description": "variant_add_TempAnom_prev->StorageDraw",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ],
+      [
+       "TempAnom_prev",
+       "StorageDraw"
+      ]
+     ],
+     "evidence_count": 10,
+     "generation": 3,
+     "is_dominant": false,
+     "log_score": -42.629632739,
+     "status": "PRUNED",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.644610366,
+     "bic_penalty_raw": 0.930323959,
+     "bic_score_explore": -4.877191356,
+     "bic_score_strict": -5.574934325,
+     "candidate_id": "<id41>",
+     "description": "prompted_add_HeatingDem_prev->PriceUp",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ]
+     ],
+     "evidence_count": 15,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -69.489579051,
+     "status": "PRUNED",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.768705433,
+     "bic_penalty_raw": 0.806876571,
+     "bic_score_explore": -4.970424576,
+     "bic_score_strict": -5.575582004,
+     "candidate_id": "<id42>",
+     "description": "prompted_add_TempAnom_prev->StorageDraw",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "TempAnom_prev",
+       "StorageDraw"
+      ]
+     ],
+     "evidence_count": 19,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -90.279577044,
+     "status": "PRUNED",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -4.633879812,
+     "bic_penalty_raw": 0.949578544,
+     "bic_score_explore": -4.871274448,
+     "bic_score_strict": -5.583458356,
+     "candidate_id": "<id43>",
+     "description": "variant_add_HeatingDem->StorageDraw",
+     "edge_structure": [
+      [
+       "HeatingDem",
+       "StorageDraw"
+      ],
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "TempAnom_prev",
+       "HeatingDem"
+      ]
+     ],
+     "evidence_count": 17,
+     "generation": 3,
+     "is_dominant": false,
+     "log_score": -78.573748939,
+     "status": "PRUNED",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -4.624565462,
+     "bic_penalty_raw": 0.968251886,
+     "bic_score_explore": -4.866628433,
+     "bic_score_strict": -5.592817347,
+     "candidate_id": "<id44>",
+     "description": "variant_add_TempAnom->PriceUp",
+     "edge_structure": [
+      [
+       "HeatingDem",
+       "StorageDraw"
+      ],
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "TempAnom",
+       "PriceUp"
+      ]
+     ],
+     "evidence_count": 19,
+     "generation": 3,
+     "is_dominant": false,
+     "log_score": -87.657014521,
+     "status": "PRUNED",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.582168445,
+     "bic_penalty_raw": 1.011531896,
+     "bic_score_explore": -4.835051419,
+     "bic_score_strict": -5.593700341,
+     "candidate_id": "<id45>",
+     "description": "variant_add_StorageDraw_prev->PriceUp",
+     "edge_structure": [
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ],
+      [
+       "StorageDraw_prev",
+       "PriceUp"
+      ]
+     ],
+     "evidence_count": 13,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -59.442759591,
+     "status": "PRUNED",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.536814784,
+     "bic_penalty_raw": 1.058930479,
+     "bic_score_explore": -4.801547404,
+     "bic_score_strict": -5.595745263,
+     "candidate_id": "<id46>",
+     "description": "variant_add_TempAnom->StorageDraw",
+     "edge_structure": [
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ],
+      [
+       "TempAnom",
+       "StorageDraw"
+      ]
+     ],
+     "evidence_count": 12,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -54.35186958,
+     "status": "PRUNED",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -4.647023134,
+     "bic_penalty_raw": 0.949578544,
+     "bic_score_explore": -4.88441777,
+     "bic_score_strict": -5.596601678,
+     "candidate_id": "<id47>",
+     "description": "variant_add_PriceUp_prev->StorageDraw",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "PriceUp_prev",
+       "StorageDraw"
+      ],
+      [
+       "TempAnom_prev",
+       "HeatingDem"
+      ]
+     ],
+     "evidence_count": 17,
+     "generation": 3,
+     "is_dominant": false,
+     "log_score": -78.782711114,
+     "status": "PRUNED",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -4.597896128,
+     "bic_penalty_raw": 1.000677685,
+     "bic_score_explore": -4.848065549,
+     "bic_score_strict": -5.598573813,
+     "candidate_id": "<id48>",
+     "description": "variant_add_StorageDraw_prev->TempAnom",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "HeatingDem_prev",
+       "TempAnom"
+      ],
+      [
+       "StorageDraw_prev",
+       "TempAnom"
+      ]
+     ],
+     "evidence_count": 18,
+     "generation": 3,
+     "is_dominant": false,
+     "log_score": -82.580951406,
+     "status": "PRUNED",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -4.675323149,
+     "bic_penalty_raw": 0.938298345,
+     "bic_score_explore": -4.909897736,
+     "bic_score_strict": -5.613621494,
+     "candidate_id": "<id49>",
+     "description": "variant_add_TempAnom->PriceUp",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "TempAnom",
+       "PriceUp"
+      ],
+      [
+       "TempAnom",
+       "StorageDraw"
+      ]
+     ],
+     "evidence_count": 20,
+     "generation": 3,
+     "is_dominant": false,
+     "log_score": -93.246787053,
+     "status": "PRUNED",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.726239386,
+     "bic_penalty_raw": 0.895266203,
+     "bic_score_explore": -4.950055937,
+     "bic_score_strict": -5.62150559,
+     "candidate_id": "<id50>",
+     "description": "prompted_add_HeatingDem_prev->PriceUp",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ]
+     ],
+     "evidence_count": 16,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -75.420400073,
+     "status": "PRUNED",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.568735455,
+     "bic_penalty_raw": 1.058930479,
+     "bic_score_explore": -4.833468074,
+     "bic_score_strict": -5.627665933,
+     "candidate_id": "<id51>",
+     "description": "prompted_add_TempAnom_prev->StorageDraw",
+     "edge_structure": [
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ],
+      [
+       "TempAnom_prev",
+       "StorageDraw"
+      ]
+     ],
+     "evidence_count": 12,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -54.72404871,
+     "status": "PRUNED",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.52249888,
+     "bic_penalty_raw": 1.111926505,
+     "bic_score_explore": -4.800480506,
+     "bic_score_strict": -5.634425385,
+     "candidate_id": "<id52>",
+     "description": "variant_add_PriceUp_prev->TempAnom",
+     "edge_structure": [
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ],
+      [
+       "PriceUp_prev",
+       "TempAnom"
+      ]
+     ],
+     "evidence_count": 11,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -49.667132663,
+     "status": "PRUNED",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.668414274,
+     "bic_penalty_raw": 0.968891571,
+     "bic_score_explore": -4.910637167,
+     "bic_score_strict": -5.637305845,
+     "candidate_id": "<id53>",
+     "description": "variant_add_HeatingDem->TempAnom",
+     "edge_structure": [
+      [
+       "HeatingDem",
+       "TempAnom"
+      ],
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ]
+     ],
+     "evidence_count": 14,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -65.191286873,
+     "status": "PRUNED",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -4.420659492,
+     "bic_penalty_raw": 1.223119156,
+     "bic_score_explore": -4.726439281,
+     "bic_score_strict": -5.643778648,
+     "candidate_id": "<id54>",
+     "description": "variant_add_PriceUp_prev->TempAnom",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ],
+      [
+       "PriceUp_prev",
+       "TempAnom"
+      ]
+     ],
+     "evidence_count": 11,
+     "generation": 3,
+     "is_dominant": false,
+     "log_score": -48.575953891,
+     "status": "PRUNED",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -4.594292318,
+     "bic_penalty_raw": 1.074319444,
+     "bic_score_explore": -4.862872179,
+     "bic_score_strict": -5.668611762,
+     "candidate_id": "<id55>",
+     "description": "variant_add_StorageDraw_prev->PriceUp",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "PriceUp"
+      ],
+      [
+       "StorageDraw_prev",
+       "PriceUp"
+      ],
+      [
+       "TempAnom_prev",
+       "HeatingDem"
+      ]
+     ],
+     "evidence_count": 16,
+     "generation": 3,
+     "is_dominant": false,
+     "log_score": -73.340146369,
+     "status": "PRUNED",
+     "total_edge_count": 3
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.707088638,
+     "bic_penalty_raw": 0.968891571,
+     "bic_score_explore": -4.949311531,
+     "bic_score_strict": -5.675980209,
+     "candidate_id": "<id56>",
+     "description": "variant_add_TempAnom_prev->PriceUp",
+     "edge_structure": [
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ],
+      [
+       "TempAnom_prev",
+       "PriceUp"
+      ]
+     ],
+     "evidence_count": 14,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -65.715346535,
+     "status": "PRUNED",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.3683781,
+     "bic_penalty_raw": 1.315946109,
+     "bic_score_explore": -4.697364627,
+     "bic_score_strict": -5.684324209,
+     "candidate_id": "<id57>",
+     "description": "variant_add_TempAnom->PriceUp",
+     "edge_structure": [
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ],
+      [
+       "TempAnom",
+       "PriceUp"
+      ]
+     ],
+     "evidence_count": 8,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -34.941164903,
+     "status": "PRUNED",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.255385119,
+     "bic_penalty_raw": 1.447540719,
+     "bic_score_explore": -4.617270299,
+     "bic_score_strict": -5.702925839,
+     "candidate_id": "<id58>",
+     "description": "variant_add_PriceUp->HeatingDem",
+     "edge_structure": [
+      [
+       "PriceUp",
+       "HeatingDem"
+      ],
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ]
+     ],
+     "evidence_count": 8,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -34.058775723,
+     "status": "PRUNED",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 2,
+     "avg_ll": -4.693975487,
+     "bic_penalty_raw": 1.023356355,
+     "bic_score_explore": -4.949814575,
+     "bic_score_strict": -5.717331841,
+     "candidate_id": "<id59>",
+     "description": "variant_add_HeatingDem_prev->HeatingDem",
+     "edge_structure": [
+      [
+       "HeatingDem_prev",
+       "HeatingDem"
+      ],
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ]
+     ],
+     "evidence_count": 15,
+     "generation": 2,
+     "is_dominant": false,
+     "log_score": -70.233146491,
+     "status": "PRUNED",
+     "total_edge_count": 2
+    },
+    {
+     "active_edge_count": 3,
+     "avg_ll": -4.576446879,
+     "bic_penalty_raw": 1.213838275,
+     "bic_score_explore": -4.879906448,
+     "bic_score_strict": -5.790285154,
+     "candidate_id": "<id60>",
+     "description": "variant_add_TempAnom_prev->HeatingDem",
+     "edge_structure": [
+      [
+       "PriceUp_prev",
+       "HeatingDem"
+      ],
+      [
+       "StorageDraw_prev",
+       "PriceUp"
+      ],
+      [
+       "TempAnom_prev",
+       "HeatingDem"
+      ]
+     ],
+     "evidence_count": 13,
+     "generation": 3,
+     "is_dominant": false,
+     "log_score": -59.37138519,
+     "status": "PRUNED",
+     "total_edge_count": 3
     }
    ],
    "domain": "Natural Gas",
@@ -614,9 +1833,9 @@
    "env_mode": "strict",
    "last_mutation_cycle": {
     "dag_violations": 0,
-    "duplicate_rejections": 0,
-    "introduced": 0,
-    "total_attempts": 0
+    "duplicate_rejections": 5,
+    "introduced": 2,
+    "total_attempts": 6
    },
    "total_evidence_records": 21
   },
@@ -628,171 +1847,171 @@
    "records": [
     {
      "description": "fake@2026-02-27",
-     "id": "<id1>",
-     "impact_delta": 1.0,
-     "strength": "strong",
-     "timestamp": "<ts>",
-     "variables_updated": null
-    },
-    {
-     "description": "fake@2026-02-26",
-     "id": "<id2>",
-     "impact_delta": 1.0,
-     "strength": "strong",
-     "timestamp": "<ts>",
-     "variables_updated": null
-    },
-    {
-     "description": "fake@2026-02-25",
-     "id": "<id3>",
-     "impact_delta": 1.0,
-     "strength": "strong",
-     "timestamp": "<ts>",
-     "variables_updated": null
-    },
-    {
-     "description": "fake@2026-02-24",
-     "id": "<id4>",
-     "impact_delta": 1.0,
-     "strength": "strong",
-     "timestamp": "<ts>",
-     "variables_updated": null
-    },
-    {
-     "description": "fake@2026-02-23",
-     "id": "<id5>",
-     "impact_delta": 1.0,
-     "strength": "strong",
-     "timestamp": "<ts>",
-     "variables_updated": null
-    },
-    {
-     "description": "fake@2026-02-22",
-     "id": "<id6>",
-     "impact_delta": 1.0,
-     "strength": "strong",
-     "timestamp": "<ts>",
-     "variables_updated": null
-    },
-    {
-     "description": "fake@2026-02-21",
-     "id": "<id7>",
-     "impact_delta": 1.0,
-     "strength": "strong",
-     "timestamp": "<ts>",
-     "variables_updated": null
-    },
-    {
-     "description": "fake@2026-02-20",
-     "id": "<id8>",
-     "impact_delta": 1.0,
-     "strength": "strong",
-     "timestamp": "<ts>",
-     "variables_updated": null
-    },
-    {
-     "description": "fake@2026-02-19",
-     "id": "<id9>",
-     "impact_delta": 1.0,
-     "strength": "strong",
-     "timestamp": "<ts>",
-     "variables_updated": null
-    },
-    {
-     "description": "fake@2026-02-18",
-     "id": "<id10>",
-     "impact_delta": 1.0,
-     "strength": "strong",
-     "timestamp": "<ts>",
-     "variables_updated": null
-    },
-    {
-     "description": "fake@2026-02-17",
-     "id": "<id11>",
-     "impact_delta": 1.0,
-     "strength": "strong",
-     "timestamp": "<ts>",
-     "variables_updated": null
-    },
-    {
-     "description": "fake@2026-02-16",
      "id": "<id12>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": null
+     "variables_updated": 8
     },
     {
-     "description": "fake@2026-02-15",
+     "description": "fake@2026-02-26",
      "id": "<id13>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": null
+     "variables_updated": 8
     },
     {
-     "description": "fake@2026-02-14",
+     "description": "fake@2026-02-25",
      "id": "<id14>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": null
+     "variables_updated": 8
     },
     {
-     "description": "fake@2026-02-13",
+     "description": "fake@2026-02-24",
      "id": "<id15>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": null
+     "variables_updated": 8
     },
     {
-     "description": "fake@2026-02-12",
+     "description": "fake@2026-02-23",
      "id": "<id16>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": null
+     "variables_updated": 8
     },
     {
-     "description": "fake@2026-02-11",
+     "description": "fake@2026-02-22",
      "id": "<id17>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": null
+     "variables_updated": 8
     },
     {
-     "description": "fake@2026-02-10",
+     "description": "fake@2026-02-21",
      "id": "<id18>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": null
+     "variables_updated": 8
     },
     {
-     "description": "fake@2026-02-09",
+     "description": "fake@2026-02-20",
      "id": "<id19>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": null
+     "variables_updated": 8
     },
     {
-     "description": "fake@2026-02-08",
+     "description": "fake@2026-02-19",
      "id": "<id20>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": null
+     "variables_updated": 8
     },
     {
-     "description": "fake@2026-02-07",
+     "description": "fake@2026-02-18",
      "id": "<id21>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": null
+     "variables_updated": 8
+    },
+    {
+     "description": "fake@2026-02-17",
+     "id": "<id22>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": 8
+    },
+    {
+     "description": "fake@2026-02-16",
+     "id": "<id23>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": 8
+    },
+    {
+     "description": "fake@2026-02-15",
+     "id": "<id24>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": 8
+    },
+    {
+     "description": "fake@2026-02-14",
+     "id": "<id25>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": 8
+    },
+    {
+     "description": "fake@2026-02-13",
+     "id": "<id26>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": 8
+    },
+    {
+     "description": "fake@2026-02-12",
+     "id": "<id27>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": 8
+    },
+    {
+     "description": "fake@2026-02-11",
+     "id": "<id28>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": 8
+    },
+    {
+     "description": "fake@2026-02-10",
+     "id": "<id29>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": 8
+    },
+    {
+     "description": "fake@2026-02-09",
+     "id": "<id30>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": 8
+    },
+    {
+     "description": "fake@2026-02-08",
+     "id": "<id31>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": 8
+    },
+    {
+     "description": "fake@2026-02-07",
+     "id": "<id32>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": 8
     }
    ]
   },
@@ -805,63 +2024,179 @@
    "frontier_edges": [],
    "nodes": [
     {
+     "degree": 0.458333333,
      "id": "TempAnom",
      "label": "TempAnom",
      "observation": null,
-     "probability": 0.453430435,
      "status": "target"
     },
     {
+     "degree": null,
      "id": "HeatingDem",
      "label": "HeatingDem",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "StorageDraw",
      "label": "StorageDraw",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "PriceUp",
      "label": "PriceUp",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "TempAnom_prev",
      "label": "TempAnom_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "HeatingDem_prev",
      "label": "HeatingDem_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "StorageDraw_prev",
      "label": "StorageDraw_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "PriceUp_prev",
      "label": "PriceUp_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     }
    ],
-   "target_probability": 0.453430435,
+   "target_degree": 0.458333333,
+   "target_distribution": {
+    "high": 0.208333333,
+    "low": 0.291666667,
+    "mid": 0.5
+   },
+   "target_level": "mid",
+   "target_variable": "TempAnom"
+  },
+  "status": 200
+ },
+ "inference_other_candidate": {
+  "body": {
+   "candidate_id": "<id9>",
+   "edges": [
+    {
+     "probability": 0.426833951,
+     "source": "HeatingDem_prev",
+     "status": "explore",
+     "target": "PriceUp"
+    },
+    {
+     "probability": 0.003974338,
+     "source": "HeatingDem_prev",
+     "status": "weak",
+     "target": "TempAnom"
+    },
+    {
+     "probability": 0.5,
+     "source": "TempAnom",
+     "status": "explore",
+     "target": "PriceUp"
+    }
+   ],
+   "frontier_edges": [
+    {
+     "explore_weight": 1.003899836,
+     "note": "existence_probability=0.427 in explore band [0.25, 0.75]",
+     "probability": 0.426833951,
+     "relation": "HeatingDem_prev\u2192PriceUp",
+     "source": "HeatingDem_prev",
+     "target": "PriceUp"
+    },
+    {
+     "explore_weight": 1.0,
+     "note": "existence_probability=0.500 in explore band [0.25, 0.75]",
+     "probability": 0.5,
+     "relation": "TempAnom\u2192PriceUp",
+     "source": "TempAnom",
+     "target": "PriceUp"
+    }
+   ],
+   "nodes": [
+    {
+     "degree": 0.466626556,
+     "id": "TempAnom",
+     "label": "TempAnom",
+     "observation": null,
+     "status": "target"
+    },
+    {
+     "degree": null,
+     "id": "HeatingDem",
+     "label": "HeatingDem",
+     "observation": null,
+     "status": "weak"
+    },
+    {
+     "degree": null,
+     "id": "StorageDraw",
+     "label": "StorageDraw",
+     "observation": null,
+     "status": "weak"
+    },
+    {
+     "degree": null,
+     "id": "PriceUp",
+     "label": "PriceUp",
+     "observation": null,
+     "status": "exploring"
+    },
+    {
+     "degree": null,
+     "id": "TempAnom_prev",
+     "label": "TempAnom_prev",
+     "observation": null,
+     "status": "weak"
+    },
+    {
+     "degree": null,
+     "id": "HeatingDem_prev",
+     "label": "HeatingDem_prev",
+     "observation": null,
+     "status": "exploring"
+    },
+    {
+     "degree": null,
+     "id": "StorageDraw_prev",
+     "label": "StorageDraw_prev",
+     "observation": null,
+     "status": "weak"
+    },
+    {
+     "degree": null,
+     "id": "PriceUp_prev",
+     "label": "PriceUp_prev",
+     "observation": null,
+     "status": "weak"
+    }
+   ],
+   "target_degree": 0.466626556,
+   "target_distribution": {
+    "high": 0.233438599,
+    "low": 0.300185486,
+    "mid": 0.466375915
+   },
+   "target_level": "mid",
    "target_variable": "TempAnom"
   },
   "status": 200
@@ -876,6 +2211,12 @@
      "dominant_after": "unconnected: no hypotheses yet",
      "event_type": "current",
      "generation": 0
+    },
+    {
+     "description": "Became dominant candidate after 2 paradigm shift(s)",
+     "dominant_after": "unconnected: no hypotheses yet",
+     "event_type": "shift",
+     "generation": 37
     }
    ]
   },
@@ -887,42 +2228,105 @@
     "candidates": [
      {
       "edge_count": 0,
-      "log_score": -58.945927736,
+      "log_score": -97.848534645,
       "name": "unconnected: no hypotheses yet",
-      "score_normalized": 0.05,
+      "score_normalized": 0.95,
       "status": "dominant"
+     },
+     {
+      "edge_count": 1,
+      "log_score": -96.481194191,
+      "name": "prompted_add_HeatingDem_prev->PriceUp",
+      "score_normalized": 0.918568562,
+      "status": "rising"
+     },
+     {
+      "edge_count": 2,
+      "log_score": -96.1138283,
+      "name": "variant_add_HeatingDem->StorageDraw",
+      "score_normalized": 0.737103295,
+      "status": "rising"
+     },
+     {
+      "edge_count": 1,
+      "log_score": -98.487747406,
+      "name": "prompted_add_PriceUp_prev->HeatingDem",
+      "score_normalized": 0.613622507,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 2,
+      "log_score": -96.888212015,
+      "name": "variant_add_HeatingDem_prev->HeatingDem",
+      "score_normalized": 0.610945405,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 2,
+      "log_score": -96.914189565,
+      "name": "variant_add_TempAnom->StorageDraw",
+      "score_normalized": 0.609202006,
+      "status": "neutral"
+     },
+     {
+      "edge_count": 2,
+      "log_score": -97.368913357,
+      "name": "variant_add_HeatingDem_prev->TempAnom",
+      "score_normalized": 0.534014573,
+      "status": "falling"
+     },
+     {
+      "edge_count": 2,
+      "log_score": -97.413697724,
+      "name": "variant_add_TempAnom_prev->HeatingDem",
+      "score_normalized": 0.530114674,
+      "status": "falling"
+     },
+     {
+      "edge_count": 2,
+      "log_score": -98.487747406,
+      "name": "prompted_add_HeatingDem_prev->PriceUp",
+      "score_normalized": 0.371615221,
+      "status": "falling"
+     },
+     {
+      "edge_count": 3,
+      "log_score": -97.368913357,
+      "name": "variant_add_TempAnom->PriceUp",
+      "score_normalized": 0.05,
+      "status": "falling"
      }
     ],
-    "score_gap_to_dominant": null
+    "score_gap_to_dominant": 0.009854915
    },
    "current_regime_state": [
     {
-     "boolean_state": false,
-     "name": "TempAnom",
-     "probability": 0.453430435
+     "degree": 0.458333333,
+     "level": "mid",
+     "name": "TempAnom"
     },
     {
-     "boolean_state": true,
-     "name": "HeatingDem",
-     "probability": 0.536426087
+     "degree": 0.583333333,
+     "level": "high",
+     "name": "HeatingDem"
     },
     {
-     "boolean_state": true,
-     "name": "StorageDraw",
-     "probability": 0.534904348
+     "degree": 0.541666667,
+     "level": "mid",
+     "name": "StorageDraw"
     },
     {
-     "boolean_state": false,
-     "name": "PriceUp",
-     "probability": 0.477613043
+     "degree": 0.5,
+     "level": "mid",
+     "name": "PriceUp"
     }
    ],
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
     "edge_count": 0,
     "edges": [],
-    "generations_dominant": 0,
-    "log_score": -58.945927736,
+    "generations_dominant": 16,
+    "log_score": -97.848534645,
     "name": "unconnected: no hypotheses yet"
    },
    "frontier": {
@@ -930,25 +2334,40 @@
     "frontier_edges": []
    },
    "interpretation_hints": [
-    "structure_entropy is low (0.000): engine has converged on a single dominant causal story",
-    "dominant hypothesis was introduced in the current generation",
-    "no paradigm shifts recorded since shift logging was enabled",
+    "structure_entropy is high (1.657): engine has not converged; multiple causal stories remain plausible",
+    "dominant hypothesis has held for 37 generations",
+    "last paradigm shift was <ago>",
     "evidence base: 21 records ingested",
     "no edges are in the explore band: dominant causal structure is well-determined"
    ],
    "metadata": {
-    "current_generation": 0,
+    "current_generation": 37,
     "domain": "Natural Gas",
     "domain_module_id": "natural-gas-v1",
     "evidence_count": 21,
     "timestamp": "<ts>"
    },
    "ontology_competition": {
-    "active_candidates": 1,
-    "entropy_interpretation": "low",
-    "paradigm_shifts_total": 0,
-    "recent_shifts": [],
-    "structure_entropy": 0.0
+    "active_candidates": 10,
+    "entropy_interpretation": "high",
+    "paradigm_shifts_total": 2,
+    "recent_shifts": [
+     {
+      "evidence_date": "2026-02-18",
+      "from_name": "unconnected: no hypotheses yet",
+      "generation": 19,
+      "timestamp": "<ts>",
+      "to_name": "prompted_add_HeatingDem_prev->PriceUp"
+     },
+     {
+      "evidence_date": "2026-02-19",
+      "from_name": "prompted_add_HeatingDem_prev->PriceUp",
+      "generation": 21,
+      "timestamp": "<ts>",
+      "to_name": "unconnected: no hypotheses yet"
+     }
+    ],
+    "structure_entropy": 1.657297008
    }
   },
   "status": 200
@@ -957,27 +2376,54 @@
   "body": {
    "domain": "Natural Gas",
    "domain_module_id": "natural-gas-v1",
-   "events": [],
-   "total_shifts": 0
+   "events": [
+    {
+     "evidence_count_at_shift": 12,
+     "evidence_date": "2026-02-18",
+     "generation": 19,
+     "new_dominant_id": "<id1>",
+     "new_dominant_name": "prompted_add_HeatingDem_prev->PriceUp",
+     "new_programme": "HeatingDem_prev\u2013PriceUp",
+     "previous_dominant_id": "<id0>",
+     "previous_dominant_name": "unconnected: no hypotheses yet",
+     "previous_programme": "unconnected",
+     "shift_id": "<id10>",
+     "timestamp": "<ts>"
+    },
+    {
+     "evidence_count_at_shift": 13,
+     "evidence_date": "2026-02-19",
+     "generation": 21,
+     "new_dominant_id": "<id0>",
+     "new_dominant_name": "unconnected: no hypotheses yet",
+     "new_programme": "unconnected",
+     "previous_dominant_id": "<id1>",
+     "previous_dominant_name": "prompted_add_HeatingDem_prev->PriceUp",
+     "previous_programme": "HeatingDem_prev\u2013PriceUp",
+     "shift_id": "<id11>",
+     "timestamp": "<ts>"
+    }
+   ],
+   "total_shifts": 2
   },
   "status": 200
  },
  "status": {
   "body": {
-   "active_candidates": 1,
-   "current_generation": 0,
+   "active_candidates": 10,
+   "current_generation": 37,
    "domain": "Natural Gas",
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "generations_dominant": 0,
+    "generations_dominant": 16,
     "name": "unconnected: no hypotheses yet"
    },
    "engine_status": "online",
    "frontier_edge_count": 0,
    "last_evidence_cycle_ago": "<ago>",
    "max_candidates": 10,
-   "paradigm_shifts_this_window": 0,
-   "structure_entropy": 0.0
+   "paradigm_shifts_this_window": 2,
+   "structure_entropy": 1.657297008
   },
   "status": 200
  }

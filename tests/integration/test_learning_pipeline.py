@@ -50,19 +50,19 @@ def _ng_record(target_date: date) -> EvidenceRecord:
         observed_assignments=[
             ObservedAssignment(
                 variable_id=variables["TempAnom"].variable_id,
-                observed_value=True,
+                observed_value="high",
             ),
             ObservedAssignment(
                 variable_id=variables["HeatingDem"].variable_id,
-                observed_value=True,
+                observed_value="high",
             ),
             ObservedAssignment(
                 variable_id=variables["StorageDraw"].variable_id,
-                observed_value=True,
+                observed_value="high",
             ),
             ObservedAssignment(
                 variable_id=variables["PriceUp"].variable_id,
-                observed_value=True,
+                observed_value="high",
             ),
         ],
         source_type=SourceType.API,

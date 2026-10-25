@@ -13,7 +13,7 @@ from fastapi.testclient import TestClient
 
 from src.engine.api import app as api_app
 from src.engine.runtime.settings import Settings
-from tests.fakes import ADMIN_TOKEN, patch_soft_evidence_for_all_domains
+from tests.fakes import ADMIN_TOKEN, patch_fake_evidence_for_all_domains
 
 ADMIN_ROUTES = [
     ("POST", "/v1/ingest/backfill", {"domain": "ng", "days": 7}),
@@ -45,7 +45,7 @@ def test_admin_routes_are_off_when_no_token_is_configured(monkeypatch, method, p
 
 
 def test_admin_routes_accept_the_token(monkeypatch):
-    patch_soft_evidence_for_all_domains(monkeypatch)
+    patch_fake_evidence_for_all_domains(monkeypatch)
     with TestClient(api_app.app) as client:
         resp = client.post(
             "/v1/ingest/backfill", params={"domain": "ng", "days": 7},
@@ -55,7 +55,7 @@ def test_admin_routes_accept_the_token(monkeypatch):
 
 
 def test_dashboard_routes_need_no_token(monkeypatch):
-    patch_soft_evidence_for_all_domains(monkeypatch)
+    patch_fake_evidence_for_all_domains(monkeypatch)
     with TestClient(api_app.app) as client:
         assert client.post("/v1/ingest/trigger", params={"domain": "ng"}).status_code == 200
         assert client.post("/v1/inference/query", json={"domain": "ng", "target_variable": "PriceUp"}).status_code == 200
@@ -79,7 +79,7 @@ def test_replace_relearns_a_domain_from_the_records_supplied():
     records = [EvidenceRecord(
         timestamp=datetime(2024, 1, 7, tzinfo=timezone.utc) + timedelta(weeks=i),
         source_ref=f"replay@week-ending-{i}",
-        observed_assignments=[ObservedAssignment(variable_id=x.variable_id, observed_value=(i + k) % 2 == 0)
+        observed_assignments=[ObservedAssignment(variable_id=x.variable_id, observed_value=x.support[(i + k) % 3])
                               for k, x in enumerate(v.values())],
     ).model_dump(mode="json") for i in range(3)]
     with TestClient(api_app.app) as client:
@@ -111,6 +111,24 @@ def test_soft_evidence_survives_the_trip_through_json():
     assert back.probabilities == {True: 0.7, False: 0.3}
 
 
+def test_replace_refuses_a_value_a_variable_cannot_take():
+    """Checked before the domain is forgotten: macro's signals are levels (D25),
+    so a yes/no for one is refused and nothing is replaced."""
+    from datetime import datetime, timezone
+    from src.domains.macro_regime_v1.domain import get_variables
+    from src.engine.schemas import EvidenceRecord, ObservedAssignment
+
+    x = get_variables()["InflationShock"]
+    bad = [EvidenceRecord(timestamp=datetime(2024, 1, 7, tzinfo=timezone.utc),
+                          observed_assignments=[ObservedAssignment(variable_id=x.variable_id, observed_value=True)],
+                          ).model_dump(mode="json")]
+    with TestClient(api_app.app) as client:
+        resp = client.post("/v1/ingest/replace", params={"domain": "mr"}, json=bad,
+                           headers={"Authorization": f"Bearer {ADMIN_TOKEN}"})
+    assert resp.status_code == 422
+    assert "InflationShock" in resp.text and "True" in resp.text
+
+
 def test_replace_learns_soft_evidence():
     from datetime import datetime, timedelta, timezone
     from src.domains.macro_regime_v1.domain import get_variables
@@ -119,8 +137,9 @@ def test_replace_learns_soft_evidence():
     v = get_variables()
     records = [EvidenceRecord(
         timestamp=datetime(2024, 1, 7, tzinfo=timezone.utc) + timedelta(weeks=i),
-        observed_assignments=[ObservedAssignment(variable_id=x.variable_id, observed_value=True,
-                                                 missingness="SOFT_OBSERVED", probabilities={True: 0.6, False: 0.4})
+        observed_assignments=[ObservedAssignment(variable_id=x.variable_id, observed_value="high",
+                                                 missingness="SOFT_OBSERVED",
+                                                 probabilities={"low": 0.1, "mid": 0.3, "high": 0.6})
                               for x in v.values()],
     ).model_dump(mode="json") for i in range(3)]
     with TestClient(api_app.app) as client:

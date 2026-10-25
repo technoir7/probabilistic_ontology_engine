@@ -18,7 +18,7 @@ from tests.fakes import (
     domain_keys,
     domain_variables,
     freeze_clock,
-    patch_soft_evidence_for_all_domains,
+    patch_fake_evidence_for_all_domains,
 )
 
 from .snapshot import assert_matches_snapshot
@@ -31,7 +31,7 @@ BACKFILL_DAYS = 21
 @pytest.fixture
 def client(monkeypatch):
     freeze_clock(monkeypatch, FROZEN_NOW)
-    patch_soft_evidence_for_all_domains(monkeypatch)
+    patch_fake_evidence_for_all_domains(monkeypatch)
     with TestClient(api_app.app, headers=ADMIN) as c:
         yield c
 

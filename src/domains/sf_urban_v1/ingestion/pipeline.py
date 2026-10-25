@@ -1,39 +1,37 @@
 """
 SFUrbanPipeline — SF Open Data + FRED observations → EvidenceRecords.
 
-Variable calibrations (all SOFT_OBSERVED, sigmoid-based)
-----------------------------------------------------------
+Variable signals (REFACTOR_SPEC D25)
+------------------------------------
+Each variable gets a signed signal, read as a level observed exactly
+(sources.grades): low below -0.5, mid within ±0.5, high above +0.5. A
+variable whose inputs are too thin for its signal, including an SF Open Data
+outage (the client returns no rows), is MISSING (D10).
+
 TechHiringAccelerating
-    Signal  : FRED info employment YoY change z-score
-    P(True) : sigmoid(z_score)
+    Signal : FRED info employment YoY change z-score
 
 OfficeVacancyFalling
-    Signal  : SF permits commercial/office fraction, inverted z-score
-    P(True) : sigmoid(signal)  [rising commercial permits = vacancy falling]
+    Signal : SF permits commercial/office fraction, inverted z-score
+             [rising commercial permits = vacancy falling]
 
 RetailClosureElevated
-    Signal  : SF business license expirations monthly count z-score
-    P(True) : sigmoid(z_score)
+    Signal : SF business license expirations monthly count z-score
 
 PermitActivityRising
-    Signal  : SF total building permits monthly count z-score
-    P(True) : sigmoid(z_score)
+    Signal : SF total building permits monthly count z-score
 
 CrimeIndexElevated
-    Signal  : SF police incidents monthly count z-score
-    P(True) : sigmoid(z_score)
+    Signal : SF police incidents monthly count z-score
 
 StartupFormationRising
-    Signal  : SF new business registrations monthly count z-score
-    P(True) : sigmoid(z_score)
+    Signal : SF new business registrations monthly count z-score
 
 FootTrafficRecovering
-    Signal  : FRED leisure/hospitality employment YoY change z-score
-    P(True) : sigmoid(z_score)
+    Signal : FRED leisure/hospitality employment YoY change z-score
 
 PopulationFlowPositive
-    Signal  : FRED total employment YoY change z-score
-    P(True) : sigmoid(z_score)
+    Signal : FRED total employment YoY change z-score
 """
 from __future__ import annotations
 
@@ -49,42 +47,23 @@ from ....engine.schemas import (
 from ..domain import get_variables
 from .sfgov_client import MonthlyCount, SFGovClient
 from .fred_client import FREDClient, FREDObservation
-from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
+from ...sources.grades import build_graded_record
+from ...sources.soft_evidence import zscore as _zscore
 
 logger = logging.getLogger(__name__)
-
-_CLAMP_LO: float = 0.01
-_CLAMP_HI: float = 0.99
 
 
 # slots: a misspelled field name raises instead of silently adding a field.
 @dataclass(slots=True)
 class SFUrbanSnapshot:
-    """Derived signals and soft probabilities for one evidence week."""
+    """
+    Derived signals for one evidence week.
 
-    # Soft probabilities
-    p_tech_hiring_accelerating: float = 0.5
-    p_office_vacancy_falling: float = 0.5
-    p_retail_closure_elevated: float = 0.5
-    p_permit_activity_rising: float = 0.5
-    p_crime_index_elevated: float = 0.5
-    p_startup_formation_rising: float = 0.5
-    p_foot_traffic_recovering: float = 0.5
-    p_population_flow_positive: float = 0.5
+    *signals* holds each variable's signed signal (read as a level when the
+    record is built); a variable without one is MISSING.
+    """
 
-    # Hard MAP booleans
-    tech_hiring_accelerating: bool = False
-    office_vacancy_falling: bool = False
-    retail_closure_elevated: bool = False
-    permit_activity_rising: bool = False
-    crime_index_elevated: bool = False
-    startup_formation_rising: bool = False
-    foot_traffic_recovering: bool = False
-    population_flow_positive: bool = False
-
-    # Data confidence per variable
-    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
-    missing: set[str] = field(default_factory=set)
+    signals: dict[str, float] = field(default_factory=dict)
     confidence: dict[str, float] = field(default_factory=dict)
 
     target_date: Optional[date] = None
@@ -93,10 +72,6 @@ class SFUrbanSnapshot:
 # ---------------------------------------------------------------------------
 # Signal helpers
 # ---------------------------------------------------------------------------
-
-
-def _soft_bool(signal: float) -> float:
-    return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
 
 
 def _complete_months(counts: list[MonthlyCount], target_date: date, months: int = 13) -> dict[date, list[MonthlyCount]]:
@@ -166,7 +141,7 @@ def _compute_tech_hiring(info_emp_obs: list[FREDObservation]) -> tuple[Optional[
 
 
 # Matched against a permit's proposed_use. The numeric permit_type code never
-# matched these (REFACTOR_SPEC B19), so this signal was a constant 0.5.
+# matched these (REFACTOR_SPEC B19), so this signal used to be constant.
 _COMMERCIAL_KEYWORDS = {"commercial", "office", "tenant improvement", "tenant impr",
                         "ti ", "t.i.", "commercial alteration"}
 
@@ -239,14 +214,10 @@ def compute_snapshot(
     snap = SFUrbanSnapshot(target_date=target_date)
     confidence: dict[str, float] = {}
 
-    def _apply(var_name: str, sig: Optional[float], conf: float, p_attr: str, bool_attr: str) -> None:
-        if sig is None:
-            snap.missing.add(var_name)
-        s = sig if sig is not None else 0.0
-        p = _soft_bool(s)
-        setattr(snap, p_attr, p)
-        setattr(snap, bool_attr, p > 0.5)
+    def _apply(var_name: str, sig: Optional[float], conf: float) -> None:
         confidence[var_name] = conf
+        if sig is not None:
+            snap.signals[var_name] = sig
 
     permits = sfgov_data.get("permits", [])
     incidents = sfgov_data.get("incidents", [])
@@ -259,35 +230,35 @@ def compute_snapshot(
 
     # TechHiringAccelerating
     sig, conf = _compute_tech_hiring(info_emp)
-    _apply("TechHiringAccelerating", sig, conf, "p_tech_hiring_accelerating", "tech_hiring_accelerating")
+    _apply("TechHiringAccelerating", sig, conf)
 
     # OfficeVacancyFalling
     sig, conf = _compute_office_vacancy_falling(permits, target_date)
-    _apply("OfficeVacancyFalling", sig, conf, "p_office_vacancy_falling", "office_vacancy_falling")
+    _apply("OfficeVacancyFalling", sig, conf)
 
     # RetailClosureElevated
     sig, conf = _compute_retail_closure(closures, target_date)
-    _apply("RetailClosureElevated", sig, conf, "p_retail_closure_elevated", "retail_closure_elevated")
+    _apply("RetailClosureElevated", sig, conf)
 
     # PermitActivityRising
     sig, conf = _compute_permit_activity(permits, target_date)
-    _apply("PermitActivityRising", sig, conf, "p_permit_activity_rising", "permit_activity_rising")
+    _apply("PermitActivityRising", sig, conf)
 
     # CrimeIndexElevated
     sig, conf = _compute_crime_index(incidents, target_date)
-    _apply("CrimeIndexElevated", sig, conf, "p_crime_index_elevated", "crime_index_elevated")
+    _apply("CrimeIndexElevated", sig, conf)
 
     # StartupFormationRising
     sig, conf = _compute_startup_formation(openings, target_date)
-    _apply("StartupFormationRising", sig, conf, "p_startup_formation_rising", "startup_formation_rising")
+    _apply("StartupFormationRising", sig, conf)
 
     # FootTrafficRecovering
     sig, conf = _compute_foot_traffic(hosp_emp)
-    _apply("FootTrafficRecovering", sig, conf, "p_foot_traffic_recovering", "foot_traffic_recovering")
+    _apply("FootTrafficRecovering", sig, conf)
 
     # PopulationFlowPositive
     sig, conf = _compute_population_flow(total_emp)
-    _apply("PopulationFlowPositive", sig, conf, "p_population_flow_positive", "population_flow_positive")
+    _apply("PopulationFlowPositive", sig, conf)
 
     snap.confidence = confidence
     return snap
@@ -321,21 +292,11 @@ class SFUrbanPipeline:
     @staticmethod
     def build_evidence_record(snapshot: SFUrbanSnapshot) -> EvidenceRecord:
         target_date = snapshot.target_date
-        return build_soft_record(
+        return build_graded_record(
             module_id="sf-urban-v1",
             variables=get_variables(),
-            states=[
-                ("TechHiringAccelerating", snapshot.tech_hiring_accelerating, snapshot.p_tech_hiring_accelerating),
-                ("OfficeVacancyFalling", snapshot.office_vacancy_falling, snapshot.p_office_vacancy_falling),
-                ("RetailClosureElevated", snapshot.retail_closure_elevated, snapshot.p_retail_closure_elevated),
-                ("PermitActivityRising", snapshot.permit_activity_rising, snapshot.p_permit_activity_rising),
-                ("CrimeIndexElevated", snapshot.crime_index_elevated, snapshot.p_crime_index_elevated),
-                ("StartupFormationRising", snapshot.startup_formation_rising, snapshot.p_startup_formation_rising),
-                ("FootTrafficRecovering", snapshot.foot_traffic_recovering, snapshot.p_foot_traffic_recovering),
-                ("PopulationFlowPositive", snapshot.population_flow_positive, snapshot.p_population_flow_positive),
-            ],
+            signals=snapshot.signals,
             confidence=snapshot.confidence,
-            missing=snapshot.missing,
             target_date=target_date,
             source_ref="SFGov:permits+incidents+businesses"
             "|FRED:SANF806INFO+SANF806LEIH+SANF806NA"

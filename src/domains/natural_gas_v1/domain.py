@@ -1,25 +1,28 @@
 """
 natural-gas-v1 — U.S. natural gas market domain module.
 
-Variables (all BOOLEAN):
-    TempAnom    True  = CONUS daily mean temperature is *above* its seasonal normal
-                False = below seasonal normal (colder than expected; higher heating demand)
+Variables (levels: low, mid, high; REFACTOR_SPEC D25)
+-----------------------------------------------------
+Each is read as how far its signal lies from the line below (high: well
+above it, mid: near it, low: well below). The lines:
 
-    HeatingDem  True  = heating demand is active (mean temp < 65°F / 18.33°C; HDD > 0)
-                False = no meaningful heating demand
+    TempAnom    high = CONUS daily mean temperature well *above* its seasonal normal
+                low  = well below it (colder than expected; higher heating demand)
 
-    StorageDraw True  = EIA weekly Lower-48 storage *decreased* week-over-week (a net draw)
-                False = storage increased (a net build)
+    HeatingDem  high = strong heating demand (HDD well above 5)
+                low  = little or none (HDD near 0)
 
-    PriceUp     True  = Henry Hub spot price is *above* its rolling 4-week median
-                False = at or below median
+    StorageDraw high = EIA weekly Lower-48 storage fell week-over-week (a net draw)
+                low  = storage rose (a net build)
+
+    PriceUp     high = Henry Hub spot price well *above* its rolling 4-week median
+                low  = well below it
 """
 from __future__ import annotations
 
+from ..sources.grades import graded_variables
 from ..sources.structure import with_lags
-from ...engine.variable_identity import stable_variable_id
 from ...engine.schemas import (
-    DomainType,
     EdgeExistenceThresholdConfig,
     Variable,
 )
@@ -30,15 +33,9 @@ from ...engine.schemas import (
 # UUIDs are fixed at import time and shared by all candidates and the pipeline.
 # ---------------------------------------------------------------------------
 
-_VARIABLE_DEFS: dict[str, Variable] = {
-    name: Variable(
-        variable_id=stable_variable_id("natural-gas-v1", name),
-        name=name,
-        domain_type=DomainType.BOOLEAN,
-        support=[True, False],
-    )
-    for name in ["TempAnom", "HeatingDem", "StorageDraw", "PriceUp"]
-}
+_VARIABLE_DEFS: dict[str, Variable] = graded_variables(
+    "natural-gas-v1", ["TempAnom", "HeatingDem", "StorageDraw", "PriceUp"]
+)
 
 
 def get_variables() -> dict[str, Variable]:

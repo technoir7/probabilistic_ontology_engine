@@ -8,48 +8,50 @@ narratives, noisy heterogeneous evidence, and changing causal relationships.
 This domain is NOT a price-prediction engine; it is an evolving probabilistic
 ontology over macro-financial regimes.
 
-Variables (all BOOLEAN)
------------------------
+Variables (levels: low, mid, high; REFACTOR_SPEC D25)
+-----------------------------------------------------
+Each is read as how far its signal lies from the line below (high: well
+above it, mid: near it, low: well below). The lines:
 YieldCurveInverted
-    True  = 10Y minus 2Y Treasury yield spread (T10Y2Y) is negative (inverted)
-    False = spread is positive (normal curve)
+    high  = 10Y minus 2Y Treasury yield spread (T10Y2Y) is negative (inverted)
+    low   = spread is positive (normal curve)
     Signal: structural monetary tightening / growth pessimism embedded in rates
 
 InflationShock
-    True  = CPI 12-month YoY rate exceeds 3.5% (materially above 2% target)
-    False = inflation at or near target
+    high  = CPI 12-month YoY rate exceeds 3.5% (materially above 2% target)
+    low   = inflation at or near target
     Signal: supply-side or demand-side inflation pressure creating policy risk
 
 LiquidityStress
-    True  = Fed balance sheet (WALCL) contracting over 13 weeks (QT regime)
-    False = balance sheet stable or expanding (QE / neutral)
+    high  = Fed balance sheet (WALCL) contracting over 13 weeks (QT regime)
+    low   = balance sheet stable or expanding (QE / neutral)
     Signal: active Fed liquidity withdrawal, distinct from rate policy
 
 CreditSpreadStress
-    True  = HY OAS spread (BAMLH0A0HYM2) is above its rolling 52-week z-score ≥ 1
-    False = HY spreads at or below historical mean
+    high  = HY OAS spread (BAMLH0A0HYM2) is above its rolling 52-week z-score ≥ 1
+    low   = HY spreads at or below historical mean
     Signal: credit market pricing elevated default risk / deleveraging pressure
 
 VolatilityShock
-    True  = VIX above its rolling 90-day 75th percentile (fear regime)
-    False = VIX in normal range
+    high  = VIX above its rolling 90-day 75th percentile (fear regime)
+    low   = VIX in normal range
     Signal: equity-implied volatility elevated; systemic risk-off sentiment
 
 DollarStrength
-    True  = DEXUSEU (dollars per euro) below its 52-week mean: the dollar
+    high  = DEXUSEU (dollars per euro) below its 52-week mean: the dollar
             stronger than its recent trend
-    False = dollar at or weaker than its recent trend
+    low   = dollar at or weaker than its recent trend
     Signal: global capital flows favouring dollar; often accompanies risk-off
 
 EquityRiskOn
-    True  = UNRATE not rising vs its 12-month mean (labour market resilient)
-    False = unemployment trending higher (labour market deteriorating)
+    high  = UNRATE not rising vs its 12-month mean (labour market resilient)
+    low   = unemployment trending higher (labour market deteriorating)
     Signal: real-economy demand channel; distinct from volatility and credit
 
 AIRiskOn
-    True  = NASDAQ Composite 13-week price return is above its historical mean
+    high  = NASDAQ Composite 13-week price return is above its historical mean
             by at least +0.5 standard deviations (tech/growth narrative dominant)
-    False = NASDAQ 13-week return is below-average or negative
+    low   = NASDAQ 13-week return is below-average or negative
     Signal: technology / AI narrative driving risk appetite; acts as distinct
             explanatory factor from broad credit/vol signals
 
@@ -79,7 +81,8 @@ Reasoning:
 """
 from __future__ import annotations
 
-from ..sources.structure import boolean_variables, with_lags
+from ..sources.grades import graded_variables
+from ..sources.structure import with_lags
 from ...engine.schemas import (
     EdgeExistenceThresholdConfig,
     Variable,
@@ -107,7 +110,7 @@ _VAR_NAMES = [
     "AIRiskOn",
 ]
 
-_VARIABLE_DEFS: dict[str, Variable] = boolean_variables(_MODULE_ID, _VAR_NAMES)
+_VARIABLE_DEFS: dict[str, Variable] = graded_variables(_MODULE_ID, _VAR_NAMES)
 # Each signal and its value last week (REFACTOR_SPEC D19); candidates hold both.
 _WITH_LAGS: dict[str, Variable] = with_lags(_MODULE_ID, _VARIABLE_DEFS)
 

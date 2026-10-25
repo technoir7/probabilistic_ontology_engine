@@ -1,39 +1,39 @@
 """
 LaborMarketPipeline — FRED observations → EvidenceRecords for labor-market-v1.
 
-Variable calibrations
-----------------------
+Variable mapping (REFACTOR_SPEC D25)
+------------------------------------
+Each variable gets a signed signal: its distance from the line that names
+it, in the unit given below. The signal is read as a level, observed
+exactly (sources.grades): low below -0.5, mid within ±0.5, high above +0.5.
+A variable whose series has too little data is MISSING (D10), never a
+middle reading.
+
 UnemploymentRising
-    Signal  : (UNRATE_latest - UNRATE_12m_mean) / 0.30
-    P(True) : sigmoid(signal)  [positive delta = rising = True]
+    Signal : (UNRATE latest - its 12-month mean) / 0.30  [positive = rising]
 
 WageInflationPersistent
-    Signal  : CES0500000003 YoY % vs historical mean: (yoy - hist_mean) / hist_std
-    P(True) : sigmoid(z_score)
+    Signal : CES0500000003 YoY % z-scored against its historical YoY rates
 
 JobOpeningsFalling
-    Signal  : -JTSJOL 12-month z-score  [falling openings = negative z = inverted positive]
-    P(True) : sigmoid(-z_score)
+    Signal : -JTSJOL 24-month z-score  [below-average openings → positive]
 
 LayoffCycleBeginning
-    Signal  : ICSA 52-week rolling z-score
-    P(True) : sigmoid(z_score)
+    Signal : ICSA 52-week rolling z-score
 
 LaborProductivityWeak
-    Signal  : -(PRS85006092 YoY % - historical mean YoY) / historical std
-    P(True) : sigmoid(-z_score)  [below trend = weak = True]
+    Signal : -(PRS85006092 YoY % z-score vs historical YoY)  [below trend → positive]
 
 ParticipationRateFalling
-    Signal  : -CIVPART 12-month z-score  [falling participation = True]
-    P(True) : sigmoid(-z_score)
+    Signal : -CIVPART 24-month z-score  [below-average participation → positive]
 
 RealWageGrowthPositive
-    Signal  : (CES0500000003 YoY % - CPIAUCSL YoY %) / 1.0
-    P(True) : sigmoid(signal)  [positive real wage = True]
+    Signal : (CES0500000003 YoY % - CPIAUCSL YoY %) / 1.0
+    high   : real wages up more than 0.5%; low: down more than 0.5%
 
 TightLaborMarket
-    Signal  : composite of -UNRATE z-score + JTSJOL z-score
-    P(True) : sigmoid(composite / 2.0)
+    Signal : mean of -UNRATE z-score and JTSJOL z-score (either alone when
+             the other is unavailable)
 """
 from __future__ import annotations
 
@@ -49,12 +49,10 @@ from ....engine.schemas import (
 )
 from ..domain import get_variables
 from .fred_client import FREDClient, FREDObservation
-from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
+from ...sources.grades import build_graded_record
+from ...sources.soft_evidence import zscore as _zscore
 
 logger = logging.getLogger(__name__)
-
-_CLAMP_LO: float = 0.01
-_CLAMP_HI: float = 0.99
 
 _MIN_OBS: dict[str, int] = {
     "UNRATE":        4,
@@ -70,32 +68,15 @@ _MIN_OBS: dict[str, int] = {
 # slots: a misspelled field name raises instead of silently adding a field.
 @dataclass(slots=True)
 class LaborMarketSnapshot:
-    p_unemployment_rising: float = 0.5
-    p_wage_inflation_persistent: float = 0.5
-    p_job_openings_falling: float = 0.5
-    p_layoff_cycle_beginning: float = 0.5
-    p_labor_productivity_weak: float = 0.5
-    p_participation_rate_falling: float = 0.5
-    p_real_wage_growth_positive: float = 0.5
-    p_tight_labor_market: float = 0.5
+    """
+    Derived signals for one evidence week. *signals* holds each variable's
+    signed signal (read as a level when the record is built); a variable
+    without one is MISSING.
+    """
 
-    unemployment_rising: bool = False
-    wage_inflation_persistent: bool = False
-    job_openings_falling: bool = False
-    layoff_cycle_beginning: bool = False
-    labor_productivity_weak: bool = False
-    participation_rate_falling: bool = False
-    real_wage_growth_positive: bool = False
-    tight_labor_market: bool = False
-
-    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
-    missing: set[str] = field(default_factory=set)
+    signals: dict[str, float] = field(default_factory=dict)
     confidence: dict[str, float] = field(default_factory=dict)
     target_date: Optional[date] = None
-
-
-def _soft_bool(signal: float) -> float:
-    return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
 
 
 def _values_from_obs(obs: list[FREDObservation]) -> list[float]:
@@ -140,17 +121,17 @@ def _compute_wage_inflation_persistent(obs: list[FREDObservation]) -> tuple[Opti
 
 
 def _compute_job_openings_falling(obs: list[FREDObservation]) -> tuple[Optional[float], float]:
-    """JTSJOL: inverted z-score (falling openings = JobOpeningsFalling = True)."""
+    """JTSJOL: inverted z-score (falling openings = JobOpeningsFalling high)."""
     if len(obs) < _MIN_OBS["JTSJOL"]:
         return None, 0.5
     current = obs[0].value
     values = _values_from_obs(obs[:24])
     z = _zscore(current, values)
-    return -z, 1.0  # Invert: below-average openings → True
+    return -z, 1.0  # Invert: below-average openings → high
 
 
 def _compute_layoff_cycle_beginning(obs: list[FREDObservation]) -> tuple[Optional[float], float]:
-    """ICSA 52-week rolling z-score (elevated claims = LayoffCycleBeginning = True)."""
+    """ICSA 52-week rolling z-score (elevated claims = LayoffCycleBeginning high)."""
     if len(obs) < _MIN_OBS["ICSA"]:
         return None, 0.5
     current = obs[0].value
@@ -159,7 +140,7 @@ def _compute_layoff_cycle_beginning(obs: list[FREDObservation]) -> tuple[Optiona
 
 
 def _compute_labor_productivity_weak(obs: list[FREDObservation]) -> tuple[Optional[float], float]:
-    """PRS85006092 YoY below historical mean → LaborProductivityWeak = True."""
+    """PRS85006092 YoY below historical mean → LaborProductivityWeak high."""
     if len(obs) < _MIN_OBS["PRS85006092"]:
         return None, 0.5
     if len(obs) < 5:
@@ -181,18 +162,18 @@ def _compute_labor_productivity_weak(obs: list[FREDObservation]) -> tuple[Option
         # Below 1% YoY productivity growth is weak
         return -(yoy_pct - 1.0) / 0.5, 0.7
 
-    # Negate: below-trend productivity → positive signal → True
+    # Negate: below-trend productivity → positive signal
     return -_zscore(yoy_pct, hist_yoy), 1.0
 
 
 def _compute_participation_rate_falling(obs: list[FREDObservation]) -> tuple[Optional[float], float]:
-    """CIVPART: inverted z-score (falling participation = True)."""
+    """CIVPART: inverted z-score (falling participation = high)."""
     if len(obs) < _MIN_OBS["CIVPART"]:
         return None, 0.5
     current = obs[0].value
     values = _values_from_obs(obs[:24])
     z = _zscore(current, values)
-    return -z, 1.0  # Invert: below-average participation → True
+    return -z, 1.0  # Invert: below-average participation → high
 
 
 def _compute_real_wage_growth_positive(
@@ -201,7 +182,7 @@ def _compute_real_wage_growth_positive(
 ) -> tuple[Optional[float], float]:
     """
     Real wage growth = CES0500000003 YoY % - CPIAUCSL YoY %.
-    Positive real wage growth → RealWageGrowthPositive = True.
+    Positive real wage growth → RealWageGrowthPositive high.
     """
     if len(wage_obs) < 13 or len(cpi_obs) < 13:
         return None, 0.5
@@ -231,7 +212,7 @@ def _compute_tight_labor_market(
 ) -> tuple[Optional[float], float]:
     """
     Composite: -UNRATE z-score + JTSJOL z-score.
-    Low unemployment AND high openings = TightLaborMarket = True.
+    Low unemployment AND high openings = TightLaborMarket high.
     """
     unrate_signal = 0.0
     jtsjol_signal = 0.0
@@ -263,14 +244,10 @@ def compute_snapshot(
     snap = LaborMarketSnapshot(target_date=target_date)
     confidence: dict[str, float] = {}
 
-    def _apply(var_name: str, sig: Optional[float], conf: float, p_attr: str, bool_attr: str) -> None:
-        if sig is None:
-            snap.missing.add(var_name)
-        s = sig if sig is not None else 0.0
-        p = _soft_bool(s)
-        setattr(snap, p_attr, p)
-        setattr(snap, bool_attr, p > 0.5)
+    def _apply(var_name: str, sig: Optional[float], conf: float) -> None:
         confidence[var_name] = conf
+        if sig is not None:
+            snap.signals[var_name] = sig
 
     unrate_obs = observations.get("UNRATE", [])
     wage_obs = observations.get("CES0500000003", [])
@@ -278,28 +255,28 @@ def compute_snapshot(
     cpi_obs = observations.get("CPIAUCSL", [])
 
     sig, conf = _compute_unemployment_rising(unrate_obs)
-    _apply("UnemploymentRising", sig, conf, "p_unemployment_rising", "unemployment_rising")
+    _apply("UnemploymentRising", sig, conf)
 
     sig, conf = _compute_wage_inflation_persistent(wage_obs)
-    _apply("WageInflationPersistent", sig, conf, "p_wage_inflation_persistent", "wage_inflation_persistent")
+    _apply("WageInflationPersistent", sig, conf)
 
     sig, conf = _compute_job_openings_falling(jtsjol_obs)
-    _apply("JobOpeningsFalling", sig, conf, "p_job_openings_falling", "job_openings_falling")
+    _apply("JobOpeningsFalling", sig, conf)
 
     sig, conf = _compute_layoff_cycle_beginning(observations.get("ICSA", []))
-    _apply("LayoffCycleBeginning", sig, conf, "p_layoff_cycle_beginning", "layoff_cycle_beginning")
+    _apply("LayoffCycleBeginning", sig, conf)
 
     sig, conf = _compute_labor_productivity_weak(observations.get("PRS85006092", []))
-    _apply("LaborProductivityWeak", sig, conf, "p_labor_productivity_weak", "labor_productivity_weak")
+    _apply("LaborProductivityWeak", sig, conf)
 
     sig, conf = _compute_participation_rate_falling(observations.get("CIVPART", []))
-    _apply("ParticipationRateFalling", sig, conf, "p_participation_rate_falling", "participation_rate_falling")
+    _apply("ParticipationRateFalling", sig, conf)
 
     sig, conf = _compute_real_wage_growth_positive(wage_obs, cpi_obs)
-    _apply("RealWageGrowthPositive", sig, conf, "p_real_wage_growth_positive", "real_wage_growth_positive")
+    _apply("RealWageGrowthPositive", sig, conf)
 
     sig, conf = _compute_tight_labor_market(unrate_obs, jtsjol_obs)
-    _apply("TightLaborMarket", sig, conf, "p_tight_labor_market", "tight_labor_market")
+    _apply("TightLaborMarket", sig, conf)
 
     snap.confidence = confidence
     return snap
@@ -319,21 +296,11 @@ class LaborMarketPipeline:
     @staticmethod
     def build_evidence_record(snapshot: LaborMarketSnapshot) -> EvidenceRecord:
         target_date = snapshot.target_date
-        return build_soft_record(
+        return build_graded_record(
             module_id="labor-market-v1",
             variables=get_variables(),
-            states=[
-                ("UnemploymentRising", snapshot.unemployment_rising, snapshot.p_unemployment_rising),
-                ("WageInflationPersistent", snapshot.wage_inflation_persistent, snapshot.p_wage_inflation_persistent),
-                ("JobOpeningsFalling", snapshot.job_openings_falling, snapshot.p_job_openings_falling),
-                ("LayoffCycleBeginning", snapshot.layoff_cycle_beginning, snapshot.p_layoff_cycle_beginning),
-                ("LaborProductivityWeak", snapshot.labor_productivity_weak, snapshot.p_labor_productivity_weak),
-                ("ParticipationRateFalling", snapshot.participation_rate_falling, snapshot.p_participation_rate_falling),
-                ("RealWageGrowthPositive", snapshot.real_wage_growth_positive, snapshot.p_real_wage_growth_positive),
-                ("TightLaborMarket", snapshot.tight_labor_market, snapshot.p_tight_labor_market),
-            ],
+            signals=snapshot.signals,
             confidence=snapshot.confidence,
-            missing=snapshot.missing,
             target_date=target_date,
             source_ref="FRED:UNRATE+CES0500000003+JTSJOL+ICSA+PRS85006092+CIVPART+CPIAUCSL"
             f"@week-ending-{target_date}",

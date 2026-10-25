@@ -8,45 +8,48 @@ conflict intensity, trade disruption, sanctions pressure, diplomatic tension,
 supply chain stress, currency war dynamics, energy weaponization, and
 global trade volume.
 
-Variables (all BOOLEAN)
------------------------
+Variables (levels: low, mid, high; REFACTOR_SPEC D25)
+-----------------------------------------------------
+Each is read as how far its signal lies from the line below (high: well
+above it, mid: near it, low: well below). The lines:
 ConflictIntensityElevated
-    True  = GDELT "conflict war" article volume 4-week avg z-score elevated
+    high  = GDELT "conflict war" article volume 4-week avg z-score elevated
     Signal: media coverage of military conflicts rising
 
 TradeDisruptionRisk
-    True  = DCOILWTICO z-score elevated (rising oil = trade disruption risk)
+    high  = DCOILWTICO z-score elevated (rising oil = trade disruption risk)
     Signal: commodity price pressure indicating supply disruption
 
 SanctionsPressureElevated
-    True  = GDELT "sanctions" article volume 4-week avg z-score elevated
+    high  = GDELT "sanctions" article volume 4-week avg z-score elevated
     Signal: economic sanctions activity in news coverage
 
 DiplomaticTensionHigh
-    True  = GDELT "diplomatic tension" article volume 4-week avg z-score elevated
+    high  = GDELT "diplomatic tension" article volume 4-week avg z-score elevated
     Signal: diplomatic fallout and rising international tensions
 
 SupplyChainStress
-    True  = DCOILWTICO + PPIACO composite z-score elevated
+    high  = DCOILWTICO + PPIACO composite z-score elevated
     Signal: dual cost-push from oil and producer prices
 
 CurrencyWarSignal
-    True  = DTWEXBGS rolling 4-week volatility z-score elevated
+    high  = DTWEXBGS rolling 4-week volatility z-score elevated
     Signal: dollar volatility indicating competitive devaluations
 
 EnergyWeaponizationRisk
-    True  = GDELT "energy sanctions" + DCOILWTICO momentum composite elevated
+    high  = GDELT "energy sanctions" + DCOILWTICO momentum composite elevated
     Signal: energy being used as geopolitical leverage
 
 GlobalTradeVolumeWeak
-    True  = INDPRO 3-month change inverted z-score elevated (weak production)
+    high  = INDPRO 3-month change inverted z-score elevated (weak production)
     Signal: declining industrial production as trade proxy
 
 Cadence: WEEKLY
 """
 from __future__ import annotations
 
-from ..sources.structure import boolean_variables, with_lags
+from ..sources.grades import graded_variables
+from ..sources.structure import with_lags
 from ...engine.schemas import (
     EdgeExistenceThresholdConfig,
     Variable,
@@ -73,7 +76,7 @@ _VAR_NAMES = [
     "GlobalTradeVolumeWeak",
 ]
 
-_VARIABLE_DEFS: dict[str, Variable] = boolean_variables(_MODULE_ID, _VAR_NAMES)
+_VARIABLE_DEFS: dict[str, Variable] = graded_variables(_MODULE_ID, _VAR_NAMES)
 
 
 def get_variables() -> dict[str, Variable]:

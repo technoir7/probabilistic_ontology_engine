@@ -7,46 +7,48 @@ Tracks evolving causal narratives around U.S. Treasury yields, sovereign
 credit risk, dollar dominance dynamics, Fed balance-sheet policy, and
 emerging-market stress.
 
-Variables (all BOOLEAN)
------------------------
+Variables (levels: low, mid, high; REFACTOR_SPEC D25)
+-----------------------------------------------------
+Each is read as how far its signal lies from the line below (high: well
+above it, mid: near it, low: well below). The lines:
 USYieldSpiking
-    True  = DGS10 13-week z-score >= +1.0 (yields rising fast vs history)
-    False = yields stable or falling
+    high  = DGS10 13-week z-score >= +1.0 (yields rising fast vs history)
+    low   = yields stable or falling
     Signal: rising long-end rates driven by term premium / fiscal concerns
 
 SpreadWidening
-    True  = BAMLH0A0HYM2 (HY OAS) z-score >= +1.0
-    False = credit spreads at or below historical mean
+    high  = BAMLH0A0HYM2 (HY OAS) z-score >= +1.0
+    low   = credit spreads at or below historical mean
     Signal: credit markets pricing elevated default/liquidity risk
 
 DollarStrengthening
-    True  = DEXUSEU below its 52-week mean (USD strengthening vs EUR)
-    False = dollar stable or weakening
+    high  = DEXUSEU below its 52-week mean (USD strengthening vs EUR)
+    low   = dollar stable or weakening
     Signal: capital flight to USD safety; often accompanies EM stress
 
 FedBalanceSheetShrinking
-    True  = WALCL 13-week change is negative (active QT)
-    False = balance sheet stable or expanding
+    high  = WALCL 13-week change is negative (active QT)
+    low   = balance sheet stable or expanding
     Signal: Fed actively withdrawing liquidity from the financial system
 
 EMStressElevated
-    True  = DTWEXBGS (broad trade-weighted dollar) z-score >= +1.0
-    False = broad dollar within historical range
+    high  = DTWEXBGS (broad trade-weighted dollar) z-score >= +1.0
+    low   = broad dollar within historical range
     Signal: strong broad dollar → EM debt servicing pressure and capital outflows
 
 FiscalDominanceRisk
-    True  = GFDEBTN (federal debt) YoY growth rate above historical mean
-    False = debt growth within historical norms
+    high  = GFDEBTN (federal debt) YoY growth rate above historical mean
+    low   = debt growth within historical norms
     Signal: fiscal pressure overwhelming monetary policy independence
 
 CreditDefaultRisk
-    True  = BAMLH0A0HYM2 level > 6.0% (absolute stress threshold)
-    False = HY OAS below systemic stress level
+    high  = BAMLH0A0HYM2 level > 6.0% (absolute stress threshold)
+    low   = HY OAS below systemic stress level
     Signal: market pricing high corporate default probability
 
 GlobalLiquidityContracting
-    True  = WALCL 13w change + M2SL 3m change both negative (dual contraction)
-    False = at least one liquidity measure stable or expanding
+    high  = WALCL 13w change + M2SL 3m change both negative (dual contraction)
+    low   = at least one liquidity measure stable or expanding
     Signal: simultaneous Fed and broad-money contraction → global tightening
 
 FRED series used
@@ -63,7 +65,8 @@ Cadence: WEEKLY (every Monday at 09:00 UTC)
 """
 from __future__ import annotations
 
-from ..sources.structure import boolean_variables, with_lags
+from ..sources.grades import graded_variables
+from ..sources.structure import with_lags
 from ...engine.schemas import (
     EdgeExistenceThresholdConfig,
     Variable,
@@ -90,7 +93,7 @@ _VAR_NAMES = [
     "GlobalLiquidityContracting",
 ]
 
-_VARIABLE_DEFS: dict[str, Variable] = boolean_variables(_MODULE_ID, _VAR_NAMES)
+_VARIABLE_DEFS: dict[str, Variable] = graded_variables(_MODULE_ID, _VAR_NAMES)
 
 
 def get_variables() -> dict[str, Variable]:

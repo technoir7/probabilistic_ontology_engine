@@ -21,7 +21,7 @@ from fastapi.testclient import TestClient
 
 from src.engine.api import app as api_app
 from src.domains.natural_gas_v1.domain import get_variables
-from tests.fakes import patch_evidence_fetch, soft_record
+from tests.fakes import patch_evidence_fetch, fake_record
 
 # Expected variable counts per domain short key
 _DOMAIN_VAR_COUNTS: dict[str, int] = {
@@ -290,17 +290,16 @@ def test_ns_11_regime_state_uses_inference(tmp_path, monkeypatch):
     not from raw soft-evidence weights.
 
     We verify:
-    1. All regime_state variables have non-null boolean_state and probability
-       once evidence exists.
-    2. The regime_state probability for each variable matches the probability
-       returned by POST /v1/inference/query for the same variable.
+    1. All regime_state variables have a non-null level and degree once
+       evidence exists.
+    2. Each variable's level and degree match POST /v1/inference/query.
     """
     monkeypatch.setenv("EVIDENCE_SCHEDULER_ENABLED", "false")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
 
     async def fake_fetch(domain_key, target_date):
         assert domain_key == "ng"
-        return soft_record(get_variables().values(), target_date, seed=11)
+        return fake_record(get_variables().values(), target_date, seed=11)
 
     patch_evidence_fetch(monkeypatch, fake_fetch)
 
@@ -313,11 +312,11 @@ def test_ns_11_regime_state_uses_inference(tmp_path, monkeypatch):
 
         # Every variable must have real (non-null) values after evidence
         for entry in regime:
-            assert entry["boolean_state"] is not None, (
-                f"Variable '{entry['name']}' has null boolean_state after ingestion"
+            assert entry["level"] is not None, (
+                f"Variable '{entry['name']}' has null level after ingestion"
             )
-            assert entry["probability"] is not None, (
-                f"Variable '{entry['name']}' has null probability after ingestion"
+            assert entry["degree"] is not None, (
+                f"Variable '{entry['name']}' has null degree after ingestion"
             )
 
         # Probabilities must match POST /v1/inference/query for each variable
@@ -330,11 +329,11 @@ def test_ns_11_regime_state_uses_inference(tmp_path, monkeypatch):
             assert inf_resp.status_code == 200, (
                 f"inference/query failed for {var_name}: {inf_resp.text}"
             )
-            inf_prob = inf_resp.json()["target_probability"]
-            snap_prob = entry["probability"]
-            assert abs(snap_prob - inf_prob) < 1e-6, (
-                f"Variable '{var_name}': snapshot probability {snap_prob:.6f} "
-                f"!= inference probability {inf_prob:.6f}"
+            inf = inf_resp.json()
+            assert entry["level"] == inf["target_level"]
+            assert abs(entry["degree"] - inf["target_degree"]) < 1e-6, (
+                f"Variable '{var_name}': snapshot degree {entry['degree']:.6f} "
+                f"!= inference degree {inf['target_degree']:.6f}"
             )
 
 
@@ -345,7 +344,7 @@ def test_ns_11_regime_state_uses_inference(tmp_path, monkeypatch):
 def test_ns_12_regime_state_null_without_evidence(tmp_path, monkeypatch):
     """
     On a fresh engine with no evidence ingested, every entry in
-    current_regime_state must have boolean_state=null and probability=null.
+    current_regime_state must have level=null and degree=null.
     The variables must still be listed (correct count), just unobserved.
 
     Uses its own isolated client to guarantee a cold engine regardless of what
@@ -366,9 +365,9 @@ def test_ns_12_regime_state_null_without_evidence(tmp_path, monkeypatch):
         )
 
         for entry in body["current_regime_state"]:
-            assert entry["boolean_state"] is None, (
-                f"Expected null boolean_state for '{entry['name']}' with no evidence"
+            assert entry["level"] is None, (
+                f"Expected null level for '{entry['name']}' with no evidence"
             )
-            assert entry["probability"] is None, (
-                f"Expected null probability for '{entry['name']}' with no evidence"
+            assert entry["degree"] is None, (
+                f"Expected null degree for '{entry['name']}' with no evidence"
             )

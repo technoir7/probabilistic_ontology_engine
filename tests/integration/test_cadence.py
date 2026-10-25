@@ -8,7 +8,7 @@ from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.model.cadence import Daily, Monthly, Weekly
 from src.engine.runtime.data_migrations import move_friday_weekly_records_to_sunday
 from src.engine.runtime.registry import REGISTRY
-from tests.fakes import soft_record
+from tests.fakes import fake_record
 
 WED = date(2026, 3, 4)
 
@@ -69,7 +69,7 @@ def test_friday_records_move_to_their_sunday_and_duplicates_drop():
     engine.activate_domain("sovereign-debt-v1")
     variables = get_variables().values()
     for day in (date(2026, 2, 20), date(2026, 2, 27), date(2026, 3, 1), date(2026, 3, 4)):
-        engine.ingest(soft_record(variables, day, seed="m"))  # Fri, Fri, Sun, Wed
+        engine.ingest(fake_record(variables, day, seed="m"))  # Fri, Fri, Sun, Wed
 
     move_friday_weekly_records_to_sunday(engine, "sovereign-debt-v1")
     stamps = sorted(r.timestamp.date() for r in engine.evidence_store.load_all("sovereign-debt-v1"))

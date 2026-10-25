@@ -4,16 +4,15 @@ Integration tests — labor market domain ingestion pipeline.
 Test inventory
 --------------
 TEST-LM-01  All 8 variable IDs are stable across module imports
-TEST-LM-04  Soft probabilities are clamped to [0.01, 0.99]
-TEST-LM-05  Rising unemployment → P(UnemploymentRising) > 0.5
-TEST-LM-06  Falling unemployment → P(UnemploymentRising) < 0.5
-TEST-LM-07  Positive real wage growth → P(RealWageGrowthPositive) > 0.5
-TEST-LM-08  Negative real wage growth → P(RealWageGrowthPositive) < 0.5
+TEST-LM-05  Rising unemployment → UnemploymentRising high
+TEST-LM-06  Falling unemployment → UnemploymentRising low
+TEST-LM-07  Positive real wage growth → RealWageGrowthPositive high
+TEST-LM-08  Negative real wage growth → RealWageGrowthPositive low
 TEST-LM-09  build_evidence_record maps all 8 variable UUIDs correctly
-TEST-LM-10  build_evidence_record produces SOFT_OBSERVED missingness
+TEST-LM-10  build_evidence_record observes every variable exactly, at a level (D25)
 TEST-LM-11  FRED client fetch_series with mocked HTTP
 TEST-LM-12  FRED client skips missing values
-TEST-LM-13  compute_snapshot falls back gracefully with no data
+TEST-LM-13  compute_snapshot gives no signal (MISSING) for variables without data
 TEST-LM-15  Existence thresholds are within valid ranges
 TEST-LM-16  Domain registers in engine and evidence is ingested
 TEST-LM-18  Full pipeline fetch_evidence with mocked FREDClient
@@ -21,15 +20,12 @@ TEST-LM-18  Full pipeline fetch_evidence with mocked FREDClient
 from __future__ import annotations
 
 import asyncio
-import math
 import os
 import sys
 from datetime import date, timedelta
 from unittest.mock import AsyncMock, MagicMock
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
-
-import pytest
 
 from src.domains.labor_market_v1.domain import (
     LaborMarketV1,
@@ -39,10 +35,10 @@ from src.domains.labor_market_v1.ingestion.fred_client import FREDClient, FREDOb
 from src.domains.labor_market_v1.ingestion.pipeline import (
     LaborMarketPipeline,
     compute_snapshot,
-    _soft_bool,
     _compute_unemployment_rising,
     _compute_real_wage_growth_positive,
 )
+from src.domains.sources.grades import LEVELS, level_of
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import MissingnessType
 
@@ -151,39 +147,30 @@ def test_variable_ids_are_stable():
         assert vars1[name].variable_id == domain_vars[name]
 
 
-@pytest.mark.parametrize("signal", [-100.0, -10.0, 0.0, 10.0, 100.0])
-def test_soft_bool_clamped(signal: float):
-    result = _soft_bool(signal)
-    assert 0.01 <= result <= 0.99
-    assert not math.isnan(result)
-
-
 def test_rising_unemployment_produces_high_p():
-    """UNRATE rising 1pp above 12m mean → P(UnemploymentRising) > 0.9."""
+    """UNRATE rising 1pp above 12m mean → UnemploymentRising high."""
     obs = [
         FREDObservation(obs_date=_TARGET_DATE - timedelta(days=i * 30), value=(5.0 if i == 0 else 4.0), series_id="UNRATE")
         for i in range(15)
     ]
     sig, _ = _compute_unemployment_rising(obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p > 0.9, f"Expected P > 0.9 for unemployment 1pp above mean, got {p:.3f}"
+    assert level_of(sig) == "high"
 
 
 def test_falling_unemployment_produces_low_p():
-    """UNRATE falling 0.5pp below 12m mean → P(UnemploymentRising) < 0.2."""
+    """UNRATE falling 0.5pp below 12m mean → UnemploymentRising low."""
     obs = [
         FREDObservation(obs_date=_TARGET_DATE - timedelta(days=i * 30), value=(3.5 if i == 0 else 4.0), series_id="UNRATE")
         for i in range(15)
     ]
     sig, _ = _compute_unemployment_rising(obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p < 0.2, f"Expected P < 0.2 for unemployment 0.5pp below mean, got {p:.3f}"
+    assert level_of(sig) == "low"
 
 
 def test_positive_real_wage_growth():
-    """Wages growing 5% YoY, CPI 2% → real wage +3% → P(RealWageGrowthPositive) > 0.9."""
+    """Wages growing 5% YoY, CPI 2% → real wage +3% → RealWageGrowthPositive high."""
     wage_obs = [
         FREDObservation(obs_date=_TARGET_DATE - timedelta(days=i * 30),
                         value=(105.0 if i == 0 else 100.0), series_id="CES0500000003")
@@ -196,12 +183,11 @@ def test_positive_real_wage_growth():
     ]
     sig, _ = _compute_real_wage_growth_positive(wage_obs, cpi_obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p > 0.9, f"Expected P > 0.9 for real wage +3%, got {p:.3f}"
+    assert level_of(sig) == "high"
 
 
 def test_negative_real_wage_growth():
-    """Wages 2% YoY, CPI 5% → real wage -3% → P(RealWageGrowthPositive) < 0.1."""
+    """Wages 2% YoY, CPI 5% → real wage -3% → RealWageGrowthPositive low."""
     wage_obs = [
         FREDObservation(obs_date=_TARGET_DATE - timedelta(days=i * 30),
                         value=(102.0 if i == 0 else 100.0), series_id="CES0500000003")
@@ -214,8 +200,7 @@ def test_negative_real_wage_growth():
     ]
     sig, _ = _compute_real_wage_growth_positive(wage_obs, cpi_obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p < 0.1, f"Expected P < 0.1 for real wage -3%, got {p:.3f}"
+    assert level_of(sig) == "low"
 
 
 def test_build_evidence_record_maps_all_uuids():
@@ -228,16 +213,15 @@ def test_build_evidence_record_maps_all_uuids():
     assert {a.variable_id for a in record.observed_assignments} == expected_ids
 
 
-def test_build_evidence_record_all_soft_observed():
+def test_build_evidence_record_observes_every_variable_at_a_level():
+    """With full data every variable is observed exactly, at one of its levels (D25)."""
     observations = _make_full_observations()
     snapshot = compute_snapshot(observations, _TARGET_DATE)
     record = LaborMarketPipeline.build_evidence_record(snapshot)
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED
-        assert a.probabilities is not None
-        assert set(a.probabilities.keys()) == {True, False}
-        p_true = a.probabilities[True]
-        assert 0.01 <= p_true <= 0.99
+        assert a.missingness == MissingnessType.OBSERVED
+        assert a.probabilities is None
+        assert a.observed_value in LEVELS
 
 
 def test_fred_client_fetch_series_returns_observations():
@@ -277,13 +261,18 @@ def test_fred_client_skips_missing_values():
 
 
 def test_compute_snapshot_falls_back_gracefully_with_no_data():
-    snapshot = compute_snapshot({}, _TARGET_DATE)
-    for attr in [
-        "p_unemployment_rising", "p_wage_inflation_persistent", "p_job_openings_falling",
-        "p_layoff_cycle_beginning", "p_labor_productivity_weak", "p_participation_rate_falling",
-        "p_real_wage_growth_positive", "p_tight_labor_market",
-    ]:
-        assert getattr(snapshot, attr) == 0.5, f"{attr} should be 0.5 with no data"
+    """No input is MISSING, never a middle reading."""
+    assert compute_snapshot({}, _TARGET_DATE).signals == {}
+
+
+def test_variables_without_data_are_missing():
+    """Only UNRATE given: the two variables it feeds are observed, the other six MISSING."""
+    partial = {"UNRATE": _make_full_observations()["UNRATE"]}
+    snapshot = compute_snapshot(partial, _TARGET_DATE)
+    assert set(snapshot.signals) == {"UnemploymentRising", "TightLaborMarket"}
+    record = LaborMarketPipeline.build_evidence_record(snapshot)
+    missing = [a for a in record.observed_assignments if a.missingness == MissingnessType.MISSING]
+    assert len(missing) == 6
 
 
 def test_existence_thresholds_are_valid():
@@ -311,7 +300,7 @@ def test_fetch_evidence_full_pipeline_mocked():
     variables = get_variables()
     mock_fred = AsyncMock(spec=FREDClient)
     observations = _make_full_observations(
-        unrate_latest=5.0,   # rising → UnemploymentRising=True
+        unrate_latest=5.0,   # rising → UnemploymentRising high
         unrate_mean=4.0,
         wages_now=105.0,
         wages_yr_ago=100.0,
@@ -327,11 +316,11 @@ def test_fetch_evidence_full_pipeline_mocked():
     assert {a.variable_id for a in record.observed_assignments} == {v.variable_id for v in variables.values()}
     assert "FRED" in record.source_ref
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED
+        assert a.missingness == MissingnessType.OBSERVED
 
     # UnemploymentRising should be high
     amap = {a.variable_id: a for a in record.observed_assignments}
     ur_var = variables["UnemploymentRising"]
-    assert amap[ur_var.variable_id].probabilities[True] > 0.5
+    assert amap[ur_var.variable_id].observed_value == "high"
 
     mock_fred.fetch_all_series.assert_called_once_with(end_date=_TARGET_DATE)

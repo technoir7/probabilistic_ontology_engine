@@ -4,12 +4,11 @@ Integration tests — energy regime domain ingestion pipeline.
 Test inventory
 --------------
 TEST-ER-01  All 8 variable IDs are stable across module imports
-TEST-ER-04  Soft probabilities are clamped to [0.01, 0.99]
-TEST-ER-05  High energy CPI YoY → P(EnergyInflationPersistent) > 0.5
-TEST-ER-06  Low energy CPI YoY → P(EnergyInflationPersistent) < 0.5
+TEST-ER-05  High energy CPI YoY → EnergyInflationPersistent high
+TEST-ER-06  Low energy CPI YoY → EnergyInflationPersistent low
 TEST-ER-07  build_evidence_record maps all 8 variable UUIDs correctly
-TEST-ER-08  build_evidence_record produces SOFT_OBSERVED missingness
-TEST-ER-09  compute_snapshot falls back gracefully with no data
+TEST-ER-08  build_evidence_record observes every variable exactly, at a level (D25)
+TEST-ER-09  compute_snapshot gives no signal (MISSING) for variables without data
 TEST-ER-11  Existence thresholds are within valid ranges
 TEST-ER-12  Domain registers in engine and evidence is ingested
 TEST-ER-14  Full pipeline fetch_evidence with mocked FRED + yfinance
@@ -18,7 +17,6 @@ TEST-ER-15  FRED client skips missing values
 from __future__ import annotations
 
 import asyncio
-import math
 import os
 import sys
 from datetime import date, timedelta
@@ -26,7 +24,6 @@ from unittest.mock import AsyncMock, MagicMock
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
-import pytest
 import numpy as np
 
 from src.domains.energy_regime_v1.domain import (
@@ -39,9 +36,9 @@ from src.domains.energy_regime_v1.ingestion.pipeline import (
     EnergyRegimePipeline,
     EnergyRegimeSnapshot,
     compute_snapshot,
-    _soft_bool,
     _compute_energy_inflation_persistent,
 )
+from src.domains.sources.grades import LEVELS, level_of
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import MissingnessType
 
@@ -134,15 +131,8 @@ def test_variable_ids_are_stable():
         assert vars1[name].variable_id == domain_vars[name]
 
 
-@pytest.mark.parametrize("signal", [-100.0, -10.0, 0.0, 10.0, 100.0])
-def test_soft_bool_clamped(signal: float):
-    result = _soft_bool(signal)
-    assert 0.01 <= result <= 0.99
-    assert not math.isnan(result)
-
-
 def test_high_energy_inflation_produces_high_p():
-    """CPIENGSL YoY = 15% (well above 5% threshold) → P(EnergyInflationPersistent) > 0.5."""
+    """CPIENGSL YoY = 15% (well above 5% threshold) → EnergyInflationPersistent high."""
     obs = [
         FREDObservation(obs_date=_TARGET_DATE - timedelta(days=i * 30),
                         value=(115.0 if i == 0 else 100.0), series_id="CPIENGSL")
@@ -150,12 +140,11 @@ def test_high_energy_inflation_produces_high_p():
     ]
     sig, _ = _compute_energy_inflation_persistent(obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p > 0.5, f"Expected P > 0.5 for 15% energy inflation, got {p:.3f}"
+    assert level_of(sig) == "high"
 
 
 def test_low_energy_inflation_produces_low_p():
-    """CPIENGSL YoY = 2% (below 5% threshold) → P(EnergyInflationPersistent) < 0.5."""
+    """CPIENGSL YoY = 2% (below 5% threshold) → EnergyInflationPersistent low."""
     obs = [
         FREDObservation(obs_date=_TARGET_DATE - timedelta(days=i * 30),
                         value=(102.0 if i == 0 else 100.0), series_id="CPIENGSL")
@@ -163,8 +152,7 @@ def test_low_energy_inflation_produces_low_p():
     ]
     sig, _ = _compute_energy_inflation_persistent(obs)
     assert sig is not None
-    p = _soft_bool(sig)
-    assert p < 0.5, f"Expected P < 0.5 for 2% energy inflation, got {p:.3f}"
+    assert level_of(sig) == "low"
 
 
 def test_build_evidence_record_maps_all_uuids():
@@ -178,26 +166,33 @@ def test_build_evidence_record_maps_all_uuids():
     assert {a.variable_id for a in record.observed_assignments} == expected_ids
 
 
-def test_build_evidence_record_all_soft_observed():
+def test_build_evidence_record_observes_every_variable_at_a_level():
+    """With full data every variable is observed exactly, at one of its levels (D25)."""
     yf_obs = _make_full_yf_observations()
     fred_obs = _make_full_fred_observations()
     snapshot = compute_snapshot(yf_obs, fred_obs, _TARGET_DATE)
     record = EnergyRegimePipeline.build_evidence_record(snapshot)
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED
-        p_true = a.probabilities[True]
-        assert 0.01 <= p_true <= 0.99
+        assert a.missingness == MissingnessType.OBSERVED
+        assert a.probabilities is None
+        assert a.observed_value in LEVELS
 
 
 def test_compute_snapshot_falls_back_gracefully_with_no_data():
-    snapshot = compute_snapshot({}, {}, _TARGET_DATE)
-    for attr in [
-        "p_oil_price_surge", "p_nat_gas_price_surge", "p_energy_equity_momentum",
-        "p_opec_supply_constraint", "p_renewables_displacement",
-        "p_energy_inflation_persistent", "p_geopolitical_risk_elevated",
-        "p_demand_destruction_risk",
-    ]:
-        assert getattr(snapshot, attr) == 0.5, f"{attr} should be 0.5 with no data"
+    """No input is MISSING, never a middle reading."""
+    assert compute_snapshot({}, {}, _TARGET_DATE).signals == {}
+
+
+def test_variables_without_data_are_missing():
+    """FRED only, no yfinance: the four yfinance variables are MISSING."""
+    snapshot = compute_snapshot({}, _make_full_fred_observations(), _TARGET_DATE)
+    assert set(snapshot.signals) == {
+        "OPECSupplyConstraint", "EnergyInflationPersistent",
+        "GeopoliticalRiskElevated", "DemandDestructionRisk",
+    }
+    record = EnergyRegimePipeline.build_evidence_record(snapshot)
+    missing = [a for a in record.observed_assignments if a.missingness == MissingnessType.MISSING]
+    assert len(missing) == 4
 
 
 def test_existence_thresholds_are_valid():
@@ -227,7 +222,7 @@ def test_fetch_evidence_full_pipeline_mocked():
 
     mock_fred = AsyncMock(spec=FREDClient)
     mock_fred.fetch_all_series = AsyncMock(return_value=_make_full_fred_observations(
-        cpiengsl_latest=115.0, cpiengsl_yr_ago=100.0  # 15% YoY → EnergyInflationPersistent=True
+        cpiengsl_latest=115.0, cpiengsl_yr_ago=100.0  # 15% YoY → EnergyInflationPersistent high
     ))
 
     mock_yf = AsyncMock(spec=EnergyYFinanceClient)
@@ -240,13 +235,13 @@ def test_fetch_evidence_full_pipeline_mocked():
     assert {a.variable_id for a in record.observed_assignments} == {v.variable_id for v in variables.values()}
     assert "yfinance" in record.source_ref or "FRED" in record.source_ref
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED
+        assert a.missingness == MissingnessType.OBSERVED
 
     # Energy inflation should be elevated with 15% YoY
     amap = {a.variable_id: a for a in record.observed_assignments}
     energy_inflation_var = variables["EnergyInflationPersistent"]
     ei_assignment = amap[energy_inflation_var.variable_id]
-    assert ei_assignment.probabilities[True] > 0.5
+    assert ei_assignment.observed_value == "high"
 
 
 def test_fred_client_skips_missing_values():

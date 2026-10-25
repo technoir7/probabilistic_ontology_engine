@@ -2,21 +2,20 @@
 Integration tests — macro regime domain ingestion pipeline.
 
 Tests the full mapping from FRED API responses to EvidenceRecords, variable
-stability, ontology registration, soft evidence calibration, and evidence
+stability, ontology registration, levels of degree (D25), and evidence
 geometry compatibility.
 
 Test inventory
 --------------
 TEST-MR-01  All 8 variable IDs are stable across module imports
-TEST-MR-04  Soft probabilities are clamped to [0.01, 0.99] for all signals
-TEST-MR-05  Sigmoid calibration: deeply inverted curve → P(YCI) > 0.85
-TEST-MR-06  Sigmoid calibration: steep normal curve → P(YCI) < 0.15
-TEST-MR-07  Inflation above threshold → P(InflationShock) > 0.5
-TEST-MR-08  Inflation below threshold → P(InflationShock) < 0.5
-TEST-MR-09  Fed QT (shrinking balance sheet) → P(LiquidityStress) > 0.5
-TEST-MR-10  Fed QE (expanding balance sheet) → P(LiquidityStress) < 0.5
+TEST-MR-05  Deeply inverted curve → YieldCurveInverted high
+TEST-MR-06  Steep normal curve → YieldCurveInverted low
+TEST-MR-07  Inflation above threshold → InflationShock high
+TEST-MR-08  Inflation below threshold → InflationShock low
+TEST-MR-09  Fed QT (shrinking balance sheet) → LiquidityStress high
+TEST-MR-10  Fed QE (expanding balance sheet) → LiquidityStress low
 TEST-MR-11  build_evidence_record maps all 8 variable UUIDs correctly
-TEST-MR-12  build_evidence_record produces SOFT_OBSERVED missingness on all assignments
+TEST-MR-12  build_evidence_record observes every variable exactly, at a level
 TEST-MR-13  FRED client fetch_series with mocked HTTP returns correct observations
 TEST-MR-14  FRED client skips missing (".") values
 TEST-MR-15  Weekly backfill date computation is correct and idempotent
@@ -39,7 +38,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 import pytest
 
-from src.domains.sources.soft_evidence import sigmoid as _sigmoid
+from src.domains.sources.grades import LEVELS, level_of
 from src.domains.macro_regime_v1.domain import (
     MacroRegimeV1,
     get_variables,
@@ -52,7 +51,6 @@ from src.domains.macro_regime_v1.ingestion.fred_client import (
 from src.domains.macro_regime_v1.ingestion.pipeline import (
     MacroRegimePipeline,
     MacroRegimeSnapshot,
-    _soft_bool,
     compute_snapshot,
     _compute_yield_curve_signal,
     _compute_inflation_signal,
@@ -229,49 +227,28 @@ def test_variable_ids_are_stable():
 # TEST-MR-04 — Soft probabilities clamped to [0.01, 0.99]
 # ---------------------------------------------------------------------------
 
-@pytest.mark.parametrize("signal", [
-    -100.0, -10.0, -1.0, 0.0, 1.0, 10.0, 100.0,
-    float("inf"), -float("inf"),
-])
-def test_soft_bool_clamped(signal: float):
-    """
-    _soft_bool must never return values outside [0.01, 0.99].
-    Extreme signals should be safely clamped, not produce NaN or overflow.
-    """
-    # Guard against inf inputs (sigmoid handles them, but let's be safe)
-    if math.isinf(signal):
-        # sigmoid(±inf) = {1, 0}; after clamping = {0.99, 0.01}
-        result = _soft_bool(max(-700.0, min(700.0, signal)))
-    else:
-        result = _soft_bool(signal)
-    assert 0.01 <= result <= 0.99, f"_soft_bool({signal}) = {result} out of range"
-    assert not math.isnan(result), f"_soft_bool({signal}) returned NaN"
-
-
 # ---------------------------------------------------------------------------
 # TEST-MR-05 & 06 — YieldCurveInverted calibration
 # ---------------------------------------------------------------------------
 
 def test_deeply_inverted_yield_curve_produces_high_p():
     """
-    T10Y2Y = -1.0% (deeply inverted) → P(YieldCurveInverted=True) > 0.85.
+    T10Y2Y = -1.0% (deeply inverted) → YieldCurveInverted high.
     """
     obs = _make_obs("T10Y2Y", [-1.0] * 7, _TARGET_DATE)
     signal, _ = _compute_yield_curve_signal(obs, _TARGET_DATE)
     assert signal is not None
-    p = _soft_bool(signal)
-    assert p > 0.85, f"Expected P > 0.85 for deeply inverted curve, got {p:.3f}"
+    assert level_of(signal) == "high"
 
 
 def test_steep_normal_curve_produces_low_p():
     """
-    T10Y2Y = +1.5% (steep normal) → P(YieldCurveInverted=True) < 0.15.
+    T10Y2Y = +1.5% (steep normal) → YieldCurveInverted low.
     """
     obs = _make_obs("T10Y2Y", [1.5] * 7, _TARGET_DATE)
     signal, _ = _compute_yield_curve_signal(obs, _TARGET_DATE)
     assert signal is not None
-    p = _soft_bool(signal)
-    assert p < 0.15, f"Expected P < 0.15 for steep normal curve, got {p:.3f}"
+    assert level_of(signal) == "low"
 
 
 # ---------------------------------------------------------------------------
@@ -280,7 +257,7 @@ def test_steep_normal_curve_produces_low_p():
 
 def test_high_inflation_produces_high_p():
     """
-    CPI YoY = 6% (well above 3.5% threshold) → P(InflationShock) > 0.5.
+    CPI YoY = 6% (well above 3.5% threshold) → InflationShock high.
     """
     # latest = 106.0, 12 months ago = 100.0 → YoY = 6%
     obs = [
@@ -293,14 +270,12 @@ def test_high_inflation_produces_high_p():
     ]
     signal, _ = _compute_inflation_signal(obs)
     assert signal is not None
-    p = _soft_bool(signal)
-    assert p > 0.5, f"Expected P > 0.5 for 6% inflation, got {p:.3f}"
-    assert p > 0.85, f"Expected P > 0.85 for strongly elevated inflation, got {p:.3f}"
+    assert level_of(signal) == "high"
 
 
 def test_low_inflation_produces_low_p():
     """
-    CPI YoY = 1.5% (below 3.5% threshold) → P(InflationShock) < 0.5.
+    CPI YoY = 1.5% (below 3.5% threshold) → InflationShock low.
     """
     obs = [
         FREDObservation(
@@ -312,8 +287,7 @@ def test_low_inflation_produces_low_p():
     ]
     signal, _ = _compute_inflation_signal(obs)
     assert signal is not None
-    p = _soft_bool(signal)
-    assert p < 0.5, f"Expected P < 0.5 for 1.5% inflation, got {p:.3f}"
+    assert level_of(signal) == "low"
 
 
 # ---------------------------------------------------------------------------
@@ -322,7 +296,7 @@ def test_low_inflation_produces_low_p():
 
 def test_fed_qt_produces_high_liquidity_stress():
     """
-    WALCL falls 3% over 13 weeks (active QT) → P(LiquidityStress) > 0.9.
+    WALCL falls 3% over 13 weeks (active QT) → LiquidityStress high.
     """
     # obs[0] = 7,800 (now), obs[13] = 8,100 (13w ago)
     walcl_values = [7_800.0] + [7_900.0 + 15.0 * i for i in range(13)] + [8_100.0] * 6
@@ -336,13 +310,12 @@ def test_fed_qt_produces_high_liquidity_stress():
     ]
     signal, _ = _compute_liquidity_signal(obs)
     assert signal is not None
-    p = _soft_bool(signal)
-    assert p > 0.9, f"Expected P > 0.9 for active QT, got {p:.3f}"
+    assert level_of(signal) == "high"
 
 
 def test_fed_qe_produces_low_liquidity_stress():
     """
-    WALCL rises 5% over 13 weeks (active QE) → P(LiquidityStress) < 0.1.
+    WALCL rises 5% over 13 weeks (active QE) → LiquidityStress low.
     """
     walcl_values = [8_500.0] + [8_100.0 + 30.0 * i for i in range(13)] + [7_900.0] * 6
     obs = [
@@ -355,8 +328,7 @@ def test_fed_qe_produces_low_liquidity_stress():
     ]
     signal, _ = _compute_liquidity_signal(obs)
     assert signal is not None
-    p = _soft_bool(signal)
-    assert p < 0.1, f"Expected P < 0.1 for active QE, got {p:.3f}"
+    assert level_of(signal) == "low"
 
 
 # ---------------------------------------------------------------------------
@@ -388,26 +360,16 @@ def test_build_evidence_record_maps_all_uuids():
 # TEST-MR-12 — All assignments are SOFT_OBSERVED
 # ---------------------------------------------------------------------------
 
-def test_build_evidence_record_all_soft_observed():
-    """Every assignment must carry SOFT_OBSERVED missingness and probabilities dict."""
+def test_build_evidence_record_observes_every_variable_at_a_level():
+    """With full data every variable is observed exactly, at one of its levels (D25)."""
     observations = _make_full_observations()
     snapshot = compute_snapshot(observations, _TARGET_DATE)
     record = MacroRegimePipeline.build_evidence_record(snapshot)
 
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED, (
-            f"Assignment for {a.variable_id} has missingness {a.missingness}, "
-            f"expected SOFT_OBSERVED"
-        )
-        assert a.probabilities is not None, \
-            f"Assignment for {a.variable_id} missing probabilities dict"
-        assert set(a.probabilities.keys()) == {True, False}, \
-            "Probabilities keys must be {True, False}"
-        p_true = a.probabilities[True]
-        assert 0.01 <= p_true <= 0.99, \
-            f"P(True)={p_true} outside [0.01, 0.99]"
-        assert abs(a.probabilities[True] + a.probabilities[False] - 1.0) < 0.01, \
-            "Probabilities do not sum to 1.0"
+        assert a.missingness == MissingnessType.OBSERVED
+        assert a.probabilities is None
+        assert a.observed_value in LEVELS
 
 
 # ---------------------------------------------------------------------------
@@ -567,28 +529,17 @@ def test_existence_thresholds_are_valid():
 
 def test_compute_snapshot_falls_back_gracefully_with_no_data():
     """
-    compute_snapshot with empty observations must not raise.
-    All soft probabilities should fall back to 0.5 (maximum uncertainty).
+    compute_snapshot with empty observations must not raise, and gives no
+    signal for any variable: no input is MISSING, never a middle reading.
     """
-    snapshot = compute_snapshot({}, _TARGET_DATE)
-
-    # All probabilities should be 0.5 when data is absent
-    assert snapshot.p_yield_curve_inverted == 0.5
-    assert snapshot.p_inflation_shock == 0.5
-    assert snapshot.p_liquidity_stress == 0.5
-    assert snapshot.p_credit_spread_stress == 0.5
-    assert snapshot.p_volatility_shock == 0.5
-    assert snapshot.p_dollar_strength == 0.5
-    assert snapshot.p_equity_risk_on == 0.5
-    assert snapshot.p_ai_risk_on == 0.5
+    assert compute_snapshot({}, _TARGET_DATE).signals == {}
 
 
 def test_compute_snapshot_partial_data_does_not_raise():
     """
-    compute_snapshot with only some series populated must not raise.
-    Missing series should fall back gracefully.
+    compute_snapshot with only some series populated must not raise; the
+    variables without data have no signal.
     """
-    # Only provide T10Y2Y and CPI; the rest should fall back to 0.5
     partial = {
         "T10Y2Y": _make_obs("T10Y2Y", [-0.30] * 10, _TARGET_DATE),
         "CPIAUCSL": [
@@ -602,12 +553,10 @@ def test_compute_snapshot_partial_data_does_not_raise():
     }
     snapshot = compute_snapshot(partial, _TARGET_DATE)
 
-    # T10Y2Y is provided → should be non-0.5
-    assert snapshot.p_yield_curve_inverted != 0.5, \
-        "YieldCurveInverted should have a non-neutral probability"
-    # WALCL not provided → should fall back to 0.5
-    assert snapshot.p_liquidity_stress == 0.5, \
-        "LiquidityStress should fall back to 0.5 when WALCL is absent"
+    assert set(snapshot.signals) == {"YieldCurveInverted", "InflationShock"}
+    record = MacroRegimePipeline.build_evidence_record(snapshot)
+    missing = [a for a in record.observed_assignments if a.missingness == MissingnessType.MISSING]
+    assert len(missing) == 6
 
 
 # ---------------------------------------------------------------------------
@@ -619,14 +568,14 @@ def test_fetch_evidence_full_pipeline_mocked():
     MacroRegimePipeline.fetch_evidence with a fully mocked FREDClient.
 
     Setup:
-        - T10Y2Y: -0.50% (inverted) → YieldCurveInverted=True likely
-        - CPIAUCSL: 6% YoY → InflationShock=True likely
-        - WALCL: -3% (QT) → LiquidityStress=True likely
+        - T10Y2Y: -0.50% (inverted) → YieldCurveInverted high
+        - CPIAUCSL: 6% YoY → InflationShock high
+        - WALCL: -3% (QT) → LiquidityStress high
 
     Verifies:
         - Record has exactly 8 assignments
         - All assignments use canonical variable UUIDs
-        - All assignments are SOFT_OBSERVED
+        - All assignments are observed at a level
         - Source ref contains FRED identifier
         - Dominant direction signals are correct
     """
@@ -654,24 +603,20 @@ def test_fetch_evidence_full_pipeline_mocked():
     # Source ref
     assert "FRED" in record.source_ref
 
-    # All SOFT_OBSERVED
     for a in record.observed_assignments:
-        assert a.missingness == MissingnessType.SOFT_OBSERVED
+        assert a.missingness == MissingnessType.OBSERVED
 
     # Check directional signals
     amap = {a.variable_id: a for a in record.observed_assignments}
 
     yci_assignment = amap[variables["YieldCurveInverted"].variable_id]
-    assert yci_assignment.probabilities[True] > 0.5, \
-        "Inverted T10Y2Y should yield P(YieldCurveInverted=True) > 0.5"
+    assert yci_assignment.observed_value == "high"
 
     is_assignment = amap[variables["InflationShock"].variable_id]
-    assert is_assignment.probabilities[True] > 0.5, \
-        "6% CPI YoY should yield P(InflationShock=True) > 0.5"
+    assert is_assignment.observed_value == "high"
 
     ls_assignment = amap[variables["LiquidityStress"].variable_id]
-    assert ls_assignment.probabilities[True] > 0.5, \
-        "Balance sheet contraction should yield P(LiquidityStress=True) > 0.5"
+    assert ls_assignment.observed_value == "high"
 
     # fetch_all_series was called once
     mock_fred.fetch_all_series.assert_called_once_with(end_date=_TARGET_DATE)
@@ -712,13 +657,13 @@ def test_domain_registers_in_engine():
 def test_a_strong_dollar_is_dollar_strength():
     obs = _make_full_observations(dexuseu_current=0.95, dexuseu_mean=1.15)
     snap = compute_snapshot(obs, _TARGET_DATE)
-    assert snap.p_dollar_strength > 0.6 and snap.dollar_strength
+    assert level_of(snap.signals["DollarStrength"]) == "high"
 
 
 def test_a_weak_dollar_is_not_dollar_strength():
     obs = _make_full_observations(dexuseu_current=1.35, dexuseu_mean=1.15)
     snap = compute_snapshot(obs, _TARGET_DATE)
-    assert snap.p_dollar_strength < 0.4 and not snap.dollar_strength
+    assert level_of(snap.signals["DollarStrength"]) == "low"
 
 
 def test_the_cpi_lookback_holds_13_published_months():

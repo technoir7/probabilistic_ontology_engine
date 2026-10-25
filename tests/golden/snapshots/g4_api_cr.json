@@ -15,7 +15,7 @@
      "evidence_count": 4,
      "generation_introduced": 0,
      "id": "<id0>",
-     "log_score": -22.580239807,
+     "log_score": -36.168376399,
      "name": "unconnected: no hypotheses yet",
      "score_normalized": 0.05,
      "status": "dominant"
@@ -33,170 +33,170 @@
    "domain_module_id": "crypto-regime-v1",
    "pairwise_mutual_information": [
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "BTCMomentumPositive",
      "variable_y": "AltcoinSeasonActive"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "BTCMomentumPositive",
      "variable_y": "OnChainActivityElevated"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.122556249,
      "variable_x": "BTCMomentumPositive",
      "variable_y": "StablecoinFlowPositive"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.122556249,
      "variable_x": "BTCMomentumPositive",
      "variable_y": "CryptoVolatilityShock"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "BTCMomentumPositive",
      "variable_y": "RiskAssetCorrelation"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "BTCMomentumPositive",
      "variable_y": "NarrativeMomentum"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "BTCMomentumPositive",
      "variable_y": "DollarDebasementNarrative"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 1.0,
      "variable_x": "AltcoinSeasonActive",
      "variable_y": "OnChainActivityElevated"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "AltcoinSeasonActive",
      "variable_y": "StablecoinFlowPositive"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "AltcoinSeasonActive",
      "variable_y": "CryptoVolatilityShock"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.5,
      "variable_x": "AltcoinSeasonActive",
      "variable_y": "RiskAssetCorrelation"
     },
     {
-     "joint_observed_count": 0,
+     "joint_observed_count": 4,
      "mutual_information": 0.0,
      "variable_x": "AltcoinSeasonActive",
      "variable_y": "NarrativeMomentum"
     },
     {
-     "joint_observed_count": 0,
+     "joint_observed_count": 4,
      "mutual_information": 0.0,
      "variable_x": "AltcoinSeasonActive",
      "variable_y": "DollarDebasementNarrative"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "OnChainActivityElevated",
      "variable_y": "StablecoinFlowPositive"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.811278124,
      "variable_x": "OnChainActivityElevated",
      "variable_y": "CryptoVolatilityShock"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 1.0,
      "variable_x": "OnChainActivityElevated",
      "variable_y": "RiskAssetCorrelation"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.5,
      "variable_x": "OnChainActivityElevated",
      "variable_y": "NarrativeMomentum"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.5,
      "variable_x": "OnChainActivityElevated",
      "variable_y": "DollarDebasementNarrative"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.122556249,
      "variable_x": "StablecoinFlowPositive",
      "variable_y": "CryptoVolatilityShock"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.811278124,
      "variable_x": "StablecoinFlowPositive",
      "variable_y": "RiskAssetCorrelation"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "StablecoinFlowPositive",
      "variable_y": "NarrativeMomentum"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "StablecoinFlowPositive",
      "variable_y": "DollarDebasementNarrative"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "CryptoVolatilityShock",
      "variable_y": "RiskAssetCorrelation"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "CryptoVolatilityShock",
      "variable_y": "NarrativeMomentum"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "CryptoVolatilityShock",
      "variable_y": "DollarDebasementNarrative"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 1.0,
      "variable_x": "RiskAssetCorrelation",
      "variable_y": "NarrativeMomentum"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 1.0,
      "variable_x": "RiskAssetCorrelation",
      "variable_y": "DollarDebasementNarrative"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 1.0,
      "variable_x": "NarrativeMomentum",
      "variable_y": "DollarDebasementNarrative"
     }
@@ -204,67 +204,132 @@
    "total_evidence_rows": 4,
    "unique_observed_patterns": [
     {
-     "count": 4,
+     "count": 1,
      "pattern": {
-      "AltcoinSeasonActive": null,
-      "BTCMomentumPositive": null,
-      "CryptoVolatilityShock": null,
-      "DollarDebasementNarrative": null,
-      "NarrativeMomentum": null,
-      "OnChainActivityElevated": null,
-      "RiskAssetCorrelation": null,
-      "StablecoinFlowPositive": null
+      "AltcoinSeasonActive": "mid",
+      "BTCMomentumPositive": "high",
+      "CryptoVolatilityShock": "mid",
+      "DollarDebasementNarrative": "high",
+      "NarrativeMomentum": "mid",
+      "OnChainActivityElevated": "mid",
+      "RiskAssetCorrelation": "mid",
+      "StablecoinFlowPositive": "mid"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AltcoinSeasonActive": "high",
+      "BTCMomentumPositive": "mid",
+      "CryptoVolatilityShock": "mid",
+      "DollarDebasementNarrative": "mid",
+      "NarrativeMomentum": "low",
+      "OnChainActivityElevated": "high",
+      "RiskAssetCorrelation": "high",
+      "StablecoinFlowPositive": "mid"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AltcoinSeasonActive": "high",
+      "BTCMomentumPositive": "mid",
+      "CryptoVolatilityShock": "low",
+      "DollarDebasementNarrative": "high",
+      "NarrativeMomentum": "mid",
+      "OnChainActivityElevated": "low",
+      "RiskAssetCorrelation": "mid",
+      "StablecoinFlowPositive": "mid"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AltcoinSeasonActive": "mid",
+      "BTCMomentumPositive": "mid",
+      "CryptoVolatilityShock": "mid",
+      "DollarDebasementNarrative": "mid",
+      "NarrativeMomentum": "low",
+      "OnChainActivityElevated": "mid",
+      "RiskAssetCorrelation": "low",
+      "StablecoinFlowPositive": "high"
      }
     }
    ],
    "variables": {
     "AltcoinSeasonActive": {
-     "entropy": 0.0,
-     "missing_count": 4,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 1.0,
+     "missing_count": 0,
+     "observed_count": 4,
+     "value_counts": {
+      "high": 2,
+      "mid": 2
+     }
     },
     "BTCMomentumPositive": {
-     "entropy": 0.0,
-     "missing_count": 4,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 0.811278124,
+     "missing_count": 0,
+     "observed_count": 4,
+     "value_counts": {
+      "high": 1,
+      "mid": 3
+     }
     },
     "CryptoVolatilityShock": {
-     "entropy": 0.0,
-     "missing_count": 4,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 0.811278124,
+     "missing_count": 0,
+     "observed_count": 4,
+     "value_counts": {
+      "low": 1,
+      "mid": 3
+     }
     },
     "DollarDebasementNarrative": {
-     "entropy": 0.0,
-     "missing_count": 4,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 1.0,
+     "missing_count": 0,
+     "observed_count": 4,
+     "value_counts": {
+      "high": 2,
+      "mid": 2
+     }
     },
     "NarrativeMomentum": {
-     "entropy": 0.0,
-     "missing_count": 4,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 1.0,
+     "missing_count": 0,
+     "observed_count": 4,
+     "value_counts": {
+      "low": 2,
+      "mid": 2
+     }
     },
     "OnChainActivityElevated": {
-     "entropy": 0.0,
-     "missing_count": 4,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 1.5,
+     "missing_count": 0,
+     "observed_count": 4,
+     "value_counts": {
+      "high": 1,
+      "low": 1,
+      "mid": 2
+     }
     },
     "RiskAssetCorrelation": {
-     "entropy": 0.0,
-     "missing_count": 4,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 1.5,
+     "missing_count": 0,
+     "observed_count": 4,
+     "value_counts": {
+      "high": 1,
+      "low": 1,
+      "mid": 2
+     }
     },
     "StablecoinFlowPositive": {
-     "entropy": 0.0,
-     "missing_count": 4,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 0.811278124,
+     "missing_count": 0,
+     "observed_count": 4,
+     "value_counts": {
+      "high": 1,
+      "mid": 3
+     }
     }
    }
   },
@@ -272,7 +337,7 @@
  },
  "debug_evidence-geometry": {
   "body": {
-   "average_pairwise_mi": 0.269172879,
+   "average_pairwise_mi": 0.447744308,
    "cadence_detected": "weekly",
    "compression_ratio_daily_to_weekly": 1.0,
    "daily_state_count": 4,
@@ -284,18 +349,18 @@
    "effective_state_density": 1.0,
    "effective_transitions_per_month": 4.348214286,
    "highest_entropy_variable": {
-    "shannon_entropy": 1.0,
-    "variable": "BTCMomentumPositive"
+    "shannon_entropy": 1.5,
+    "variable": "OnChainActivityElevated"
    },
    "highest_mi_variable_pair": {
     "joint_observed_count": 4,
     "mutual_information": 1.0,
-    "variable_x": "CryptoVolatilityShock",
-    "variable_y": "NarrativeMomentum"
+    "variable_x": "AltcoinSeasonActive",
+    "variable_y": "OnChainActivityElevated"
    },
    "lowest_entropy_variable": {
-    "shannon_entropy": 0.0,
-    "variable": "AltcoinSeasonActive"
+    "shannon_entropy": 0.811278124,
+    "variable": "BTCMomentumPositive"
    },
    "pairwise_joint_observed_counts": {
     "AltcoinSeasonActive": {
@@ -381,82 +446,82 @@
    },
    "pairwise_mutual_information_matrix": {
     "AltcoinSeasonActive": {
-     "AltcoinSeasonActive": 0.0,
-     "BTCMomentumPositive": 0.0,
-     "CryptoVolatilityShock": 0.0,
+     "AltcoinSeasonActive": 1.0,
+     "BTCMomentumPositive": 0.311278124,
+     "CryptoVolatilityShock": 0.311278124,
      "DollarDebasementNarrative": 0.0,
      "NarrativeMomentum": 0.0,
-     "OnChainActivityElevated": 0.0,
-     "RiskAssetCorrelation": 0.0,
-     "StablecoinFlowPositive": 0.0
+     "OnChainActivityElevated": 1.0,
+     "RiskAssetCorrelation": 0.5,
+     "StablecoinFlowPositive": 0.311278124
     },
     "BTCMomentumPositive": {
-     "AltcoinSeasonActive": 0.0,
-     "BTCMomentumPositive": 1.0,
-     "CryptoVolatilityShock": 0.0,
+     "AltcoinSeasonActive": 0.311278124,
+     "BTCMomentumPositive": 0.811278124,
+     "CryptoVolatilityShock": 0.122556249,
      "DollarDebasementNarrative": 0.311278124,
-     "NarrativeMomentum": 0.0,
+     "NarrativeMomentum": 0.311278124,
      "OnChainActivityElevated": 0.311278124,
      "RiskAssetCorrelation": 0.311278124,
-     "StablecoinFlowPositive": 0.311278124
+     "StablecoinFlowPositive": 0.122556249
     },
     "CryptoVolatilityShock": {
-     "AltcoinSeasonActive": 0.0,
-     "BTCMomentumPositive": 0.0,
-     "CryptoVolatilityShock": 1.0,
+     "AltcoinSeasonActive": 0.311278124,
+     "BTCMomentumPositive": 0.122556249,
+     "CryptoVolatilityShock": 0.811278124,
      "DollarDebasementNarrative": 0.311278124,
-     "NarrativeMomentum": 1.0,
-     "OnChainActivityElevated": 0.311278124,
+     "NarrativeMomentum": 0.311278124,
+     "OnChainActivityElevated": 0.811278124,
      "RiskAssetCorrelation": 0.311278124,
-     "StablecoinFlowPositive": 0.311278124
+     "StablecoinFlowPositive": 0.122556249
     },
     "DollarDebasementNarrative": {
      "AltcoinSeasonActive": 0.0,
      "BTCMomentumPositive": 0.311278124,
      "CryptoVolatilityShock": 0.311278124,
-     "DollarDebasementNarrative": 0.811278124,
-     "NarrativeMomentum": 0.311278124,
-     "OnChainActivityElevated": 0.122556249,
-     "RiskAssetCorrelation": 0.811278124,
-     "StablecoinFlowPositive": 0.811278124
+     "DollarDebasementNarrative": 1.0,
+     "NarrativeMomentum": 1.0,
+     "OnChainActivityElevated": 0.5,
+     "RiskAssetCorrelation": 1.0,
+     "StablecoinFlowPositive": 0.311278124
     },
     "NarrativeMomentum": {
      "AltcoinSeasonActive": 0.0,
-     "BTCMomentumPositive": 0.0,
-     "CryptoVolatilityShock": 1.0,
-     "DollarDebasementNarrative": 0.311278124,
+     "BTCMomentumPositive": 0.311278124,
+     "CryptoVolatilityShock": 0.311278124,
+     "DollarDebasementNarrative": 1.0,
      "NarrativeMomentum": 1.0,
-     "OnChainActivityElevated": 0.311278124,
-     "RiskAssetCorrelation": 0.311278124,
+     "OnChainActivityElevated": 0.5,
+     "RiskAssetCorrelation": 1.0,
      "StablecoinFlowPositive": 0.311278124
     },
     "OnChainActivityElevated": {
-     "AltcoinSeasonActive": 0.0,
+     "AltcoinSeasonActive": 1.0,
      "BTCMomentumPositive": 0.311278124,
-     "CryptoVolatilityShock": 0.311278124,
-     "DollarDebasementNarrative": 0.122556249,
-     "NarrativeMomentum": 0.311278124,
-     "OnChainActivityElevated": 0.811278124,
-     "RiskAssetCorrelation": 0.122556249,
-     "StablecoinFlowPositive": 0.122556249
+     "CryptoVolatilityShock": 0.811278124,
+     "DollarDebasementNarrative": 0.5,
+     "NarrativeMomentum": 0.5,
+     "OnChainActivityElevated": 1.5,
+     "RiskAssetCorrelation": 1.0,
+     "StablecoinFlowPositive": 0.311278124
     },
     "RiskAssetCorrelation": {
-     "AltcoinSeasonActive": 0.0,
+     "AltcoinSeasonActive": 0.5,
      "BTCMomentumPositive": 0.311278124,
      "CryptoVolatilityShock": 0.311278124,
-     "DollarDebasementNarrative": 0.811278124,
-     "NarrativeMomentum": 0.311278124,
-     "OnChainActivityElevated": 0.122556249,
-     "RiskAssetCorrelation": 0.811278124,
+     "DollarDebasementNarrative": 1.0,
+     "NarrativeMomentum": 1.0,
+     "OnChainActivityElevated": 1.0,
+     "RiskAssetCorrelation": 1.5,
      "StablecoinFlowPositive": 0.811278124
     },
     "StablecoinFlowPositive": {
-     "AltcoinSeasonActive": 0.0,
-     "BTCMomentumPositive": 0.311278124,
-     "CryptoVolatilityShock": 0.311278124,
-     "DollarDebasementNarrative": 0.811278124,
+     "AltcoinSeasonActive": 0.311278124,
+     "BTCMomentumPositive": 0.122556249,
+     "CryptoVolatilityShock": 0.122556249,
+     "DollarDebasementNarrative": 0.311278124,
      "NarrativeMomentum": 0.311278124,
-     "OnChainActivityElevated": 0.122556249,
+     "OnChainActivityElevated": 0.311278124,
      "RiskAssetCorrelation": 0.811278124,
      "StablecoinFlowPositive": 0.811278124
     }
@@ -466,53 +531,53 @@
     {
      "count": 1,
      "pattern": {
-      "AltcoinSeasonActive": true,
-      "BTCMomentumPositive": false,
-      "CryptoVolatilityShock": false,
-      "DollarDebasementNarrative": true,
-      "NarrativeMomentum": true,
-      "OnChainActivityElevated": false,
-      "RiskAssetCorrelation": true,
-      "StablecoinFlowPositive": false
+      "AltcoinSeasonActive": "mid",
+      "BTCMomentumPositive": "high",
+      "CryptoVolatilityShock": "mid",
+      "DollarDebasementNarrative": "high",
+      "NarrativeMomentum": "mid",
+      "OnChainActivityElevated": "mid",
+      "RiskAssetCorrelation": "mid",
+      "StablecoinFlowPositive": "mid"
      }
     },
     {
      "count": 1,
      "pattern": {
-      "AltcoinSeasonActive": true,
-      "BTCMomentumPositive": false,
-      "CryptoVolatilityShock": true,
-      "DollarDebasementNarrative": true,
-      "NarrativeMomentum": false,
-      "OnChainActivityElevated": true,
-      "RiskAssetCorrelation": true,
-      "StablecoinFlowPositive": false
+      "AltcoinSeasonActive": "high",
+      "BTCMomentumPositive": "mid",
+      "CryptoVolatilityShock": "mid",
+      "DollarDebasementNarrative": "mid",
+      "NarrativeMomentum": "low",
+      "OnChainActivityElevated": "high",
+      "RiskAssetCorrelation": "high",
+      "StablecoinFlowPositive": "mid"
      }
     },
     {
      "count": 1,
      "pattern": {
-      "AltcoinSeasonActive": true,
-      "BTCMomentumPositive": true,
-      "CryptoVolatilityShock": false,
-      "DollarDebasementNarrative": true,
-      "NarrativeMomentum": true,
-      "OnChainActivityElevated": false,
-      "RiskAssetCorrelation": true,
-      "StablecoinFlowPositive": false
+      "AltcoinSeasonActive": "high",
+      "BTCMomentumPositive": "mid",
+      "CryptoVolatilityShock": "low",
+      "DollarDebasementNarrative": "high",
+      "NarrativeMomentum": "mid",
+      "OnChainActivityElevated": "low",
+      "RiskAssetCorrelation": "mid",
+      "StablecoinFlowPositive": "mid"
      }
     },
     {
      "count": 1,
      "pattern": {
-      "AltcoinSeasonActive": true,
-      "BTCMomentumPositive": true,
-      "CryptoVolatilityShock": true,
-      "DollarDebasementNarrative": false,
-      "NarrativeMomentum": false,
-      "OnChainActivityElevated": false,
-      "RiskAssetCorrelation": false,
-      "StablecoinFlowPositive": true
+      "AltcoinSeasonActive": "mid",
+      "BTCMomentumPositive": "mid",
+      "CryptoVolatilityShock": "mid",
+      "DollarDebasementNarrative": "mid",
+      "NarrativeMomentum": "low",
+      "OnChainActivityElevated": "mid",
+      "RiskAssetCorrelation": "low",
+      "StablecoinFlowPositive": "high"
      }
     }
    ],
@@ -530,40 +595,15 @@
      "missing_ratio": 0.0,
      "observed_count": 4,
      "observed_ratio": 1.0,
-     "shannon_entropy": 0.0,
-     "transition_count": 0,
-     "unique_value_count": 1,
-     "value_distribution": {
-      "True": 4
-     }
-    },
-    "BTCMomentumPositive": {
-     "missing_count": 0,
-     "missing_ratio": 0.0,
-     "observed_count": 4,
-     "observed_ratio": 1.0,
      "shannon_entropy": 1.0,
      "transition_count": 2,
      "unique_value_count": 2,
      "value_distribution": {
-      "False": 2,
-      "True": 2
+      "high": 2,
+      "mid": 2
      }
     },
-    "CryptoVolatilityShock": {
-     "missing_count": 0,
-     "missing_ratio": 0.0,
-     "observed_count": 4,
-     "observed_ratio": 1.0,
-     "shannon_entropy": 1.0,
-     "transition_count": 1,
-     "unique_value_count": 2,
-     "value_distribution": {
-      "False": 2,
-      "True": 2
-     }
-    },
-    "DollarDebasementNarrative": {
+    "BTCMomentumPositive": {
      "missing_count": 0,
      "missing_ratio": 0.0,
      "observed_count": 4,
@@ -572,8 +612,34 @@
      "transition_count": 2,
      "unique_value_count": 2,
      "value_distribution": {
-      "False": 1,
-      "True": 3
+      "high": 1,
+      "mid": 3
+     }
+    },
+    "CryptoVolatilityShock": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 0.811278124,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "low": 1,
+      "mid": 3
+     }
+    },
+    "DollarDebasementNarrative": {
+     "missing_count": 0,
+     "missing_ratio": 0.0,
+     "observed_count": 4,
+     "observed_ratio": 1.0,
+     "shannon_entropy": 1.0,
+     "transition_count": 1,
+     "unique_value_count": 2,
+     "value_distribution": {
+      "high": 2,
+      "mid": 2
      }
     },
     "NarrativeMomentum": {
@@ -585,8 +651,8 @@
      "transition_count": 1,
      "unique_value_count": 2,
      "value_distribution": {
-      "False": 2,
-      "True": 2
+      "low": 2,
+      "mid": 2
      }
     },
     "OnChainActivityElevated": {
@@ -594,12 +660,13 @@
      "missing_ratio": 0.0,
      "observed_count": 4,
      "observed_ratio": 1.0,
-     "shannon_entropy": 0.811278124,
-     "transition_count": 1,
-     "unique_value_count": 2,
+     "shannon_entropy": 1.5,
+     "transition_count": 2,
+     "unique_value_count": 3,
      "value_distribution": {
-      "False": 3,
-      "True": 1
+      "high": 1,
+      "low": 1,
+      "mid": 2
      }
     },
     "RiskAssetCorrelation": {
@@ -607,12 +674,13 @@
      "missing_ratio": 0.0,
      "observed_count": 4,
      "observed_ratio": 1.0,
-     "shannon_entropy": 0.811278124,
+     "shannon_entropy": 1.5,
      "transition_count": 2,
-     "unique_value_count": 2,
+     "unique_value_count": 3,
      "value_distribution": {
-      "False": 1,
-      "True": 3
+      "high": 1,
+      "low": 1,
+      "mid": 2
      }
     },
     "StablecoinFlowPositive": {
@@ -624,8 +692,8 @@
      "transition_count": 2,
      "unique_value_count": 2,
      "value_distribution": {
-      "False": 3,
-      "True": 1
+      "high": 1,
+      "mid": 3
      }
     }
    },
@@ -639,14 +707,14 @@
       {
        "count": 1,
        "pattern": {
-        "AltcoinSeasonActive": true,
-        "BTCMomentumPositive": false,
-        "CryptoVolatilityShock": true,
-        "DollarDebasementNarrative": true,
-        "NarrativeMomentum": false,
-        "OnChainActivityElevated": true,
-        "RiskAssetCorrelation": true,
-        "StablecoinFlowPositive": false
+        "AltcoinSeasonActive": "high",
+        "BTCMomentumPositive": "mid",
+        "CryptoVolatilityShock": "mid",
+        "DollarDebasementNarrative": "mid",
+        "NarrativeMomentum": "low",
+        "OnChainActivityElevated": "high",
+        "RiskAssetCorrelation": "high",
+        "StablecoinFlowPositive": "mid"
        }
       }
      ],
@@ -662,14 +730,14 @@
       {
        "count": 1,
        "pattern": {
-        "AltcoinSeasonActive": true,
-        "BTCMomentumPositive": true,
-        "CryptoVolatilityShock": true,
-        "DollarDebasementNarrative": false,
-        "NarrativeMomentum": false,
-        "OnChainActivityElevated": false,
-        "RiskAssetCorrelation": false,
-        "StablecoinFlowPositive": true
+        "AltcoinSeasonActive": "mid",
+        "BTCMomentumPositive": "mid",
+        "CryptoVolatilityShock": "mid",
+        "DollarDebasementNarrative": "mid",
+        "NarrativeMomentum": "low",
+        "OnChainActivityElevated": "mid",
+        "RiskAssetCorrelation": "low",
+        "StablecoinFlowPositive": "high"
        }
       }
      ],
@@ -685,14 +753,14 @@
       {
        "count": 1,
        "pattern": {
-        "AltcoinSeasonActive": true,
-        "BTCMomentumPositive": true,
-        "CryptoVolatilityShock": false,
-        "DollarDebasementNarrative": true,
-        "NarrativeMomentum": true,
-        "OnChainActivityElevated": false,
-        "RiskAssetCorrelation": true,
-        "StablecoinFlowPositive": false
+        "AltcoinSeasonActive": "mid",
+        "BTCMomentumPositive": "high",
+        "CryptoVolatilityShock": "mid",
+        "DollarDebasementNarrative": "high",
+        "NarrativeMomentum": "mid",
+        "OnChainActivityElevated": "mid",
+        "RiskAssetCorrelation": "mid",
+        "StablecoinFlowPositive": "mid"
        }
       }
      ],
@@ -708,14 +776,14 @@
       {
        "count": 1,
        "pattern": {
-        "AltcoinSeasonActive": true,
-        "BTCMomentumPositive": false,
-        "CryptoVolatilityShock": false,
-        "DollarDebasementNarrative": true,
-        "NarrativeMomentum": true,
-        "OnChainActivityElevated": false,
-        "RiskAssetCorrelation": true,
-        "StablecoinFlowPositive": false
+        "AltcoinSeasonActive": "high",
+        "BTCMomentumPositive": "mid",
+        "CryptoVolatilityShock": "low",
+        "DollarDebasementNarrative": "high",
+        "NarrativeMomentum": "mid",
+        "OnChainActivityElevated": "low",
+        "RiskAssetCorrelation": "mid",
+        "StablecoinFlowPositive": "mid"
        }
       }
      ],
@@ -739,7 +807,7 @@
    "domain": "Crypto Regime",
    "domain_module_id": "crypto-regime-v1",
    "dominant_evidence_count": 4,
-   "dominant_log_score": -22.580239807,
+   "dominant_log_score": -36.168376399,
    "last_learn_timestamp": "<ts>",
    "last_mutation_introduced": 0,
    "last_mutation_total_attempts": 0,
@@ -759,17 +827,17 @@
    "candidates": [
     {
      "active_edge_count": 0,
-     "avg_ll": -5.645097995,
+     "avg_ll": -9.044785826,
      "bic_penalty_raw": 2.780531726,
-     "bic_score_explore": -6.340230927,
-     "bic_score_strict": -8.425629721,
+     "bic_score_explore": -9.739918758,
+     "bic_score_strict": -11.825317553,
      "candidate_id": "<id0>",
      "description": "unconnected: no hypotheses yet",
      "edge_structure": [],
      "evidence_count": 4,
      "generation": 0,
      "is_dominant": true,
-     "log_score": -22.580239807,
+     "log_score": -36.168376399,
      "status": "ACTIVE",
      "total_edge_count": 0
     }
@@ -798,7 +866,7 @@
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": null
+     "variables_updated": 16
     },
     {
      "description": "fake@2026-02-22",
@@ -806,7 +874,7 @@
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": null
+     "variables_updated": 16
     },
     {
      "description": "fake@2026-02-15",
@@ -814,7 +882,7 @@
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": null
+     "variables_updated": 16
     },
     {
      "description": "fake@2026-02-08",
@@ -822,7 +890,7 @@
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": null
+     "variables_updated": 16
     }
    ]
   },
@@ -835,119 +903,125 @@
    "frontier_edges": [],
    "nodes": [
     {
+     "degree": 0.571428571,
      "id": "BTCMomentumPositive",
      "label": "BTCMomentumPositive",
      "observation": null,
-     "probability": 0.496016667,
      "status": "target"
     },
     {
+     "degree": null,
      "id": "AltcoinSeasonActive",
      "label": "AltcoinSeasonActive",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "OnChainActivityElevated",
      "label": "OnChainActivityElevated",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "StablecoinFlowPositive",
      "label": "StablecoinFlowPositive",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "CryptoVolatilityShock",
      "label": "CryptoVolatilityShock",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "RiskAssetCorrelation",
      "label": "RiskAssetCorrelation",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "NarrativeMomentum",
      "label": "NarrativeMomentum",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "DollarDebasementNarrative",
      "label": "DollarDebasementNarrative",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "BTCMomentumPositive_prev",
      "label": "BTCMomentumPositive_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "AltcoinSeasonActive_prev",
      "label": "AltcoinSeasonActive_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "OnChainActivityElevated_prev",
      "label": "OnChainActivityElevated_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "StablecoinFlowPositive_prev",
      "label": "StablecoinFlowPositive_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "CryptoVolatilityShock_prev",
      "label": "CryptoVolatilityShock_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "RiskAssetCorrelation_prev",
      "label": "RiskAssetCorrelation_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "NarrativeMomentum_prev",
      "label": "NarrativeMomentum_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "DollarDebasementNarrative_prev",
      "label": "DollarDebasementNarrative_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     }
    ],
-   "target_probability": 0.496016667,
+   "target_degree": 0.571428571,
+   "target_distribution": {
+    "high": 0.285714286,
+    "low": 0.142857143,
+    "mid": 0.571428571
+   },
+   "target_level": "mid",
    "target_variable": "BTCMomentumPositive"
   },
   "status": 200
@@ -973,7 +1047,7 @@
     "candidates": [
      {
       "edge_count": 0,
-      "log_score": -22.580239807,
+      "log_score": -36.168376399,
       "name": "unconnected: no hypotheses yet",
       "score_normalized": 0.05,
       "status": "dominant"
@@ -983,44 +1057,44 @@
    },
    "current_regime_state": [
     {
-     "boolean_state": false,
-     "name": "BTCMomentumPositive",
-     "probability": 0.496016667
+     "degree": 0.571428571,
+     "level": "mid",
+     "name": "BTCMomentumPositive"
     },
     {
-     "boolean_state": true,
-     "name": "AltcoinSeasonActive",
-     "probability": 0.6079
+     "degree": 0.642857143,
+     "level": "mid",
+     "name": "AltcoinSeasonActive"
     },
     {
-     "boolean_state": false,
-     "name": "OnChainActivityElevated",
-     "probability": 0.498516667
+     "degree": 0.5,
+     "level": "mid",
+     "name": "OnChainActivityElevated"
     },
     {
-     "boolean_state": true,
-     "name": "StablecoinFlowPositive",
-     "probability": 0.551466667
+     "degree": 0.571428571,
+     "level": "mid",
+     "name": "StablecoinFlowPositive"
     },
     {
-     "boolean_state": false,
-     "name": "CryptoVolatilityShock",
-     "probability": 0.461333333
+     "degree": 0.428571429,
+     "level": "mid",
+     "name": "CryptoVolatilityShock"
     },
     {
-     "boolean_state": false,
-     "name": "RiskAssetCorrelation",
-     "probability": 0.483
+     "degree": 0.5,
+     "level": "mid",
+     "name": "RiskAssetCorrelation"
     },
     {
-     "boolean_state": false,
-     "name": "NarrativeMomentum",
-     "probability": 0.409933333
+     "degree": 0.357142857,
+     "level": "low",
+     "name": "NarrativeMomentum"
     },
     {
-     "boolean_state": true,
-     "name": "DollarDebasementNarrative",
-     "probability": 0.61355
+     "degree": 0.642857143,
+     "level": "mid",
+     "name": "DollarDebasementNarrative"
     }
    ],
    "dominant_hypothesis": {
@@ -1028,7 +1102,7 @@
     "edge_count": 0,
     "edges": [],
     "generations_dominant": 0,
-    "log_score": -22.580239807,
+    "log_score": -36.168376399,
     "name": "unconnected: no hypotheses yet"
    },
    "frontier": {

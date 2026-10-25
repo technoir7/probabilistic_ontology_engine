@@ -25,63 +25,69 @@
    "frontier_edges": [],
    "nodes": [
     {
+     "degree": null,
      "id": "TempAnom",
      "label": "TempAnom",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "HeatingDem",
      "label": "HeatingDem",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "StorageDraw",
      "label": "StorageDraw",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": 0.5,
      "id": "PriceUp",
      "label": "PriceUp",
      "observation": null,
-     "probability": 0.5,
      "status": "target"
     },
     {
+     "degree": null,
      "id": "TempAnom_prev",
      "label": "TempAnom_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "HeatingDem_prev",
      "label": "HeatingDem_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "StorageDraw_prev",
      "label": "StorageDraw_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "PriceUp_prev",
      "label": "PriceUp_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     }
    ],
-   "target_probability": 0.5,
+   "target_degree": 0.5,
+   "target_distribution": {
+    "high": 0.333333333,
+    "low": 0.333333333,
+    "mid": 0.333333333
+   },
+   "target_level": "low",
    "target_variable": "PriceUp"
   },
   "status": 200
@@ -93,63 +99,69 @@
    "frontier_edges": [],
    "nodes": [
     {
+     "degree": 0.5,
      "id": "TempAnom",
      "label": "TempAnom",
      "observation": null,
-     "probability": 0.5,
      "status": "target"
     },
     {
+     "degree": null,
      "id": "HeatingDem",
      "label": "HeatingDem",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "StorageDraw",
      "label": "StorageDraw",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "PriceUp",
      "label": "PriceUp",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "TempAnom_prev",
      "label": "TempAnom_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "HeatingDem_prev",
      "label": "HeatingDem_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "StorageDraw_prev",
      "label": "StorageDraw_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "PriceUp_prev",
      "label": "PriceUp_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     }
    ],
-   "target_probability": 0.5,
+   "target_degree": 0.5,
+   "target_distribution": {
+    "high": 0.333333333,
+    "low": 0.333333333,
+    "mid": 0.333333333
+   },
+   "target_level": "low",
    "target_variable": "TempAnom"
   },
   "status": 200
@@ -173,63 +185,69 @@
    "frontier_edges": [],
    "nodes": [
     {
+     "degree": 0.5,
      "id": "TempAnom",
      "label": "TempAnom",
      "observation": null,
-     "probability": 0.5,
      "status": "target"
     },
     {
+     "degree": null,
      "id": "HeatingDem",
      "label": "HeatingDem",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "StorageDraw",
      "label": "StorageDraw",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "PriceUp",
      "label": "PriceUp",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "TempAnom_prev",
      "label": "TempAnom_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "HeatingDem_prev",
      "label": "HeatingDem_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "StorageDraw_prev",
      "label": "StorageDraw_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "PriceUp_prev",
      "label": "PriceUp_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     }
    ],
-   "target_probability": 0.5,
+   "target_degree": 0.5,
+   "target_distribution": {
+    "high": 0.333333333,
+    "low": 0.333333333,
+    "mid": 0.333333333
+   },
+   "target_level": "low",
    "target_variable": "TempAnom"
   },
   "status": 200

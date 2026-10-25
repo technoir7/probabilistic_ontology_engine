@@ -666,3 +666,94 @@ the population did not fill with unrefuted programmes (one alive from
 depend on the hand-written worldviews. The cost of not being told is three
 years of believing nothing, and two signals whose persistence a 100-week
 memory cannot see (NEXT.md problem 8).
+
+## Replay 12: degrees read as levels
+
+*Plan, written before replay 12 ran. Two probes on the same macro history
+were run first and informed it: from nothing, on the last 100 weeks, the
+evidence supports 3 links beyond BIC's penalty with signals read as soft
+yes/no, and 8 (all persistence) read as three levels; on all 23 years, 10
+(8 persistence, 2 between signals) and 8 (all persistence). Expectations
+below lean on them.*
+
+Every macro signal used to reach the engine as P(True), a sigmoid of its
+distance past the line that names it. That read a degree as a doubt, and
+counting each doubt apart from the others blurred relations toward
+independence (EPISTEMOLOGY.md §3). REFACTOR_SPEC D25 reads each signal as
+one of three levels, observed exactly: low, middle or high, cut at half a
+unit either side of the line. Nothing else changes from replay 11. Same data
+as first published, seeds 0–4, events and window, written to
+`data/replay12/`.
+
+Log-likelihoods over three levels and over two are not on one scale, so as
+in replay 8, comparisons with replay 11 are made within each replay:
+
+18. **Does it find persistence sooner, and for every signal?** The first
+    week the leader holds each signal's persistence, and the share of weeks
+    after that it keeps it, against replay 11 (5–6 of 8, none before 170
+    weeks; never the yield curve or volatility). Expected: all 8, within
+    the first two years.
+19. **Does anything beyond persistence earn its place?** Every link between
+    two different signals a leader holds for 52 weeks or more, against
+    replay 11's (credit stress last week to the yield curve, about 18
+    years; the dollar to equities in 3 seeds). Expected: fewer, since a
+    relation between three-level signals costs three times as much.
+20. **How much better than independent signals, on its own scale?** The
+    leader's fit gap over independent three-level signals, and the forecast
+    from last week against base rates, each within replay 12.
+21. **Do its changes of programme follow the events, and is it
+    calibrated?** Programme changes against the ten events within 26
+    weeks, as before; calibration level by level (not comparable with
+    replay 11's, which judged P(True)).
+
+What would count against the change: persistence found no sooner or for no
+more signals than in replay 11, or a leader that holds nothing for years.
+
+### Replay 12 results
+
+18. **Every signal's persistence, in every seed, mostly within three
+    years.** The leader left the unconnected start after 19 weeks (replay
+    11: 170). Unemployment's trend (EquityRiskOn) persisted from August 2003
+    in every seed; inflation, volatility, the dollar, credit stress, NASDAQ
+    momentum (AIRiskOn) and the yield curve by early 2006 in all but one
+    case (volatility in seed 3, August 2007). The Fed balance sheet was
+    last, 2009–10 in four seeds (seed 1 held it from August 2003 but kept it
+    only 69% of the weeks after). Once held, each was kept 97–100% of the
+    weeks after, bar volatility in two seeds (75%, 88%). Replay 11 never
+    held the yield curve's or volatility's.
+19. **More beyond persistence, not less, and one link in every seed.**
+    Expected fewer; it held more. Every seed's leader held "unemployment's
+    trend last week bears on NASDAQ momentum" (EquityRiskOn last week to
+    AIRiskOn) for 1,159 to 1,174 of 1,229 weeks, from 2004 to the end.
+    Four seeds held one or two more for over a year, differing by seed:
+    volatility with unemployment's trend (seed 0), NASDAQ momentum with the
+    dollar and the yield curve with the balance sheet (seed 1), NASDAQ
+    momentum to volatility (seed 2), and NASDAQ momentum last week to
+    volatility with NASDAQ momentum to unemployment's trend (seed 3); seed
+    4 held none. Leaders ended with 9 to 11 links. Replay 11's credit-stress-to-yield-curve link
+    was not held. A link held in every seed is the first stable finding
+    beyond persistence any replay has made, but it is a dependence, not a
+    cause: the labour market and tech stocks may both follow the business
+    cycle, which the engine has no concept for.
+20. **On its own scale, the structure explains far more.** The leader's fit
+    gap over independent signals was 2.51–2.55 nats a week, and its
+    forecast from last week alone −3.45 to −3.49 nats against −6.00 to
+    −6.04 for base rates: 2.5 nats a week better (replay 11, on yes/no:
+    1.2–1.3). The scales differ, so the comparison is within each replay.
+21. **It settled in 2003 and never changed its mind.** Each seed changed
+    programme three times, all between August and September 2003, and the
+    unemployment programme then led for 1,210 weeks. No change followed any
+    event. From 2008 on, only one programme was alive: its rivals were
+    refuted and the evidence prompted no new founding connection the leader
+    lacked. Calibration, level by level: 0.036–0.040 (not comparable with
+    replay 11's P(True) judgments).
+
+Neither thing that would have counted against the change happened.
+Persistence was found sooner, for every signal, and the leader never held
+nothing. Two costs showed. With every signal's persistence and a link
+between signals held from the first years, the population has had no rival
+programme since 2008: nothing it could change its mind to. Questions about
+paradigm shifts now turn on revisions within one programme. And the one
+stable link joins two concepts named for one thing and measured by another
+(EquityRiskOn is read from unemployment; NASDAQ momentum is named AIRiskOn),
+so the names say more than the evidence does.

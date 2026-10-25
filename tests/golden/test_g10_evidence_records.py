@@ -2,13 +2,12 @@
 G10 — evidence record construction per domain (REFACTOR_SPEC 4.5b).
 
 Builds each weekly pipeline's EvidenceRecord from one fixed, fully populated
-snapshot and pins the result (assignments, probabilities, confidences,
+snapshot and pins the result (assignments, levels, confidences,
 timestamp, source_ref), so sharing the record-building code can be checked
 against today's per-domain copies.
 """
 from __future__ import annotations
 
-import dataclasses
 import importlib
 from datetime import date
 
@@ -31,14 +30,10 @@ TARGET = date(2026, 3, 1)
 
 
 def _snapshot(module, prefix: str, variable_names: list[str]):
-    cls = getattr(module, f"{prefix}Snapshot")
-    snap = cls(target_date=TARGET)
-    for i, f in enumerate(dataclasses.fields(cls)):
-        if f.name.startswith("p_"):
-            setattr(snap, f.name, round(0.05 + 0.9 * ((i * 37) % 100) / 100, 4))
-    for f in dataclasses.fields(cls):
-        if f.name.startswith("p_") and hasattr(snap, f.name[2:]):
-            setattr(snap, f.name[2:], getattr(snap, f.name) > 0.5)
+    """Every variable with a signal, spread from -1.5 to +1.5 so each level
+    (D25) appears, and a confidence."""
+    snap = getattr(module, f"{prefix}Snapshot")(target_date=TARGET)
+    snap.signals = {name: round(-1.5 + 3.0 * ((i * 37) % 100) / 100, 4) for i, name in enumerate(variable_names)}
     snap.confidence = {name: round(0.5 + 0.05 * (i % 10), 2) for i, name in enumerate(variable_names)}
     return snap
 

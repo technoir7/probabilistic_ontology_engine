@@ -8,45 +8,48 @@ BTC momentum, altcoin season dynamics, on-chain activity, stablecoin flows,
 volatility shocks, risk asset correlation, narrative momentum, and dollar
 debasement themes.
 
-Variables (all BOOLEAN)
------------------------
+Variables (levels: low, mid, high; REFACTOR_SPEC D25)
+-----------------------------------------------------
+Each is read as how far its signal lies from the line below (high: well
+above it, mid: near it, low: well below). The lines:
 BTCMomentumPositive
-    True  = CoinGecko BTC 13-week return z-score > 0
+    high  = CoinGecko BTC 13-week return z-score > 0
     Signal: rising BTC driven by liquidity/demand
 
 AltcoinSeasonActive
-    True  = BTC dominance low (alts outperforming) or ETH/BTC ratio rising
+    high  = BTC dominance low (alts outperforming) or ETH/BTC ratio rising
     Signal: capital rotating from BTC to altcoins
 
 OnChainActivityElevated
-    True  = BTC 30-day volume z-score > historical mean
+    high  = BTC 30-day volume z-score > historical mean
     Signal: rising on-chain engagement
 
 StablecoinFlowPositive
-    True  = USDT+USDC market cap 4-week growth positive z-score
+    high  = USDT+USDC market cap 4-week growth positive z-score
     Signal: new fiat entering crypto ecosystem
 
 CryptoVolatilityShock
-    True  = BTC 4-week realized vol z-score elevated
+    high  = BTC 4-week realized vol z-score elevated
     Signal: abnormal volatility event
 
 RiskAssetCorrelation
-    True  = BTC-USD / QQQ return correlation elevated z-score
+    high  = BTC-USD / QQQ return correlation elevated z-score
     Signal: crypto moving with risk-on equities
 
 NarrativeMomentum
-    True  = ETH/BTC ratio rising (positive z-score)
+    high  = ETH/BTC ratio rising (positive z-score)
     Signal: speculative/DeFi narratives gaining traction
 
 DollarDebasementNarrative
-    True  = USD weakening + gold rising composite z-score positive
+    high  = USD weakening + gold rising composite z-score positive
     Signal: macro macro-driven crypto demand narrative
 
 Cadence: WEEKLY
 """
 from __future__ import annotations
 
-from ..sources.structure import boolean_variables, with_lags
+from ..sources.grades import graded_variables
+from ..sources.structure import with_lags
 from ...engine.schemas import (
     EdgeExistenceThresholdConfig,
     Variable,
@@ -73,7 +76,7 @@ _VAR_NAMES = [
     "DollarDebasementNarrative",
 ]
 
-_VARIABLE_DEFS: dict[str, Variable] = boolean_variables(_MODULE_ID, _VAR_NAMES)
+_VARIABLE_DEFS: dict[str, Variable] = graded_variables(_MODULE_ID, _VAR_NAMES)
 
 
 def get_variables() -> dict[str, Variable]:

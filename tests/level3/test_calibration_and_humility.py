@@ -84,7 +84,7 @@ def test_with_hard_evidence_both_measures_agree():
 
 def test_soft_evidence_is_judged_against_its_own_probability():
     from datetime import date, timedelta
-    from tests.fakes import soft_record
+    from tests.fakes import fake_record
 
     domain = TestDomainV1()
     engine = ProbabilisticOntologyEngine(db_path=":memory:", random_seed=0)
@@ -92,8 +92,49 @@ def test_soft_evidence_is_judged_against_its_own_probability():
     engine.activate_domain("test-domain-v1")
     variables = domain.variables()
     for week in range(6):
-        engine.learn([soft_record(variables, date(2024, 1, 7) + timedelta(weeks=week), seed=3)])
+        engine.learn([fake_record(variables, date(2024, 1, 7) + timedelta(weeks=week), seed=3)])
     health = engine.epistemic_health("test-domain-v1")
     vs_evidence, rounded = health["leader_calibration_vs_evidence"], health["leader_calibration"]
     assert vs_evidence["n"] == rounded["n"] == 5 * 5
     assert vs_evidence["brier"] != rounded["brier"]
+
+
+def test_levels_are_judged_level_by_level():
+    """A signal read as low, middle or high (D25) is forecast as a spread over
+    its levels; each level's probability is judged against whether it came."""
+    from datetime import date, timedelta
+    from random import Random
+
+    from src.domains.sources.grades import build_graded_record, graded_variables
+    from src.engine.schemas import EdgeExistenceThresholdConfig
+
+    variables = graded_variables("graded-test", ["A", "B", "C"])
+
+    class Graded:
+        def module_id(self):
+            return "graded-test"
+
+        def variables(self):
+            return list(variables.values())
+
+        def existence_thresholds(self):
+            return EdgeExistenceThresholdConfig()
+
+    engine = ProbabilisticOntologyEngine(db_path=":memory:", random_seed=0)
+    engine.register_domain(Graded())
+    engine.activate_domain("graded-test")
+    rng = Random(1)
+    day = date(2024, 1, 7)
+    for _ in range(6):
+        batch = []
+        for _ in range(20):
+            a = rng.gauss(0, 1)
+            batch.append(build_graded_record(module_id="graded-test", variables=variables,
+                                             signals={"A": a, "B": a + rng.gauss(0, 0.3), "C": rng.gauss(0, 1)},
+                                             confidence={}, target_date=day, source_ref="t"))
+            day += timedelta(days=1)
+        engine.learn(batch)
+    health = engine.epistemic_health("graded-test")
+    assert health["leader_calibration"]["n"] == 5 * 3 * 3   # 5 cycles, 3 variables, 3 levels each
+    assert 0 <= health["leader_calibration"]["brier"] < 1
+    assert health["leader_calibration_vs_evidence"] == health["leader_calibration"]

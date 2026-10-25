@@ -1,41 +1,37 @@
 """
 GeopoliticsPipeline — GDELT + FRED observations → EvidenceRecords.
 
-Variable calibrations (all SOFT_OBSERVED, sigmoid-based)
-----------------------------------------------------------
-NOTE: Prob clamp is [0.05, 0.95] instead of [0.01, 0.99] due to GDELT noise.
+Variable signals (REFACTOR_SPEC D25)
+------------------------------------
+Each variable gets a signed signal, read as a level observed exactly
+(sources.grades): low below -0.5, mid within ±0.5, high above +0.5. The
+GDELT article volumes are noisy but still measured numbers, so they are
+degrees like the rest. A variable whose inputs are too thin for its signal,
+including a GDELT outage (the client returns no rows), is MISSING (D10).
 
 ConflictIntensityElevated
-    Signal  : 4-week avg of GDELT "conflict" values z-scored vs 90-day history
-    P(True) : sigmoid(z_score)
+    Signal : 4-week avg of GDELT "conflict" values z-scored vs 90-day history
 
 TradeDisruptionRisk
-    Signal  : DCOILWTICO z-score (rising oil = trade disruption risk)
-    P(True) : sigmoid(z_score)
+    Signal : DCOILWTICO z-score (rising oil = trade disruption risk)
 
 SanctionsPressureElevated
-    Signal  : 4-week avg of GDELT "sanctions" values z-score
-    P(True) : sigmoid(z_score)
+    Signal : 4-week avg of GDELT "sanctions" values z-score
 
 DiplomaticTensionHigh
-    Signal  : 4-week avg of GDELT "diplomatic" values z-score
-    P(True) : sigmoid(z_score)
+    Signal : 4-week avg of GDELT "diplomatic" values z-score
 
 SupplyChainStress
-    Signal  : (DCOILWTICO_zscore + PPIACO_zscore) / 2
-    P(True) : sigmoid(composite)
+    Signal : (DCOILWTICO_zscore + PPIACO_zscore) / 2
 
 CurrencyWarSignal
-    Signal  : DTWEXBGS rolling 28-day std z-scored vs history
-    P(True) : sigmoid(z_score)
+    Signal : DTWEXBGS rolling 28-day std z-scored vs history
 
 EnergyWeaponizationRisk
-    Signal  : (GDELT "energy_sanction" 4w avg z + DCOILWTICO 13w change z) / 2
-    P(True) : sigmoid(composite)
+    Signal : (GDELT "energy_sanction" 4w avg z + DCOILWTICO 13w change z) / 2
 
 GlobalTradeVolumeWeak
-    Signal  : -INDPRO 3-month change z-score (inverted: weak production = signal)
-    P(True) : sigmoid(signal)
+    Signal : -INDPRO 3-month change z-score (inverted: weak production = signal)
 """
 from __future__ import annotations
 
@@ -52,43 +48,23 @@ from ....engine.schemas import (
 from ..domain import get_variables
 from .gdelt_client import GDELTClient, GDELTObs
 from .fred_client import FREDClient, FREDObservation
-from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
+from ...sources.grades import build_graded_record
+from ...sources.soft_evidence import zscore as _zscore
 
 logger = logging.getLogger(__name__)
-
-# Wider clamp due to GDELT signal noise
-_CLAMP_LO: float = 0.05
-_CLAMP_HI: float = 0.95
 
 
 # slots: a misspelled field name raises instead of silently adding a field.
 @dataclass(slots=True)
 class GeopoliticsSnapshot:
-    """Derived signals and soft probabilities for one evidence week."""
+    """
+    Derived signals for one evidence week.
 
-    # Soft probabilities
-    p_conflict_intensity_elevated: float = 0.5
-    p_trade_disruption_risk: float = 0.5
-    p_sanctions_pressure_elevated: float = 0.5
-    p_diplomatic_tension_high: float = 0.5
-    p_supply_chain_stress: float = 0.5
-    p_currency_war_signal: float = 0.5
-    p_energy_weaponization_risk: float = 0.5
-    p_global_trade_volume_weak: float = 0.5
+    *signals* holds each variable's signed signal (read as a level when the
+    record is built); a variable without one is MISSING.
+    """
 
-    # Hard MAP booleans
-    conflict_intensity_elevated: bool = False
-    trade_disruption_risk: bool = False
-    sanctions_pressure_elevated: bool = False
-    diplomatic_tension_high: bool = False
-    supply_chain_stress: bool = False
-    currency_war_signal: bool = False
-    energy_weaponization_risk: bool = False
-    global_trade_volume_weak: bool = False
-
-    # Data confidence per variable
-    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
-    missing: set[str] = field(default_factory=set)
+    signals: dict[str, float] = field(default_factory=dict)
     confidence: dict[str, float] = field(default_factory=dict)
 
     target_date: Optional[date] = None
@@ -99,15 +75,11 @@ class GeopoliticsSnapshot:
 # ---------------------------------------------------------------------------
 
 
-def _soft_bool(signal: float) -> float:
-    return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
-
-
 def _gdelt_4week_avg_zscore(obs: list[GDELTObs]) -> tuple[Optional[float], float]:
     """
     Compute 4-week (28-day) average of GDELT values, z-scored vs full history.
 
-    Returns (None, 0.5) on empty/insufficient data — GDELT fallback.
+    Returns (None, 0.5) on empty/insufficient data, so the variable is MISSING.
     """
     if not obs:
         return None, 0.5
@@ -298,14 +270,10 @@ def compute_snapshot(
     snap = GeopoliticsSnapshot(target_date=target_date)
     confidence: dict[str, float] = {}
 
-    def _apply(var_name: str, sig: Optional[float], conf: float, p_attr: str, bool_attr: str) -> None:
-        if sig is None:
-            snap.missing.add(var_name)
-        s = sig if sig is not None else 0.0
-        p = _soft_bool(s)
-        setattr(snap, p_attr, p)
-        setattr(snap, bool_attr, p > 0.5)
+    def _apply(var_name: str, sig: Optional[float], conf: float) -> None:
         confidence[var_name] = conf
+        if sig is not None:
+            snap.signals[var_name] = sig
 
     conflict_obs = gdelt_data.get("conflict", [])
     sanctions_obs = gdelt_data.get("sanctions", [])
@@ -319,35 +287,35 @@ def compute_snapshot(
 
     # ConflictIntensityElevated
     sig, conf = _compute_conflict_intensity(conflict_obs)
-    _apply("ConflictIntensityElevated", sig, conf, "p_conflict_intensity_elevated", "conflict_intensity_elevated")
+    _apply("ConflictIntensityElevated", sig, conf)
 
     # TradeDisruptionRisk
     sig, conf = _compute_trade_disruption_risk(wti_obs)
-    _apply("TradeDisruptionRisk", sig, conf, "p_trade_disruption_risk", "trade_disruption_risk")
+    _apply("TradeDisruptionRisk", sig, conf)
 
     # SanctionsPressureElevated
     sig, conf = _compute_sanctions_pressure(sanctions_obs)
-    _apply("SanctionsPressureElevated", sig, conf, "p_sanctions_pressure_elevated", "sanctions_pressure_elevated")
+    _apply("SanctionsPressureElevated", sig, conf)
 
     # DiplomaticTensionHigh
     sig, conf = _compute_diplomatic_tension(diplomatic_obs)
-    _apply("DiplomaticTensionHigh", sig, conf, "p_diplomatic_tension_high", "diplomatic_tension_high")
+    _apply("DiplomaticTensionHigh", sig, conf)
 
     # SupplyChainStress
     sig, conf = _compute_supply_chain_stress(wti_obs, ppi_obs)
-    _apply("SupplyChainStress", sig, conf, "p_supply_chain_stress", "supply_chain_stress")
+    _apply("SupplyChainStress", sig, conf)
 
     # CurrencyWarSignal
     sig, conf = _compute_currency_war_signal(dtwex_obs)
-    _apply("CurrencyWarSignal", sig, conf, "p_currency_war_signal", "currency_war_signal")
+    _apply("CurrencyWarSignal", sig, conf)
 
     # EnergyWeaponizationRisk
     sig, conf = _compute_energy_weaponization(energy_obs, wti_obs)
-    _apply("EnergyWeaponizationRisk", sig, conf, "p_energy_weaponization_risk", "energy_weaponization_risk")
+    _apply("EnergyWeaponizationRisk", sig, conf)
 
     # GlobalTradeVolumeWeak
     sig, conf = _compute_global_trade_volume_weak(indpro_obs)
-    _apply("GlobalTradeVolumeWeak", sig, conf, "p_global_trade_volume_weak", "global_trade_volume_weak")
+    _apply("GlobalTradeVolumeWeak", sig, conf)
 
     snap.confidence = confidence
     return snap
@@ -381,21 +349,11 @@ class GeopoliticsPipeline:
     @staticmethod
     def build_evidence_record(snapshot: GeopoliticsSnapshot) -> EvidenceRecord:
         target_date = snapshot.target_date
-        return build_soft_record(
+        return build_graded_record(
             module_id="geopolitics-v1",
             variables=get_variables(),
-            states=[
-                ("ConflictIntensityElevated", snapshot.conflict_intensity_elevated, snapshot.p_conflict_intensity_elevated),
-                ("TradeDisruptionRisk", snapshot.trade_disruption_risk, snapshot.p_trade_disruption_risk),
-                ("SanctionsPressureElevated", snapshot.sanctions_pressure_elevated, snapshot.p_sanctions_pressure_elevated),
-                ("DiplomaticTensionHigh", snapshot.diplomatic_tension_high, snapshot.p_diplomatic_tension_high),
-                ("SupplyChainStress", snapshot.supply_chain_stress, snapshot.p_supply_chain_stress),
-                ("CurrencyWarSignal", snapshot.currency_war_signal, snapshot.p_currency_war_signal),
-                ("EnergyWeaponizationRisk", snapshot.energy_weaponization_risk, snapshot.p_energy_weaponization_risk),
-                ("GlobalTradeVolumeWeak", snapshot.global_trade_volume_weak, snapshot.p_global_trade_volume_weak),
-            ],
+            signals=snapshot.signals,
             confidence=snapshot.confidence,
-            missing=snapshot.missing,
             target_date=target_date,
             source_ref="GDELT:conflict+sanctions+diplomatic+energy"
             "|FRED:DCOILWTICO+PPIACO+DTWEXBGS+INDPRO"

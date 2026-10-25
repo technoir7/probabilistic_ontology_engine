@@ -30,19 +30,19 @@ def test_ingest_trigger_fetches_ingests_and_updates_population(monkeypatch, tmp_
             observed_assignments=[
                 ObservedAssignment(
                     variable_id=variables["TempAnom"].variable_id,
-                    observed_value=True,
+                    observed_value="high",
                 ),
                 ObservedAssignment(
                     variable_id=variables["HeatingDem"].variable_id,
-                    observed_value=False,
+                    observed_value="low",
                 ),
                 ObservedAssignment(
                     variable_id=variables["StorageDraw"].variable_id,
-                    observed_value=True,
+                    observed_value="high",
                 ),
                 ObservedAssignment(
                     variable_id=variables["PriceUp"].variable_id,
-                    observed_value=True,
+                    observed_value="high",
                 ),
             ],
             source_type=SourceType.API,
@@ -90,19 +90,19 @@ def test_ingest_backfill_fetches_and_ingests_days_sequentially(monkeypatch, tmp_
             observed_assignments=[
                 ObservedAssignment(
                     variable_id=variables["TempAnom"].variable_id,
-                    observed_value=True,
+                    observed_value="high",
                 ),
                 ObservedAssignment(
                     variable_id=variables["HeatingDem"].variable_id,
-                    observed_value=False,
+                    observed_value="low",
                 ),
                 ObservedAssignment(
                     variable_id=variables["StorageDraw"].variable_id,
-                    observed_value=True,
+                    observed_value="high",
                 ),
                 ObservedAssignment(
                     variable_id=variables["PriceUp"].variable_id,
-                    observed_value=True,
+                    observed_value="high",
                 ),
             ],
             source_type=SourceType.API,

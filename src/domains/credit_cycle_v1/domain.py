@@ -8,39 +8,41 @@ cycle: monetary tightening transmission, default cycle inception, liquidity
 withdrawal, and credit normalization.  Variables span HY/IG spreads,
 bank lending standards, credit impulse, and refinancing stress.
 
-Variables (all BOOLEAN)
------------------------
+Variables (levels: low, mid, high; REFACTOR_SPEC D25)
+-----------------------------------------------------
+Each is read as how far its signal lies from the line below (high: well
+above it, mid: near it, low: well below). The lines:
 HYSpreadElevated
-    True  = BAMLH0A0HYM2 z-score >= +1.0 (HY spreads above historical trend)
-    False = spreads within normal range
+    high  = BAMLH0A0HYM2 z-score >= +1.0 (HY spreads above historical trend)
+    low   = spreads within normal range
 
 LeveragedLoanStress
-    True  = DRTSCILM z-score >= +1.0 (bank credit tightening / delinquency elevated)
-    False = lending conditions normal
+    high  = DRTSCILM z-score >= +1.0 (bank credit tightening / delinquency elevated)
+    low   = lending conditions normal
 
 CorporateDefaultRisk
-    True  = BAMLH0A0HYM2 level > 5.5% (absolute stress threshold)
-    False = HY OAS below systemic stress level
+    high  = BAMLH0A0HYM2 level > 5.5% (absolute stress threshold)
+    low   = HY OAS below systemic stress level
 
 CreditImpulseNegative
-    True  = TOTCI 3-month growth rate is negative (credit contracting)
-    False = credit expanding or stable
+    high  = TOTCI 3-month growth rate is negative (credit contracting)
+    low   = credit expanding or stable
 
 BankLendingTightening
-    True  = DRTSCILM z-score >= +0.5 (tightening above neutral)
-    False = lending standards normal
+    high  = DRTSCILM z-score >= +0.5 (tightening above neutral)
+    low   = lending standards normal
 
 InvestmentGradeSpread
-    True  = BAMLC0A0CM z-score >= +1.0 (IG spreads elevated)
-    False = IG spreads within historical range
+    high  = BAMLC0A0CM z-score >= +1.0 (IG spreads elevated)
+    low   = IG spreads within historical range
 
 HighYieldIssuanceFalling
-    True  = BAMLH0A0HYM2 3-month momentum is positive (spreads widening = issuance deterred)
-    False = spreads tightening or stable (issuance conditions improving)
+    high  = BAMLH0A0HYM2 3-month momentum is positive (spreads widening = issuance deterred)
+    low   = spreads tightening or stable (issuance conditions improving)
 
 RefinancingStress
-    True  = DGS5 + BAMLH0A0HYM2 composite elevated (refinancing cost above threshold)
-    False = refinancing environment manageable
+    high  = DGS5 + BAMLH0A0HYM2 composite elevated (refinancing cost above threshold)
+    low   = refinancing environment manageable
 
 FRED series used
 ----------------
@@ -54,7 +56,8 @@ Cadence: WEEKLY (every Monday at 09:00 UTC)
 """
 from __future__ import annotations
 
-from ..sources.structure import boolean_variables, with_lags
+from ..sources.grades import graded_variables
+from ..sources.structure import with_lags
 from ...engine.schemas import (
     EdgeExistenceThresholdConfig,
     Variable,
@@ -73,7 +76,7 @@ _VAR_NAMES = [
     "RefinancingStress",
 ]
 
-_VARIABLE_DEFS: dict[str, Variable] = boolean_variables(_MODULE_ID, _VAR_NAMES)
+_VARIABLE_DEFS: dict[str, Variable] = graded_variables(_MODULE_ID, _VAR_NAMES)
 
 
 def get_variables() -> dict[str, Variable]:

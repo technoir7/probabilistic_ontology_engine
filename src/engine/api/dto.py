@@ -49,7 +49,7 @@ class CandidatesOut(BaseModel):
 class GraphNodeOut(BaseModel):
     id: str
     label: str
-    probability: Optional[float] = None
+    degree: Optional[float] = None
     observation: Optional[str] = None
     status: Literal["established", "exploring", "weak", "target"]
 
@@ -73,7 +73,11 @@ class FrontierEdgeOut(BaseModel):
 class InferenceOut(BaseModel):
     candidate_id: str
     target_variable: str
-    target_probability: float
+    # The target's most likely value, and its degree from 0 to 1: P(True)
+    # for a yes/no, the mean position from low to high for levels (D25).
+    target_level: Optional[str]
+    target_degree: Optional[float]
+    target_distribution: dict[str, float]
     nodes: list[GraphNodeOut]
     edges: list[GraphEdgeOut]
     frontier_edges: list[FrontierEdgeOut]
@@ -133,8 +137,8 @@ class NarrativeMetadataOut(BaseModel):
 
 class NarrativeRegimeVariableOut(BaseModel):
     name: str
-    boolean_state: Optional[bool]
-    probability: Optional[float]
+    level: Optional[str]      # the most likely value
+    degree: Optional[float]   # 0 to 1: P(True) for a yes/no, mean position for levels (D25)
 
 
 class NarrativeEdgeOut(BaseModel):

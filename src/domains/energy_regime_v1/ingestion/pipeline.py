@@ -1,39 +1,39 @@
 """
 EnergyRegimePipeline — FRED + yfinance observations → EvidenceRecords.
 
-Variable calibrations
-----------------------
+Variable mapping (REFACTOR_SPEC D25)
+------------------------------------
+Each variable gets a signed signal: its distance from the line that names
+it, in the unit given below. The signal is read as a level, observed
+exactly (sources.grades): low below -0.5, mid within ±0.5, high above +0.5.
+A variable whose series has too little data is MISSING (D10), never a
+middle reading.
+
 OilPriceSurge
-    Signal  : CL=F 13-week return z-score vs historical 13-week returns
-    P(True) : sigmoid(z_score)
+    Signal : CL=F 13-week return z-score vs historical 13-week returns
 
 NatGasPriceSurge
-    Signal  : NG=F 13-week return z-score vs historical
-    P(True) : sigmoid(z_score)
+    Signal : NG=F 13-week return z-score vs historical
 
 EnergyEquityMomentum
-    Signal  : XLE 13-week return z-score vs historical
-    P(True) : sigmoid(z_score)
+    Signal : XLE 13-week return z-score vs historical
 
 OPECSupplyConstraint
-    Signal  : DCOILWTICO (FRED) 13-week momentum z-score
-    P(True) : sigmoid(z_score)
+    Signal : DCOILWTICO (FRED) 13-week momentum z-score
 
 RenewablesDisplacement
-    Signal  : ICLN/XLE ratio 52-week z-score
-    P(True) : sigmoid(z_score)
+    Signal : ICLN/XLE ratio 52-week z-score
 
 EnergyInflationPersistent
-    Signal  : (CPIENGSL 12m YoY % - 5.0) / 1.5
-    P(True) : sigmoid(signal)  [5% threshold, 1.5pp scale]
+    Signal : (CPIENGSL 12m YoY % - 5.0) / 1.5  [5% threshold, 1.5pp scale]
+    high   : above 5.75%; low: below 4.25%
 
 GeopoliticalRiskElevated
-    Signal  : DCOILWTICO 90-day return volatility z-score vs historical volatility
-    P(True) : sigmoid(z_score)
+    Signal : DCOILWTICO 90-day return volatility z-score vs historical volatility
 
 DemandDestructionRisk
-    Signal  : composite of INDPRO 3m change (negative) + UNRATE 3m change (positive)
-    P(True) : sigmoid(composite)
+    Signal : mean of INDPRO 3m decline and UNRATE 3m rise, each scaled
+             (either alone when the other is unavailable)
 """
 from __future__ import annotations
 
@@ -50,43 +50,23 @@ from ....engine.schemas import (
 from ..domain import get_variables
 from .fred_client import FREDClient, FREDObservation
 from .yfinance_client import EnergyYFinanceClient, YFObservation
-from ...sources.soft_evidence import build_soft_record, soft_bool, zscore as _zscore
+from ...sources.grades import build_graded_record
+from ...sources.soft_evidence import zscore as _zscore
 
 logger = logging.getLogger(__name__)
-
-_CLAMP_LO: float = 0.01
-_CLAMP_HI: float = 0.99
-
 
 # slots: a misspelled field name raises instead of silently adding a field.
 @dataclass(slots=True)
 class EnergyRegimeSnapshot:
-    p_oil_price_surge: float = 0.5
-    p_nat_gas_price_surge: float = 0.5
-    p_energy_equity_momentum: float = 0.5
-    p_opec_supply_constraint: float = 0.5
-    p_renewables_displacement: float = 0.5
-    p_energy_inflation_persistent: float = 0.5
-    p_geopolitical_risk_elevated: float = 0.5
-    p_demand_destruction_risk: float = 0.5
+    """
+    Derived signals for one evidence week. *signals* holds each variable's
+    signed signal (read as a level when the record is built); a variable
+    without one is MISSING.
+    """
 
-    oil_price_surge: bool = False
-    nat_gas_price_surge: bool = False
-    energy_equity_momentum: bool = False
-    opec_supply_constraint: bool = False
-    renewables_displacement: bool = False
-    energy_inflation_persistent: bool = False
-    geopolitical_risk_elevated: bool = False
-    demand_destruction_risk: bool = False
-
-    # Variables whose inputs were unavailable: recorded as MISSING, not 0.5.
-    missing: set[str] = field(default_factory=set)
+    signals: dict[str, float] = field(default_factory=dict)
     confidence: dict[str, float] = field(default_factory=dict)
     target_date: Optional[date] = None
-
-
-def _soft_bool(signal: float) -> float:
-    return soft_bool(signal, _CLAMP_LO, _CLAMP_HI)
 
 
 def _compute_13w_return_zscore(obs: list[YFObservation]) -> tuple[Optional[float], float]:
@@ -156,7 +136,7 @@ def _compute_renewables_displacement(
 ) -> tuple[Optional[float], float]:
     """
     ICLN/XLE price ratio 52-week z-score.
-    Rising ratio = renewables outperforming = RenewablesDisplacement = True.
+    Rising ratio = renewables outperforming = RenewablesDisplacement high.
     """
     if len(icln_obs) < 52 or len(xle_obs) < 52:
         return None, 0.5
@@ -232,7 +212,7 @@ def _compute_demand_destruction_risk(
 ) -> tuple[Optional[float], float]:
     """
     Composite of INDPRO decline + UNRATE rise.
-    Both negative for economy → DemandDestructionRisk = True.
+    Both negative for economy → DemandDestructionRisk high.
     """
     indpro_signal = 0.0
     unrate_signal = 0.0
@@ -269,46 +249,42 @@ def compute_snapshot(
     snap = EnergyRegimeSnapshot(target_date=target_date)
     confidence: dict[str, float] = {}
 
-    def _apply(var_name: str, sig: Optional[float], conf: float, p_attr: str, bool_attr: str) -> None:
-        if sig is None:
-            snap.missing.add(var_name)
-        s = sig if sig is not None else 0.0
-        p = _soft_bool(s)
-        setattr(snap, p_attr, p)
-        setattr(snap, bool_attr, p > 0.5)
+    def _apply(var_name: str, sig: Optional[float], conf: float) -> None:
         confidence[var_name] = conf
+        if sig is not None:
+            snap.signals[var_name] = sig
 
     # yfinance-based signals
     sig, conf = _compute_13w_return_zscore(yf_observations.get("CL=F", []))
-    _apply("OilPriceSurge", sig, conf, "p_oil_price_surge", "oil_price_surge")
+    _apply("OilPriceSurge", sig, conf)
 
     sig, conf = _compute_13w_return_zscore(yf_observations.get("NG=F", []))
-    _apply("NatGasPriceSurge", sig, conf, "p_nat_gas_price_surge", "nat_gas_price_surge")
+    _apply("NatGasPriceSurge", sig, conf)
 
     sig, conf = _compute_13w_return_zscore(yf_observations.get("XLE", []))
-    _apply("EnergyEquityMomentum", sig, conf, "p_energy_equity_momentum", "energy_equity_momentum")
+    _apply("EnergyEquityMomentum", sig, conf)
 
     sig, conf = _compute_renewables_displacement(
         yf_observations.get("ICLN", []),
         yf_observations.get("XLE", []),
     )
-    _apply("RenewablesDisplacement", sig, conf, "p_renewables_displacement", "renewables_displacement")
+    _apply("RenewablesDisplacement", sig, conf)
 
     # FRED-based signals
     sig, conf = _compute_opec_supply_constraint(fred_observations.get("DCOILWTICO", []))
-    _apply("OPECSupplyConstraint", sig, conf, "p_opec_supply_constraint", "opec_supply_constraint")
+    _apply("OPECSupplyConstraint", sig, conf)
 
     sig, conf = _compute_energy_inflation_persistent(fred_observations.get("CPIENGSL", []))
-    _apply("EnergyInflationPersistent", sig, conf, "p_energy_inflation_persistent", "energy_inflation_persistent")
+    _apply("EnergyInflationPersistent", sig, conf)
 
     sig, conf = _compute_geopolitical_risk(fred_observations.get("DCOILWTICO", []))
-    _apply("GeopoliticalRiskElevated", sig, conf, "p_geopolitical_risk_elevated", "geopolitical_risk_elevated")
+    _apply("GeopoliticalRiskElevated", sig, conf)
 
     sig, conf = _compute_demand_destruction_risk(
         fred_observations.get("INDPRO", []),
         fred_observations.get("UNRATE", []),
     )
-    _apply("DemandDestructionRisk", sig, conf, "p_demand_destruction_risk", "demand_destruction_risk")
+    _apply("DemandDestructionRisk", sig, conf)
 
     snap.confidence = confidence
     return snap
@@ -335,21 +311,11 @@ class EnergyRegimePipeline:
     @staticmethod
     def build_evidence_record(snapshot: EnergyRegimeSnapshot) -> EvidenceRecord:
         target_date = snapshot.target_date
-        return build_soft_record(
+        return build_graded_record(
             module_id="energy-regime-v1",
             variables=get_variables(),
-            states=[
-                ("OilPriceSurge", snapshot.oil_price_surge, snapshot.p_oil_price_surge),
-                ("NatGasPriceSurge", snapshot.nat_gas_price_surge, snapshot.p_nat_gas_price_surge),
-                ("EnergyEquityMomentum", snapshot.energy_equity_momentum, snapshot.p_energy_equity_momentum),
-                ("OPECSupplyConstraint", snapshot.opec_supply_constraint, snapshot.p_opec_supply_constraint),
-                ("RenewablesDisplacement", snapshot.renewables_displacement, snapshot.p_renewables_displacement),
-                ("EnergyInflationPersistent", snapshot.energy_inflation_persistent, snapshot.p_energy_inflation_persistent),
-                ("GeopoliticalRiskElevated", snapshot.geopolitical_risk_elevated, snapshot.p_geopolitical_risk_elevated),
-                ("DemandDestructionRisk", snapshot.demand_destruction_risk, snapshot.p_demand_destruction_risk),
-            ],
+            signals=snapshot.signals,
             confidence=snapshot.confidence,
-            missing=snapshot.missing,
             target_date=target_date,
             source_ref="yfinance:CL=F+NG=F+XLE+ICLN|FRED:DCOILWTICO+CPIENGSL+INDPRO+UNRATE"
             f"@week-ending-{target_date}",

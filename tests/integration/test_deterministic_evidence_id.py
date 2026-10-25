@@ -14,7 +14,7 @@ from src.domains.sf_urban_v1.ingestion.pipeline import SFUrbanPipeline, SFUrbanS
 
 
 def _record(day: date):
-    return SFUrbanPipeline.build_evidence_record(SFUrbanSnapshot(target_date=day))
+    return SFUrbanPipeline.build_evidence_record(SFUrbanSnapshot(target_date=day, signals={"CrimeIndexElevated": 1.0}))
 
 
 def test_same_day_same_id_different_day_different_id():

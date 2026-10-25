@@ -15,14 +15,24 @@
      "evidence_count": 4,
      "generation_introduced": 0,
      "id": "<id0>",
-     "log_score": -23.228025686,
+     "log_score": -35.880694327,
      "name": "unconnected: no hypotheses yet",
-     "score_normalized": 0.05,
+     "score_normalized": 0.95,
      "status": "dominant"
+    },
+    {
+     "edge_count": 1,
+     "evidence_count": 4,
+     "generation_introduced": 1,
+     "id": "<id1>",
+     "log_score": -35.880694327,
+     "name": "prompted_add_VolatilityShock_prev->VolatilityShock",
+     "score_normalized": 0.05,
+     "status": "falling"
     }
    ],
    "domain": "Macro Regime",
-   "generation": 0
+   "generation": 1
   },
   "status": 200
  },
@@ -33,170 +43,170 @@
    "domain_module_id": "macro-regime-v1",
    "pairwise_mutual_information": [
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "YieldCurveInverted",
      "variable_y": "InflationShock"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 1.0,
      "variable_x": "YieldCurveInverted",
      "variable_y": "LiquidityStress"
     },
     {
-     "joint_observed_count": 0,
+     "joint_observed_count": 4,
      "mutual_information": 0.0,
      "variable_x": "YieldCurveInverted",
      "variable_y": "CreditSpreadStress"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 1.0,
      "variable_x": "YieldCurveInverted",
      "variable_y": "VolatilityShock"
     },
     {
-     "joint_observed_count": 0,
+     "joint_observed_count": 4,
      "mutual_information": 0.0,
      "variable_x": "YieldCurveInverted",
      "variable_y": "DollarStrength"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "YieldCurveInverted",
      "variable_y": "EquityRiskOn"
     },
     {
-     "joint_observed_count": 0,
+     "joint_observed_count": 4,
      "mutual_information": 0.0,
      "variable_x": "YieldCurveInverted",
      "variable_y": "AIRiskOn"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "InflationShock",
      "variable_y": "LiquidityStress"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "InflationShock",
      "variable_y": "CreditSpreadStress"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.811278124,
      "variable_x": "InflationShock",
      "variable_y": "VolatilityShock"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "InflationShock",
      "variable_y": "DollarStrength"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.811278124,
      "variable_x": "InflationShock",
      "variable_y": "EquityRiskOn"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "InflationShock",
      "variable_y": "AIRiskOn"
     },
     {
-     "joint_observed_count": 0,
+     "joint_observed_count": 4,
      "mutual_information": 0.0,
      "variable_x": "LiquidityStress",
      "variable_y": "CreditSpreadStress"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 1.0,
      "variable_x": "LiquidityStress",
      "variable_y": "VolatilityShock"
     },
     {
-     "joint_observed_count": 0,
+     "joint_observed_count": 4,
      "mutual_information": 0.0,
      "variable_x": "LiquidityStress",
      "variable_y": "DollarStrength"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "LiquidityStress",
      "variable_y": "EquityRiskOn"
     },
     {
-     "joint_observed_count": 0,
+     "joint_observed_count": 4,
      "mutual_information": 0.0,
      "variable_x": "LiquidityStress",
      "variable_y": "AIRiskOn"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.5,
      "variable_x": "CreditSpreadStress",
      "variable_y": "VolatilityShock"
     },
     {
-     "joint_observed_count": 0,
+     "joint_observed_count": 4,
      "mutual_information": 0.0,
      "variable_x": "CreditSpreadStress",
      "variable_y": "DollarStrength"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "CreditSpreadStress",
      "variable_y": "EquityRiskOn"
     },
     {
-     "joint_observed_count": 0,
+     "joint_observed_count": 4,
      "mutual_information": 0.0,
      "variable_x": "CreditSpreadStress",
      "variable_y": "AIRiskOn"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.5,
      "variable_x": "VolatilityShock",
      "variable_y": "DollarStrength"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.811278124,
      "variable_x": "VolatilityShock",
      "variable_y": "EquityRiskOn"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.5,
      "variable_x": "VolatilityShock",
      "variable_y": "AIRiskOn"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "DollarStrength",
      "variable_y": "EquityRiskOn"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 1.0,
      "variable_x": "DollarStrength",
      "variable_y": "AIRiskOn"
     },
     {
-     "joint_observed_count": 0,
-     "mutual_information": 0.0,
+     "joint_observed_count": 4,
+     "mutual_information": 0.311278124,
      "variable_x": "EquityRiskOn",
      "variable_y": "AIRiskOn"
     }
@@ -204,67 +214,131 @@
    "total_evidence_rows": 4,
    "unique_observed_patterns": [
     {
-     "count": 4,
+     "count": 1,
      "pattern": {
-      "AIRiskOn": null,
-      "CreditSpreadStress": null,
-      "DollarStrength": null,
-      "EquityRiskOn": null,
-      "InflationShock": null,
-      "LiquidityStress": null,
-      "VolatilityShock": null,
-      "YieldCurveInverted": null
+      "AIRiskOn": "mid",
+      "CreditSpreadStress": "high",
+      "DollarStrength": "low",
+      "EquityRiskOn": "high",
+      "InflationShock": "mid",
+      "LiquidityStress": "low",
+      "VolatilityShock": "low",
+      "YieldCurveInverted": "high"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AIRiskOn": "high",
+      "CreditSpreadStress": "low",
+      "DollarStrength": "high",
+      "EquityRiskOn": "high",
+      "InflationShock": "mid",
+      "LiquidityStress": "low",
+      "VolatilityShock": "low",
+      "YieldCurveInverted": "high"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AIRiskOn": "high",
+      "CreditSpreadStress": "high",
+      "DollarStrength": "high",
+      "EquityRiskOn": "low",
+      "InflationShock": "low",
+      "LiquidityStress": "mid",
+      "VolatilityShock": "high",
+      "YieldCurveInverted": "low"
+     }
+    },
+    {
+     "count": 1,
+     "pattern": {
+      "AIRiskOn": "mid",
+      "CreditSpreadStress": "low",
+      "DollarStrength": "low",
+      "EquityRiskOn": "high",
+      "InflationShock": "mid",
+      "LiquidityStress": "mid",
+      "VolatilityShock": "mid",
+      "YieldCurveInverted": "low"
      }
     }
    ],
    "variables": {
     "AIRiskOn": {
-     "entropy": 0.0,
-     "missing_count": 4,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 1.0,
+     "missing_count": 0,
+     "observed_count": 4,
+     "value_counts": {
+      "high": 2,
+      "mid": 2
+     }
     },
     "CreditSpreadStress": {
-     "entropy": 0.0,
-     "missing_count": 4,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 1.0,
+     "missing_count": 0,
+     "observed_count": 4,
+     "value_counts": {
+      "high": 2,
+      "low": 2
+     }
     },
     "DollarStrength": {
-     "entropy": 0.0,
-     "missing_count": 4,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 1.0,
+     "missing_count": 0,
+     "observed_count": 4,
+     "value_counts": {
+      "high": 2,
+      "low": 2
+     }
     },
     "EquityRiskOn": {
-     "entropy": 0.0,
-     "missing_count": 4,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 0.811278124,
+     "missing_count": 0,
+     "observed_count": 4,
+     "value_counts": {
+      "high": 3,
+      "low": 1
+     }
     },
     "InflationShock": {
-     "entropy": 0.0,
-     "missing_count": 4,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 0.811278124,
+     "missing_count": 0,
+     "observed_count": 4,
+     "value_counts": {
+      "low": 1,
+      "mid": 3
+     }
     },
     "LiquidityStress": {
-     "entropy": 0.0,
-     "missing_count": 4,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 1.0,
+     "missing_count": 0,
+     "observed_count": 4,
+     "value_counts": {
+      "low": 2,
+      "mid": 2
+     }
     },
     "VolatilityShock": {
-     "entropy": 0.0,
-     "missing_count": 4,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 1.5,
+     "missing_count": 0,
+     "observed_count": 4,
+     "value_counts": {
+      "high": 1,
+      "low": 2,
+      "mid": 1
+     }
     },
     "YieldCurveInverted": {
-     "entropy": 0.0,
-     "missing_count": 4,
-     "observed_count": 0,
-     "value_counts": {}
+     "entropy": 1.0,
+     "missing_count": 0,
+     "observed_count": 4,
+     "value_counts": {
+      "high": 2,
+      "low": 2
+     }
     }
    }
   },
@@ -272,7 +346,7 @@
  },
  "debug_evidence-geometry": {
   "body": {
-   "average_pairwise_mi": 0.352067634,
+   "average_pairwise_mi": 0.394521986,
    "cadence_detected": "weekly",
    "compression_ratio_daily_to_weekly": 1.0,
    "daily_state_count": 4,
@@ -284,18 +358,18 @@
    "effective_state_density": 1.0,
    "effective_transitions_per_month": 4.348214286,
    "highest_entropy_variable": {
-    "shannon_entropy": 1.0,
-    "variable": "YieldCurveInverted"
+    "shannon_entropy": 1.5,
+    "variable": "VolatilityShock"
    },
    "highest_mi_variable_pair": {
     "joint_observed_count": 4,
     "mutual_information": 1.0,
     "variable_x": "YieldCurveInverted",
-    "variable_y": "InflationShock"
+    "variable_y": "LiquidityStress"
    },
    "lowest_entropy_variable": {
     "shannon_entropy": 0.811278124,
-    "variable": "EquityRiskOn"
+    "variable": "InflationShock"
    },
    "pairwise_joint_observed_counts": {
     "AIRiskOn": {
@@ -381,81 +455,81 @@
    },
    "pairwise_mutual_information_matrix": {
     "AIRiskOn": {
-     "AIRiskOn": 0.811278124,
-     "CreditSpreadStress": 0.311278124,
-     "DollarStrength": 0.311278124,
-     "EquityRiskOn": 0.122556249,
-     "InflationShock": 0.311278124,
-     "LiquidityStress": 0.311278124,
-     "VolatilityShock": 0.311278124,
-     "YieldCurveInverted": 0.311278124
-    },
-    "CreditSpreadStress": {
-     "AIRiskOn": 0.311278124,
-     "CreditSpreadStress": 1.0,
-     "DollarStrength": 0.0,
-     "EquityRiskOn": 0.311278124,
-     "InflationShock": 0.0,
-     "LiquidityStress": 0.0,
-     "VolatilityShock": 0.0,
-     "YieldCurveInverted": 0.0
-    },
-    "DollarStrength": {
-     "AIRiskOn": 0.311278124,
+     "AIRiskOn": 1.0,
      "CreditSpreadStress": 0.0,
      "DollarStrength": 1.0,
      "EquityRiskOn": 0.311278124,
-     "InflationShock": 0.0,
+     "InflationShock": 0.311278124,
      "LiquidityStress": 0.0,
-     "VolatilityShock": 0.0,
+     "VolatilityShock": 0.5,
+     "YieldCurveInverted": 0.0
+    },
+    "CreditSpreadStress": {
+     "AIRiskOn": 0.0,
+     "CreditSpreadStress": 1.0,
+     "DollarStrength": 0.0,
+     "EquityRiskOn": 0.311278124,
+     "InflationShock": 0.311278124,
+     "LiquidityStress": 0.0,
+     "VolatilityShock": 0.5,
+     "YieldCurveInverted": 0.0
+    },
+    "DollarStrength": {
+     "AIRiskOn": 1.0,
+     "CreditSpreadStress": 0.0,
+     "DollarStrength": 1.0,
+     "EquityRiskOn": 0.311278124,
+     "InflationShock": 0.311278124,
+     "LiquidityStress": 0.0,
+     "VolatilityShock": 0.5,
      "YieldCurveInverted": 0.0
     },
     "EquityRiskOn": {
-     "AIRiskOn": 0.122556249,
+     "AIRiskOn": 0.311278124,
      "CreditSpreadStress": 0.311278124,
      "DollarStrength": 0.311278124,
      "EquityRiskOn": 0.811278124,
-     "InflationShock": 0.311278124,
+     "InflationShock": 0.811278124,
      "LiquidityStress": 0.311278124,
-     "VolatilityShock": 0.311278124,
+     "VolatilityShock": 0.811278124,
      "YieldCurveInverted": 0.311278124
     },
     "InflationShock": {
      "AIRiskOn": 0.311278124,
-     "CreditSpreadStress": 0.0,
-     "DollarStrength": 0.0,
-     "EquityRiskOn": 0.311278124,
-     "InflationShock": 1.0,
-     "LiquidityStress": 1.0,
-     "VolatilityShock": 1.0,
-     "YieldCurveInverted": 1.0
+     "CreditSpreadStress": 0.311278124,
+     "DollarStrength": 0.311278124,
+     "EquityRiskOn": 0.811278124,
+     "InflationShock": 0.811278124,
+     "LiquidityStress": 0.311278124,
+     "VolatilityShock": 0.811278124,
+     "YieldCurveInverted": 0.311278124
     },
     "LiquidityStress": {
-     "AIRiskOn": 0.311278124,
+     "AIRiskOn": 0.0,
      "CreditSpreadStress": 0.0,
      "DollarStrength": 0.0,
      "EquityRiskOn": 0.311278124,
-     "InflationShock": 1.0,
+     "InflationShock": 0.311278124,
      "LiquidityStress": 1.0,
      "VolatilityShock": 1.0,
      "YieldCurveInverted": 1.0
     },
     "VolatilityShock": {
-     "AIRiskOn": 0.311278124,
-     "CreditSpreadStress": 0.0,
-     "DollarStrength": 0.0,
-     "EquityRiskOn": 0.311278124,
-     "InflationShock": 1.0,
+     "AIRiskOn": 0.5,
+     "CreditSpreadStress": 0.5,
+     "DollarStrength": 0.5,
+     "EquityRiskOn": 0.811278124,
+     "InflationShock": 0.811278124,
      "LiquidityStress": 1.0,
-     "VolatilityShock": 1.0,
+     "VolatilityShock": 1.5,
      "YieldCurveInverted": 1.0
     },
     "YieldCurveInverted": {
-     "AIRiskOn": 0.311278124,
+     "AIRiskOn": 0.0,
      "CreditSpreadStress": 0.0,
      "DollarStrength": 0.0,
      "EquityRiskOn": 0.311278124,
-     "InflationShock": 1.0,
+     "InflationShock": 0.311278124,
      "LiquidityStress": 1.0,
      "VolatilityShock": 1.0,
      "YieldCurveInverted": 1.0
@@ -466,53 +540,53 @@
     {
      "count": 1,
      "pattern": {
-      "AIRiskOn": true,
-      "CreditSpreadStress": false,
-      "DollarStrength": false,
-      "EquityRiskOn": true,
-      "InflationShock": false,
-      "LiquidityStress": true,
-      "VolatilityShock": true,
-      "YieldCurveInverted": false
+      "AIRiskOn": "mid",
+      "CreditSpreadStress": "high",
+      "DollarStrength": "low",
+      "EquityRiskOn": "high",
+      "InflationShock": "mid",
+      "LiquidityStress": "low",
+      "VolatilityShock": "low",
+      "YieldCurveInverted": "high"
      }
     },
     {
      "count": 1,
      "pattern": {
-      "AIRiskOn": true,
-      "CreditSpreadStress": true,
-      "DollarStrength": true,
-      "EquityRiskOn": false,
-      "InflationShock": false,
-      "LiquidityStress": true,
-      "VolatilityShock": true,
-      "YieldCurveInverted": false
+      "AIRiskOn": "high",
+      "CreditSpreadStress": "low",
+      "DollarStrength": "high",
+      "EquityRiskOn": "high",
+      "InflationShock": "mid",
+      "LiquidityStress": "low",
+      "VolatilityShock": "low",
+      "YieldCurveInverted": "high"
      }
     },
     {
      "count": 1,
      "pattern": {
-      "AIRiskOn": true,
-      "CreditSpreadStress": false,
-      "DollarStrength": true,
-      "EquityRiskOn": true,
-      "InflationShock": true,
-      "LiquidityStress": false,
-      "VolatilityShock": false,
-      "YieldCurveInverted": true
+      "AIRiskOn": "high",
+      "CreditSpreadStress": "high",
+      "DollarStrength": "high",
+      "EquityRiskOn": "low",
+      "InflationShock": "low",
+      "LiquidityStress": "mid",
+      "VolatilityShock": "high",
+      "YieldCurveInverted": "low"
      }
     },
     {
      "count": 1,
      "pattern": {
-      "AIRiskOn": false,
-      "CreditSpreadStress": true,
-      "DollarStrength": false,
-      "EquityRiskOn": true,
-      "InflationShock": true,
-      "LiquidityStress": false,
-      "VolatilityShock": false,
-      "YieldCurveInverted": true
+      "AIRiskOn": "mid",
+      "CreditSpreadStress": "low",
+      "DollarStrength": "low",
+      "EquityRiskOn": "high",
+      "InflationShock": "mid",
+      "LiquidityStress": "mid",
+      "VolatilityShock": "mid",
+      "YieldCurveInverted": "low"
      }
     }
    ],
@@ -530,12 +604,12 @@
      "missing_ratio": 0.0,
      "observed_count": 4,
      "observed_ratio": 1.0,
-     "shannon_entropy": 0.811278124,
+     "shannon_entropy": 1.0,
      "transition_count": 1,
      "unique_value_count": 2,
      "value_distribution": {
-      "False": 1,
-      "True": 3
+      "high": 2,
+      "mid": 2
      }
     },
     "CreditSpreadStress": {
@@ -547,8 +621,8 @@
      "transition_count": 3,
      "unique_value_count": 2,
      "value_distribution": {
-      "False": 2,
-      "True": 2
+      "high": 2,
+      "low": 2
      }
     },
     "DollarStrength": {
@@ -560,8 +634,8 @@
      "transition_count": 1,
      "unique_value_count": 2,
      "value_distribution": {
-      "False": 2,
-      "True": 2
+      "high": 2,
+      "low": 2
      }
     },
     "EquityRiskOn": {
@@ -573,8 +647,8 @@
      "transition_count": 2,
      "unique_value_count": 2,
      "value_distribution": {
-      "False": 1,
-      "True": 3
+      "high": 3,
+      "low": 1
      }
     },
     "InflationShock": {
@@ -582,12 +656,12 @@
      "missing_ratio": 0.0,
      "observed_count": 4,
      "observed_ratio": 1.0,
-     "shannon_entropy": 1.0,
+     "shannon_entropy": 0.811278124,
      "transition_count": 2,
      "unique_value_count": 2,
      "value_distribution": {
-      "False": 2,
-      "True": 2
+      "low": 1,
+      "mid": 3
      }
     },
     "LiquidityStress": {
@@ -599,8 +673,8 @@
      "transition_count": 2,
      "unique_value_count": 2,
      "value_distribution": {
-      "False": 2,
-      "True": 2
+      "low": 2,
+      "mid": 2
      }
     },
     "VolatilityShock": {
@@ -608,12 +682,13 @@
      "missing_ratio": 0.0,
      "observed_count": 4,
      "observed_ratio": 1.0,
-     "shannon_entropy": 1.0,
-     "transition_count": 2,
-     "unique_value_count": 2,
+     "shannon_entropy": 1.5,
+     "transition_count": 3,
+     "unique_value_count": 3,
      "value_distribution": {
-      "False": 2,
-      "True": 2
+      "high": 1,
+      "low": 2,
+      "mid": 1
      }
     },
     "YieldCurveInverted": {
@@ -625,8 +700,8 @@
      "transition_count": 2,
      "unique_value_count": 2,
      "value_distribution": {
-      "False": 2,
-      "True": 2
+      "high": 2,
+      "low": 2
      }
     }
    },
@@ -640,14 +715,14 @@
       {
        "count": 1,
        "pattern": {
-        "AIRiskOn": false,
-        "CreditSpreadStress": true,
-        "DollarStrength": false,
-        "EquityRiskOn": true,
-        "InflationShock": true,
-        "LiquidityStress": false,
-        "VolatilityShock": false,
-        "YieldCurveInverted": true
+        "AIRiskOn": "mid",
+        "CreditSpreadStress": "high",
+        "DollarStrength": "low",
+        "EquityRiskOn": "high",
+        "InflationShock": "mid",
+        "LiquidityStress": "low",
+        "VolatilityShock": "low",
+        "YieldCurveInverted": "high"
        }
       }
      ],
@@ -663,14 +738,14 @@
       {
        "count": 1,
        "pattern": {
-        "AIRiskOn": true,
-        "CreditSpreadStress": false,
-        "DollarStrength": false,
-        "EquityRiskOn": true,
-        "InflationShock": false,
-        "LiquidityStress": true,
-        "VolatilityShock": true,
-        "YieldCurveInverted": false
+        "AIRiskOn": "mid",
+        "CreditSpreadStress": "low",
+        "DollarStrength": "low",
+        "EquityRiskOn": "high",
+        "InflationShock": "mid",
+        "LiquidityStress": "mid",
+        "VolatilityShock": "mid",
+        "YieldCurveInverted": "low"
        }
       }
      ],
@@ -686,14 +761,14 @@
       {
        "count": 1,
        "pattern": {
-        "AIRiskOn": true,
-        "CreditSpreadStress": true,
-        "DollarStrength": true,
-        "EquityRiskOn": false,
-        "InflationShock": false,
-        "LiquidityStress": true,
-        "VolatilityShock": true,
-        "YieldCurveInverted": false
+        "AIRiskOn": "high",
+        "CreditSpreadStress": "high",
+        "DollarStrength": "high",
+        "EquityRiskOn": "low",
+        "InflationShock": "low",
+        "LiquidityStress": "mid",
+        "VolatilityShock": "high",
+        "YieldCurveInverted": "low"
        }
       }
      ],
@@ -709,14 +784,14 @@
       {
        "count": 1,
        "pattern": {
-        "AIRiskOn": true,
-        "CreditSpreadStress": false,
-        "DollarStrength": true,
-        "EquityRiskOn": true,
-        "InflationShock": true,
-        "LiquidityStress": false,
-        "VolatilityShock": false,
-        "YieldCurveInverted": true
+        "AIRiskOn": "high",
+        "CreditSpreadStress": "low",
+        "DollarStrength": "high",
+        "EquityRiskOn": "high",
+        "InflationShock": "mid",
+        "LiquidityStress": "low",
+        "VolatilityShock": "low",
+        "YieldCurveInverted": "high"
        }
       }
      ],
@@ -735,14 +810,14 @@
  },
  "debug_learning": {
   "body": {
-   "active_candidates": 1,
-   "current_generation": 0,
+   "active_candidates": 2,
+   "current_generation": 1,
    "domain": "Macro Regime",
    "domain_module_id": "macro-regime-v1",
    "dominant_evidence_count": 4,
-   "dominant_log_score": -23.228025686,
+   "dominant_log_score": -35.880694327,
    "last_learn_timestamp": "<ts>",
-   "last_mutation_introduced": 0,
+   "last_mutation_introduced": 1,
    "last_mutation_total_attempts": 0,
    "learn_calls_this_session": 4,
    "pipeline_status": {
@@ -760,19 +835,40 @@
    "candidates": [
     {
      "active_edge_count": 0,
-     "avg_ll": -5.808032774,
+     "avg_ll": -8.970198879,
      "bic_penalty_raw": 2.780531726,
-     "bic_score_explore": -6.503165705,
-     "bic_score_strict": -8.5885645,
+     "bic_score_explore": -9.665331811,
+     "bic_score_strict": -11.750730605,
      "candidate_id": "<id0>",
      "description": "unconnected: no hypotheses yet",
      "edge_structure": [],
      "evidence_count": 4,
      "generation": 0,
      "is_dominant": true,
-     "log_score": -23.228025686,
+     "log_score": -35.880694327,
      "status": "ACTIVE",
      "total_edge_count": 0
+    },
+    {
+     "active_edge_count": 1,
+     "avg_ll": -8.970198879,
+     "bic_penalty_raw": 2.954314959,
+     "bic_score_explore": -9.708777619,
+     "bic_score_strict": -11.924513838,
+     "candidate_id": "<id1>",
+     "description": "prompted_add_VolatilityShock_prev->VolatilityShock",
+     "edge_structure": [
+      [
+       "VolatilityShock_prev",
+       "VolatilityShock"
+      ]
+     ],
+     "evidence_count": 4,
+     "generation": 1,
+     "is_dominant": false,
+     "log_score": -35.880694327,
+     "status": "ACTIVE",
+     "total_edge_count": 1
     }
    ],
    "domain": "Macro Regime",
@@ -782,7 +878,7 @@
    "last_mutation_cycle": {
     "dag_violations": 0,
     "duplicate_rejections": 0,
-    "introduced": 0,
+    "introduced": 1,
     "total_attempts": 0
    },
    "total_evidence_records": 4
@@ -795,35 +891,35 @@
    "records": [
     {
      "description": "fake@2026-03-01",
-     "id": "<id1>",
-     "impact_delta": 1.0,
-     "strength": "strong",
-     "timestamp": "<ts>",
-     "variables_updated": null
-    },
-    {
-     "description": "fake@2026-02-22",
      "id": "<id2>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": null
+     "variables_updated": 16
     },
     {
-     "description": "fake@2026-02-15",
+     "description": "fake@2026-02-22",
      "id": "<id3>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": null
+     "variables_updated": 16
     },
     {
-     "description": "fake@2026-02-08",
+     "description": "fake@2026-02-15",
      "id": "<id4>",
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": null
+     "variables_updated": 16
+    },
+    {
+     "description": "fake@2026-02-08",
+     "id": "<id5>",
+     "impact_delta": 1.0,
+     "strength": "strong",
+     "timestamp": "<ts>",
+     "variables_updated": 16
     }
    ]
   },
@@ -836,119 +932,271 @@
    "frontier_edges": [],
    "nodes": [
     {
+     "degree": 0.5,
      "id": "YieldCurveInverted",
      "label": "YieldCurveInverted",
      "observation": null,
-     "probability": 0.543133333,
      "status": "target"
     },
     {
+     "degree": null,
      "id": "InflationShock",
      "label": "InflationShock",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "LiquidityStress",
      "label": "LiquidityStress",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "CreditSpreadStress",
      "label": "CreditSpreadStress",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "VolatilityShock",
      "label": "VolatilityShock",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "DollarStrength",
      "label": "DollarStrength",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "EquityRiskOn",
      "label": "EquityRiskOn",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "AIRiskOn",
      "label": "AIRiskOn",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "YieldCurveInverted_prev",
      "label": "YieldCurveInverted_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "InflationShock_prev",
      "label": "InflationShock_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "LiquidityStress_prev",
      "label": "LiquidityStress_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "CreditSpreadStress_prev",
      "label": "CreditSpreadStress_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "VolatilityShock_prev",
      "label": "VolatilityShock_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "DollarStrength_prev",
      "label": "DollarStrength_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "EquityRiskOn_prev",
      "label": "EquityRiskOn_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     },
     {
+     "degree": null,
      "id": "AIRiskOn_prev",
      "label": "AIRiskOn_prev",
      "observation": null,
-     "probability": null,
      "status": "weak"
     }
    ],
-   "target_probability": 0.543133333,
+   "target_degree": 0.5,
+   "target_distribution": {
+    "high": 0.428571429,
+    "low": 0.428571429,
+    "mid": 0.142857143
+   },
+   "target_level": "low",
+   "target_variable": "YieldCurveInverted"
+  },
+  "status": 200
+ },
+ "inference_other_candidate": {
+  "body": {
+   "candidate_id": "<id1>",
+   "edges": [
+    {
+     "probability": 0.5,
+     "source": "VolatilityShock_prev",
+     "status": "explore",
+     "target": "VolatilityShock"
+    }
+   ],
+   "frontier_edges": [
+    {
+     "explore_weight": 1.0,
+     "note": "existence_probability=0.500 in explore band [0.25, 0.75]",
+     "probability": 0.5,
+     "relation": "VolatilityShock_prev\u2192VolatilityShock",
+     "source": "VolatilityShock_prev",
+     "target": "VolatilityShock"
+    }
+   ],
+   "nodes": [
+    {
+     "degree": 0.5,
+     "id": "YieldCurveInverted",
+     "label": "YieldCurveInverted",
+     "observation": null,
+     "status": "target"
+    },
+    {
+     "degree": null,
+     "id": "InflationShock",
+     "label": "InflationShock",
+     "observation": null,
+     "status": "weak"
+    },
+    {
+     "degree": null,
+     "id": "LiquidityStress",
+     "label": "LiquidityStress",
+     "observation": null,
+     "status": "weak"
+    },
+    {
+     "degree": null,
+     "id": "CreditSpreadStress",
+     "label": "CreditSpreadStress",
+     "observation": null,
+     "status": "weak"
+    },
+    {
+     "degree": null,
+     "id": "VolatilityShock",
+     "label": "VolatilityShock",
+     "observation": null,
+     "status": "exploring"
+    },
+    {
+     "degree": null,
+     "id": "DollarStrength",
+     "label": "DollarStrength",
+     "observation": null,
+     "status": "weak"
+    },
+    {
+     "degree": null,
+     "id": "EquityRiskOn",
+     "label": "EquityRiskOn",
+     "observation": null,
+     "status": "weak"
+    },
+    {
+     "degree": null,
+     "id": "AIRiskOn",
+     "label": "AIRiskOn",
+     "observation": null,
+     "status": "weak"
+    },
+    {
+     "degree": null,
+     "id": "YieldCurveInverted_prev",
+     "label": "YieldCurveInverted_prev",
+     "observation": null,
+     "status": "weak"
+    },
+    {
+     "degree": null,
+     "id": "InflationShock_prev",
+     "label": "InflationShock_prev",
+     "observation": null,
+     "status": "weak"
+    },
+    {
+     "degree": null,
+     "id": "LiquidityStress_prev",
+     "label": "LiquidityStress_prev",
+     "observation": null,
+     "status": "weak"
+    },
+    {
+     "degree": null,
+     "id": "CreditSpreadStress_prev",
+     "label": "CreditSpreadStress_prev",
+     "observation": null,
+     "status": "weak"
+    },
+    {
+     "degree": null,
+     "id": "VolatilityShock_prev",
+     "label": "VolatilityShock_prev",
+     "observation": null,
+     "status": "exploring"
+    },
+    {
+     "degree": null,
+     "id": "DollarStrength_prev",
+     "label": "DollarStrength_prev",
+     "observation": null,
+     "status": "weak"
+    },
+    {
+     "degree": null,
+     "id": "EquityRiskOn_prev",
+     "label": "EquityRiskOn_prev",
+     "observation": null,
+     "status": "weak"
+    },
+    {
+     "degree": null,
+     "id": "AIRiskOn_prev",
+     "label": "AIRiskOn_prev",
+     "observation": null,
+     "status": "weak"
+    }
+   ],
+   "target_degree": 0.5,
+   "target_distribution": {
+    "high": 0.428571429,
+    "low": 0.428571429,
+    "mid": 0.142857143
+   },
+   "target_level": "low",
    "target_variable": "YieldCurveInverted"
   },
   "status": 200
@@ -974,62 +1222,69 @@
     "candidates": [
      {
       "edge_count": 0,
-      "log_score": -23.228025686,
+      "log_score": -35.880694327,
       "name": "unconnected: no hypotheses yet",
-      "score_normalized": 0.05,
+      "score_normalized": 0.95,
       "status": "dominant"
+     },
+     {
+      "edge_count": 1,
+      "log_score": -35.880694327,
+      "name": "prompted_add_VolatilityShock_prev->VolatilityShock",
+      "score_normalized": 0.05,
+      "status": "falling"
      }
     ],
-    "score_gap_to_dominant": null
+    "score_gap_to_dominant": 0.173783233
    },
    "current_regime_state": [
     {
-     "boolean_state": true,
-     "name": "YieldCurveInverted",
-     "probability": 0.543133333
+     "degree": 0.5,
+     "level": "low",
+     "name": "YieldCurveInverted"
     },
     {
-     "boolean_state": true,
-     "name": "InflationShock",
-     "probability": 0.509766667
+     "degree": 0.428571429,
+     "level": "mid",
+     "name": "InflationShock"
     },
     {
-     "boolean_state": false,
-     "name": "LiquidityStress",
-     "probability": 0.43075
+     "degree": 0.357142857,
+     "level": "low",
+     "name": "LiquidityStress"
     },
     {
-     "boolean_state": true,
-     "name": "CreditSpreadStress",
-     "probability": 0.5017
+     "degree": 0.5,
+     "level": "low",
+     "name": "CreditSpreadStress"
     },
     {
-     "boolean_state": false,
-     "name": "VolatilityShock",
-     "probability": 0.494166667
+     "degree": 0.428571429,
+     "level": "low",
+     "name": "VolatilityShock"
     },
     {
-     "boolean_state": false,
-     "name": "DollarStrength",
-     "probability": 0.457683333
+     "degree": 0.5,
+     "level": "low",
+     "name": "DollarStrength"
     },
     {
-     "boolean_state": true,
-     "name": "EquityRiskOn",
-     "probability": 0.577366667
+     "degree": 0.642857143,
+     "level": "high",
+     "name": "EquityRiskOn"
     },
     {
-     "boolean_state": true,
-     "name": "AIRiskOn",
-     "probability": 0.627566667
+     "degree": 0.642857143,
+     "level": "mid",
+     "name": "AIRiskOn"
     }
    ],
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
     "edge_count": 0,
     "edges": [],
-    "generations_dominant": 0,
-    "log_score": -23.228025686,
+    "generations_dominant": 1,
+    "log_score": -35.880694327,
     "name": "unconnected: no hypotheses yet"
    },
    "frontier": {
@@ -1037,25 +1292,25 @@
     "frontier_edges": []
    },
    "interpretation_hints": [
-    "structure_entropy is low (0.000): engine has converged on a single dominant causal story",
-    "dominant hypothesis was introduced in the current generation",
+    "structure_entropy is medium (0.637): engine is converging but competing hypotheses remain plausible",
+    "dominant hypothesis has held for 1 generation",
     "no paradigm shifts recorded since shift logging was enabled",
     "evidence base is small (4 records); scores may not yet be reliable",
     "no edges are in the explore band: dominant causal structure is well-determined"
    ],
    "metadata": {
-    "current_generation": 0,
+    "current_generation": 1,
     "domain": "Macro Regime",
     "domain_module_id": "macro-regime-v1",
     "evidence_count": 4,
     "timestamp": "<ts>"
    },
    "ontology_competition": {
-    "active_candidates": 1,
-    "entropy_interpretation": "low",
+    "active_candidates": 2,
+    "entropy_interpretation": "medium",
     "paradigm_shifts_total": 0,
     "recent_shifts": [],
-    "structure_entropy": 0.0
+    "structure_entropy": 0.63731031
    }
   },
   "status": 200
@@ -1071,12 +1326,12 @@
  },
  "status": {
   "body": {
-   "active_candidates": 1,
-   "current_generation": 0,
+   "active_candidates": 2,
+   "current_generation": 1,
    "domain": "Macro Regime",
    "dominant_hypothesis": {
     "candidate_id": "<id0>",
-    "generations_dominant": 0,
+    "generations_dominant": 1,
     "name": "unconnected: no hypotheses yet"
    },
    "engine_status": "online",
@@ -1084,7 +1339,7 @@
    "last_evidence_cycle_ago": "<ago>",
    "max_candidates": 10,
    "paradigm_shifts_this_window": 0,
-   "structure_entropy": 0.0
+   "structure_entropy": 0.63731031
   },
   "status": 200
  }

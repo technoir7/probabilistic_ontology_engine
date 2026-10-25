@@ -7,45 +7,48 @@ Tracks evolving causal narratives around SF's urban economic trajectory:
 tech hiring, office vacancy, retail closures, permit activity, crime,
 startup formation, foot traffic, and population flow.
 
-Variables (all BOOLEAN)
------------------------
+Variables (levels: low, mid, high; REFACTOR_SPEC D25)
+-----------------------------------------------------
+Each is read as how far its signal lies from the line below (high: well
+above it, mid: near it, low: well below). The lines:
 TechHiringAccelerating
-    True  = FRED SF info employment YoY change z-score elevated
+    high  = FRED SF info employment YoY change z-score elevated
     Signal: tech sector expanding in SF-Oakland metro
 
 OfficeVacancyFalling
-    True  = SF building permits commercial/office fraction falling (inverted)
+    high  = SF building permits commercial/office fraction falling (inverted)
     Signal: commercial space demand recovering
 
 RetailClosureElevated
-    True  = SF business license expirations count z-score elevated
+    high  = SF business license expirations count z-score elevated
     Signal: retail businesses closing at elevated rate
 
 PermitActivityRising
-    True  = SF total building permits count z-score elevated
+    high  = SF total building permits count z-score elevated
     Signal: construction/development activity increasing
 
 CrimeIndexElevated
-    True  = SF police incidents count z-score elevated
+    high  = SF police incidents count z-score elevated
     Signal: crime deterring foot traffic and business activity
 
 StartupFormationRising
-    True  = SF new business registrations count z-score elevated
+    high  = SF new business registrations count z-score elevated
     Signal: entrepreneurial activity recovering
 
 FootTrafficRecovering
-    True  = FRED SF leisure/hospitality employment YoY change z-score elevated
+    high  = FRED SF leisure/hospitality employment YoY change z-score elevated
     Signal: consumer-facing economy recovering
 
 PopulationFlowPositive
-    True  = FRED SF total employment YoY change z-score elevated
+    high  = FRED SF total employment YoY change z-score elevated
     Signal: population returning / net inflow
 
 Cadence: WEEKLY (uses monthly/quarterly data)
 """
 from __future__ import annotations
 
-from ..sources.structure import boolean_variables, with_lags
+from ..sources.grades import graded_variables
+from ..sources.structure import with_lags
 from ...engine.schemas import (
     EdgeExistenceThresholdConfig,
     Variable,
@@ -72,7 +75,7 @@ _VAR_NAMES = [
     "PopulationFlowPositive",
 ]
 
-_VARIABLE_DEFS: dict[str, Variable] = boolean_variables(_MODULE_ID, _VAR_NAMES)
+_VARIABLE_DEFS: dict[str, Variable] = graded_variables(_MODULE_ID, _VAR_NAMES)
 
 
 def get_variables() -> dict[str, Variable]:

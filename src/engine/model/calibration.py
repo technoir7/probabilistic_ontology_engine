@@ -33,14 +33,14 @@ class Calibration:
     true: list[float] = field(default_factory=lambda: [0.0] * BINS)   # how many came true (expected, if uncertain)
     brier: float = 0.0
 
-    def observe(self, p_true: float, outcome: bool | float) -> None:
+    def observe(self, p: float, outcome: bool | float) -> None:
         """OUTCOME: whether it came true, or the probability the evidence gives it."""
         o = float(outcome)
-        b = min(int(p_true * BINS), BINS - 1)
+        b = min(int(p * BINS), BINS - 1)
         self.n[b] += 1
-        self.said[b] += p_true
+        self.said[b] += p
         self.true[b] += o
-        self.brier += (p_true - o) ** 2
+        self.brier += (p - o) ** 2
 
     def summary(self) -> dict:
         total = sum(self.n)
