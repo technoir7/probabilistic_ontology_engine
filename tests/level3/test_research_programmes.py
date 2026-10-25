@@ -32,13 +32,16 @@ def test_a_programme_is_founded_from_nothing_and_kept_by_its_descendants():
         parent = by_id.get(c.parent_candidate_id)
         if parent is None:
             continue
-        if not parent.edges and c.description.startswith("prompted_add_"):
-            (p, ch), = c.edge_structure_signature()
+        if parent.lineage == "unconnected" and c.description.startswith("prompted_add_"):
+            # From nothing, or from a leader's structure without its core (D27).
+            p, ch = c.description.removeprefix("prompted_add_").split("->")
             assert c.lineage == "–".join(sorted((p, ch)))
-            founded += 1
+            founded += not parent.edges
         elif c.description.startswith("rival_"):  # a rival to the leader (D26)
             p, ch = c.description.removeprefix("rival_").split("->")
             assert c.lineage == "–".join(sorted((p, ch)))
+        elif c.description.startswith("trial_"):  # the leader's core on trial (D27)
+            assert c.lineage == "unconnected"
         else:
             assert c.lineage == parent.lineage
     assert founded >= 1

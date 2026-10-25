@@ -6,8 +6,8 @@ Responsibilities:
     no hypotheses: one structure that connects nothing (D24).
   - Scores candidates after each learning cycle.
   - Forms hypotheses from the evidence (synthesis), founds rivals to the
-    leader (programmes, D26) and introduces blind variants, each research
-    programme's best in turn (D16, D24).
+    leader and puts its core on trial (programmes, D26, D27) and introduces
+    blind variants, each research programme's best in turn (D16, D24).
   - Prunes candidates the leader's evidence refutes, sparing each programme's
     best until then (D15, D22), within max_population_size.
   - Tracks the dominant candidate and logs each paradigm shift: the lead
@@ -31,7 +31,7 @@ from ..schemas import (
     OntologyCandidate,
     OntologyPopulation,
 )
-from .programmes import UNCONNECTED, copied_edges, descendant, edge, is_persistence, programme_name, rival
+from .programmes import UNCONNECTED, copied_edges, descendant, edge, is_persistence, programme_name, rival, trial
 from .synthesis import Connection, connections
 from ..stores.parameter_store import ParameterStore
 from ..stores.population_store import PopulationStore
@@ -56,8 +56,14 @@ def _breeding_order(ranked: list[OntologyCandidate], turn: int) -> list[Ontology
 
 
 def _refuted(candidate: OntologyCandidate, leader: OntologyCandidate) -> bool:
-    """Is the evidence, not the leader's simplicity, decisive against it? (D22)"""
-    return log_bayes_factor(leader, candidate) > _DECISIVE_LOG_BAYES_FACTOR
+    """Is the evidence decisive against it, whichever way complexity is
+    counted? On fit alone, a more complex rival is not refuted for the
+    parameters it must learn (D22); on score, a simpler one is not refuted
+    for the fit it gave up by being simpler, as a trial of the core does at
+    its founding (D27)."""
+    shared = min(leader.window_evidence, candidate.window_evidence)
+    by_score = shared * (candidate_score(leader) - candidate_score(candidate))
+    return min(log_bayes_factor(leader, candidate), by_score) > _DECISIVE_LOG_BAYES_FACTOR
 
 
 class PopulationManager:
@@ -311,6 +317,8 @@ class PopulationManager:
 
         if recent and len(new_candidates) < slots:
             founded = rival(domain_module_id, active, recent, admissible, held, pop.max_population_size)
+            if founded is None:
+                founded = trial(domain_module_id, active, held)
             if founded is not None:
                 admit(best_candidate(active), founded)
 

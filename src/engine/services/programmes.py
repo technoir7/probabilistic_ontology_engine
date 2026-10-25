@@ -1,7 +1,7 @@
 """
 Research programmes (Lakatos): what founds one, what its hard core is, and
 how a rival to the leader is founded with a fair trial (REFACTOR_SPEC D24,
-D26).
+D26), and how the leader's core is itself put on trial (D27).
 
 A programme is founded by a connection between two concepts, and named for
 the pair. Persistence, a concept following its own last value, is common
@@ -11,9 +11,10 @@ leader's, so the two are judged only on what comes after.
 """
 from __future__ import annotations
 
+import math
 from uuid import uuid4
 
-from ..model.scoring import bic_penalty
+from ..model.scoring import bic_penalty, candidate_score
 from ..model.scoring import dominant as best_candidate
 from ..schemas import (
     CandidateStatus,
@@ -138,6 +139,33 @@ def rival(
     return None
 
 
+def trial(
+    domain_module_id: str,
+    active: list[OntologyCandidate],
+    held: set[frozenset[tuple[str, str]]],
+) -> OntologyCandidate | None:
+    """The leader without its hard core, everything else kept, level with it
+    (D27): where no anomaly prompts a rival, the core still faces a test, and
+    the leader keeps it only by predicting better from here on (Popper).
+    Without its core it holds no worldview.
+
+    None while any worldview but the leader's is alive, a trial among them,
+    so each is settled before the next; or while the leader holds no core."""
+    leader = best_candidate(active)
+    if any(c.lineage != leader.lineage for c in active):
+        return None
+    core = _core(leader)
+    if not core or leader.edge_structure_signature() - core in held:
+        return None
+    (parent, child), = core
+    kept = [e for e in copied_edges(leader)
+            if (leader.get_variable_by_id(e.parent_variable_id).name,
+                leader.get_variable_by_id(e.child_variable_id).name) not in core]
+    founded = descendant(leader, domain_module_id, kept,
+                         description=f"trial_{parent}->{child}", lineage=UNCONNECTED)
+    return _level_with(founded, leader)
+
+
 def _core(candidate: OntologyCandidate) -> set[tuple[str, str]]:
     """The connection that founded the candidate's programme, if it still
     holds it: its hard core."""
@@ -161,4 +189,8 @@ def _level_with(founded: OntologyCandidate, leader: OntologyCandidate) -> Ontolo
         cheaper = bic_penalty(leader) - bic_penalty(founded)
         if cheaper > 0:
             founded.window_log_score -= cheaper * founded.window_evidence
+        # Rounding can leave the founded a hair ahead, which would hand it the
+        # lead unearned; step its fit down until it is level or behind.
+        while candidate_score(founded) > candidate_score(leader):
+            founded.window_log_score = math.nextafter(founded.window_log_score, -math.inf)
     return founded

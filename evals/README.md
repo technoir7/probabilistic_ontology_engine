@@ -829,3 +829,42 @@ That it did not later is the evidence's verdict at the resolution it can
 afford, not the rule's: in Kuhn's terms, normal science without anomaly.
 Whether a longer memory for forming hypotheses would show anomalies a
 100-week one cannot is the next question (NEXT.md problem 8).
+
+## Replay 14: the leader's core on trial
+
+*Plan, written before replay 14 ran. Nothing in it has been run on the FRED
+data; the design was settled against the synthetic tests.*
+
+After 2009 replay 13's leaders were never challenged: a rival needs an
+anomaly, a connection the recent evidence supports that the leader lacks,
+and there was none. A longer memory would not supply one: probed on seed
+0's leader, 200 weeks offered one connection (January 2009) and 400 weeks
+none. REFACTOR_SPEC D27 tests the core instead of waiting for an anomaly.
+While no other worldview is alive, the engine founds a trial of the
+leader's core: its structure without the connection that founded its
+programme, everything else kept, level with it on score. Without its core
+it holds no worldview. The leader keeps the core only by predicting better
+from here on, by more than the core costs in complexity. A trial is refuted
+only when the evidence is decisive against it on fit and on score both, so
+it is not refuted for the fit it gave up by being simpler. Same data as
+first published, seeds 0–4, events and window, written to
+`data/replay14/`; compared with replay 13.
+
+Blind variants could already drop the core by chance, keeping the
+programme's name, and the leaders kept their cores through 2026; so the
+expected answer is that the cores survive. The question is whether they do
+when tested on purpose and fairly.
+
+25. **Does the core survive its trials?** Trials founded per seed; how long
+    each lives; how many lead. A trial that leads has shown the core was not
+    needed: the leader's worldview is given up.
+26. **Does testing make the lead change on noise?** Changes of programme
+    after 2009 (replay 13: none), against the ten events within 26 weeks,
+    and how many weeks apart.
+27. **Does it cost the leader what it had found?** Persistence links, the
+    links between signals held for 52 weeks or more, fit gap, forecast and
+    calibration, against replay 13.
+
+What would count against the change: trials that take the lead every few
+weeks with no event behind them; or a leader that holds or predicts less
+than replay 13's.
