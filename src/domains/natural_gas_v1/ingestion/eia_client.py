@@ -6,23 +6,23 @@ API key must be supplied via the EIA_API_KEY environment variable (or the
 
 Series used
 -----------
-NG.NW2_EPG0_SWO_R48_BCF.W
+NW2_EPG0_SWO_R48_BCF (natural-gas/stor/wkly)
     Weekly Lower-48 States Natural Gas Working Underground Storage (Bcf).
     Published every Thursday.  Two consecutive readings are fetched;
     the week-over-week change determines StorageDraw.
 
-NG.RNGWHHD.D
+RNGWHHD (natural-gas/pri/fut)
     Henry Hub Natural Gas Spot Price ($/MMBtu, daily business days).
     28 daily readings are fetched; the most recent price is compared to
     the 28-day rolling median to determine PriceUp.
 
 Endpoint
 --------
-GET https://api.eia.gov/v2/seriesid/{series_id}
-    ?api_key={key}
-    &length={n}
-    &offset=0
-Data is returned newest-first.
+GET https://api.eia.gov/v2/{route}/data/
+    ?api_key={key}&frequency={weekly|daily}&data[0]=value
+    &facets[series][]={series}&end={target date, when past}
+    &length={n}&sort[0][column]=period&sort[0][direction]=desc
+Data is returned newest-first, ending at the target date.
 """
 from __future__ import annotations
 
@@ -35,9 +35,12 @@ import httpx
 
 logger = logging.getLogger(__name__)
 
-_BASE_URL = "https://api.eia.gov/v2/seriesid"
-_STORAGE_SERIES = "NG.NW2_EPG0_SWO_R48_BCF.W"
-_PRICE_SERIES   = "NG.RNGWHHD.D"
+# (route, frequency, series). The data routes, not /v2/seriesid: seriesid
+# ignores start and end and always serves the latest rows, so a past day
+# could never be fetched.
+_BASE_URL = "https://api.eia.gov/v2"
+_STORAGE_SERIES = ("natural-gas/stor/wkly", "weekly", "NW2_EPG0_SWO_R48_BCF")
+_PRICE_SERIES   = ("natural-gas/pri/fut", "daily", "RNGWHHD")  # Henry Hub spot
 
 _PRICE_WINDOW   = 28   # rolling days for median baseline
 _STORAGE_FETCH  = 3    # need 2 consecutive weeks; fetch 3 for safety
@@ -164,7 +167,7 @@ class EIAClient:
 
     async def _fetch_series(
         self,
-        series_id: str,
+        series: tuple[str, str, str],
         length: int,
         end_date: date | None = None,
     ) -> list[dict]:
@@ -175,9 +178,13 @@ class EIAClient:
         Returns a list of record dicts, newest first.
         Raises IOError on HTTP or parsing failure.
         """
-        url = f"{_BASE_URL}/{series_id}"
+        route, frequency, series_id = series
+        url = f"{_BASE_URL}/{route}/data/"
         params = {
             "api_key": self._api_key,
+            "frequency": frequency,
+            "data[0]": "value",
+            "facets[series][]": series_id,
             "length": length,
             "offset": 0,
             "sort[0][column]": "period",

@@ -312,13 +312,13 @@ def test_noaa_with_fewer_than_two_stations_is_an_error():
 
 def _make_eia_http_response(series_id_fragment: str) -> MagicMock:
     """
-    Build a mock httpx response for the EIA v2 seriesid endpoint.
-    Differentiates storage vs price series via URL fragment.
+    Build a mock httpx response for EIA's v2 data routes.
+    Differentiates storage vs price by the route in the URL.
     """
     resp = MagicMock()
     resp.raise_for_status = MagicMock()
 
-    if "NW2_EPG0_SWO" in series_id_fragment:   # storage series
+    if "/stor/" in series_id_fragment:   # storage series
         resp.json = MagicMock(return_value={
             "response": {
                 "data": [
@@ -345,7 +345,7 @@ def _make_historical_eia_http_response(series_id_fragment: str) -> MagicMock:
     resp = MagicMock()
     resp.raise_for_status = MagicMock()
 
-    if "NW2_EPG0_SWO" in series_id_fragment:
+    if "/stor/" in series_id_fragment:
         resp.json = MagicMock(return_value={
             "response": {
                 "data": [
@@ -451,6 +451,28 @@ def test_fetch_evidence_full_async():
 
     # --- EIA was called 2 times (storage + price series) ---
     assert eia_http_mock.get.call_count == 2
+
+
+def test_eia_asks_the_data_routes_that_honour_a_past_end_date():
+    """EIA's seriesid route ignores start and end and always serves the
+    latest rows, so a past day could never be fetched. The data routes
+    apply them."""
+    seen: list[tuple[str, dict]] = []
+
+    def eia_get_side_effect(url, **kwargs):
+        seen.append((url, kwargs["params"]))
+        return _make_historical_eia_http_response(url)
+
+    eia_http_mock = AsyncMock()
+    eia_http_mock.get = AsyncMock(side_effect=eia_get_side_effect)
+    asyncio.run(EIAClient(api_key="test-key-unused", client=eia_http_mock).fetch_snapshot(date(2025, 1, 10)))
+
+    (price_url, price), (storage_url, storage) = sorted(seen, key=lambda call: call[0])
+    assert storage_url.endswith("/v2/natural-gas/stor/wkly/data/")
+    assert (storage["frequency"], storage["facets[series][]"], storage["end"]) == ("weekly", "NW2_EPG0_SWO_R48_BCF", "2025-01-10")
+    assert price_url.endswith("/v2/natural-gas/pri/fut/data/")
+    assert (price["frequency"], price["facets[series][]"], price["end"]) == ("daily", "RNGWHHD", "2025-01-10")
+    assert storage["data[0]"] == price["data[0]"] == "value"
 
 
 def test_eia_fetch_snapshot_uses_historical_target_date():
