@@ -6,7 +6,8 @@ from src.domains.test_domain_v1.domain import _var_list, TestDomainV1
 from src.domains.test_domain_v1.synthetic_generator import SyntheticDataGenerator
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.services.learning import LearningService
-from src.engine.services.population_manager import UNCONNECTED, PopulationManager, unconnected
+from src.engine.services.population_manager import PopulationManager
+from src.engine.services.programmes import UNCONNECTED, unconnected
 from src.engine.services.synthesis import connections
 from src.engine.stores.parameter_store import ParameterStore
 from src.engine.stores.population_store import PopulationStore
@@ -110,8 +111,9 @@ def test_a_new_connection_is_learned_from_the_evidence_remembered():
 
 
 def test_the_evidence_is_heard_before_blind_variation():
-    # Each programme's best first takes the change the evidence most prompts;
-    # blind variants fill the places left.
+    # Each programme's best first takes the change the evidence most prompts,
+    # then the evidence may found a rival to the leader (D26); blind variants
+    # fill the places left.
     from src.domains.test_domain_v1.domain import make_null_candidate
     held = make_null_candidate(DOMAIN)
     held.lineage = "C–E"
@@ -120,4 +122,4 @@ def test_the_evidence_is_heard_before_blind_variation():
     new = pm.introduce_variants(DOMAIN, recent)
     best = connections(held, recent, ALL_PAIRS)[0]
     assert new[0].description == f"prompted_add_{best.parent}->{best.child}"
-    assert len(new) == 3 and all(v.description.startswith("variant_") for v in new[1:])
+    assert len(new) == 3 and new[1].description.startswith("rival_") and new[2].description.startswith("variant_")

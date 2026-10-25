@@ -757,3 +757,75 @@ paradigm shifts now turn on revisions within one programme. And the one
 stable link joins two concepts named for one thing and measured by another
 (EquityRiskOn is read from unemployment; NASDAQ momentum is named AIRiskOn),
 so the names say more than the evidence does.
+
+## Replay 13: rivals that can always be founded
+
+*Plan, written before replay 13 ran. Nothing in it has been run on the FRED
+data; the design was settled against the synthetic tests.*
+
+Replay 12 settled in 2003 and had no rival programme alive from 2008 on.
+Two rules made that inevitable: a programme could be founded only from the
+unconnected structure, which was refuted once persistence was found; and a
+persistence link founded a programme, so the "rivals" were each one
+signal's persistence and converged on the same structure. REFACTOR_SPEC D26
+changes both. Persistence is common ground and founds nothing. And whenever
+the recent evidence supports a connection between two concepts that the
+leader lacks, it founds a rival: the leader's structure without its hard
+core, with that connection in its place, level with the leader, while fewer
+than half the population's places hold programmes. Same data as first
+published, seeds 0–4, events and window, written to `data/replay13/`;
+compared with replay 12.
+
+22. **Are there rivals?** Programmes alive, year by year, against replay
+    12's one from 2008; how long rivals live; how many are founded.
+23. **Does the lead ever change programme, and when?** Changes of programme
+    (not revisions) against the ten events within 26 weeks, and away from
+    them. A rival that only denies the leader's core and leads has shown the
+    core was not needed: those changes are the point.
+24. **Does it cost the leader what it had found?** Persistence links and
+    the links between signals held for 52 weeks or more, the fit gap over
+    independent signals, and the forecast from last week, against replay
+    12.
+
+What would count against the change: no rival alive for years again; or
+changes of programme every few weeks with no events behind them, which
+would mean rivals are founded too level to be told apart; or a leader that
+holds less than replay 12's.
+
+### Replay 13 results
+
+22. **Rivals arise when the evidence shows an anomaly, and after 2009 it
+    showed none.** Every seed founded rivals through 2004–06, two to three
+    programmes alive on average in 2004. From 2008 on there was one again,
+    in every seed but one (1.7 in 2008 in seed 2). The founding rule was not
+    what stopped them: probed on seed 0's leader every few years from 2009,
+    the last 100 weeks supported no connection between two concepts that
+    the leader lacked (one offer in January 2009; none at any probe after).
+    With nothing the leader fails to account for, there is no anomaly to
+    found a rival on, and the rule founds none. The binding limit is the
+    100-week memory hypotheses are formed from (NEXT.md problem 8).
+23. **The lead changed programme 7 to 22 times per seed, all between 2004
+    and 2006, none after an event.** In seeds 2 and 3 some changes came
+    weeks apart (July 2004: three in three weeks). That is what the plan
+    said would count against the change: rivals founded level with the
+    leader, while the window holds little evidence, trade the lead on
+    noise. It stopped once the evidence accumulated. Different seeds
+    settled on different worldviews: inflation bears on credit stress
+    (seeds 1, 2 and 4; in seed 1, last week's inflation), the labour
+    trend on NASDAQ momentum (seed 0), NASDAQ momentum on the dollar (seed
+    3). Replay 12's seeds all settled on the labour trend; that the
+    outcome now depends on the seed says these worldviews explain the
+    weeks about equally well, and the evidence does not choose between
+    them.
+24. **It kept what it had found and fit better.** All eight persistence
+    links in every seed's final leader, 9–10 links in all; fit gap over
+    independent signals 2.57–2.72 nats a week (replay 12: 2.51–2.55);
+    forecast from last week −3.44 to −3.47 against base rates −6.05 to
+    −6.16; calibration level by level 0.034–0.038 (replay 12:
+    0.036–0.040).
+
+The engine can now change its worldview, and did, early and too readily.
+That it did not later is the evidence's verdict at the resolution it can
+afford, not the rule's: in Kuhn's terms, normal science without anomaly.
+Whether a longer memory for forming hypotheses would show anomalies a
+100-week one cannot is the next question (NEXT.md problem 8).

@@ -31,7 +31,8 @@ from .services.edge_existence import EdgeExistenceService
 from .services.health import EpistemicHealth
 from .services.inference import InferenceService
 from .services.learning import LearningService
-from .services.population_manager import PopulationManager, unconnected
+from .services.population_manager import PopulationManager
+from .services.programmes import unconnected
 from .stores.database import Database
 from .stores.evidence_store import EvidenceStore
 from .stores.parameter_store import ParameterStore

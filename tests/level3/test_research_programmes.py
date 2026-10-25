@@ -36,6 +36,9 @@ def test_a_programme_is_founded_from_nothing_and_kept_by_its_descendants():
             (p, ch), = c.edge_structure_signature()
             assert c.lineage == "–".join(sorted((p, ch)))
             founded += 1
+        elif c.description.startswith("rival_"):  # a rival to the leader (D26)
+            p, ch = c.description.removeprefix("rival_").split("->")
+            assert c.lineage == "–".join(sorted((p, ch)))
         else:
             assert c.lineage == parent.lineage
     assert founded >= 1

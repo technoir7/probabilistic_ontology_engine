@@ -72,7 +72,7 @@ opposite fault, three observations of a weekly series read as three
 months; it is fixed. Fixing macro's changes what the replays measured, so
 it waits for a replay that says what it changes.
 
-## 8. Weak dependences go unfound
+## 8. Weak dependences go unfound, and anomalies unseen
 
 A hypothesis is formed from the last 100 records and must explain more
 than chance could. In the synthetic test, a real dependence worth about
@@ -82,6 +82,12 @@ failure (G2, xfail). A longer memory would find it but notice a change of
 regime more slowly (D14); forming hypotheses from a longer memory than the
 score's is the obvious thing to try, and the replays would have to show it
 does not slow the response to change.
+
+The same memory decides when a rival can be founded (D26): a rival needs a
+connection the leader lacks that the last 100 records support. In replay 13
+there was none after 2009, so one worldview held for seventeen years. A
+longer memory for forming hypotheses might show anomalies a 100-week one
+cannot.
 
 ## 9. Testimony is counted label by label
 

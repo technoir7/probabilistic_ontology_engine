@@ -507,8 +507,10 @@ revised to meet the evidence, and a heuristic for revising them
 *degenerating* when they only accommodate.
 
 In the engine:
-- **Programme:** a connection the evidence prompted from the unconnected
-  start, together with every explanation descended from it (section 2).
+- **Programme:** a connection between two concepts that the evidence
+  prompted, from the unconnected start or as a rival to the leader,
+  together with every explanation descended from it (section 2). A
+  concept's persistence founds no programme (below).
 - **Hard core:** that founding connection, between two concepts.
 - **Protective belt:** the relations its descendants add, remove and turn
   round.
@@ -555,11 +557,51 @@ evidence, and two survived to the end in some runs. But none led (section
 
 D24 removed that assumption along with every other given hypothesis.
 Persistence is now something the engine must find, not something it is
-told. In a test where signals persist and are otherwise unrelated, it is
-the first thing the evidence prompts. Since every programme now grows from
-the evidence, a pattern all of them need is one each must find for itself;
-whether that makes the trial less fair to some is a question for the next
-replay.
+told, and it is the first thing the evidence prompts. But for a while it
+also founded programmes: each signal's persistence was a "programme", and
+with signals read as levels (D25) those were the first found. They were
+the same worldview many times over, converged on one structure, and were
+refuted as copies. Replay 12 had one programme alive from 2008 on.
+
+So persistence is common ground again, now found rather than given (D26).
+In Kant's terms it is the First Analogy, that in all change something
+persists (A182/B224): not one account of change among others, but the
+condition of experiencing change at all. It founds no programme. What
+programmes dispute is the Second Analogy: the rules by which one thing
+follows from another (A189/B232). A programme's hard core is always a
+connection between two different concepts.
+
+### A rival can always be founded
+
+A believer that can no longer form a rival cannot change its mind, however
+fairly it treats the rivals it has. Programmes used to be founded only from
+the unconnected start, and the start is refuted as soon as anything is
+found; after that, no new worldview could arise.
+
+Kuhn describes how a rival paradigm arises: from anomaly, what the reigning
+one fails to account for (*Structure*, ch. 6–8). The engine now founds a
+rival the same way (D26). Whenever the recent evidence supports, beyond
+what chance could fit, a connection between two concepts that the leader
+lacks, it founds a programme on it: the leader's own structure without its
+hard core, with the new connection in its place. The rival shares the
+leader's auxiliaries, which D23 holds no rival should be judged on; it
+denies the leader's core and asserts its own. The trial is then of the
+core itself. If the leader's core does real work, the rival falls behind
+and is refuted. If it does not, the rival leads, and that is a change of
+worldview, not of belt.
+
+A trial must also be fair at its start. A rival given its parent's past, as
+other descendants are, would inherit the leader's lead over it and be
+refuted at birth. So a rival begins level with the leader: the same record
+of the past, judged only on what comes after. Where it is the simpler of
+the two, its fit is lowered by the difference, so it ties rather than
+leading before it has predicted anything; on a tie the incumbent keeps the
+lead.
+
+Proliferation has a limit. Rivals are founded only while fewer than half
+the population's places hold programmes, so each programme keeps room to
+revise itself (section 6, *A fair trial*). That limit is a convention, like
+the population's size.
 
 ## 7. Changing its mind
 
@@ -579,21 +621,26 @@ shift (SPEC §3.1). It also marks which kind of change it is:
 
 ### What 23 years taught it
 
-Through 2003–2026, after the trial was made fair, the leading programme
-never changed. Persistence led every week. None of the worldviews, given
-that signals persist, explained the weeks better than persistence alone.
-These runs began from the hand-written worldviews of section 2. Whether an
-engine that forms its own hypotheses finds more is the question of the next
-replay, planned but not yet run.
+Through 2003–2026, after the trial was made fair, the hand-written
+worldviews never displaced persistence: none, given that signals persist,
+explained the weeks better than persistence alone (replays 1–10).
 
 This can be put in Kant's terms. The First Analogy of Experience
 (A182/B224) is the principle that in all change something persists. The
 Second (A189/B232) is that every alteration follows from something else by
-a rule. The engine's experience of the economy is organized, so far, under
-the First Analogy alone. It has found that things stay as they were, and
-has not found the rules by which they change. Whether that is a verdict on
-the worldviews or on the vocabulary they are stated in is the engine's
-first open problem (NEXT.md problem 1).
+a rule. That engine's experience of the economy was organized under the
+First Analogy alone: it found that things stay as they were, not the rules
+by which they change.
+
+The engine that forms its own hypotheses, reading signals as degrees, went
+further (replays 12 and 13). Every seed found every signal's persistence
+and one or two rules beyond it, held for twenty years: inflation bearing on
+credit stress, the labour trend on tech stocks, tech stocks on the dollar.
+Which rule a run settled on depended on the run, so the evidence does not
+choose between them; they are candidates for the Second Analogy, not
+findings. After 2009 no anomaly appeared that the leader missed, within the
+two years of evidence it forms hypotheses from, and it kept its worldview
+(NEXT.md problems 1 and 8).
 
 ### Doubt in a crisis
 
@@ -730,8 +777,8 @@ deliberate cost:
    the levels' order would cost a few numbers per cause (NEXT.md problem
    3).
 7. **The conventions are conventions.** The 100-to-1 threshold, the
-   two-year half-life, the crisis threshold and the halving are
-   conventional choices, fixed before the replays that tested them. They
+   two-year half-life, the crisis threshold, the halving and the limit on
+   rivals (half the population's places) are conventional choices, fixed before the replays that tested them. They
    are not derived from anything deeper.
 8. **Weak dependences go unfound.** A hypothesis is formed from the last
    100 records and must explain more than chance could. A real dependence

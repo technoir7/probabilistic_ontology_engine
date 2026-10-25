@@ -153,7 +153,17 @@ probability. A Bayes factor above 100 is the conventional threshold for
   signal's persistence in every seed, mostly within three years (replay 11
   had never found two of them), and every seed held one link between
   signals for twenty years: last week's unemployment trend bears on NASDAQ
-  momentum. It settled in 2003 and has had no rival programme since 2008.
+  momentum. It settled in 2003 and had no rival programme after 2008.
+- **It can now change its worldview, when the evidence calls for it.** In
+  replay 12 no rival could be founded, because rivals came only from the
+  empty start. Now any connection the recent evidence supports and the
+  leader lacks founds a rival that denies the leader's hard core, judged
+  from level with it (D26). In replay 13 rivals rose and the lead changed
+  hands through 2004–06; after 2009 the evidence of any two years showed
+  nothing the leader missed, so it kept its worldview. Seeds now settle on
+  different worldviews (inflation on credit stress, the labour trend on
+  tech stocks, tech stocks on the dollar), which the evidence does not
+  choose between.
 - **The replays found six bugs, now fixed**: an inverted dollar signal, a
   CPI lookback that dropped inflation in about half of all weeks, an engine
   seed that never reached the code it was meant to seed, the double

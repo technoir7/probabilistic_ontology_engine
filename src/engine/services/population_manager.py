@@ -5,8 +5,9 @@ Responsibilities:
   - Maintains OntologyPopulation for each active domain, which begins with
     no hypotheses: one structure that connects nothing (D24).
   - Scores candidates after each learning cycle.
-  - Forms hypotheses from the evidence (synthesis) and introduces blind
-    variants, each research programme's best in turn (D16, D24).
+  - Forms hypotheses from the evidence (synthesis), founds rivals to the
+    leader (programmes, D26) and introduces blind variants, each research
+    programme's best in turn (D16, D24).
   - Prunes candidates the leader's evidence refutes, sparing each programme's
     best until then (D15, D22), within max_population_size.
   - Tracks the dominant candidate and logs each paradigm shift: the lead
@@ -17,7 +18,7 @@ from __future__ import annotations
 import math
 import random
 from datetime import datetime
-from uuid import UUID, uuid4
+from uuid import UUID
 
 
 from ..model.doubt import Surprise
@@ -25,14 +26,12 @@ from ..model.scoring import add_to_window, candidate_score, log_bayes_factor
 from ..model.scoring import dominant as best_candidate
 from ..schemas import (
     CandidateStatus,
-    DependencyEdge,
-    DependencyKind,
     EdgeExistenceThresholdConfig,
     EvidenceRecord,
     OntologyCandidate,
     OntologyPopulation,
-    Variable,
 )
+from .programmes import UNCONNECTED, copied_edges, descendant, edge, is_persistence, programme_name, rival
 from .synthesis import Connection, connections
 from ..stores.parameter_store import ParameterStore
 from ..stores.population_store import PopulationStore
@@ -43,28 +42,6 @@ from ..model.clock import naive_utc_now
 _MIN_RECORDS_FOR_PRUNING = 3
 # Jeffreys' "decisive": a Bayes factor above 100 for the leader over a rival.
 _DECISIVE_LOG_BAYES_FACTOR = math.log(100)
-# The programme of the structure that connects nothing.
-UNCONNECTED = "unconnected"
-
-
-def programme_name(a: str, b: str) -> str:
-    """A programme founded on the connection between A and B, either way."""
-    return "–".join(sorted((a, b)))
-
-
-def unconnected(domain_module_id: str, variables: list[Variable]) -> OntologyCandidate:
-    """Where every domain begins: its concepts, and no hypothesis connecting
-    them (D24)."""
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=domain_module_id,
-        variables=variables,
-        edges=[],
-        description=f"{UNCONNECTED}: no hypotheses yet",
-        lineage=UNCONNECTED,
-    )
-
-
 def _breeding_order(ranked: list[OntologyCandidate], turn: int) -> list[OntologyCandidate]:
     """Each programme's best, best programme first and rotated by `turn`,
     then everyone else by score."""
@@ -76,34 +53,6 @@ def _breeding_order(ranked: list[OntologyCandidate], turn: int) -> list[Ontology
         k = turn % len(order)
         order = order[k:] + order[:k]
     return order + [c for c in ranked if c not in order]
-
-
-def _copied_edges(parent: OntologyCandidate) -> list[DependencyEdge]:
-    return [e.model_copy(update={"edge_id": uuid4()}) for e in parent.edges]
-
-
-def _descendant(
-    parent: OntologyCandidate, domain_module_id: str, edges: list[DependencyEdge],
-    description: str, lineage: str,
-) -> OntologyCandidate:
-    # Warm-start: inherit the parent's score, so the two differ only by how
-    # they predict from here on. The evidence that prompted a connection is
-    # already in that score, and counts for the parent as much as the child.
-    return OntologyCandidate(
-        candidate_id=uuid4(),
-        domain_module_id=domain_module_id,
-        generation=parent.generation + 1,
-        parent_candidate_id=parent.candidate_id,
-        variables=parent.variables,  # shared; immutable at engine level
-        edges=edges,
-        log_score=parent.log_score,
-        evidence_count=parent.evidence_count,
-        window_log_score=parent.window_log_score,
-        window_evidence=parent.window_evidence,
-        status=CandidateStatus.ACTIVE,
-        description=description,
-        lineage=lineage,
-    )
 
 
 def _refuted(candidate: OntologyCandidate, leader: OntologyCandidate) -> bool:
@@ -360,6 +309,11 @@ class PopulationManager:
                 if prompted is not None:
                     admit(parent_cand, prompted)
 
+        if recent and len(new_candidates) < slots:
+            founded = rival(domain_module_id, active, recent, admissible, held, pop.max_population_size)
+            if founded is not None:
+                admit(best_candidate(active), founded)
+
         attempts = 0
         max_attempts = slots * 10
 
@@ -429,23 +383,15 @@ class PopulationManager:
             if kept | {(c.parent, c.child)} in held:
                 continue
             pvar, cvar = parent.get_variable_by_name(c.parent), parent.get_variable_by_name(c.child)
-            edge = DependencyEdge(
-                edge_id=uuid4(),
-                parent_variable_id=pvar.variable_id,
-                child_variable_id=cvar.variable_id,
-                dependency_kind=DependencyKind.DIRECTED_CONDITIONAL,
-                existence_prior=0.5,
-                existence_probability=0.5,
-                learnable=True,
-                enabled=True,
-            )
-            edges = [e for e in _copied_edges(parent)
+            edges = [e for e in copied_edges(parent)
                      if not (c.reverses and (e.parent_variable_id, e.child_variable_id)
                              == (cvar.variable_id, pvar.variable_id))]
-            return _descendant(
-                parent, domain_module_id, [*edges, edge],
+            return descendant(
+                parent, domain_module_id, [*edges, edge(parent, c.parent, c.child)],
                 description=f"prompted_{'reverse' if c.reverses else 'add'}_{c.parent}->{c.child}",
-                lineage=programme_name(c.parent, c.child) if not sig else parent.lineage,
+                lineage=(programme_name(c.parent, c.child)
+                         if parent.lineage == UNCONNECTED and not is_persistence(parent, c.parent, c.child)
+                         else parent.lineage),
             )
         return None
 
@@ -477,7 +423,7 @@ class PopulationManager:
             if not candidates_to_add:
                 strategy = "remove"
 
-        variant_edges = _copied_edges(parent)
+        variant_edges = copied_edges(parent)
 
         if strategy == "add" and admissible:
             pname, cname = self.rng.choice(candidates_to_add)
@@ -485,17 +431,7 @@ class PopulationManager:
             cvar = parent.get_variable_by_name(cname)
             if pvar is None or cvar is None:
                 return None
-            new_edge = DependencyEdge(
-                edge_id=uuid4(),
-                parent_variable_id=pvar.variable_id,
-                child_variable_id=cvar.variable_id,
-                dependency_kind=DependencyKind.DIRECTED_CONDITIONAL,
-                existence_prior=0.5,
-                existence_probability=0.5,
-                learnable=True,
-                enabled=True,
-            )
-            variant_edges.append(new_edge)
+            variant_edges.append(edge(parent, pname, cname))
             description = f"variant_add_{pname}->{cname}"
         elif strategy == "remove" and active_edges:
             # Pick a random active edge to remove
@@ -511,7 +447,7 @@ class PopulationManager:
         else:
             return None
 
-        return _descendant(parent, domain_module_id, variant_edges, description, parent.lineage)
+        return descendant(parent, domain_module_id, variant_edges, description, parent.lineage)
 
     # ------------------------------------------------------------------
     # Diagnostic accessors

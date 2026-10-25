@@ -63,6 +63,6 @@ def test_structure_entropy_falls_once_one_structure_explains_the_data():
 
 def test_one_structure_alone_has_no_entropy():
     # Every domain begins with one structure (D24); exactly zero, not -1e-12.
-    from src.engine.services.population_manager import unconnected
+    from src.engine.services.programmes import unconnected
     from src.domains.test_domain_v1.domain import _var_list
     assert structure_entropy([unconnected("test-domain-v1", _var_list())]) == 0.0
