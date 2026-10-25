@@ -13,10 +13,14 @@ persistence alone. Is that the verdict on these worldviews, or on weekly
 yes/no signals, which may be too coarse to carry how credit or money moves
 the rest? Monthly evidence, or degrees (problem 2), would say.
 
-The engine now forms its own hypotheses (D24). In replay 11 it found
-persistence for most signals and held a few links between signals, but fit
-the weeks a little worse than replay 10's persistence; replay 12 asks the
-same with levels (D25).
+The engine now forms its own hypotheses (D24) and reads signals as levels
+(D25). Replays 12 and 13 seemed to find a link or two between signals; put
+on trial (D27, replay 14), none did work that persistence did not, and
+from 2009 every seed held persistence alone. The question stands, now for
+an engine that formed its own conjectures: is persistence all there is, or
+are weekly levels too coarse to show the rest? Monthly evidence, finer
+levels at an affordable price (problem 3), or concepts the engine forms
+itself would say.
 
 ## 2. Unsure in the middle
 
@@ -86,8 +90,11 @@ does not slow the response to change.
 The same memory decides when a rival can be founded (D26): a rival needs a
 connection the leader lacks that the last 100 records support. In replay 13
 there was none after 2009, so one worldview held for seventeen years. A
-longer memory for forming hypotheses might show anomalies a 100-week one
-cannot.
+longer memory does not seem to help there: probed on seed 0's leader, 200
+weeks offered one connection (January 2009) and 400 weeks none. The
+leader is no longer left unchallenged for want of an anomaly, since its core
+is now put on trial when nothing else challenges it (D27, replay 14); that
+answers the challenge, not the weak dependences above.
 
 ## 9. Testimony is counted label by label
 
@@ -99,6 +106,19 @@ measured ones (on macro, 3 links in 100 weeks where the same weeks as
 levels support 8). The cure is to treat each concept's true value as
 hidden and each label as evidence about it (Pearl's virtual evidence),
 learning the tables by expectation maximisation.
+
+## 10. A worldview can lose its core and keep its name
+
+A programme is named for the connection that founded it, and an
+explanation keeps its programme's name for life. But a core can be lost in
+passing: a blind variant may drop it, or edge existence (Level 2) may
+switch the link off once the evidence makes it unlikely. The explanation
+then reasons without the core and is still reported as holding that
+worldview; and with no core, there is nothing to put on trial (D27). In
+replay 14's seed 1 the leader has carried a programme's name since 2006,
+and its core was switched off in every week from mid-2009. A trial gives
+a worldview up openly; losing the core in passing should be reported the
+same way, as a change to no worldview.
 
 ## Outside the epistemology
 

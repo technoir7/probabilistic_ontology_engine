@@ -72,12 +72,15 @@ short, is set out in [EPISTEMOLOGY.md](EPISTEMOLOGY.md).
 Four rules, each added after a replay showed the engine needed it
 ([what each replay found](evals/README.md)):
 
-- **Rivals live until refuted.** Every explanation belongs to a research
-  programme (the connection it grew from, formed from nothing). A programme's best is kept until the
-  evidence for the leader over it is decisive, a Bayes factor above 100
-  from fit alone (simplicity ranks explanations but refutes none),
-  and programmes take turns to propose variants, so a rival gets to revise
-  itself before it is judged (Lakatos).
+- **Rivals live until refuted, and the leader is tested.** Every
+  explanation belongs to a research programme (the connection between two
+  concepts it grew from). A programme's best is kept until the evidence for
+  the leader over it is decisive, a Bayes factor above 100 on fit and on
+  fit less complexity both, and programmes take turns to propose variants,
+  so a rival gets to revise itself before it is judged (Lakatos). When
+  nothing else challenges the leader, its defining connection is put on
+  trial: the same explanation without it, started level, which takes the
+  lead if the connection does no work (Popper; D27).
 - **Doubt in a crisis.** When the leading explanation is far more surprised
   by a week than it usually is, everything learned so far counts for half,
   so a world that has broken (COVID) loosens old certainties without making
@@ -151,25 +154,36 @@ probability. A Bayes factor above 100 is the conventional threshold for
   signal as low, middle or high, observed exactly, instead of as a
   probability of "true" (D25). Starting from nothing, the engine found every
   signal's persistence in every seed, mostly within three years (replay 11
-  had never found two of them), and every seed held one link between
-  signals for twenty years: last week's unemployment trend bears on NASDAQ
-  momentum. It settled in 2003 and had no rival programme after 2008.
+  had never found two of them), and every seed seemed to hold one link
+  between signals for twenty years: last week's unemployment trend bears on
+  NASDAQ momentum (but see replay 14). It settled in 2003 and had no rival
+  programme after 2008.
 - **It can now change its worldview, when the evidence calls for it.** In
   replay 12 no rival could be founded, because rivals came only from the
   empty start. Now any connection the recent evidence supports and the
   leader lacks founds a rival that denies the leader's hard core, judged
   from level with it (D26). In replay 13 rivals rose and the lead changed
   hands through 2004–06; after 2009 the evidence of any two years showed
-  nothing the leader missed, so it kept its worldview. Seeds now settle on
+  nothing the leader missed, so it kept its worldview. Seeds settled on
   different worldviews (inflation on credit stress, the labour trend on
-  tech stocks, tech stocks on the dollar), which the evidence does not
+  tech stocks, tech stocks on the dollar), which the evidence did not
   choose between.
-- **The replays found six bugs, now fixed**: an inverted dollar signal, a
+- **Put on trial, those worldviews fell.** When nothing challenges the
+  leader, the engine now tests its defining link: the same explanation
+  without it, started level (D27, Popper). In replay 14 the version
+  without the link won in four seeds by 2006; in the fifth the link had
+  already been judged not to exist. From 2009 every seed held each
+  signal's persistence and nothing else, and forecast as well as before.
+  An engine that forms its own conjectures and tries to refute them
+  reaches replays 1–10's verdict: at weekly levels, macro's evidence
+  supports that signals persist, and no more.
+- **The replays found seven bugs, now fixed**: an inverted dollar signal, a
   CPI lookback that dropped inflation in about half of all weeks, an engine
   seed that never reached the code it was meant to seed, the double
   complexity charge and the free first week above, and a replay measure that
   scored the leader without last week's values, which overstated replays
-  6–9's fit gap.
+  6–9's fit gap, and a recorder that counted links the engine had switched
+  off as held, which overstated replays 11–13's links between signals.
 
 ![Rival explanations surviving; leader changes against the events; the fit gap year by year](docs/replay10.svg)
 

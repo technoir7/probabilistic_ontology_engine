@@ -98,6 +98,10 @@ they were careful to use only figures as first published (section 3).
 The engine now gives no hypotheses at all (D24). It begins with none, and
 forms its own from the evidence.
 
+On where hypotheses come from, the engine left Popper. On how they are
+held, it has come back to him: even the core of the worldview it leads with
+is put to the test in quiet times, not presumed (D27, section 6).
+
 ### What it begins with
 
 It does not begin with nothing. Locke held that the mind begins as a blank
@@ -495,6 +499,14 @@ Scientific Discovery*, §§65–68). The engine's threshold is such a decision,
 fixed in advance. The comparison is always with a rival, never with the
 data alone. An explanation is given up for a better one, not into a void.
 
+The evidence must be decisive whichever way complexity is counted: on fit
+alone, and on fit less complexity (D27). For a more complex rival the
+first is the harder test. The scoring already charges it for the
+parameters it must learn, and charging BIC as well refuted every rival
+within weeks (D22). For a simpler one, such as a trial of the leader's core
+(section 6), the second is the harder test: the fit it gave up by being
+simpler is not evidence against it.
+
 ## 6. Rival research programmes
 
 ### Programmes, not theories
@@ -511,7 +523,9 @@ In the engine:
   prompted, from the unconnected start or as a rival to the leader,
   together with every explanation descended from it (section 2). A
   concept's persistence founds no programme (below).
-- **Hard core:** that founding connection, between two concepts.
+- **Hard core:** that founding connection, between two concepts. A trial
+  of the core, which goes without it, holds no worldview (*The core is on
+  trial*, below).
 - **Protective belt:** the relations its descendants add, remove and turn
   round.
 
@@ -603,6 +617,48 @@ the population's places hold programmes, so each programme keeps room to
 revise itself (section 6, *A fair trial*). That limit is a convention, like
 the population's size.
 
+### The core is on trial
+
+Lakatos protects the hard core. A programme's *negative heuristic* forbids
+aiming the evidence at it and directs refutation onto the protective belt.
+Popper exempts nothing. No statement of science is beyond test, a theory is
+held only while it survives serious attempts to refute it, and the game
+has no end at which a theory is retired from testing (*Logic of
+Scientific Discovery*, §§11, 85; *Conjectures and Refutations*, ch. 1).
+
+Under D26 the engine was on Lakatos's side. The core was challenged only
+when an anomaly offered a rival, and after 2009 none did: for seventeen
+years nothing was aimed at the leader's core (replay 13). A core could be
+lost in passing, by a blind variant that dropped it or by the evidence
+making the link unlikely enough to switch off (Level 2), but the
+explanation kept the programme's name, so a worldview could lose its
+defining claim without anything saying so (section 11).
+
+So the engine now aims at the core (D27). While no other worldview is
+alive, it founds a trial of the leader's core: the leader's own structure
+without the connection that founded its programme, everything else kept,
+level with it on score. A trial asserts nothing new. It says only that the
+core does no work.
+- If the core does work, the leader outpredicts the trial by more than the
+  core costs in complexity. Once the evidence is decisive, the trial is
+  refuted, and the next is founded. The core is under test every week, not
+  merely presumed.
+- If it does not, the trial leads and the leader's worldview is given up.
+  Without its core the trial holds no worldview. The engine keeps its
+  persistence and the auxiliaries, but has no programme until the evidence
+  prompts a new one: Kuhn's crisis, with no successor yet.
+
+This is Popper's demand on Lakatos's structure. A programme still keeps its
+core against rivals while it has the chance to develop; the trial asks,
+only in quiet times, whether the core still earns its place. A trial waits
+while any other worldview is alive, another trial among them. The
+population is not filled with tests, and a core is not tried while a rival
+is already challenging it.
+
+The start must again be fair. A trial is simpler than the leader, so to tie
+it, its fit is lowered by the complexity it saves. That lowered fit is not
+evidence against it, so it does not count toward refutation (section 5).
+
 ## 7. Changing its mind
 
 ### Shifts, worldview changes and revisions
@@ -632,15 +688,22 @@ a rule. That engine's experience of the economy was organized under the
 First Analogy alone: it found that things stay as they were, not the rules
 by which they change.
 
-The engine that forms its own hypotheses, reading signals as degrees, went
-further (replays 12 and 13). Every seed found every signal's persistence
-and one or two rules beyond it, held for twenty years: inflation bearing on
+The engine that forms its own hypotheses, reading signals as degrees,
+seemed to go further (replays 12 and 13). Every seed found every signal's
+persistence and settled on one or two rules beyond it: inflation bearing on
 credit stress, the labour trend on tech stocks, tech stocks on the dollar.
-Which rule a run settled on depended on the run, so the evidence does not
-choose between them; they are candidates for the Second Analogy, not
-findings. After 2009 no anomaly appeared that the leader missed, within the
-two years of evidence it forms hypotheses from, and it kept its worldview
-(NEXT.md problems 1 and 8).
+Which rule a run settled on depended on the run, so the evidence did not
+choose between them.
+
+Put on trial, none survived (replay 14). In four seeds the explanation
+without the rule outpredicted the one with it by 2006, and the leader gave
+up its worldview; in the fifth the rule had already been judged not to
+exist, though the leader kept its name. From 2009 on, every seed held each
+signal's persistence and nothing else, and forecast as well as before. So
+the result of replays 1–10 stands, now reached the harder way: an engine
+that formed its own conjectures and then tried to refute them found, at
+the resolution of weekly levels, the First Analogy and no rule of the
+Second (NEXT.md problem 1).
 
 ### Doubt in a crisis
 
@@ -778,9 +841,17 @@ deliberate cost:
    3).
 7. **The conventions are conventions.** The 100-to-1 threshold, the
    two-year half-life, the crisis threshold, the halving and the limit on
-   rivals (half the population's places) are conventional choices, fixed before the replays that tested them. They
+   rivals (half the population's places) and the trial's wait for quiet
+   times are conventional choices, fixed before the replays that tested
+   them. They
    are not derived from anything deeper.
-8. **Weak dependences go unfound.** A hypothesis is formed from the last
+8. **A worldview can lose its core and keep its name.** A trial gives up
+   the leader's worldview openly. But a core can also be lost in passing,
+   by a blind variant that drops it or by Level 2 switching the link off,
+   and the explanation keeps its programme's name. Such a leader is
+   reported as holding a worldview it no longer reasons with, and since it
+   has no core, none is put on trial (NEXT.md problem 10).
+9. **Weak dependences go unfound.** A hypothesis is formed from the last
    100 records and must explain more than chance could. A real dependence
    weaker than about 0.04 nats a record is rarely formed, and if formed,
    rarely outscores its parent within the score's memory (section 2). A
@@ -795,12 +866,13 @@ deliberate cost:
 | Soft evidence | testimony about a concept (art's reports), recorded as the probability that it applies |
 | Relation (edge) | a dependence of one concept on another, with a probability that it exists |
 | Explanation (candidate) | one whole structure: concepts, relations and strengths |
-| Programme (lineage) | a connection prompted from the unconnected start, named for its pair ("A–C"), and every explanation descended from it |
+| Programme (lineage) | a connection between two concepts that the evidence prompted, from the unconnected start or as a rival to the leader, named for its pair ("A–C"), and every explanation descended from it |
+| Trial | the leader without its programme's core, level with it, founded when no other worldview is alive (D27) |
 | Synthesis | forming a hypothesis: the connection the remembered evidence most prompts, offered when it explains more than chance |
 | Leader | the explanation ranked best on recent evidence |
 | Paradigm shift | any change of leader |
 | Worldview change / revision | a shift between programmes / within one |
-| Refutation | a rival outpredicting an explanation by odds above 100 to 1 |
+| Refutation | a rival outpredicting an explanation by odds above 100 to 1, on fit and on fit less complexity both |
 | Crisis | a week far more surprising to the leader than usual; what was learned then counts for half |
 | Nat | the unit of surprise: one nat less surprise means about 2.7 times more probability given to what happened |
 
@@ -835,7 +907,7 @@ deliberate cost:
 - Pearl, J. *Probabilistic Reasoning in Intelligent Systems*. San Mateo,
   1988.
 - Popper, K. R. *The Logic of Scientific Discovery* (1934; English 1959),
-  §§65–68; *Conjectures and Refutations* (1963); *Objective Knowledge*
+  §§11, 65–68, 85; *Conjectures and Refutations* (1963); *Objective Knowledge*
   (1972).
 - Quine, W. V. O. "Two Dogmas of Empiricism." *Philosophical Review* 60
   (1951).

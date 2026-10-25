@@ -868,3 +868,51 @@ when tested on purpose and fairly.
 What would count against the change: trials that take the lead every few
 weeks with no event behind them; or a leader that holds or predicts less
 than replay 13's.
+
+### Replay 14 results
+
+The first run's recorder listed every link a leader carried, including
+links edge existence (Level 2) had switched off, which the engine no longer
+reasons with. Found when seed 1 never put its core on trial: the core had
+been switched off. The recorder now lists only links in use; the figures
+below are from the rerun. Replays 11–13 were recorded the old way (see the
+note on replay 13 below).
+
+25. **The cores did not survive.** In four seeds a trial took the lead:
+    seed 0 in July 2005, seeds 2 and 3 in August 2005, seed 4 in May 2006.
+    In seeds 0, 2 and 3 the lead went back and forth three to five times
+    through 2005, then stayed. The trials that led held no other link
+    between signals either. In
+    seed 1 no trial was founded after 2004, because there was no core to
+    try: its leader has been named for last week's inflation bearing on
+    credit stress since May 2006, but from mid-2009 that link was switched
+    off in every week (NEXT.md problem 10). So in every seed the leader
+    from 2009 on holds each signal's persistence and nothing else: no link
+    between two signals was in use in any week after mid-2009, except 8
+    weeks in seed 3.
+26. **It did not change on noise after 2009.** Seeds 0, 1 and 4: no change
+    of programme after 2009. Seeds 2 and 3: four each, all in August–
+    November 2010, when the evidence prompted a new programme (last week's
+    equity risk bearing on liquidity stress), which led twice for a few
+    weeks and lost both times. That is the engine forming a conjecture and
+    the evidence refuting it, not a trial trading the lead.
+27. **Giving up the cores cost nothing.** All eight persistence links in
+    every seed; fit gap over independent signals 2.56–2.72 nats a week
+    (replay 13: 2.57–2.72); forecast from last week −3.43 to −3.46
+    (replay 13: −3.44 to −3.47); calibration level by level 0.035–0.037
+    (replay 13: 0.034–0.038). Seed 1, which ran no trial, is identical to
+    replay 13's seed 1.
+
+Tested on purpose, the links between signals that replays 12 and 13
+reported as worldviews did no work that persistence did not already do.
+This is the finding of replays 1–10 again, now reached by an engine that
+formed its own hypotheses and then tried to refute them: at weekly levels,
+macro's evidence supports that each signal persists, and nothing more.
+
+**Correction to replays 11–13.** Their link lists included links Level 2
+had switched off. Replay 14's seed 1 ran exactly as replay 13's seed 1
+did, and its leader's one link between signals (last week's inflation on
+credit stress) was off in every week after mid-2009, so replay 13's claim
+that it was held to 2026 was wrong for that seed. The other seeds' later
+years cannot be checked from the stored rows; their fit, forecast and
+calibration, which the engine computed from the links in use, stand.
