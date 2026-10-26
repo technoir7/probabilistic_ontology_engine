@@ -28,3 +28,25 @@ def test_an_artist_is_matched_by_name_and_birth_year_where_both_give_one():
     assert got.artists["yayoi kusama"] == {"aic", "cma", "nyt", "guardian"}
     # two museums' John Smiths were born 50 years apart: two people, so the name is dropped
     assert "john smith" not in got.artists and "john smith" in got.ambiguous
+
+
+def test_press_names_come_from_tags_by_year(tmp_path):
+    import json
+    from evals.art_artists import press_names
+    (tmp_path / "nyt").mkdir(); (tmp_path / "guardian").mkdir()
+    (tmp_path / "nyt" / "2015-03.jsonl").write_text(json.dumps(
+        {"tags": [["persons", "Kusama, Yayoi"], ["subject", "Art"]]}) + "\n")
+    (tmp_path / "guardian" / "2015-03.jsonl").write_text(
+        json.dumps({"tags": [["artanddesign/yayoi-kusama", "Yayoi Kusama"], ["artanddesign/painting", "Painting"],
+                             ["uk/london", "London"]]}) + "\n"
+        + json.dumps({"tags": [["artanddesign/yayoi-kusama", "Yayoi Kusama"]]}) + "\n")
+    got = press_names(tmp_path)
+    assert got["nyt"] == {2015: {"yayoi kusama": 1}}
+    # every artanddesign tag is a candidate; only a match to a person elsewhere makes it an artist
+    assert got["guardian"] == {2015: {"yayoi kusama": 2, "painting": 1}}
+
+
+def test_a_guardian_tag_is_an_artist_only_if_a_person_elsewhere():
+    got = match({"aic": [Person("yayoi kusama", 1929)], "cma": []},
+                press={"nyt": set(), "guardian": {"yayoi kusama", "painting"}}, candidates={"guardian"})
+    assert got.artists == {"yayoi kusama": {"aic", "guardian"}}

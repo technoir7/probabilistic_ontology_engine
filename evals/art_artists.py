@@ -53,7 +53,11 @@ class Matched:
     ambiguous: set[str] = field(default_factory=set)
 
 
-def match(museums: Mapping[str, list[Person]], press: Mapping[str, set[str]]) -> Matched:
+def match(museums: Mapping[str, list[Person]], press: Mapping[str, set[str]],
+          candidates: set[str] = frozenset()) -> Matched:
+    """Names by the sources that have them. A name from a source in
+    *candidates* (Guardian tags, which are topics as well as people) counts
+    only if another source has it as a person."""
     births: dict[str, set[int]] = {}
     out = Matched()
     for source, people in museums.items():
@@ -62,8 +66,13 @@ def match(museums: Mapping[str, list[Person]], press: Mapping[str, set[str]]) ->
             if p.born is not None:
                 births.setdefault(p.name, set()).add(p.born)
     for source, names in press.items():
-        for n in names:
-            out.artists.setdefault(n, set()).add(source)
+        if source not in candidates:
+            for n in names:
+                out.artists.setdefault(n, set()).add(source)
+    for source, names in press.items():
+        if source in candidates:
+            for n in names & out.artists.keys():
+                out.artists[n].add(source)
     out.ambiguous = {n for n, years in births.items() if max(years) - min(years) > 1}
     for n in out.ambiguous:
         out.artists.pop(n, None)
@@ -132,3 +141,27 @@ if __name__ == "__main__":
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(fetch_museums(), sort_keys=True))
     print("wrote", out)
+
+
+def press_names(root) -> dict[str, dict[int, dict[str, int]]]:
+    """Per paper and year, how many art articles name each person: the NYT's
+    "persons" keywords, and the Guardian's `artanddesign/` keyword tags
+    (topics as well as people; `match` keeps only names that are people
+    elsewhere). From the saved texts (abductive_engine press.py)."""
+    import json
+    from pathlib import Path
+    out: dict[str, dict[int, dict[str, int]]] = {"guardian": {}, "nyt": {}}
+    for paper in out:
+        for path in sorted(Path(root, paper).glob("*.jsonl")):
+            year = int(path.stem[:4])
+            counts = out[paper].setdefault(year, {})
+            for line in path.read_text().splitlines():
+                names = set()
+                for kind, value in json.loads(line).get("tags", []):
+                    if paper == "nyt" and kind.lower() == "persons":
+                        names.add(nyt_person(value))
+                    elif paper == "guardian" and kind.startswith("artanddesign/"):
+                        names.add(normalise(value))
+                for n in names:
+                    counts[n] = counts.get(n, 0) + 1
+    return out
