@@ -33,11 +33,14 @@ ADMIN = {"Authorization": f"Bearer {ADMIN_TOKEN}"}
 def fake_record(variables: Iterable[Variable], target_date: date, *, seed: int | str) -> EvidenceRecord:
     """A record over *variables* as their domain would give it, deterministic
     for (seed, target_date): a soft yes/no for a BOOLEAN variable, an exact
-    level for a graded one (D25)."""
+    level for a graded one (D25). Last period's values are left to the
+    engine, as a domain's source leaves them."""
     rng = random.Random(f"{seed}:{target_date.isoformat()}")
     assignments = []
     for var in variables:
-        p = round(rng.uniform(0.05, 0.95), 4)
+        p = round(rng.uniform(0.05, 0.95), 4)  # drawn for every variable, so the stream is unchanged
+        if var.lag_of:
+            continue
         if var.domain_type == DomainType.BOOLEAN:
             assignments.append(ObservedAssignment(
                 variable_id=var.variable_id,

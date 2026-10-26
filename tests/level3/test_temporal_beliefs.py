@@ -42,6 +42,30 @@ def test_within_a_batch_each_record_lags_the_one_before():
     assert [next(a.observed_value for a in r.observed_assignments if a.variable_id == lag) for r in out[1:]] == [True, False]
 
 
+def test_a_last_period_value_the_source_observed_is_kept():
+    """A yearly signal is MISSING eleven months in twelve, so the previous
+    record cannot say what it was last year; its source can, and says so."""
+    v = with_lags("m", boolean_variables("m", ["A", "B"]))
+    first = record(v, {"A": True, "B": True}, 0)
+    second = record(v, {"A": False, "A_prev": False, "B": False}, 30)
+    out = lagged([second], first, list(v.values()))
+    got = {a.variable_id: a.observed_value for a in out[0].observed_assignments}
+    assert got[v["A_prev"].variable_id] is False      # the source's, not the previous record's
+    assert got[v["B_prev"].variable_id] is True       # the rest still from the previous record
+    assert len(out[0].observed_assignments) == 4
+
+
+def test_a_last_period_value_the_source_left_missing_is_filled():
+    v = with_lags("m", boolean_variables("m", ["A"]))
+    first = record(v, {"A": True}, 0)
+    second = record(v, {"A": False}, 30)
+    second.observed_assignments.append(ObservedAssignment(
+        variable_id=v["A_prev"].variable_id, observed_value=None, missingness=MissingnessType.MISSING))
+    out = lagged([second], first, list(v.values()))
+    lag = [a for a in out[0].observed_assignments if a.variable_id == v["A_prev"].variable_id]
+    assert [a.observed_value for a in lag] == [True]
+
+
 def test_a_domain_without_lags_is_untouched():
     v = boolean_variables("m", ["A"])
     r = record(v, {"A": True}, 0)

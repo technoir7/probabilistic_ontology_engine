@@ -6,6 +6,10 @@ Records are stored as observed; when they are learned, each is given its
 predecessor's values for those companions, so a structure can hold that
 this week follows from last. Last period's values are inputs: never a
 child, and never scored again.
+
+A source may observe last period's value itself, and then it is kept: a
+yearly signal is MISSING in most records, so only its source can say what
+it was last year.
 """
 from __future__ import annotations
 
@@ -26,12 +30,18 @@ def lagged(records: Sequence[EvidenceRecord], previous: Optional[EvidenceRecord]
     if not lags:
         return list(records)
     current_id = {v.name: v.variable_id for v in variables}
+    lag_ids = {v.variable_id for v in lags}
     out = []
     for record in records:
         before = {a.variable_id: a for a in previous.observed_assignments} if previous else {}
-        own = [a for a in record.observed_assignments if a.variable_id not in {v.variable_id for v in lags}]
+        supplied = {a.variable_id: a for a in record.observed_assignments
+                    if a.variable_id in lag_ids and a.missingness != MissingnessType.MISSING}
+        own = [a for a in record.observed_assignments if a.variable_id not in lag_ids]
         added = []
         for lag in lags:
+            if lag.variable_id in supplied:
+                added.append(supplied[lag.variable_id])
+                continue
             source = before.get(current_id.get(lag.lag_of))
             added.append(source.model_copy(update={"variable_id": lag.variable_id}) if source is not None else
                          ObservedAssignment(variable_id=lag.variable_id, observed_value=None,

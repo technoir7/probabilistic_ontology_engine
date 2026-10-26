@@ -581,14 +581,14 @@
      }
     }
    ],
-   "total_assignment_count": 64,
+   "total_assignment_count": 32,
    "total_evidence_records": 4,
    "unique_observed_assignment_patterns": 4,
    "unique_state_retention_ratio": 1.0,
    "used_assignment_position_fallback": false,
    "variable_id_match_count": 32,
-   "variable_id_match_ratio": 0.5,
-   "variable_id_mismatch_count": 32,
+   "variable_id_match_ratio": 1.0,
+   "variable_id_mismatch_count": 0,
    "variables": {
     "AltcoinSeasonActive": {
      "missing_count": 0,
@@ -866,7 +866,7 @@
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": 16
+     "variables_updated": 8
     },
     {
      "description": "fake@2026-02-22",
@@ -874,7 +874,7 @@
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": 16
+     "variables_updated": 8
     },
     {
      "description": "fake@2026-02-15",
@@ -882,7 +882,7 @@
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": 16
+     "variables_updated": 8
     },
     {
      "description": "fake@2026-02-08",
@@ -890,7 +890,7 @@
      "impact_delta": 1.0,
      "strength": "strong",
      "timestamp": "<ts>",
-     "variables_updated": 16
+     "variables_updated": 8
     }
    ]
   },
