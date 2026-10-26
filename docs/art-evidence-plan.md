@@ -1,6 +1,6 @@
 # Art evidence: a plan
 
-Status: second draft, 2026-10-26, for review. No code until approved.
+Status: approved 2026-10-26; section 5 revised after the probe (section 12).
 
 ## 1. Why art has no links
 
@@ -87,33 +87,59 @@ topics do not all rise and fall with the volume of art coverage, which
 would show links where there are none (NEXT.md problem 6).
 
 **Sources.** The Guardian (Open Platform, `artanddesign` section) and The
-New York Times (Article Search API, arts), both from about 2000: around 300
+New York Times (Archive API, articles with subject "Art"), both from about 2000: around 300
 months, against GDELT's 115. Both are free for non-commercial use but need
-a key tied to an account (decision 2). Two papers act as two witnesses. A
-topic each covers differently says so, and the probe (step 1) decides
-whether a signal averages the two or keeps one. GDELT, which is throttled
+a key tied to an account (decision 2). The two papers are two voices, kept apart (below). GDELT, which is throttled
 and starts in 2017, goes.
 
-**Reading a share as a level.** A topic that keeps rising reads "high"
-against its own past every month, which is AIImageSaturation's fault. A
-signal is kept only if each of its three levels holds at least 15% of
-months. Where comparing with the whole past fails that test, the probe
-tries comparing with the last two years: what is news this month, rather
-than how big the topic has become.
+**Reading a share as a level.** Each month is compared with the two
+years before it: what is news this month, rather than how big the topic
+has become. A topic that keeps rising does not then read "high" for ever,
+as AIImageSaturation did, and a change in the editors' tagging habits
+(section 12) fades out after two years instead of shifting every later
+month.
+
+**Discourse is not a sample.** A share is not a noisy reading of some
+hidden rate of interest: the articles a paper ran about sculpture this
+month are the press talking about sculpture, which is what the signal
+claims to be. So a topic is not dropped because its month-to-month
+movement is small next to sampling chance, nor because the two papers
+disagree. The Guardian and the NYT are two voices, London's art press and
+New York's, kept apart as two signals each and never averaged. What is
+kept from source criticism: the papers' own changes of bookkeeping are
+not discourse (Guardian tags are used from 2010; NYT renamed subjects in
+2009–10).
 
 **Which topics.** Not chosen by us: the papers' own subject tags on their
 art coverage (the Guardian's keyword tags within `artanddesign`, the NYT's
-subject keywords on arts articles). The rule:
-- Take the tags carried by the most art articles over the whole period.
-- Keep those that pass step 1.
-- Stop at eight, the most the data can afford.
+subject keywords on articles tagged Art). The rule:
+- Rank the tags by how many art articles carry them over the usable
+  period (Guardian 2010–, NYT 2000–).
+- Leave out tags that are not topics within art: the section's own tags
+  (Guardian tags of the form `x/x`, and its generic `artanddesign/art`;
+  the NYT's "culture (arts)" and "culture"), article formats ("reviews",
+  "deaths (obituaries)", "content type: personal profile",
+  "biographical information", "correction stories"), and tags naming
+  another of the paper's sections (music, theater, books and literature,
+  movies, dancing, travel and vacations, fashion and apparel).
+- Take the top four per paper, so that each voice has the same weight.
+
+The result, from the probe (section 12):
+
+| Signal | Paper | Tag | Art articles carrying it |
+|---|---|---|---|
+| GuardianPhotographyTalk | Guardian | artanddesign/photography | 28% |
+| GuardianExhibitionTalk | Guardian | artanddesign/exhibition | 20% |
+| GuardianPaintingTalk | Guardian | artanddesign/painting | 20% |
+| GuardianArchitectureTalk | Guardian | artanddesign/architecture | 12% |
+| NYTMuseumsTalk | NYT | museums | 18% |
+| NYTPhotographyTalk | NYT | photography | 6% |
+| NYTSculptureTalk | NYT | sculpture | 5% |
+| NYTAuctionsTalk | NYT | auctions | 4% |
 
 A paper's tags are its editors' categories, applied the same way to every
 article, so a topic is in because the press keeps writing about it, not
-because a theory needs it. Topics tagged in only one paper are matched by
-name where one clearly corresponds (painting, sculpture, auctions,
-museums), and otherwise kept for the paper that has them. The resulting
-list is reported in step 1, before anything is built on it.
+because a theory needs it.
 
 Free-text queries (as AIImageSaturation is now) are not used: a query's
 words are ours, and B23 found an "AI" query matching "painting".
