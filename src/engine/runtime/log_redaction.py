@@ -1,9 +1,10 @@
 """
 Log output with upstream API keys removed.
 
-FRED and EIA take their keys as query parameters, so any log line or
-traceback that quotes a request URL (httpx logs every request at INFO)
-would otherwise put the key in the server's logs. Redacting the formatted
+FRED, EIA, the Guardian and the NYT take their keys as query parameters
+(api_key or api-key), so any log line or traceback that quotes a request
+URL (httpx logs every request at INFO) would otherwise put the key in the
+server's logs. Redacting the formatted
 line, rather than quieting particular loggers, also catches exception
 messages and tracebacks from any library.
 """
@@ -12,7 +13,7 @@ from __future__ import annotations
 import logging
 import re
 
-_SECRET_PARAM = re.compile(r"(\bapi_key=)[^&\s'\"]+", re.IGNORECASE)
+_SECRET_PARAM = re.compile(r"(\bapi[_-]key=)[^&\s'\"]+", re.IGNORECASE)
 
 
 class RedactingFormatter(logging.Formatter):

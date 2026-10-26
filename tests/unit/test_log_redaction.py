@@ -29,3 +29,11 @@ def test_api_key_in_an_exception_is_redacted():
 
 def test_lines_without_a_key_are_unchanged():
     assert _format("learn() complete: domain=lm") == "httpx: learn() complete: domain=lm"
+
+
+def test_a_hyphenated_api_key_is_redacted():
+    # The Guardian and the NYT spell the parameter api-key.
+    line = _format("GET https://api.nytimes.com/svc/archive/v1/2020/1.json?api-key=NYTSECRET "
+                   "and https://content.guardianapis.com/search?section=artanddesign&api-key=GSECRET&page=2")
+    assert "NYTSECRET" not in line and "GSECRET" not in line
+    assert "api-key=[REDACTED]&page=2" in line
