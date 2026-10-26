@@ -1130,6 +1130,17 @@ wait for the rest of its download.
     years of both decades (largest 2007 and 2014), museums → press near zero
     throughout.
 
+*Description added afterwards, not a test:* around an artist's first
+acquisition (first since 1995, so 1995–99 excluded), the share with press
+attention each year from three before to three after. All acquired
+artists: flat (NYT 2.0–3.0%, Guardian 0.4–0.5%), since most are historical
+and the press does not follow them. Artists born 1940 or later (NYT 267,
+first acquired 2003–06; Guardian 782, 2013–22): NYT 4.5%, 4.1%, 4.9%, then
+5.6% in the year of acquisition and the year after, falling to 4.1% and
+3.0%; the Guardian flat at 0.5–1.4%. A hump at the acquisition, if
+anything, rather than press first; about 15 artists a year, so suggestive
+at most.
+
 So, year by year and artist by artist: the press and the museums
 consecrate the same artists and in the same seasons of their careers, and
 at a yearly grain neither leads the other. Bourdieu's bodies act together.
