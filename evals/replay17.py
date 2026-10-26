@@ -33,7 +33,8 @@ def main() -> None:
     args = parser.parse_args()
     museums = json.loads((DATA / "artists" / "museums.json").read_text())
     people = panel(museums, press_names(TEXTS))
-    for name, series in reception(TEXTS / "assertions", set(people)).items():
+    # Only assertions grounded in their article (abductive_engine ground.py).
+    for name, series in reception(TEXTS / "grounded", set(people)).items():
         people[name] |= series
     years = range(args.first, args.last + 1)
     out = {"artists": len(people), "years": [args.first, args.last], "pairs": {}}
