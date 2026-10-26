@@ -84,7 +84,7 @@ class ArtPipeline:
         figures, previous = figure_signals(self._figures, target_date)
         signals |= figures
         if target_date.month == MUSEUM_MONTH:
-            now, prev = await self._museums(target_date.year)
+            now, prev = await self.museums(target_date.year)
             if now is not None:
                 signals["MuseumAcquisitionMomentum"] = now
                 if prev is not None:
@@ -113,8 +113,9 @@ class ArtPipeline:
         return {name: zscore(current.share(tag), [c.share(tag) for c in history])
                 for name, (p, tag) in TALK.items() if p == paper}
 
-    async def _museums(self, december: int) -> tuple[float | None, float | None]:
-        """(this December's signal, last December's)."""
+    async def museums(self, december: int) -> tuple[float | None, float | None]:
+        """The museum signal for the December of year *december*, and the one
+        before it: (this year's, last year's), None where unread."""
         fiscal = december - 1          # Chicago's year ended June 30, 18 months before
         calendar = december - 1        # Cleveland's ended 12 months before
         for fy in range(fiscal - MUSEUM_YEARS, fiscal + 1):
