@@ -216,3 +216,33 @@ Each step is test first, with passing tests before the next.
 2. Registering the two free API keys. Account sign-ups are yours to do.
 3. Accepting that the yearly figures will mostly be recorded, not learned
    from, for some years.
+
+## 12. Step 1 findings (2026-10-26)
+
+Counts only, per month: art articles and how many carry each tag (Guardian
+`artanddesign` keyword tags; NYT articles with subject "Art" and their other
+subjects), January 2000 to September 2026. No headlines were kept.
+
+1. **The 15% level rule filters almost nothing.** Against the last two
+   years every tag tested passes; against the whole past most do. It
+   cannot be the test of whether a signal is worth having.
+2. **Most monthly movement is chance.** A Guardian month has about 110 art
+   articles (from about 200 in 2012 to 75 in 2026), so a tag on 5% of them
+   is five or six articles, and its level is mostly sampling luck. Measured
+   as the variance about the last two years' mean over what chance alone
+   gives, most tags are 1.0–2.0 (1 is pure chance; architecture is 1.04 in
+   both papers). By quarter the larger tags reach 2–6, so at least half of
+   their movement is more than chance.
+3. **The two papers do not agree.** On every tag both use (photography,
+   sculpture, architecture, design, museums), the quarterly changes
+   correlate at -0.04 to 0.03; monthly, -0.12 to 0.21. They are not two
+   witnesses of one art world but two presses, London's and New York's,
+   each with its own rhythm. Averaging them would blur both.
+4. **Tagging habits change.** The Guardian's scheme changed 2008–2010
+   (usable from 2010: 67 quarters). The NYT renamed subjects about 2009–10
+   ("motion pictures" to "movies", "culture" to "culture (arts)"), and its
+   tags per art article doubled from 2019 to 2020 (1.6 to 3.1), which
+   raises every NYT share from then on for reasons that are about the
+   editors' tagging, not about art.
+5. **Market talk is thin in the Guardian** ("art-market": about one
+   article a month). The NYT tags auctions (4%) and collectors (3%).
