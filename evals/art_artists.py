@@ -165,3 +165,36 @@ def press_names(root) -> dict[str, dict[int, dict[str, int]]]:
                 for n in names:
                     counts[n] = counts.get(n, 0) + 1
     return out
+
+
+def panel(museums: Mapping, press: Mapping) -> dict[str, dict[str, dict[int, int]]]:
+    """Replay 17's panel: every artist a museum acquired (by name), with works
+    acquired by each museum and articles naming them in each paper, by year.
+    "museum" is both museums' works together."""
+    people: dict[str, list[Person]] = {"aic": [], "cma": []}
+    rows: list[tuple[str, str, int, int]] = []      # (source, name, year, works)
+    for year, by_id in museums["aic"]["years"].items():
+        for i, works in by_id.items():
+            if i in museums["aic"]["agents"]:
+                title, born = museums["aic"]["agents"][i]
+                people["aic"].append(Person(normalise(title), born))
+                rows.append(("aic", normalise(title), int(year), works))
+    for year, by_id in museums["cma"]["years"].items():
+        for i, works in by_id.items():
+            p = cma_person(museums["cma"]["creators"].get(i, ""))
+            if p:
+                people["cma"].append(p)
+                rows.append(("cma", p.name, int(year), works))
+    kept = match(people, press={}).artists
+    out: dict[str, dict[str, dict[int, int]]] = {}
+    for source, name, year, works in rows:
+        if name in kept:
+            series = out.setdefault(name, {"aic": {}, "cma": {}, "museum": {}, "nyt": {}, "guardian": {}})
+            series[source][year] = series[source].get(year, 0) + works
+            series["museum"][year] = series["museum"].get(year, 0) + works
+    for paper, by_year in press.items():
+        for year, counts in by_year.items():
+            for name, n in counts.items():
+                if name in out:
+                    out[name][paper][year] = n
+    return out

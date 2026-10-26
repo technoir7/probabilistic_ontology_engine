@@ -1098,3 +1098,40 @@ shuffle is fame, not order. Five shuffles.
 **Provisional run.** The NYT is downloaded to March 2010 (its daily quota);
 so the first run uses 2000–2009, NYT and museums only. It is rerun on all
 years with the Guardian once the rest has downloaded.
+
+### Replay 17 results (provisional: NYT 2000–2009, Guardian 2010–2025)
+
+9,665 artists acquired by Chicago or Cleveland in 1995–2025. NYT 2000–2009
+(77,320 artist-years scored) and the Guardian 2010–2025 (135,310), each
+against both museums; the NYT for 2010 on, and the two papers together,
+wait for the rest of its download.
+
+34. **Press before acquisitions: no more than fame and shared moments.**
+    - NYT → museums: +46 nats over 77,320 artist-years; 19 of 100 shuffles
+      of each artist's years did as well, so this is fame (the artists the
+      press names are the ones museums collect, in any order).
+    - Guardian → museums: +44 nats over 135,310; no shuffle of 100 did as
+      well (shuffles 14 ± 10), almost all through Chicago (+26).
+    - *Added after the first look,* because a shuffle also destroys
+      episodes, an artist's moment of press and acquisitions together: the
+      Guardian's attention *next* year predicts this year's acquisitions as
+      well as last year's (+43 against +44; the same year, +45). So the
+      Guardian does not come first: London's press and Chicago's
+      acquisitions cluster in the same years of an artist's career. For the
+      NYT, next year's attention does less than last year's (+26 against
+      +46), within what shuffles give.
+    - Raw rates for comparison: artists not yet acquired were acquired in
+      7.6% of years after NYT attention and 4.4% of years without; after
+      Guardian attention 16.3% against 5.7%.
+35. **Acquisitions before press: nothing.** Museums → NYT −11 nats, →
+    Guardian −22, both within or below their shuffles: a museum's
+    acquisition does not bring an artist press the next year.
+36. **No change of order.** Press → museums is slightly positive in most
+    years of both decades (largest 2007 and 2014), museums → press near zero
+    throughout.
+
+So, year by year and artist by artist: the press and the museums
+consecrate the same artists and in the same seasons of their careers, and
+at a yearly grain neither leads the other. Bourdieu's bodies act together.
+Whether one leads by months, within a year, needs exhibition and
+acquisition dates finer than a year, which these sources do not give.

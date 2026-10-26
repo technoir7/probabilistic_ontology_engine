@@ -50,3 +50,17 @@ def test_a_guardian_tag_is_an_artist_only_if_a_person_elsewhere():
     got = match({"aic": [Person("yayoi kusama", 1929)], "cma": []},
                 press={"nyt": set(), "guardian": {"yayoi kusama", "painting"}}, candidates={"guardian"})
     assert got.artists == {"yayoi kusama": {"aic", "guardian"}}
+
+
+def test_the_panel_holds_each_acquired_artist_by_year_and_drops_two_people_with_one_name():
+    from evals.art_artists import panel
+    museums = {"aic": {"agents": {"1": ["Yayoi Kusama", 1929], "2": ["John Smith", 1900]},
+                       "years": {"2005": {"1": 3, "2": 1}}},
+               "cma": {"creators": {"9": "Yayoi Kusama (Japanese, 1929-)", "8": "John Smith (American, 1950-)"},
+                       "years": {"2006": {"9": 1, "8": 2}}}}
+    press = {"nyt": {2004: {"yayoi kusama": 2, "senator x": 5}}, "guardian": {}}
+    got = panel(museums, press)
+    assert set(got) == {"yayoi kusama"}            # the senator was never acquired; John Smith is two people
+    k = got["yayoi kusama"]
+    assert k["aic"] == {2005: 3} and k["cma"] == {2006: 1} and k["museum"] == {2005: 3, 2006: 1}
+    assert k["nyt"] == {2004: 2}

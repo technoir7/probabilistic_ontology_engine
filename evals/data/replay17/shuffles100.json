@@ -1,0 +1,38 @@
+{
+ "nyt->museum": {
+  "real": 46.1,
+  "shuffled_mean": 34.6,
+  "shuffled_sd": 13.1,
+  "shuffles_at_least_as_high": 19
+ },
+ "nyt->aic": {
+  "real": 8.5,
+  "shuffled_mean": 9.1,
+  "shuffled_sd": 10.1,
+  "shuffles_at_least_as_high": 52
+ },
+ "nyt->cma": {
+  "real": -16.5,
+  "shuffled_mean": -12.6,
+  "shuffled_sd": 9.6,
+  "shuffles_at_least_as_high": 67
+ },
+ "guardian->museum": {
+  "real": 44.4,
+  "shuffled_mean": 14.2,
+  "shuffled_sd": 10.5,
+  "shuffles_at_least_as_high": 0
+ },
+ "guardian->aic": {
+  "real": 25.5,
+  "shuffled_mean": 2.3,
+  "shuffled_sd": 10.5,
+  "shuffles_at_least_as_high": 0
+ },
+ "guardian->cma": {
+  "real": -25.3,
+  "shuffled_mean": -31.7,
+  "shuffled_sd": 5.3,
+  "shuffles_at_least_as_high": 9
+ }
+}
