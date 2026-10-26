@@ -977,3 +977,37 @@ month; a structure that predicts no better than independence; or links
 that exist only while the NYT's tagging change is inside the comparison
 window. Expected (art plan §8): some links within talk, if any, and none
 involving the yearly signals, which have seven Aprils.
+
+### Replay 15 results
+
+28. **No lasting link between signals.** The leader held a link between
+    two signals in 15–40 of 309 months per seed, never for 12 months in a
+    row except once: seed 4's museum acquisitions bearing on NYT sculpture
+    talk, February 2015 to February 2016. Museums are observed only in
+    December, so that link was judged on one or two Decembers; it is
+    chance, not a finding. Rival programmes were founded (up to eight alive
+    at once), and every seed's most successful one was the same, last
+    month's NYT auctions talk bearing on its museums talk, which led for
+    11 months and lost. Persistence: only Guardian painting talk (every
+    seed) and Guardian photography talk (seeds 2–4) held their own last
+    month for a year or more.
+29. **The structure predicts no better than no links.** Fit gap over
+    independent signals −0.006 to +0.006 nats a month; no year beyond
+    ±0.2. Calibration level by level 0.038–0.041, close to macro's.
+30. **Changes of programme do not come with the events.** 14–23 changes
+    per seed, none within 6 months after any of the four events. Most fall
+    in 2012–2013, as the Guardian's signals entered with their first two
+    years of comparison; the rest are short-lived conjectures refuted
+    within months.
+31. **The NYT's tagging change does not show.** No link among NYT signals
+    formed in 2020–2022.
+
+So, measured as POE measures, art's talk in the press, month by month,
+shows no relation the engine can hold: not within a paper, not between
+London's press and New York's, not between talk and the market or the
+museums. The design did not fail the way the old one did (every signal
+"yes"); the evidence varied and the engine tried rivals and refuted them.
+What month-to-month levels of tag shares can carry for art is each topic's
+own persistence, and at most that. Whether discourse moves on a slower
+time than a month, or is better read than counted (the abductive engine's
+art phase), are open, and neither is tested here.
