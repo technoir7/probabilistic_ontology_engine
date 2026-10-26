@@ -65,8 +65,13 @@ creators (about 13 minutes). Counts and names only; no article text.
 
 ## 4. The engine
 
-POE as it is (D24–D27): no hypotheses given; it forms links from the
-evidence and keeps rivals until refuted. Records are learned year by year,
+*Changed 2026-10-26, before any run:* POE weighs its last 100 records,
+and a year here is about 10,000, so it could not hold a year in mind.
+Replay 17 judges the rivals by the same rule directly: each year predicted
+from earlier years only, rivals compared by log Bayes factor (evals/
+artist_years.py). The original intent was POE as it is (D24–D27): no
+hypotheses given; it forms links from the evidence and keeps rivals until
+refuted. Records are learned year by year,
 each year's artists in an order shuffled by the seed. This is an
 evaluation first (replay 17, planned in evals/README.md before it runs),
 not a live domain. Whether it becomes one is for after the replay.
