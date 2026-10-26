@@ -945,8 +945,8 @@ question is whether this evidence can show links, and which.
 
 One record per month-end from January 2001 (the NYT's first month with a
 year of history) to September 2026: 309 months. The Guardian's signals
-start in January 2011, the figures in April 2019, museums in December 2001
-where eight years of a museum's acquisitions exist. Seeds 0–4, a fresh
+start in January 2011, the figures in April 2019, and museums each
+December once a museum has four earlier years to compare with. Seeds 0–4, a fresh
 engine each, as the app runs it, written to `data/replay15/`.
 
 **Events**, fixed here, with the month each began:
