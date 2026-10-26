@@ -1052,3 +1052,49 @@ removes their noise but also most of the records, and what remains shows
 no lasting relation. The one link, within one paper and in the same
 period, may be no more than two shares of the same coverage competing for
 space.
+
+## Replay 17: does the press consecrate before the museums?
+
+*Plan, written before replay 17 ran.* (docs/art-artists-plan.md)
+
+**Who.** Artists that the Art Institute of Chicago or the Cleveland Museum
+of Art acquired at least once in 1995–2025, matched by name (plan §7):
+certainly artists, chosen without reference to the press. Names two
+sources date to different births are dropped.
+
+**Records.** One per artist per year: NYT attention (Art articles naming
+them: none, one, several), Guardian attention (the same from its tags,
+from 2010), Chicago acquisitions and Cleveland acquisitions (works: none,
+one, several).
+
+**Why not POE as it runs.** POE weighs evidence over its last 100 records
+(SCORE_HALF_LIFE_RECORDS) and proposes links from them, made for one
+system observed week by week. Here a year is about 10,000 records, so POE
+would remember a few days of one year. The question is judged instead by
+the rule both engines use to judge rivals, directly: each year is
+predicted before it is seen, by counts learned from earlier years only,
+and rival explanations are compared by the evidence (log Bayes factor)
+over the years.
+
+**Rivals,** for each signal X (a museum's acquisitions, or a paper's
+attention):
+- *own past:* X last year, and X's total over all earlier years (an
+  artist's standing, so fame is accounted for);
+- *own past + the other body:* the same, plus the other body's level last
+  year (press for a museum, museums for a paper).
+
+**Control.** Fame is a common cause of press and acquisitions. Each
+artist's years are shuffled (each body's series moved together), which
+keeps every artist's fame and destroys order; a gain that survives the
+shuffle is fame, not order. Five shuffles.
+
+34. **Does last year's press help predict this year's acquisitions?**
+    Gain in nats per artist-year, and the log Bayes factor, against the
+    shuffled control.
+35. **Does last year's acquisition help predict this year's press?** The
+    same, the other way.
+36. **Has the order changed?** Both gains year by year.
+
+**Provisional run.** The NYT is downloaded to March 2010 (its daily quota);
+so the first run uses 2000–2009, NYT and museums only. It is rerun on all
+years with the Guardian once the rest has downloaded.
