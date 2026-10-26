@@ -88,13 +88,11 @@ def test_learn_new_records_learns_unseen_records_oldest_first(monkeypatch):
     assert engine.evidence_store.count(DOMAIN_ID) == 3
 
 
-def test_rebuild_relearns_fetched_and_supplied_evidence_in_date_order():
+def test_rebuild_forgets_the_domain_and_relearns_what_it_fetches():
     engine = _engine()
     stale = fake_record(get_variables().values(), date(2025, 1, 5), seed="stale")
     engine.ingest(stale)
     engine.learn([stale], DOMAIN_ID)
-    supplied = [fake_record(get_variables().values(), date(2026, 3, 10), seed="report").model_copy(
-        update={"evidence_id": uuid4(), "source_ref": "report:x"})]
     failing_day = date(2026, 3, 15)
 
     async def fetch(day):
@@ -103,13 +101,13 @@ def test_rebuild_relearns_fetched_and_supplied_evidence_in_date_order():
         return fake_record(get_variables().values(), day, seed="fetched")
 
     targets = [date(2026, 3, 1), date(2026, 3, 8), failing_day]
-    result = asyncio.run(rebuild(engine, DOMAIN_ID, fetch, targets, supplied, pause_s=0, sleep=_no_sleep))
+    result = asyncio.run(rebuild(engine, DOMAIN_ID, fetch, targets, pause_s=0, sleep=_no_sleep))
 
-    assert result.learned == 3  # two fetched days and the report
+    assert result.learned == 2
     assert result.missed == [failing_day]
     stored = engine.evidence_store.load_all(DOMAIN_ID)
-    assert [r.timestamp.day for r in stored] == [1, 8, 10]  # the stale record is gone
-    assert engine.get_population(DOMAIN_ID).dominant().evidence_count == 3
+    assert [r.timestamp.day for r in stored] == [1, 8]  # the stale record is gone
+    assert engine.get_population(DOMAIN_ID).dominant().evidence_count == 2
 
 
 async def _no_sleep(_s):
@@ -135,7 +133,7 @@ def test_a_rebuild_retries_a_failed_fetch_and_reports_what_it_still_missed():
         return fake_record(get_variables().values(), day, seed="fetched")
 
     targets = [date(2026, 3, 1), flaky, down, empty]
-    result = asyncio.run(rebuild(engine, DOMAIN_ID, fetch, targets, [], pause_s=0, sleep=_no_sleep))
+    result = asyncio.run(rebuild(engine, DOMAIN_ID, fetch, targets, pause_s=0, sleep=_no_sleep))
 
     assert result.learned == 2
     assert result.missed == [down, empty]
@@ -155,7 +153,7 @@ def test_a_rebuild_that_fetches_nothing_keeps_the_domain():
         raise EvidenceUnavailable("upstream down")
 
     with pytest.raises(RuntimeError, match="nothing fetched"):
-        asyncio.run(rebuild(engine, DOMAIN_ID, fetch, [date(2026, 3, 1)], [], pause_s=0, sleep=_no_sleep))
+        asyncio.run(rebuild(engine, DOMAIN_ID, fetch, [date(2026, 3, 1)], pause_s=0, sleep=_no_sleep))
     assert engine.evidence_store.count(DOMAIN_ID) == 1
 
 
@@ -176,5 +174,5 @@ def test_a_rebuild_whose_fetches_mostly_fail_keeps_the_domain():
 
     targets = [date(2026, 3, 1), date(2026, 3, 8), date(2026, 3, 15), recent]
     with pytest.raises(RuntimeError, match="3 of 4 fetches failed"):
-        asyncio.run(rebuild(engine, DOMAIN_ID, fetch, targets, [], pause_s=0, sleep=_no_sleep))
+        asyncio.run(rebuild(engine, DOMAIN_ID, fetch, targets, pause_s=0, sleep=_no_sleep))
     assert [r.timestamp.date() for r in engine.evidence_store.load_all(DOMAIN_ID)] == [date(2025, 1, 5)]

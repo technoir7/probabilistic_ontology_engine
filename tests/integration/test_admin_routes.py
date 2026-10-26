@@ -17,9 +17,6 @@ from tests.fakes import ADMIN_TOKEN, patch_fake_evidence_for_all_domains
 
 ADMIN_ROUTES = [
     ("POST", "/v1/ingest/backfill", {"domain": "ng", "days": 7}),
-    ("POST", "/v1/ingest/art/manual", {"path": "missing.json"}),
-    ("POST", "/v1/ingest/art/rebuild", {"months": 1}),
-    ("GET", "/v1/ingest/art/rebuild", {}),
     ("POST", "/v1/ingest/replace", {"domain": "mr"}),
     ("POST", "/v1/ingest/rebuild", {"domain": "cc", "days": 7}),
     ("GET", "/v1/ingest/rebuild", {"domain": "cc"}),

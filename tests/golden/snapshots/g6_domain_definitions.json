@@ -200,501 +200,287 @@
   },
   "variables": [
    [
-    "InstitutionalRiskAversion",
-    "BOOLEAN",
+    "GuardianPhotographyTalk",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
-    "MuseumFigurativeAcceptance",
-    "BOOLEAN",
+    "GuardianExhibitionTalk",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
-    "ConceptualDominance",
-    "BOOLEAN",
+    "GuardianPaintingTalk",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
-    "AIArtInstitutionalAcceptance",
-    "BOOLEAN",
+    "GuardianArchitectureTalk",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
-    "CuratorialMaterialityShift",
-    "BOOLEAN",
+    "NYTMuseumsTalk",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
-    "CraftPrestigeRising",
-    "BOOLEAN",
+    "NYTPhotographyTalk",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
-    "PrestigeFragmentation",
-    "BOOLEAN",
+    "NYTSculptureTalk",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
-    "RegionalSceneMomentum",
-    "BOOLEAN",
+    "NYTAuctionsTalk",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
-    "BlueChipInstitutionalCapture",
-    "BOOLEAN",
+    "ArtSalesGrowth",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
-    "BiennialFatigue",
-    "BOOLEAN",
+    "DealerShare",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
+    ],
+    false,
+    false
+   ],
+   [
+    "OnlineShare",
+    "ORDINAL",
+    [
+     "low",
+     "mid",
+     "high"
+    ],
+    false,
+    false
+   ],
+   [
+    "HighEndShare",
+    "ORDINAL",
+    [
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
     "MuseumAcquisitionMomentum",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     false,
     false
    ],
    [
-    "BlueChipConcentration",
-    "BOOLEAN",
+    "GuardianPhotographyTalk_prev",
+    "ORDINAL",
     [
-     true,
-     false
-    ],
-    false,
-    false
-   ],
-   [
-    "AuctionSpeculationElevated",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    false,
-    false
-   ],
-   [
-    "CollectorFlightToSafety",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    false,
-    false
-   ],
-   [
-    "FigurativeAuctionMomentum",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    false,
-    false
-   ],
-   [
-    "EmergingMarketLiquidity",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    false,
-    false
-   ],
-   [
-    "MarketPolarization",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    false,
-    false
-   ],
-   [
-    "MarketUncertainty",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    false,
-    false
-   ],
-   [
-    "RitualAuraPremium",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    false,
-    false
-   ],
-   [
-    "EmbodimentDiscourseRising",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    false,
-    false
-   ],
-   [
-    "AntiDigitalSentiment",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    false,
-    false
-   ],
-   [
-    "AIImageSaturation",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    false,
-    false
-   ],
-   [
-    "AuthenticityPremium",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    false,
-    false
-   ],
-   [
-    "NeoAcademicResurgence",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    false,
-    false
-   ],
-   [
-    "AttentionFragmentation",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    false,
-    false
-   ],
-   [
-    "InstitutionalRiskAversion_prev",
-    "BOOLEAN",
-    [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
-    "MuseumFigurativeAcceptance_prev",
-    "BOOLEAN",
+    "GuardianExhibitionTalk_prev",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
-    "ConceptualDominance_prev",
-    "BOOLEAN",
+    "GuardianPaintingTalk_prev",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
-    "AIArtInstitutionalAcceptance_prev",
-    "BOOLEAN",
+    "GuardianArchitectureTalk_prev",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
-    "CuratorialMaterialityShift_prev",
-    "BOOLEAN",
+    "NYTMuseumsTalk_prev",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
-    "CraftPrestigeRising_prev",
-    "BOOLEAN",
+    "NYTPhotographyTalk_prev",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
-    "PrestigeFragmentation_prev",
-    "BOOLEAN",
+    "NYTSculptureTalk_prev",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
-    "RegionalSceneMomentum_prev",
-    "BOOLEAN",
+    "NYTAuctionsTalk_prev",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
-    "BlueChipInstitutionalCapture_prev",
-    "BOOLEAN",
+    "ArtSalesGrowth_prev",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
-    "BiennialFatigue_prev",
-    "BOOLEAN",
+    "DealerShare_prev",
+    "ORDINAL",
     [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
+    ],
+    true,
+    false
+   ],
+   [
+    "OnlineShare_prev",
+    "ORDINAL",
+    [
+     "low",
+     "mid",
+     "high"
+    ],
+    true,
+    false
+   ],
+   [
+    "HighEndShare_prev",
+    "ORDINAL",
+    [
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false
    ],
    [
     "MuseumAcquisitionMomentum_prev",
-    "BOOLEAN",
+    "ORDINAL",
     [
-     true,
-     false
-    ],
-    true,
-    false
-   ],
-   [
-    "BlueChipConcentration_prev",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    true,
-    false
-   ],
-   [
-    "AuctionSpeculationElevated_prev",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    true,
-    false
-   ],
-   [
-    "CollectorFlightToSafety_prev",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    true,
-    false
-   ],
-   [
-    "FigurativeAuctionMomentum_prev",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    true,
-    false
-   ],
-   [
-    "EmergingMarketLiquidity_prev",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    true,
-    false
-   ],
-   [
-    "MarketPolarization_prev",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    true,
-    false
-   ],
-   [
-    "MarketUncertainty_prev",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    true,
-    false
-   ],
-   [
-    "RitualAuraPremium_prev",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    true,
-    false
-   ],
-   [
-    "EmbodimentDiscourseRising_prev",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    true,
-    false
-   ],
-   [
-    "AntiDigitalSentiment_prev",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    true,
-    false
-   ],
-   [
-    "AIImageSaturation_prev",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    true,
-    false
-   ],
-   [
-    "AuthenticityPremium_prev",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    true,
-    false
-   ],
-   [
-    "NeoAcademicResurgence_prev",
-    "BOOLEAN",
-    [
-     true,
-     false
-    ],
-    true,
-    false
-   ],
-   [
-    "AttentionFragmentation_prev",
-    "BOOLEAN",
-    [
-     true,
-     false
+     "low",
+     "mid",
+     "high"
     ],
     true,
     false

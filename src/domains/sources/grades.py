@@ -64,6 +64,7 @@ def build_graded_record(
     target_date: date,
     source_ref: str,
     source_type: SourceType = SourceType.API,
+    previous: Mapping[str, float] | None = None,
 ) -> EvidenceRecord:
     """
     One record dated midnight UTC of *target_date*: each variable with a
@@ -71,6 +72,10 @@ def build_graded_record(
     EvidenceUnavailable when no variable has a signal.
 
     A variable's confidence defaults to 1.0; the record's is their mean.
+
+    *previous* gives some variables' last-period signals, observed on their
+    lag companions; the engine keeps a lag a record observes itself and
+    fills the rest from the record before (model/temporal.py).
     """
     if not signals:
         raise EvidenceUnavailable(f"{module_id}: no input for any variable on {target_date}")
@@ -81,6 +86,10 @@ def build_graded_record(
         ObservedAssignment(variable_id=v.variable_id, observed_value=None,
                            missingness=MissingnessType.MISSING, confidence=confidence.get(name, 1.0))
         for name, v in variables.items() if not v.lag_of
+    ] + [
+        ObservedAssignment(variable_id=v.variable_id, observed_value=level_of((previous or {})[v.lag_of]),
+                           missingness=MissingnessType.OBSERVED)
+        for v in variables.values() if v.lag_of and v.lag_of in (previous or {})
     ]
     timestamp = datetime(target_date.year, target_date.month, target_date.day, tzinfo=timezone.utc)
     return EvidenceRecord(

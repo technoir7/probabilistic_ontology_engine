@@ -24,6 +24,7 @@ from src.domains.test_domain_v1.domain import (
 from src.domains.test_domain_v1.synthetic_generator import SyntheticDataGenerator
 from src.engine.engine import ProbabilisticOntologyEngine
 from src.engine.schemas import OntologyCandidate, OntologyPopulation
+from src.domains.art_prestige_regime_v1.ingestion import cma_client, guardian_client, nyt_client, tag_counts
 from src.domains.sources import fred, gdelt
 from src.domains.sources.rate_limit import RateLimiter
 from tests.fakes import ADMIN_TOKEN
@@ -49,14 +50,17 @@ def _sealed_runtime(request, monkeypatch, tmp_path):
     httpx.MockTransport keep working. Tests marked ``live`` are exempt.
     """
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path / "poe_data"))
-    # Art manual-ingest tests write their input files into tmp_path.
-    monkeypatch.setenv("POE_ART_MANUAL_DIR", str(tmp_path))
     monkeypatch.setenv("EVIDENCE_SCHEDULER_ENABLED", "false")
     monkeypatch.setenv("POE_ADMIN_TOKEN", ADMIN_TOKEN)
     # The process-wide GDELT limit would make tests wait real seconds on each other.
     monkeypatch.setattr(gdelt, "GDELT_RATE_LIMIT", RateLimiter(0.0))
     monkeypatch.setattr(gdelt, "GDELT_TIMELINE_CACHE", gdelt.TimelineCache())
     monkeypatch.setattr(fred, "FRED_RATE_LIMIT", RateLimiter(0.0))
+    monkeypatch.setattr(guardian_client, "GUARDIAN_RATE_LIMIT", RateLimiter(0.0))
+    monkeypatch.setattr(nyt_client, "NYT_RATE_LIMIT", RateLimiter(0.0))
+    for module in (guardian_client, nyt_client):
+        monkeypatch.setattr(module, "PRESS_MONTHS", tag_counts.MonthCache())
+    monkeypatch.setattr(cma_client, "CMA_ARTISTS", cma_client.HeldCollection())
     if "live" in request.keywords:
         return
 

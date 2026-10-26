@@ -1,131 +1,154 @@
 """
-The art pipeline's measurements (ingestion/pipeline.py), with fake clients.
-
-AI imagery comes from GDELT news coverage, monthly; museum variables from AIC
-acquisitions, once a year in the December record.
-Everything else is MISSING in fetched records.
+The art pipeline (ingestion/pipeline.py), with fake clients: monthly talk in
+two papers, the yearly report figures in April, museum acquisitions in
+December (docs/art-evidence-plan.md).
 """
 from __future__ import annotations
 
 import asyncio
-from datetime import date, timedelta
+from datetime import date
 
 import pytest
 
-from src.domains.art_prestige_regime_v1.domain import get_variables
+from src.domains.art_prestige_regime_v1.domain import TALK, get_variables
 from src.domains.art_prestige_regime_v1.ingestion.aic_client import Acquisitions
-from src.domains.art_prestige_regime_v1.ingestion.pipeline import CRAFT_TYPES, ArtPipeline
-from src.domains.sources.gdelt import GDELTObs
+from src.domains.art_prestige_regime_v1.ingestion.pipeline import ArtPipeline
+from src.domains.art_prestige_regime_v1.ingestion.tag_counts import TagCounts
+from src.domains.sources.structure import with_lags
 from src.engine.model.errors import EvidenceUnavailable
+from src.engine.schemas import MissingnessType
 
-NAMES = {v.variable_id: n for n, v in get_variables().items()}
-
-
-def _months(first: date, last: date) -> list[date]:
-    out, y, m = [], first.year, first.month
-    while (y, m) <= (last.year, last.month):
-        out.append(date(y, m, 1))
-        y, m = (y, m + 1) if m < 12 else (y + 1, 1)
-    return out
+VARIABLES = with_lags("art_prestige_regime_v1", get_variables())
+NAMES = {v.variable_id: n for n, v in VARIABLES.items()}
+GUARDIAN = [n for n, (paper, _) in TALK.items() if paper == "guardian"]
+NYT = [n for n, (paper, _) in TALK.items() if paper == "nyt"]
 
 
-TODAY = date(2026, 6, 15)
+class FakePress:
+    """Every month: 100 art articles, each tag on 10 of them (± a wobble), unless overridden."""
 
+    def __init__(self, tags, overrides=None, fail=()):
+        self.tags, self.overrides, self.fail = tags, overrides or {}, set(fail)
+        self.requests: list[tuple[int, int]] = []
 
-class FakeGDELT:
-    """Monthly points from the requested start to end: a flat level, *boost_month* times *boost*."""
-
-    def __init__(self, level=0.002, boost=1.0, boost_month=None, gap_month=None, fail=False):
-        self.level, self.boost, self.boost_month, self.gap_month, self.fail = level, boost, boost_month, gap_month, fail
-        self.requests: list[tuple[str, int, date]] = []
-
-    async def fetch_timeline(self, query, label, lookback_days=90, end_date=None):
-        self.requests.append((query, lookback_days, end_date))
-        if self.fail:
-            return []
-        start = end_date - timedelta(days=lookback_days)
-        out = []
-        for i, m in enumerate(_months(start, end_date)):
-            if m == self.gap_month:
-                continue
-            value = self.level * (self.boost if m == self.boost_month else 1) + (i % 3) * 1e-5
-            out.append(GDELTObs(obs_date=m, value=value, query_label=label))
-        return out[::-1]
-
-
-def _pipeline(gdelt, aic=None):
-    return ArtPipeline(gdelt, aic or FakeAIC(), today=lambda: TODAY)
+    async def month(self, year, month):
+        self.requests.append((year, month))
+        if (year, month) in self.fail:
+            return None
+        if (year, month) in self.overrides:
+            return self.overrides[(year, month)]
+        return TagCounts(articles=100, tags={t: 10 + (month % 3) for t in self.tags})
 
 
 class FakeAIC:
-    def __init__(self, artists_by_year=None, craft_by_year=None):
+    def __init__(self, artists_by_year=None):
         self.artists = artists_by_year or {}
-        self.craft = craft_by_year or {}
-        self.years: list[int] = []
 
     async def acquisitions(self, fiscal_year, artwork_types=None):
-        self.years.append(fiscal_year)
-        table = self.craft if artwork_types else self.artists
-        if fiscal_year not in table:
+        if fiscal_year not in self.artists:
             return None
-        return Acquisitions(objects=table[fiscal_year] * 3, artists=table[fiscal_year])
+        return Acquisitions(objects=self.artists[fiscal_year] * 3, artists=self.artists[fiscal_year])
 
 
-def _probabilities(record):
-    return {NAMES[a.variable_id]: (a.probabilities or {}).get(True) for a in record.observed_assignments}
+class FakeCMA:
+    def __init__(self, artists_by_year=None):
+        self.artists = artists_by_year
+
+    async def artists_by_year(self):
+        return self.artists
 
 
-def test_a_coverage_rise_reads_true_and_museum_variables_wait_for_december():
-    pipeline = _pipeline(FakeGDELT(boost=3.0, boost_month=date(2026, 3, 1)))
-    p = _probabilities(asyncio.run(pipeline.fetch_evidence(date(2026, 3, 31))))
-    assert p["AIImageSaturation"] > 0.9
-    assert p["MuseumAcquisitionMomentum"] is None and p["CraftPrestigeRising"] is None
-    assert sum(v is not None for v in p.values()) == 1
+def _papers(**kw):
+    g = FakePress([tag for n, (p, tag) in TALK.items() if p == "guardian"], **kw.get("guardian", {}))
+    n = FakePress([tag for n, (p, tag) in TALK.items() if p == "nyt"], **kw.get("nyt", {}))
+    return {"guardian": g, "nyt": n}
 
 
-def test_every_month_asks_gdelt_the_same_question():
-    # A rebuild used to send one five-year request per month, 36 of nearly the
-    # same data, and GDELT throttled most of them. Identical requests let the
-    # shared timeline cache answer all but the first (sources/gdelt.py).
-    gdelt = FakeGDELT()
-    pipeline = _pipeline(gdelt)
-    for target in (date(2023, 10, 31), date(2025, 1, 31), date(2026, 5, 31)):
-        asyncio.run(pipeline.fetch_evidence(target))
-    assert len(set(gdelt.requests)) == 1
-    [(_, lookback_days, end_date)] = set(gdelt.requests)
-    assert end_date == TODAY and end_date - timedelta(days=lookback_days) <= date(2018, 10, 1)
+def _pipeline(papers=None, aic=None, cma=None, figures=None):
+    return ArtPipeline(papers or _papers(), aic or FakeAIC(), cma or FakeCMA(), figures=figures or {})
 
 
-def test_a_month_never_sees_later_coverage():
-    gdelt = FakeGDELT(boost=3.0, boost_month=date(2026, 5, 1))
-    pipeline = _pipeline(gdelt)
-    before = _probabilities(asyncio.run(pipeline.fetch_evidence(date(2026, 3, 31))))
-    during = _probabilities(asyncio.run(pipeline.fetch_evidence(date(2026, 5, 31))))
-    assert before["AIImageSaturation"] < 0.9 < during["AIImageSaturation"]
+def _levels(record):
+    return {NAMES[a.variable_id]: a.observed_value for a in record.observed_assignments
+            if a.missingness == MissingnessType.OBSERVED}
 
 
-def test_a_target_month_without_coverage_is_missing():
-    pipeline = _pipeline(FakeGDELT(gap_month=date(2026, 3, 1)))
+def _fetch(pipeline, d):
+    return asyncio.run(pipeline.fetch_evidence(d))
+
+
+def test_a_month_with_more_talk_of_a_topic_than_the_two_years_before_reads_high():
+    spike = TagCounts(articles=100, tags={"artanddesign/photography": 40, "artanddesign/exhibition": 11,
+                                          "artanddesign/painting": 11, "artanddesign/architecture": 11})
+    levels = _levels(_fetch(_pipeline(_papers(guardian={"overrides": {(2020, 3): spike}})), date(2020, 3, 31)))
+    assert levels["GuardianPhotographyTalk"] == "high"
+    assert set(levels) == set(TALK)   # figures and museums wait for their months
+
+
+def test_talk_that_rose_years_ago_and_stayed_reads_as_ordinary():
+    risen = {(y, m): TagCounts(articles=100, tags={"museums": 40 + m % 3}) for y in range(2015, 2021) for m in range(1, 13)}
+    levels = _levels(_fetch(_pipeline(_papers(nyt={"overrides": risen})), date(2020, 7, 31)))   # July: share at the mean
+    assert levels["NYTMuseumsTalk"] == "mid"
+
+
+def test_each_month_is_compared_with_the_two_years_before_it_and_never_later():
+    papers = _papers()
+    _fetch(_pipeline(papers), date(2020, 3, 31))
+    asked = set(papers["nyt"].requests)
+    assert (2020, 3) in asked and (2018, 3) in asked
+    assert (2018, 2) not in asked and (2020, 4) not in asked
+
+
+def test_guardian_tags_before_2010_are_not_read():
+    papers = _papers()
+    levels = _levels(_fetch(_pipeline(papers), date(2009, 6, 30)))
+    assert set(levels) == set(NYT)
+    assert all(y >= 2010 for y, _ in papers["guardian"].requests)
+
+
+def test_with_under_a_year_of_history_a_paper_is_not_read():
+    papers = _papers()
+    levels = _levels(_fetch(_pipeline(papers), date(2010, 11, 30)))
+    assert not set(GUARDIAN) & set(levels)
+    levels = _levels(_fetch(_pipeline(papers), date(2011, 1, 31)))
+    assert set(GUARDIAN) <= set(levels)
+
+
+def test_a_month_a_paper_cannot_supply_leaves_only_that_paper_missing():
+    levels = _levels(_fetch(_pipeline(_papers(nyt={"fail": [(2020, 3)]})), date(2020, 3, 31)))
+    assert set(levels) == set(GUARDIAN)
+
+
+def test_the_april_record_carries_last_years_figures_and_the_year_before():
+    figures = {"OnlineShare": {2016: 8.0, 2017: 10.0, 2018: 9.0, 2019: 9.0, 2020: 25.0}}
+    record = _fetch(_pipeline(figures=figures), date(2021, 4, 30))
+    levels = _levels(record)
+    assert levels["OnlineShare"] == "high"
+    assert levels["OnlineShare_prev"] == "mid"
+    assert "OnlineShare" not in _levels(_fetch(_pipeline(figures=figures), date(2021, 5, 31)))
+
+
+def test_the_december_record_reads_both_museums_against_their_own_pasts():
+    aic = FakeAIC({fy: 100 + fy % 2 for fy in range(2010, 2025)} | {2024: 300})   # FY2024 ended 18 months before
+    cma = FakeCMA({y: 50 + y % 2 for y in range(2010, 2025)} | {2024: 150})
+    levels = _levels(_fetch(_pipeline(aic=aic, cma=cma), date(2025, 12, 31)))
+    assert levels["MuseumAcquisitionMomentum"] == "high"
+    assert "MuseumAcquisitionMomentum_prev" in levels
+    assert "MuseumAcquisitionMomentum" not in _levels(_fetch(_pipeline(aic=aic, cma=cma), date(2025, 11, 30)))
+
+
+def test_one_museum_failing_leaves_the_other():
+    aic = FakeAIC({fy: 100 + fy % 2 for fy in range(2010, 2025)} | {2024: 300})
+    levels = _levels(_fetch(_pipeline(aic=aic, cma=FakeCMA(None)), date(2025, 12, 31)))
+    assert levels["MuseumAcquisitionMomentum"] == "high"
+
+
+def test_a_month_with_no_input_at_all_is_unavailable():
+    papers = _papers(guardian={"fail": [(2020, 3)]}, nyt={"fail": [(2020, 3)]})
     with pytest.raises(EvidenceUnavailable):
-        asyncio.run(pipeline.fetch_evidence(date(2026, 3, 31)))
+        _fetch(_pipeline(papers), date(2020, 3, 31))
 
 
-def test_december_reads_the_previous_fiscal_year_against_seven_before_it():
-    years = range(2017, 2025)
-    artists = {y: 300 for y in years} | {2024: 600}
-    craft = {y: 30 for y in years} | {2024: 30}  # craft count flat while artists double: share falls
-    aic = FakeAIC(artists_by_year={y: a + (y % 2) for y, a in artists.items()}, craft_by_year=craft)
-    p = _probabilities(asyncio.run(_pipeline(FakeGDELT(), aic).fetch_evidence(date(2025, 12, 31))))
-    assert set(aic.years) == set(years)  # FY2024 (ended June 2024) and seven before it
-    assert p["MuseumAcquisitionMomentum"] > 0.9
-    assert p["CraftPrestigeRising"] < 0.1
-
-
-def test_nothing_measured_raises():
-    pipeline = _pipeline(FakeGDELT(fail=True))
-    with pytest.raises(EvidenceUnavailable):
-        asyncio.run(pipeline.fetch_evidence(date(2026, 3, 31)))
-
-
-def test_craft_types_are_aic_artwork_types():
-    assert "Ceramics" in CRAFT_TYPES and "Textile" in CRAFT_TYPES
+def test_a_month_with_no_art_articles_is_not_read():
+    levels = _levels(_fetch(_pipeline(_papers(nyt={"overrides": {(2020, 3): TagCounts(articles=0)}})), date(2020, 3, 31)))
+    assert set(levels) == set(GUARDIAN)

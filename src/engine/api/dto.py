@@ -250,31 +250,6 @@ class IngestBackfillOut(BaseModel):
     days_successfully_ingested: int
 
 
-class ArtReportIngestOut(BaseModel):
-    domain: str
-    input_path: str
-    files_scanned: int
-    items_found: int
-    records_found: int              # one per report document
-    records_learned: int
-    records_skipped_duplicates: int
-    failed: list[str]               # unreadable files and invalid items, with the reason
-
-
-class ArtRebuildOut(BaseModel):
-    """The latest art rebuild since the service started (state "idle" if none)."""
-    domain: str
-    state: Literal["idle", "running", "done", "failed"]
-    months_requested: Optional[int] = None
-    started_at: Optional[datetime] = None
-    finished_at: Optional[datetime] = None
-    reports_found: Optional[int] = None
-    records_learned: Optional[int] = None   # fetched months plus reports
-    targets_missed: list[date] = []          # months with no record: no data, or fetch still failing after a retry
-    failed_reports: list[str] = []
-    error: Optional[str] = None
-
-
 class VariableEntropyDebugOut(BaseModel):
     value_counts: dict[str, int]
     observed_count: int

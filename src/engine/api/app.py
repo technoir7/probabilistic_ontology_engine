@@ -46,7 +46,6 @@ async def lifespan(app: FastAPI):
     app.state.ingest_locks: dict[str, asyncio.Lock] = {r.key: asyncio.Lock() for r in REGISTRY}
     # Operator jobs that outlive their request (the art rebuild); cancelled on shutdown.
     app.state.background_tasks: list[asyncio.Task] = []
-    app.state.art_rebuild = None
     app.state.rebuilds = {}
 
     if scheduler_enabled:

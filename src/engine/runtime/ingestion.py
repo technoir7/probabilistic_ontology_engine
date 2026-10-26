@@ -56,8 +56,8 @@ async def ingest_and_learn(
 def learn_new_records(engine: ProbabilisticOntologyEngine, domain_id: str, records: Iterable[EvidenceRecord]) -> int:
     """
     Store and learn each record not already stored (by evidence_id), oldest
-    first, one transaction per record as ingest_and_learn does. For evidence
-    that is supplied rather than fetched (art reports). Returns how many were new.
+    first, one transaction per record as ingest_and_learn does. For a rebuild,
+    or a history supplied whole (/v1/ingest/replace). Returns how many were new.
     The caller holds the domain's lock.
     """
     learned = 0
@@ -135,16 +135,14 @@ async def rebuild(
     domain_id: str,
     fetch: Fetch,
     targets: Iterable[date],
-    supplied: Iterable[EvidenceRecord],
     *,
     pause_s: float,
     sleep: Callable[[float], Awaitable[None]] = asyncio.sleep,
 ) -> RebuildResult:
     """
-    Forget the domain and relearn it from scratch: fetch every target, add the
-    supplied records, and learn them all oldest first. Order matters, since
-    scores weight recent evidence (REFACTOR_SPEC D14), so fetched and supplied
-    records are merged before learning rather than learned source by source.
+    Forget the domain and relearn it from scratch: fetch every target, then
+    learn the records oldest first, since scores weight recent evidence
+    (REFACTOR_SPEC D14).
 
     Everything is fetched before the reset, so the domain keeps its state
     until there is something to replace it with. A target whose fetch fails
@@ -177,8 +175,7 @@ async def rebuild(
             failed.append(target)
     still_failed = [t for t in failed if not await attempt(t)]
 
-    supplied = list(supplied)
-    if not fetched and not supplied:
+    if not fetched:
         # Nothing to replace it with: keep what the domain has.
         raise RuntimeError(f"{domain_id} rebuild: nothing fetched, domain kept as it was")
     if 2 * len(still_failed) > len(targets):
@@ -187,5 +184,5 @@ async def rebuild(
         raise RuntimeError(f"{domain_id} rebuild: {len(still_failed)} of {len(targets)} fetches failed, "
                            "domain kept as it was")
     engine.reset_domain(domain_id)
-    learned = learn_new_records(engine, domain_id, [*fetched, *supplied])
+    learned = learn_new_records(engine, domain_id, fetched)
     return RebuildResult(learned=learned, missed=sorted([*unavailable, *still_failed]))

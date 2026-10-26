@@ -85,7 +85,8 @@ REGISTRY: tuple[DomainRegistration, ...] = (
     DomainRegistration("sf", "sf-urban-v1", "SF Urban", "sf_urban.db", SFUrbanV1,
                        sf_source.open_source, _FRED, "SF_URBAN", skip_unchanged_state=True),
     DomainRegistration("art", "art_prestige_regime_v1", "Art Prestige Regime", "art_prestige_regime.db",
-                       ArtPrestigeRegimeV1, art_source.open_source, (), "ART", cadence=Monthly(),
+                       ArtPrestigeRegimeV1, art_source.open_source, ("GUARDIAN_API_KEY", "NYT_API_KEY"), "ART",
+                       cadence=Monthly(),
                        backfill_pause_s=1.0),
 )
 

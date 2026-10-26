@@ -1,166 +1,126 @@
 """
-Monthly evidence for art_prestige_regime_v1 from objective series.
+Monthly evidence for art_prestige_regime_v1 (docs/art-evidence-plan.md).
 
-Every measured variable follows one rule: take its series up to the target
-month, z-score the latest value against the series' own trailing history,
-and map the z-score to P(True) with the shared clamped sigmoid. No hand-set
-levels: "elevated" means "high for this series".
+- **Talk** (monthly): the share of a paper's art articles that carry one of
+  its editors' tags, read against the two years before it, so a topic that
+  rose and stayed reads ordinary again and a change in the editors' tagging
+  habits fades out. Discourse is the evidence itself, not a noisy sample of
+  something else, so no month is discarded for being small next to chance.
+  Guardian tags are read from 2010, when its scheme settled.
+- **Report figures** (yearly, in April): ingestion/figures.py.
+- **Museum acquisitions** (yearly, in December): distinct artists the Art
+  Institute of Chicago acquired in the fiscal year that ended 18 months
+  before, and the Cleveland Museum of Art in the calendar year that ended
+  12 months before (cataloguing fills recent years in late), each against
+  its own seven years before; the signal is the mean of those available.
+  Last year's level is given too (plan §7).
 
-Only three of the 25 variables have a series that measures them acceptably
-(free, objective, backfillable; checked 2026-10-13):
-
-* AIImageSaturation — GDELT: the monthly share of all monitored news that
-  mentions "AI-generated" in articles about artists, against the five years
-  before. Every month asks GDELT the same question, coverage from 2017 to
-  today, and keeps only the months up to its own: the shared timeline cache
-  then answers a 36-month rebuild with one request (GDELT throttled 36
-  separate five-year requests, B24). Coverage rose from ~0 before 2022 and has stayed high. Wikipedia
-  views of the AI-image tools were tried and rejected: they peaked in
-  2022-23 and fell as the tools became ordinary, the opposite of saturation.
-* MuseumAcquisitionMomentum — distinct artists the Art Institute of Chicago
-  acquired in a fiscal year (artists, not objects: one gift was 4,780
-  objects in FY2023).
-* CraftPrestigeRising — the share of those artists acquired in craft media.
-
-The museum series are annual. They are observed once a year, in the December
-record, for the fiscal year that ended 18 months earlier (cataloguing fills
-recent years in late, which would make every latest year look low), and are
-MISSING in the other months: repeating one yearly value twelve times would
-count it twelve times. One museum is a narrow view and single gifts move it.
-
-Everything else is MISSING in fetched records and comes only from the
-hand-labelled reports (reports.py). There is no free machine-readable art
-auction or sales data, so all seven market variables are reports-only. Weak
-proxies considered and left out are listed in REFACTOR_SPEC (B23); adding a
-measure is one MEASURES entry.
+A signal with no input is MISSING; repeating a yearly value twelve times
+would count it twelve times.
 """
 from __future__ import annotations
 
-from collections import defaultdict
-from dataclasses import dataclass
-from datetime import date, datetime, timezone
-from typing import Callable, Sequence
+from datetime import date
+from typing import Mapping, Protocol
 
 from ....engine.schemas import EvidenceRecord
-from ...sources.soft_evidence import build_soft_record, soft_bool, zscore
-from ..domain import DOMAIN_MODULE_ID, VARIABLES, get_variables
-from ...sources.gdelt import GDELTClient
+from ...sources.grades import build_graded_record
+from ...sources.soft_evidence import zscore
+from ...sources.structure import with_lags
+from ..domain import DOMAIN_MODULE_ID, TALK, get_variables
 from .aic_client import AICClient
+from .cma_client import CMAClient
+from .figures import Figures, figure_signals, load_figures
+from .tag_counts import TagCounts
 
-# Five years behind the latest month, so a lasting rise reads as high rather
-# than as the new normal.
-NEWS_MONTHS = 61
-GDELT_START = date(2017, 1, 1)
-MIN_NEWS_HISTORY = 24
-# The latest fiscal year and the seven before it (about 8 points exist since
-# 2018 at the museum's current cataloguing; a longer window would mix eras).
-AIC_YEARS = 8
-MIN_AIC_HISTORY = 4
-AIC_REPORT_MONTH = 12
+TALK_MONTHS = 24
+MIN_TALK_HISTORY = 12
+PAPER_START = {"guardian": (2010, 1), "nyt": (2000, 1)}
+MUSEUM_MONTH = 12
+MUSEUM_YEARS = 8   # the year read and the seven before it
+MIN_MUSEUM_HISTORY = 4
 
-AI_IMAGERY_QUERY = '"AI-generated" theme:TAX_FNCACT_ARTIST sourcelang:english'
-CRAFT_TYPES = ("Ceramics", "Textile", "Glass", "Basketry", "Furniture", "Metalwork", "Vessel", "Coverings and Hangings")
+_VARIABLES = with_lags(DOMAIN_MODULE_ID, get_variables())
 
 
-@dataclass(frozen=True)
-class NewsShare:
-    """GDELT: monthly mean share of all monitored news matching *query*."""
-    query: str
+class Paper(Protocol):
+    async def month(self, year: int, month: int) -> TagCounts | None: ...
 
 
-@dataclass(frozen=True)
-class ArtistsAcquired:
-    """Distinct artists AIC acquired in the fiscal year."""
+def _months_back(target: date, n: int) -> list[tuple[int, int]]:
+    """The n months before *target*'s month, oldest first."""
+    y, m, out = target.year, target.month, []
+    for _ in range(n):
+        y, m = (y, m - 1) if m > 1 else (y - 1, 12)
+        out.append((y, m))
+    return out[::-1]
 
 
-@dataclass(frozen=True)
-class ArtistShare:
-    """Share of the year's distinct artists acquired in *artwork_types*."""
-    artwork_types: Sequence[str]
-
-
-Measure = NewsShare | ArtistsAcquired | ArtistShare
-
-MEASURES: dict[str, Measure] = {
-    "AIImageSaturation": NewsShare(AI_IMAGERY_QUERY),
-    "MuseumAcquisitionMomentum": ArtistsAcquired(),
-    "CraftPrestigeRising": ArtistShare(CRAFT_TYPES),
-}
-
-
-def signal(series: Sequence[float], min_history: int) -> float | None:
-    """z-score of the last value against the ones before it; None with too little history."""
-    if len(series) < min_history + 1:
+def _against_past(by_year: Mapping[int, float], year: int) -> float | None:
+    past = [by_year[y] for y in range(year - MUSEUM_YEARS + 1, year) if y in by_year]
+    if year not in by_year or len(past) < MIN_MUSEUM_HISTORY:
         return None
-    return zscore(series[-1], list(series[:-1]))
+    return zscore(by_year[year], past)
 
 
-def reported_fiscal_years(target_date: date) -> list[int] | None:
-    """The fiscal years a target month reads (oldest first), or None outside the report month."""
-    if target_date.month != AIC_REPORT_MONTH:
-        return None
-    latest = target_date.year - 1  # ended June 30, 18 months before this December
-    return list(range(latest - AIC_YEARS + 1, latest + 1))
-
-
-def _utc_today() -> date:
-    return datetime.now(timezone.utc).date()
+def _mean(values: list[float | None]) -> float | None:
+    known = [v for v in values if v is not None]
+    return sum(known) / len(known) if known else None
 
 
 class ArtPipeline:
-    def __init__(self, gdelt: GDELTClient, aic: AICClient, today: Callable[[], date] = _utc_today) -> None:
-        self._gdelt = gdelt
+    def __init__(self, papers: Mapping[str, Paper], aic: AICClient, cma: CMAClient,
+                 figures: Figures | None = None) -> None:
+        self._papers = papers
         self._aic = aic
-        self._today = today
+        self._cma = cma
+        self._figures = load_figures() if figures is None else figures
+        self._aic_years: dict[int, int] = {}
 
     async def fetch_evidence(self, target_date: date) -> EvidenceRecord:
-        z: dict[str, float] = {}
-        # One measure at a time: GDELT allows one request per 5 seconds.
-        for name, measure in MEASURES.items():
-            s = await self._signal(measure, target_date)
-            if s is not None:
-                z[name] = s
-        p = {n: soft_bool(z[n], 0.05, 0.95) for n in z}
-        return build_soft_record(
-            module_id=DOMAIN_MODULE_ID,
-            variables=get_variables(),
-            states=[(n, p.get(n, 0.5) > 0.5, p.get(n, 0.5)) for n in VARIABLES],
-            confidence={},
-            target_date=target_date,
-            source_ref=f"gdelt+artic.edu@month-ending-{target_date}",
-            missing=[n for n in VARIABLES if n not in p],
+        signals: dict[str, float] = {}
+        for paper in self._papers:
+            signals |= await self._talk(paper, target_date)
+        figures, previous = figure_signals(self._figures, target_date)
+        signals |= figures
+        if target_date.month == MUSEUM_MONTH:
+            now, prev = await self._museums(target_date.year)
+            if now is not None:
+                signals["MuseumAcquisitionMomentum"] = now
+                if prev is not None:
+                    previous["MuseumAcquisitionMomentum"] = prev
+        return build_graded_record(
+            module_id=DOMAIN_MODULE_ID, variables=_VARIABLES, signals=signals, previous=previous,
+            confidence={}, target_date=target_date,
+            source_ref=f"guardian+nyt+reports+artic.edu+clevelandart.org@month-ending-{target_date}",
         )
 
-    async def _signal(self, measure: Measure, target_date: date) -> float | None:
-        if isinstance(measure, NewsShare):
-            return await self._news_signal(measure, target_date)
-        years = reported_fiscal_years(target_date)
-        if years is None:
-            return None
-        if isinstance(measure, ArtistsAcquired):
-            totals = [await self._aic.acquisitions(y) for y in years]
-            if any(t is None for t in totals):
-                return None
-            return signal([t.artists for t in totals], MIN_AIC_HISTORY)
-        totals = [await self._aic.acquisitions(y) for y in years]
-        matches = [await self._aic.acquisitions(y, measure.artwork_types) for y in years]
-        if any(t is None or not t.artists for t in totals) or any(m is None for m in matches):
-            return None
-        return signal([m.artists / t.artists for t, m in zip(totals, matches)], MIN_AIC_HISTORY)
+    async def _month(self, paper: str, year: int, month: int) -> TagCounts | None:
+        counts = await self._papers[paper].month(year, month)
+        return None if counts is None or counts.articles == 0 else counts
 
-    async def _news_signal(self, measure: NewsShare, target_date: date) -> float | None:
-        today = self._today()
-        obs = await self._gdelt.fetch_timeline(
-            measure.query, "art-ai-imagery", lookback_days=(today - GDELT_START).days, end_date=today,
-        )
-        first = date(target_date.year - NEWS_MONTHS // 12, target_date.month, 1)
-        last = target_date.replace(day=1)
-        by_month: dict[date, list[float]] = defaultdict(list)
-        for o in obs:
-            month = o.obs_date.replace(day=1)
-            if first <= month <= last:  # never later than the target: no lookahead
-                by_month[month].append(o.value)
-        if last not in by_month:
-            return None  # the target month itself must be covered
-        months = sorted(by_month)
-        return signal([sum(by_month[m]) / len(by_month[m]) for m in months], MIN_NEWS_HISTORY)
+    async def _talk(self, paper: str, target: date) -> dict[str, float]:
+        start = PAPER_START[paper]
+        if (target.year, target.month) < start:
+            return {}
+        current = await self._month(paper, target.year, target.month)
+        if current is None:
+            return {}
+        history = [c for ym in _months_back(target, TALK_MONTHS) if ym >= start
+                   and (c := await self._month(paper, *ym)) is not None]
+        if len(history) < MIN_TALK_HISTORY:
+            return {}
+        return {name: zscore(current.share(tag), [c.share(tag) for c in history])
+                for name, (p, tag) in TALK.items() if p == paper}
+
+    async def _museums(self, december: int) -> tuple[float | None, float | None]:
+        """(this December's signal, last December's)."""
+        fiscal = december - 1          # Chicago's year ended June 30, 18 months before
+        calendar = december - 1        # Cleveland's ended 12 months before
+        for fy in range(fiscal - MUSEUM_YEARS, fiscal + 1):
+            if fy not in self._aic_years and (got := await self._aic.acquisitions(fy)) is not None:
+                self._aic_years[fy] = got.artists
+        cma = await self._cma.artists_by_year() or {}
+        now = _mean([_against_past(self._aic_years, fiscal), _against_past(cma, calendar)])
+        prev = _mean([_against_past(self._aic_years, fiscal - 1), _against_past(cma, calendar - 1)])
+        return now, prev

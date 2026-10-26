@@ -1,55 +1,44 @@
 """
-art_prestige_regime_v1 — the art world's prestige regime.
+art_prestige_regime_v1 — what confers prestige in art, and how that changes.
 
-Twenty-five BOOLEAN variables in three groups (institutional, market,
-cultural). Moved here from the separate art-market-domain package; the
-module id, variable names and ids are unchanged, so stored evidence and
-the dashboard keep working.
+Bourdieu: prestige is consecration, and three bodies consecrate. Each is
+observed, and nothing more is assumed (docs/art-evidence-plan.md):
+- the press: how much of a paper's art coverage carries a topic tag, per
+  month. Two papers, London's and New York's, kept apart; the topics are the
+  editors' most-used tags, chosen by a rule (plan §5).
+- institutions: distinct artists two museums acquired, yearly.
+- the market: four Art Basel & UBS report figures, yearly.
 
-Evidence comes from two places (see source.py and manual.py): monthly
-series fetched automatically, and hand-supplied report labels. Variables
-neither source measures in a period are MISSING.
+Every variable is graded: low, mid or high for its own series (D25). The
+module id is unchanged so the dashboard's routes keep working; the old
+twenty-five hand-named variables are gone (plan §9).
 """
 from __future__ import annotations
 
-from ..sources.structure import boolean_variables, with_lags
+from ..sources.grades import graded_variables
+from ..sources.structure import with_lags
 from ...engine.model.domain import DEFAULT_THRESHOLDS
 from ...engine.schemas import EdgeExistenceThresholdConfig, Variable
 
 DOMAIN_MODULE_ID = "art_prestige_regime_v1"
 
-VARIABLES: list[str] = [
-    # Institutional
-    "InstitutionalRiskAversion",
-    "MuseumFigurativeAcceptance",
-    "ConceptualDominance",
-    "AIArtInstitutionalAcceptance",
-    "CuratorialMaterialityShift",
-    "CraftPrestigeRising",
-    "PrestigeFragmentation",
-    "RegionalSceneMomentum",
-    "BlueChipInstitutionalCapture",
-    "BiennialFatigue",
-    "MuseumAcquisitionMomentum",
-    # Market
-    "BlueChipConcentration",
-    "AuctionSpeculationElevated",
-    "CollectorFlightToSafety",
-    "FigurativeAuctionMomentum",
-    "EmergingMarketLiquidity",
-    "MarketPolarization",
-    "MarketUncertainty",
-    # Cultural
-    "RitualAuraPremium",
-    "EmbodimentDiscourseRising",
-    "AntiDigitalSentiment",
-    "AIImageSaturation",
-    "AuthenticityPremium",
-    "NeoAcademicResurgence",
-    "AttentionFragmentation",
-]
+# Signal → (paper, the paper's own tag). Ranked by art articles carrying them.
+TALK: dict[str, tuple[str, str]] = {
+    "GuardianPhotographyTalk": ("guardian", "artanddesign/photography"),
+    "GuardianExhibitionTalk": ("guardian", "artanddesign/exhibition"),
+    "GuardianPaintingTalk": ("guardian", "artanddesign/painting"),
+    "GuardianArchitectureTalk": ("guardian", "artanddesign/architecture"),
+    "NYTMuseumsTalk": ("nyt", "museums"),
+    "NYTPhotographyTalk": ("nyt", "photography"),
+    "NYTSculptureTalk": ("nyt", "sculpture"),
+    "NYTAuctionsTalk": ("nyt", "auctions"),
+}
+FIGURES = ["ArtSalesGrowth", "DealerShare", "OnlineShare", "HighEndShare"]
+MUSEUMS = ["MuseumAcquisitionMomentum"]
 
-_VARIABLES = boolean_variables(DOMAIN_MODULE_ID, VARIABLES)
+VARIABLES: list[str] = [*TALK, *FIGURES, *MUSEUMS]
+
+_VARIABLES = graded_variables(DOMAIN_MODULE_ID, VARIABLES)
 
 
 def get_variables() -> dict[str, Variable]:

@@ -90,9 +90,8 @@ Four rules, each added after a replay showed the engine needed it
   engine must find it in the evidence.
 - **Degree is not doubt.** A measured signal is a precise number, so it is
   read as how far it lies from the line that names it: low, middle or high,
-  observed exactly. Only testimony (art's reports, read by a language
-  model) is kept as a probability, because only there is the doubt real
-  (D25).
+  observed exactly (D25). Testimony, what a text asserts, needs reading
+  rather than measuring; it belongs to the abductive engine, not here.
 - **Know your own confidence.** Each week the engine records whether its
   70% beliefs come true 70% of the time, level by level, judged against
   what the evidence said, and whether its whole population, weighted by
@@ -203,9 +202,9 @@ Eleven domains are live and registered in the API:
 | `cr` | `crypto-regime-v1` | Weekly | CoinGecko + yfinance + FRED |
 | `gp` | `geopolitics-v1` | Weekly | GDELT + FRED |
 | `sf` | `sf-urban-v1` | Weekly | SF Open Data + FRED |
-| `art` | `art_prestige_regime_v1` | Monthly | GDELT news coverage, Art Institute of Chicago acquisitions, hand-labelled reports |
+| `art` | `art_prestige_regime_v1` | Monthly | Guardian and NYT art-coverage tags, Art Basel & UBS report figures, Chicago and Cleveland museum acquisitions |
 
-Most domains track eight measured signals, each read as low, middle or high and each with its value last period; the art domain tracks 25 yes/no concepts, mostly from testimony. No domain gives any hypothesis about how its variables connect. Every domain's variables and sources: [docs/domains.md](docs/domains.md).
+Every domain's signals are measured and read as low, middle or high, each with its value last period: eight in most domains, thirteen in art. No domain gives any hypothesis about how its variables connect. Every domain's variables and sources: [docs/domains.md](docs/domains.md).
 
 ## Architecture
 
@@ -256,9 +255,6 @@ POST /v1/ingest/trigger                     # fetch and learn the latest week no
 POST /v1/ingest/backfill?days=N             # needs Authorization: Bearer $POE_ADMIN_TOKEN
 POST /v1/ingest/rebuild?domain=cc&days=730  # forget a domain and relearn it from its sources, in the background; admin token
 GET  /v1/ingest/rebuild?domain=cc           # progress, records learned, and any weeks it could not fetch; admin token
-POST /v1/ingest/art/manual?path=...          # learn new report files; needs Authorization: Bearer $POE_ADMIN_TOKEN
-POST /v1/ingest/art/rebuild?months=36        # start forgetting art and relearning fetched months + reports, in the background; admin token
-GET  /v1/ingest/art/rebuild                  # progress of the latest rebuild (idle / running / done / failed); admin token
 GET  /v1/export/narrative-snapshot
 GET  /v1/report/{domain}                     # read cached report (no LLM call)
 POST /v1/report/{domain}/refresh             # regenerate if snapshot changed (Fireworks); no auth (see below)
@@ -300,14 +296,16 @@ Environment (`.env`):
 ```bash
 FRED_API_KEY=...                    # required for MR, AI, SD, CC, ER, LM, CR, GP, SF
 EIA_API_KEY=...                     # required for NG
+GUARDIAN_API_KEY=...                # required for art (Guardian Open Platform, free developer key)
+NYT_API_KEY=...                     # required for art (NYT Archive API, free developer key)
 FIREWORKS_API_KEY=...               # required for POST /v1/report/{domain}/refresh
 EVIDENCE_SCHEDULER_ENABLED=true
 POE_DATA_DIR=/data                  # Railway: persistent volume mount; default "." loses reports on redeploy
-POE_ADMIN_TOKEN=...                 # enables backfill and the art routes; unset = those routes return 503
+POE_ADMIN_TOKEN=...                 # enables backfill, replace and rebuild; unset = those routes return 503
 POE_CORS_ORIGINS=https://your-dashboard.example,http://localhost:3000   # default "*"; read before .env loads, so set it in the real environment
 ```
 
-No key required for SF Open Data, CoinGecko public endpoints, or GDELT. SEC EDGAR requires only a valid `User-Agent` header.
+No key required for SF Open Data, CoinGecko public endpoints, GDELT, or the Chicago and Cleveland museum APIs. SEC EDGAR requires only a valid `User-Agent` header.
 
 ## Tests
 

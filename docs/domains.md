@@ -36,8 +36,8 @@ probabilities.
 **`sf-urban-v1`**: `TechHiringAccelerating`, `OfficeVacancyFalling`, `RetailClosureElevated`, `PermitActivityRising`, `CrimeIndexElevated`, `StartupFormationRising`, `FootTrafficRecovering`, `PopulationFlowPositive`
 — SF Open Data: permits (`i98e-djp9`), crime (`wg3w-h783`), businesses (`g8m3-pdis`); FRED: `SANF806INFO`, `SANF806LEIH`, `SANF806NA` (SF-Oakland-Fremont MSA, monthly SA)
 
-**`art_prestige_regime_v1`**: 25 art prestige regime variables (institutional, market, cultural), in `src/domains/art_prestige_regime_v1`.
-— Fetched monthly where a series measures the variable (see `ingestion/pipeline.py` `MEASURES`); hand-labelled reports in `report_files/` cover the rest under the rules in `reports.py`. Unmeasured variables are MISSING.
+**`art_prestige_regime_v1`**: talk in the art press, `GuardianPhotographyTalk`, `GuardianExhibitionTalk`, `GuardianPaintingTalk`, `GuardianArchitectureTalk`, `NYTMuseumsTalk`, `NYTPhotographyTalk`, `NYTSculptureTalk`, `NYTAuctionsTalk`; the market, `ArtSalesGrowth`, `DealerShare`, `OnlineShare`, `HighEndShare`; institutions, `MuseumAcquisitionMomentum`
+— Guardian Open Platform (`artanddesign` keyword tags, from 2010) and NYT Archive (subjects of articles tagged Art), monthly, each month against the two years before; Art Basel & UBS report figures (`report_figures.csv`), each April; Art Institute of Chicago and Cleveland Museum of Art acquisitions, each December. Topics are the papers' most-used tags, chosen by rule ([art-evidence-plan.md](art-evidence-plan.md) §5).
 
 
 Every domain's candidates also hold each signal's value last period (`X_prev`), as inputs only (REFACTOR_SPEC D19, D24). No domain gives hypotheses: the engine starts each with none and forms its own (D24).

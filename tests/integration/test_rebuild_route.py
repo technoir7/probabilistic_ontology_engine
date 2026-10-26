@@ -45,6 +45,6 @@ def test_no_rebuild_yet_is_idle():
         assert client.get("/v1/ingest/rebuild", params={"domain": "gp"}, headers=H).json()["state"] == "idle"
 
 
-def test_art_has_its_own_rebuild():
+def test_art_rebuilds_like_any_other_domain():
     with TestClient(api_app.app) as client:
-        assert client.post("/v1/ingest/rebuild", params={"domain": "art", "days": 30}, headers=H).status_code == 400
+        assert client.post("/v1/ingest/rebuild", params={"domain": "art", "days": 30}, headers=H).status_code == 202

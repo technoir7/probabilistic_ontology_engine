@@ -51,10 +51,7 @@ class Settings:
     log_level: str
     fireworks_api_key: str
     fireworks_model: str
-    # The only directory /v1/ingest/art/manual may read from; None = the art
-    # package's own data/manual_ingest.
-    art_manual_dir: Path | None
-    # Bearer token for operator routes (backfill, art manual ingest); "" turns
+    # Bearer token for operator routes (backfill, replace, rebuild); "" turns
     # them off rather than leaving them open.
     admin_token: str
     # Browser origins allowed to call the API; ("*",) = any. No route relies
@@ -75,7 +72,6 @@ class Settings:
             fireworks_model=environ.get(
                 "FIREWORKS_REPORT_MODEL", "accounts/fireworks/models/deepseek-v4-pro"
             ),
-            art_manual_dir=Path(environ["POE_ART_MANUAL_DIR"]) if environ.get("POE_ART_MANUAL_DIR") else None,
             admin_token=environ.get("POE_ADMIN_TOKEN", "").strip(),
             cors_origins=tuple(
                 o.strip() for o in environ.get("POE_CORS_ORIGINS", "*").split(",") if o.strip()
