@@ -1011,3 +1011,27 @@ What month-to-month levels of tag shares can carry for art is each topic's
 own persistence, and at most that. Whether discourse moves on a slower
 time than a month, or is better read than counted (the abductive engine's
 art phase), are open, and neither is tested here.
+
+## Replay 16: art talk on a slower clock
+
+*Plan, written before replay 16 ran.*
+
+Replay 15 read talk month by month and found nothing to hold. Taste may
+move over seasons and years, not months. Replay 16 asks the same questions
+of the same saved inputs aggregated:
+- **by quarter:** each quarter's share against the eight quarters before
+  (two years, as monthly), 2001 Q1 to 2026 Q3, about 103 records;
+- **by year:** each year's share against the five years before, 2005 to
+  2025, 21 records.
+
+Figures and museums as in replay 15, each in the quarter or year it is
+seen. Seeds 0–4, otherwise as replay 15.
+
+32. **Do links hold on a slower clock?** Links between signals the leader
+    holds for 4 quarters, or 3 years, in a row.
+33. **Do they predict better than no links?** Fit gap per record.
+
+Expected: little. 21 yearly records cannot carry a link between
+three-level signals at BIC's price (art plan §2), and 103 quarters are a
+third of replay 15's months. If replay 16 also finds nothing, the slower
+clock is closed as a question for counted talk.
