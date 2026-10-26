@@ -96,3 +96,35 @@ Each step test first.
 3. **Replay 17**, plan first: links found, their direction, fit gap over
    independence, when the leading structure changes, and the shuffled
    control.
+
+## 7. Step 1 findings (2026-10-26, NYT through March 2010 only)
+
+The NYT's daily quota of 500 requests ran out at April 2010; the rest
+downloads overnight. Counts so far:
+
+- **Museums, 1995–2025:** Chicago acquired work by 6,205 artists, Cleveland
+  by 4,584 named people (131 creators were places, periods or "unknown").
+  Both acquired 962 of them.
+- **The Guardian** tags only well-known artists: 419 `artanddesign` tags in
+  26 years, topics included; 150 match a museum artist.
+- **The NYT** names 9,717 people on its Art articles in 2000–2010, 1,098 of
+  them also acquired by a museum.
+- **Dropped as two people** (birth years 2+ apart): 39 names.
+- **The plan's rule** (in two sources, or twice in one) keeps 5,012 names;
+  1,126 have both press and a museum acquisition.
+
+What the counts show:
+- Matches read correctly on a sample of 40, but common names ("James
+  Watson", "Peter Moore") may join two people, and the NYT gives no birth
+  year to check.
+- **People the NYT names are not all artists:** a sample of NYT-only names
+  holds artists (Mark Ryden, Danica Phelps), art historians, a dealer, a
+  composer and a senator. Only a museum acquisition shows a name is an
+  artist's.
+
+Decision for the user before step 2: who counts.
+- **Artists any museum acquired, 1995–2025** (about 9,800 names): certainly
+  artists; the question becomes whether press comes before the first
+  acquisition, or after. Recommended.
+- **Anyone named twice** (about 5,000 names): includes artists never
+  acquired, and non-artists.
