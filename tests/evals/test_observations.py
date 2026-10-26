@@ -53,3 +53,18 @@ def test_the_export_is_a_csv_of_the_four_fields():
     observations.write_csv([observations.Row("UNRATE", date(2024, 1, 1), 3.7, date(2024, 2, 8))], out)
     assert list(csv.reader(io.StringIO(out.getvalue()))) == [
         ["series", "measured", "value", "public"], ["UNRATE", "2024-01-01", "3.7", "2024-02-08"]]
+
+
+def test_fred_versions_are_published_on_their_release_dates():
+    # FRED's real-time observations: each version of a value with the day it was released.
+    versions = {"CPIAUCSL": [
+        {"realtime_start": "2024-02-13", "date": "2024-01-01", "value": "101.0"},
+        {"realtime_start": "2024-03-12", "date": "2024-01-01", "value": "101.5"},
+        {"realtime_start": "2024-03-12", "date": "2024-02-01", "value": "102.0"},
+        {"realtime_start": "2024-03-12", "date": "2023-12-01", "value": "."},
+    ]}
+    assert observations.rows({}, observations.releases(versions)) == [
+        observations.Row("CPIAUCSL", date(2024, 1, 1), 101.0, date(2024, 2, 13)),
+        observations.Row("CPIAUCSL", date(2024, 1, 1), 101.5, date(2024, 3, 12)),
+        observations.Row("CPIAUCSL", date(2024, 2, 1), 102.0, date(2024, 3, 12)),
+    ]
