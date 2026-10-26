@@ -1035,3 +1035,20 @@ Expected: little. 21 yearly records cannot carry a link between
 three-level signals at BIC's price (art plan §2), and 103 quarters are a
 third of replay 15's months. If replay 16 also finds nothing, the slower
 clock is closed as a question for counted talk.
+
+### Replay 16 results
+
+32. **By quarter, one link, for a while.** In every seed the leader held
+    NYT auctions talk bearing on NYT museums talk in the same quarter for
+    10 quarters from late 2002, then gave it up; two changes of programme
+    per seed, both around it. No other link between signals held for 4
+    quarters, and no signal's own persistence did. **By year, nothing:** no
+    link, no persistence, no change of programme, in any seed.
+33. **No better than no links.** Fit gap −0.002 nats a quarter, 0.000 a
+    year.
+
+The slower clock is closed as a question for counted talk: pooling months
+removes their noise but also most of the records, and what remains shows
+no lasting relation. The one link, within one paper and in the same
+period, may be no more than two shares of the same coverage competing for
+space.
