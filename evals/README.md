@@ -916,3 +916,64 @@ credit stress) was off in every week after mid-2009, so replay 13's claim
 that it was held to 2026 was wrong for that seed. The other seeds' later
 years cannot be checked from the stored rows; their fit, forecast and
 calibration, which the engine computed from the links in use, stand.
+
+## Replay 15: art, from 2001
+
+*Plan, written before replay 15 ran. Nothing in it has been run on the art
+data; the design was settled against the synthetic tests.*
+
+The first replay of a domain other than macro, and of the humanities one.
+Art formed no links in 92 live records because its evidence could show
+none (docs/art-evidence-plan.md §1). REFACTOR_SPEC D28 replaced it with
+thirteen measured signals for Bourdieu's three consecrating bodies: eight
+monthly talk signals (the share of a paper's art articles carrying one of
+its editors' four most-used topic tags, each month against the two years
+before, the Guardian and the NYT kept apart), four yearly Art Basel & UBS
+figures (each April), and museum acquisitions (each December). The
+question is whether this evidence can show links, and which.
+
+**Data.** Monthly records built by the art domain's own pipeline
+(`ArtPipeline`) from saved inputs in `evals/data/art/`, not refetched:
+- the press: each month's art articles and the eight tags' counts,
+  counted by the clients' rules (the NYT from 2000, the Guardian from
+  2010), from the tag probe of 2026-10-26;
+- the figures: `report_figures.csv`, as live;
+- museums: Chicago's distinct artists by fiscal year and Cleveland's by
+  accession year, fetched 2026-10-26. These are today's catalogues, not
+  what was published each December; recent years fill in late, which the
+  pipeline's 12–18 month delay allows for.
+
+One record per month-end from January 2001 (the NYT's first month with a
+year of history) to September 2026: 309 months. The Guardian's signals
+start in January 2011, the figures in April 2019, museums in December 2001
+where eight years of a museum's acquisitions exist. Seeds 0–4, a fresh
+engine each, as the app runs it, written to `data/replay15/`.
+
+**Events**, fixed here, with the month each began:
+
+| Event | Began | Source |
+|---|---|---|
+| Lehman Brothers fails | 2008-09 | |
+| Salvator Mundi sells for $450m, an auction record | 2017-11 | Christie's |
+| Museums close for COVID (the Met, MoMA, Tate) | 2020-03 | the museums |
+| A digital work (Beeple, NFT) sells for $69m | 2021-03 | Christie's |
+
+28. **Does it form links, and of what kind?** Per seed, the links the
+    leader reasons with for 12 months or more: within one paper's talk,
+    between the two papers, and between talk and the yearly signals. A
+    signal's persistence counts apart.
+29. **Do they explain the months better than no links?** Fit gap over
+    independent signals, nats a month, overall and by year; forecast and
+    calibration as in replay 14.
+30. **Do changes of programme come with the events?** Changes of
+    programme per seed, and how many fall within 6 months after an event.
+31. **Does the editors' bookkeeping show as a finding?** The NYT's tags
+    per art article doubled from 2019 to 2020 (art plan §12). A link among
+    NYT signals that forms in 2020–2022 and goes once those months leave
+    the two-year comparison is the tagging change, not the art world.
+
+What would count against the design: links that come and go month to
+month; a structure that predicts no better than independence; or links
+that exist only while the NYT's tagging change is inside the comparison
+window. Expected (art plan §8): some links within talk, if any, and none
+involving the yearly signals, which have seven Aprils.
