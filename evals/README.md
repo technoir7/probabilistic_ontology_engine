@@ -1178,3 +1178,25 @@ So the yearly grain does show one order after all, in New York: the
 city's paper names an artist, and the encyclopedic museum in
 Chicago acquires them, in the same year or the next. London's paper and
 critics' verdicts move with the museums, not ahead of them.
+
+## Replay 18: the artists' case engine with size graded finely (planned 2026-10-28, before it runs)
+
+The case engine (abductive_engine ART-PLAN §9) put the NYT in the lead for
+artists from 2003, +275 nats over each artist's own past. But that own past
+was coarse: none, one or several acquisitions this year and before. On
+concepts, a coarse own past let size pass for a mechanism (ART-PLAN §8,
+test 1 against 1b), so the same check is owed here before the result goes
+into the live engine (REFACTOR_SPEC D29).
+
+- **Own past, finely graded:** acquisitions this year and acquisitions in
+  all years before, each in doubling bins (0, 1, 2, 3–4, 5–8, 9–16, 17+).
+  Features and outcome unchanged: last year's NYT, Guardian (from 2010),
+  approval and contested, as none, one or several; next year's
+  acquisitions, as none, one or several.
+- **Run:** the case engine on 2000–2024 states (outcomes to 2025), as
+  before; then one deal of the leader's features within each year, five
+  times, as the control.
+- **Reading:** the NYT result stands if the engine still leads with a set
+  containing the NYT and its gain over own past is above all five deals.
+  If it falls to within the deals, the live engine shows own past alone
+  for artists, and this README says so.
