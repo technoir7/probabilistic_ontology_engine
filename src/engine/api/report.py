@@ -211,7 +211,11 @@ def _generate_report_sync(snapshot: dict, api_key: str, model: str, strict: bool
     )
     choice = response.choices[0]
     if not choice.message.content:
-        raise ValueError(f"the model wrote no report (finish_reason: {choice.finish_reason})")
+        details = getattr(response.usage, "completion_tokens_details", None)
+        thought = getattr(details, "reasoning_tokens", None)
+        raise ValueError(f"the model wrote no report (finish_reason: {choice.finish_reason}; "
+                         f"thinking tokens: {thought}; reasoning text: "
+                         f"{len(getattr(choice.message, 'reasoning_content', None) or '')} chars)")
     return choice.message.content
 
 
