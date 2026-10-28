@@ -28,7 +28,8 @@ def linked(about: str, names: set[str]) -> Optional[str]:
 
 
 def reception(assertions_root: Path, names: set[str]) -> dict[str, dict[str, dict[int, int]]]:
-    """Artist -> {"approval", "disapproval", "judged"} -> year -> judgements."""
+    """Artist -> {"approval", "disapproval", "judged", "contested"} -> year ->
+    judgements; contested is 1 in a year with both approval and disapproval."""
     out: dict[str, dict[str, dict[int, int]]] = {}
     for path in sorted(Path(assertions_root).glob("*/*.jsonl")):
         for line in path.read_text().splitlines():
@@ -44,4 +45,6 @@ def reception(assertions_root: Path, names: set[str]) -> dict[str, dict[str, dic
                 series["judged"][year] = series["judged"].get(year, 0) + 1
                 if a["stance"] in STANCES:
                     series[a["stance"]][year] = series[a["stance"]].get(year, 0) + 1
+    for series in out.values():
+        series["contested"] = {y: 1 for y in series["approval"] if y in series["disapproval"]}
     return out

@@ -31,7 +31,8 @@
     20.83,
     -7.3,
     14.58
-   ]
+   ],
+   "next_year_placebo": 42.64
   },
   "museum -> guardian": {
    "gain": -21.94,
@@ -59,7 +60,8 @@
     -26.34,
     -16.56,
     -30.2
-   ]
+   ],
+   "next_year_placebo": -21.14
   },
   "guardian -> aic": {
    "gain": 25.48,
@@ -87,7 +89,8 @@
     5.63,
     -13.25,
     6.24
-   ]
+   ],
+   "next_year_placebo": 22.18
   },
   "guardian -> cma": {
    "gain": -25.3,
@@ -115,7 +118,8 @@
     -31.69,
     -44.72,
     -17.26
-   ]
+   ],
+   "next_year_placebo": -23.04
   }
  }
 }

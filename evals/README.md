@@ -1146,3 +1146,35 @@ consecrate the same artists and in the same seasons of their careers, and
 at a yearly grain neither leads the other. Bourdieu's bodies act together.
 Whether one leads by months, within a year, needs exhibition and
 acquisition dates finer than a year, which these sources do not give.
+
+### Replay 17 results, all years (2026-10-28)
+
+With the NYT's archive complete and the critics' judgements read
+(abductive_engine ART-PLAN), on the same 9,665 artists. Five shuffles per
+pair as planned; for the NYT, 100 shuffles and the same-year comparison as
+well (`data/replay17/nyt_2000-2025_checks.json`).
+
+34. **The NYT comes with or before Chicago.** NYT → museums 2000–2025:
+    last year +288 nats over 231,960 artist-years, the same year +266, next
+    year (placebo) +180; no shuffle of 100 as high (max 194, mean 155).
+    Chicago: last year +154, same year +176, next year +92 (shuffles max
+    122). Cleveland: +13, at most noise. So across all years, unlike the
+    first decade alone, the NYT's attention to an artist runs ahead of
+    Chicago's acquisitions more than behind them: a lead, though one that
+    sits close to the year of acquisition.
+    - Guardian → museums 2010–2025: +44.4, placebo +42.6: no order (as
+      before).
+    - Critics' approval (both papers) → museums: +144, but next year's
+      approval +184 and shuffles up to 116: approval clusters around
+      acquisitions, if anything after. All judgements: +165, placebo +196.
+      Disapproval: −9, nothing.
+    - Contested (approved and condemned in one year; 1,463 artist-years):
+      +1.5, within its shuffles. Museums do not follow controversy.
+35. **Acquisitions before press: nothing.** Museums → NYT −44, → Guardian
+    −22, → approval −35, → disapproval −42, all at or below their
+    shuffles.
+
+So the yearly grain does show one order after all, in New York: the
+city's paper names an artist, and its neighbour's encyclopedic museum in
+Chicago acquires them, in the same year or the next. London's paper and
+critics' verdicts move with the museums, not ahead of them.

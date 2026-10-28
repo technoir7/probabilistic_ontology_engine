@@ -22,4 +22,5 @@ def test_reception_counts_judgements_by_artist_year_and_stance(tmp_path):
         {"who": "w", "about": "Kusama, Yayoi", "asserts": "repeats herself", "force": "judges", "stance": "disapproval"}]}]
     (tmp_path / "guardian" / "2004-03.jsonl").write_text("\n".join(json.dumps(r) for r in rows) + "\n")
     got = reception(tmp_path, {"yayoi kusama"})
-    assert got["yayoi kusama"] == {"approval": {2004: 1}, "disapproval": {2004: 1}, "judged": {2004: 2}}
+    assert got["yayoi kusama"] == {"approval": {2004: 1}, "disapproval": {2004: 1}, "judged": {2004: 2},
+                                   "contested": {2004: 1}}   # approved and condemned in the same year

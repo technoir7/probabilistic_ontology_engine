@@ -28,7 +28,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[1])
     parser.add_argument("--first", type=int, required=True)
     parser.add_argument("--last", type=int, required=True)
-    parser.add_argument("--press", default="nyt", choices=["nyt", "guardian", "approval", "disapproval", "judged"],
+    parser.add_argument("--press", default="nyt", choices=["nyt", "guardian", "approval", "disapproval", "judged", "contested"],
                         help="a paper's attention, or the critics' judgements read from both papers (reception.py)")
     args = parser.parse_args()
     museums = json.loads((DATA / "artists" / "museums.json").read_text())
