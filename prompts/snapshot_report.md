@@ -60,6 +60,9 @@ groups of three adjectives, and dashes used as commas.
 - A level of low, mid or high says where a signal stands against its own recent
   history. Say "unusually high", "about normal", "unusually low".
 - Give a probability as a percentage or in words ("about one in three").
+- `evidence_count` counts the periodic records the signals were read from: weeks or
+  months, never years. Say "about five years of monthly readings", not "61 years".
+  The case findings cover their own span, 2001 to 2024.
 - Only use a number if it helps the reader decide something.
 
 ## What the data contains
