@@ -1175,6 +1175,6 @@ well (`data/replay17/nyt_2000-2025_checks.json`).
     shuffles.
 
 So the yearly grain does show one order after all, in New York: the
-city's paper names an artist, and its neighbour's encyclopedic museum in
+city's paper names an artist, and the encyclopedic museum in
 Chicago acquires them, in the same year or the next. London's paper and
 critics' verdicts move with the museums, not ahead of them.
