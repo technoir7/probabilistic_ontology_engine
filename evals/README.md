@@ -1200,3 +1200,22 @@ into the live engine (REFACTOR_SPEC D29).
   containing the NYT and its gain over own past is above all five deals.
   If it falls to within the deals, the live engine shows own past alone
   for artists, and this README says so.
+
+### Replay 18 results (2026-10-28)
+
+`uv run python -m evals.replay18`, 15 seconds; 241,625 closed artist-years,
+9,665 open (2025). Log `art-press-texts/jobs/logs/replay18.log`.
+
+36. **The NYT still leads, with size graded finely.** Leader from 2006:
+    the NYT alone; +177 nats over own past across 2001–2024 (coarse own
+    past: +275). Each of five deals of the NYT within each year: +60, all
+    from critics' approval, which the deal leaves real, taking the lead.
+    So by the plan's reading the result stands; about a third of the
+    coarse gain was size.
+    - Before 2006 the leader was wrong: contested (2002–05), then
+      (NYT, contested) briefly; the engine lost 9 nats to own past in
+      2002–05, when few artists had press. From 2007 it gained every year
+      but 2017 (+0.1).
+    - Critics' approval carries something too (+60 alone) but less than
+      the NYT, and the NYT with approval never stood 3 nats above the NYT
+      alone.

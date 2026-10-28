@@ -179,6 +179,206 @@
      "title": "CandidatesOut",
      "type": "object"
     },
+    "CaseForecastOut": {
+     "properties": {
+      "case": {
+       "title": "Case",
+       "type": "string"
+      },
+      "label": {
+       "title": "Label",
+       "type": "string"
+      },
+      "own_past": {
+       "items": {
+        "type": "number"
+       },
+       "title": "Own Past",
+       "type": "array"
+      },
+      "with_leader": {
+       "items": {
+        "type": "number"
+       },
+       "title": "With Leader",
+       "type": "array"
+      }
+     },
+     "required": [
+      "case",
+      "label",
+      "own_past",
+      "with_leader"
+     ],
+     "title": "CaseForecastOut",
+     "type": "object"
+    },
+    "CaseSetOut": {
+     "properties": {
+      "forecast_year": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Forecast Year"
+      },
+      "gain": {
+       "title": "Gain",
+       "type": "number"
+      },
+      "key": {
+       "title": "Key",
+       "type": "string"
+      },
+      "leader": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Leader",
+       "type": "array"
+      },
+      "likeliest": {
+       "items": {
+        "$ref": "#/components/schemas/CaseForecastOut"
+       },
+       "title": "Likeliest",
+       "type": "array"
+      },
+      "most_raised": {
+       "items": {
+        "$ref": "#/components/schemas/CaseForecastOut"
+       },
+       "title": "Most Raised",
+       "type": "array"
+      },
+      "outcome": {
+       "title": "Outcome",
+       "type": "string"
+      },
+      "pool": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Pool",
+       "type": "array"
+      },
+      "shifts": {
+       "items": {
+        "$ref": "#/components/schemas/CaseShiftOut"
+       },
+       "title": "Shifts",
+       "type": "array"
+      },
+      "title": {
+       "title": "Title",
+       "type": "string"
+      },
+      "years": {
+       "items": {
+        "$ref": "#/components/schemas/CaseYearOut"
+       },
+       "title": "Years",
+       "type": "array"
+      }
+     },
+     "required": [
+      "key",
+      "title",
+      "outcome",
+      "pool",
+      "leader",
+      "shifts",
+      "years",
+      "gain",
+      "forecast_year",
+      "likeliest",
+      "most_raised"
+     ],
+     "title": "CaseSetOut",
+     "type": "object"
+    },
+    "CaseShiftOut": {
+     "properties": {
+      "frm": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Frm",
+       "type": "array"
+      },
+      "to": {
+       "items": {
+        "type": "string"
+       },
+       "title": "To",
+       "type": "array"
+      },
+      "year": {
+       "title": "Year",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "year",
+      "frm",
+      "to"
+     ],
+     "title": "CaseShiftOut",
+     "type": "object"
+    },
+    "CaseYearOut": {
+     "properties": {
+      "cases": {
+       "title": "Cases",
+       "type": "integer"
+      },
+      "engine": {
+       "title": "Engine",
+       "type": "number"
+      },
+      "own_past": {
+       "title": "Own Past",
+       "type": "number"
+      },
+      "year": {
+       "title": "Year",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "year",
+      "engine",
+      "own_past",
+      "cases"
+     ],
+     "title": "CaseYearOut",
+     "type": "object"
+    },
+    "CasesOut": {
+     "properties": {
+      "case_sets": {
+       "items": {
+        "$ref": "#/components/schemas/CaseSetOut"
+       },
+       "title": "Case Sets",
+       "type": "array"
+      },
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      }
+     },
+     "required": [
+      "domain",
+      "case_sets"
+     ],
+     "title": "CasesOut",
+     "type": "object"
+    },
     "DomainRebuildOut": {
      "properties": {
       "days_requested": {
@@ -1720,6 +1920,45 @@
       }
      },
      "summary": "Runtime Status"
+    }
+   },
+   "/v1/cases": {
+    "get": {
+     "operationId": "cases_v1_cases_get",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "domain",
+       "required": true,
+       "schema": {
+        "title": "Domain",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/CasesOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Cases"
     }
    },
    "/v1/debug/entropy": {

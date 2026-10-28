@@ -354,3 +354,44 @@ class DomainReportOut(BaseModel):
 class DomainReportNotFound(BaseModel):
     found: bool = False
     domain: str
+
+
+# ── Cases (D29) ───────────────────────────────────────────────────────────────
+
+class CaseShiftOut(BaseModel):
+    year: int                 # the year whose evidence made the change
+    frm: list[str]
+    to: list[str]
+
+
+class CaseYearOut(BaseModel):
+    year: int
+    engine: float             # nats: the log score of the leader chosen before the year
+    own_past: float
+    cases: int
+
+
+class CaseForecastOut(BaseModel):
+    case: str
+    label: str
+    own_past: list[float]     # chance of none, one, several
+    with_leader: list[float]
+
+
+class CaseSetOut(BaseModel):
+    key: str
+    title: str
+    outcome: str
+    pool: list[str]
+    leader: list[str]         # empty: own past alone
+    shifts: list[CaseShiftOut]
+    years: list[CaseYearOut]
+    gain: float               # nats over own past, all scored years
+    forecast_year: Optional[int]   # the state year forecast from; its outcome is the year after
+    likeliest: list[CaseForecastOut]
+    most_raised: list[CaseForecastOut]
+
+
+class CasesOut(BaseModel):
+    domain: str
+    case_sets: list[CaseSetOut]

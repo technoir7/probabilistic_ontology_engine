@@ -18,7 +18,7 @@ from ..runtime.settings import Settings, load_dotenv_unless_disabled
 from ..model.cadence import Weekly
 from ..model.errors import EngineError, UnknownValue
 from . import context
-from .routers import debug, evidence, export, inference, ingest, population, reports, service
+from .routers import cases, debug, evidence, export, inference, ingest, population, reports, service
 
 logger = logging.getLogger(__name__)
 
@@ -107,7 +107,7 @@ app.add_middleware(
 )
 
 
-for _router in (service, population, debug, ingest, inference, export, reports, evidence):
+for _router in (service, population, debug, ingest, inference, export, reports, evidence, cases):
     app.include_router(_router.router)
 
 

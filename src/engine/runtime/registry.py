@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from typing import Any, Callable, Mapping
 
 from ...domains.ai_regime_v1 import source as ai_source
+from ...domains.art_prestige_regime_v1 import cases as art_cases
 from ...domains.art_prestige_regime_v1 import source as art_source
 from ...domains.art_prestige_regime_v1.domain import ArtPrestigeRegimeV1
 from ...domains.ai_regime_v1.domain import AIRegimeV1
@@ -33,8 +34,13 @@ from ...domains.sf_urban_v1.domain import SFUrbanV1
 from ...domains.sovereign_debt_v1 import source as sd_source
 from ...domains.sovereign_debt_v1.domain import SovereignDebtV1
 from ..model.cadence import Cadence, Daily, Monthly, Weekly
+from ..model.cases import CaseSet
 
 OpenSource = Callable[[Mapping[str, str]], AbstractAsyncContextManager[Any]]
+
+
+def no_cases() -> tuple[CaseSet, ...]:
+    return ()
 
 
 @dataclass(frozen=True)
@@ -54,6 +60,8 @@ class DomainRegistration:
     backfill_pause_s: float = 2.0
     # Skip a fetched weekly state identical to the latest stored one.
     skip_unchanged_state: bool = False
+    # Many small histories judged together (D29); a domain of one economy or city has none.
+    case_sets: Callable[[], tuple[CaseSet, ...]] = no_cases
 
     @property
     def scheduler_task_name(self) -> str:
@@ -87,7 +95,7 @@ REGISTRY: tuple[DomainRegistration, ...] = (
     DomainRegistration("art", "art_prestige_regime_v1", "Art Prestige Regime", "art_prestige_regime.db",
                        ArtPrestigeRegimeV1, art_source.open_source, ("GUARDIAN_API_KEY", "NYT_API_KEY"), "ART",
                        cadence=Monthly(),
-                       backfill_pause_s=1.0),
+                       backfill_pause_s=1.0, case_sets=art_cases.case_sets),
 )
 
 BY_KEY: dict[str, DomainRegistration] = {r.key: r for r in REGISTRY}
