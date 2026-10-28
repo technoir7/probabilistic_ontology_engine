@@ -80,13 +80,22 @@ def test_a_report_judges_the_closed_years_and_forecasts_the_open_one_by_its_lead
     assert [y.year for y in report.years] == list(range(2001, 2010))   # the first year is only learned
     assert report.gain > 500
     assert report.forecast_year == 2010
-    top = report.likeliest[0]
+    # Raised by the leader: x only; y's chance the leader lowered.
+    [top] = report.most_raised
     assert (top.case, top.label) == ("x", "the x")
     assert abs(sum(top.with_leader) - 1) < 1e-9 and abs(sum(top.own_past) - 1) < 1e-9
     assert top.with_leader[2] > 0.95 > top.own_past[2]
-    assert report.likeliest[1].label == "y"                              # no label given: the case's own name
-    # Raised by the leader: x only; y's chance the leader lowered.
-    assert [f.case for f in report.most_raised] == ["x"]
+
+
+def test_a_report_scores_every_rival_set_of_mechanisms_against_own_past():
+    rng = random.Random(5)
+    closed = [r for y in range(2000, 2010) for r in _year(y, 200, rng, True)]
+    report = case_report(CaseSet("t", "Test", ("f", "g"), tuple(closed)))
+    gains = {m.features: m.gain for m in report.mechanisms}
+    assert set(gains) == {("f",), ("g",), ("f", "g")}                   # own past is the baseline, not a rival
+    assert gains[("f",)] > 500 and gains[("g",)] <= 0
+    assert gains[("f",)] == max(gains.values())
+    assert [m.features for m in report.mechanisms] == sorted(gains, key=lambda k: -gains[k])
 
 
 def test_the_most_raised_are_ranked_by_how_much_the_leader_raises_their_chance():
@@ -104,4 +113,4 @@ def test_a_case_set_with_no_open_year_has_no_forecast():
     rng = random.Random(3)
     closed = [r for y in range(2000, 2004) for r in _year(y, 50, rng, False)]
     report = case_report(CaseSet("t", "Test", ("f", "g"), tuple(closed), {}))
-    assert report.forecast_year is None and report.likeliest == () and report.most_raised == ()
+    assert report.forecast_year is None and report.most_raised == ()

@@ -371,6 +371,11 @@ class CaseYearOut(BaseModel):
     cases: int
 
 
+class CaseMechanismOut(BaseModel):
+    features: list[str]
+    gain: float               # nats over own past, all scored years
+
+
 class CaseForecastOut(BaseModel):
     case: str
     label: str
@@ -387,8 +392,8 @@ class CaseSetOut(BaseModel):
     shifts: list[CaseShiftOut]
     years: list[CaseYearOut]
     gain: float               # nats over own past, all scored years
+    mechanisms: list[CaseMechanismOut]   # every rival set of mechanisms, best first
     forecast_year: Optional[int]   # the state year forecast from; its outcome is the year after
-    likeliest: list[CaseForecastOut]
     most_raised: list[CaseForecastOut]
 
 

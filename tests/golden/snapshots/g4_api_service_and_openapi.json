@@ -213,6 +213,27 @@
      "title": "CaseForecastOut",
      "type": "object"
     },
+    "CaseMechanismOut": {
+     "properties": {
+      "features": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Features",
+       "type": "array"
+      },
+      "gain": {
+       "title": "Gain",
+       "type": "number"
+      }
+     },
+     "required": [
+      "features",
+      "gain"
+     ],
+     "title": "CaseMechanismOut",
+     "type": "object"
+    },
     "CaseSetOut": {
      "properties": {
       "forecast_year": {
@@ -241,11 +262,11 @@
        "title": "Leader",
        "type": "array"
       },
-      "likeliest": {
+      "mechanisms": {
        "items": {
-        "$ref": "#/components/schemas/CaseForecastOut"
+        "$ref": "#/components/schemas/CaseMechanismOut"
        },
-       "title": "Likeliest",
+       "title": "Mechanisms",
        "type": "array"
       },
       "most_raised": {
@@ -294,8 +315,8 @@
       "shifts",
       "years",
       "gain",
+      "mechanisms",
       "forecast_year",
-      "likeliest",
       "most_raised"
      ],
      "title": "CaseSetOut",

@@ -23,6 +23,7 @@ def test_art_reports_its_case_sets_with_leader_shifts_years_and_forecasts():
     assert artists["forecast_year"] == 2025
     row = artists["most_raised"][0]
     assert set(row) == {"case", "label", "own_past", "with_leader"} and len(row["own_past"]) == 3
+    assert artists["mechanisms"][0]["features"] == ["nyt"] and "likeliest" not in artists
     assert sets["concepts"]["leader"] == ["contested"]
 
 

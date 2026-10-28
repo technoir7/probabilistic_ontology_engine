@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException, Query
 
 from ...runtime.cases import compute_case_reports
 from .. import context
-from ..dto import CaseForecastOut, CaseSetOut, CasesOut, CaseShiftOut, CaseYearOut
+from ..dto import CaseForecastOut, CaseMechanismOut, CaseSetOut, CasesOut, CaseShiftOut, CaseYearOut
 
 router = APIRouter()
 
@@ -28,6 +28,6 @@ def _case_set(r) -> CaseSetOut:
         key=r.key, title=r.title, outcome=r.outcome, pool=list(r.pool), leader=list(r.leader),
         shifts=[CaseShiftOut(year=s.year, frm=list(s.frm), to=list(s.to)) for s in r.shifts],
         years=[CaseYearOut(year=y.year, engine=y.engine, own_past=y.own_past, cases=y.cases) for y in r.years],
-        gain=r.gain, forecast_year=r.forecast_year,
-        likeliest=[_forecast(f) for f in r.likeliest], most_raised=[_forecast(f) for f in r.most_raised],
+        gain=r.gain, mechanisms=[CaseMechanismOut(features=list(m.features), gain=m.gain) for m in r.mechanisms],
+        forecast_year=r.forecast_year, most_raised=[_forecast(f) for f in r.most_raised],
     )

@@ -66,11 +66,13 @@ class CaseEngine:
         self.leader: tuple = ()
         self.shifts: list[Shift] = []
         self._standing = {s: 0.0 for s in sets}
+        self.last_scores: dict[tuple, float] = {}   # every scheme's score on the last year stepped
 
     def step(self, year: int, rows: list[CaseYear]) -> tuple[float, float]:
         """Score and learn one year. Returns the engine's score (its leader's,
         chosen before the year was seen) and own past's."""
         scores = {s: scheme.score(rows) for s, scheme in self.schemes.items()}
+        self.last_scores = scores
         result = (scores[self.leader], scores[()])
         for s, scheme in self.schemes.items():
             self._standing[s] = _DECAY * self._standing[s] + scores[s]
@@ -91,6 +93,12 @@ class YearScore:
 
 
 @dataclass(frozen=True)
+class MechanismScore:
+    features: tuple
+    gain: float        # nats over own past, all scored years
+
+
+@dataclass(frozen=True)
 class Forecast:
     case: str
     label: str
@@ -107,8 +115,8 @@ class CaseReport:
     leader: tuple
     shifts: tuple[Shift, ...]
     years: tuple[YearScore, ...]
+    mechanisms: tuple[MechanismScore, ...]   # every rival set, best first
     forecast_year: Optional[int]
-    likeliest: tuple[Forecast, ...]     # most likely to see the outcome at all
     most_raised: tuple[Forecast, ...]   # whose chance the leader raises most over own past
 
     @property
@@ -120,24 +128,27 @@ class CaseReport:
 def case_report(cases: CaseSet, top: int = FORECAST_ROWS) -> CaseReport:
     """Run the engine over every closed year (the first only learned), then
     forecast the open year's cases by the final leader and by own past
-    alone: the TOP most likely to see the outcome at all, and the TOP whose
-    chance the leader raises most (what the mechanisms add; own past alone
-    mostly says big cases stay big). Learns 2^len(pool) tables over every
+    alone: the TOP whose chance the leader raises most (what the mechanisms
+    add; the likeliest cases are mostly the big ones, which own past alone
+    names). Every rival set's gain over own past is reported too. Learns 2^len(pool) tables over every
     record: under a second for art's sets, but callers should cache it."""
     closed: dict[int, list[CaseYear]] = defaultdict(list)
     open_rows = []
     for r in cases.records:
         (open_rows if r.outcome is None else closed[r.year]).append(r)
     engine, years = CaseEngine(cases.pool), []
+    gains = {s: 0.0 for s in engine.schemes if s}
     for i, y in enumerate(sorted(closed)):
         e, o = engine.step(y, closed[y])
         if i > 0:
             years.append(YearScore(y, e, o, sum(r.weight for r in closed[y])))
+            for s in gains:
+                gains[s] += engine.last_scores[s] - o
     leader, own = engine.schemes[engine.leader], engine.schemes[()]
     rows = [Forecast(r.case, cases.labels.get(r.case, r.case), tuple(own.predict(r)), tuple(leader.predict(r)))
             for r in open_rows]
-    likeliest = sorted(rows, key=lambda f: (f.with_leader[0], f.label))
     raised = sorted((f for f in rows if f.with_leader[0] < f.own_past[0]),
                     key=lambda f: (f.with_leader[0] - f.own_past[0], f.label))
     return CaseReport(cases.key, cases.title, cases.outcome, cases.pool, engine.leader, tuple(engine.shifts),
-                      tuple(years), open_rows[0].year if open_rows else None, tuple(likeliest[:top]), tuple(raised[:top]))
+                      tuple(years), tuple(MechanismScore(s, g) for s, g in sorted(gains.items(), key=lambda kv: -kv[1])),
+                      open_rows[0].year if open_rows else None, tuple(raised[:top]))
