@@ -1206,7 +1206,7 @@ into the live engine (REFACTOR_SPEC D29).
 `uv run python -m evals.replay18`, 15 seconds; 241,625 closed artist-years,
 9,665 open (2025). Log `art-press-texts/jobs/logs/replay18.log`.
 
-36. **The NYT still leads, with size graded finely.** Leader from 2006:
+36. **The NYT still leads, with size graded finely.** It took the lead on 2006's evidence, so leads from 2007:
     the NYT alone; +177 nats over own past across 2001–2024 (coarse own
     past: +275). Each of five deals of the NYT within each year: +60, all
     from critics' approval, which the deal leaves real, taking the lead.
