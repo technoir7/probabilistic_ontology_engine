@@ -495,3 +495,17 @@ def test_an_empty_cached_report_is_not_served(tmp_path):
     path = tmp_path / "r.json"
     path.write_text(json.dumps({"report": "", "generated_at": "x"}))
     assert load_cache(path) is None
+
+
+def test_an_empty_reply_is_tried_once_more_before_failing():
+    import asyncio
+    from src.engine.api.report import generate_report
+    replies = iter([ValueError("the model wrote no report (finish_reason: length)"), "## In short\n\nok"])
+
+    def sync(snapshot, api_key, model, strict=False):
+        r = next(replies)
+        if isinstance(r, Exception):
+            raise r
+        return r
+    with patch("src.engine.api.report._generate_report_sync", new=sync):
+        assert asyncio.run(generate_report({}, "k", "m")).startswith("## In short")

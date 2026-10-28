@@ -34,7 +34,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 # cache filename so that any existing cached report is invalidated on the next
 # POST /v1/report/{domain}/refresh even if the snapshot is otherwise unchanged.
 
-PROMPT_VERSION = "3"
+PROMPT_VERSION = "4"
 
 
 # ── Hashing ──────────────────────────────────────────────────────────────────
@@ -230,18 +230,24 @@ async def generate_report(
     Checks the output for meta-reasoning scaffolding and retries once with a
     stricter system prompt.  Raises ValueError if both attempts fail the check.
     """
-    text = await asyncio.wait_for(
-        asyncio.to_thread(_generate_report_sync, snapshot, api_key, model),
-        timeout=timeout,
-    )
+    async def attempt(strict: bool = False) -> str:
+        return await asyncio.wait_for(
+            asyncio.to_thread(_generate_report_sync, snapshot, api_key, model, strict=strict),
+            timeout=timeout,
+        )
+
+    try:
+        text = await attempt()
+    except ValueError as exc:
+        # The model sometimes thinks despite being told not to, and spends its
+        # whole budget doing so; a second try usually writes.
+        logger.warning("No report on the first try (%s); trying once more", exc)
+        text = await attempt()
     if contains_meta_reasoning(text):
         logger.warning(
             "Report output contains meta-reasoning scaffolding; retrying with strict prompt"
         )
-        text = await asyncio.wait_for(
-            asyncio.to_thread(_generate_report_sync, snapshot, api_key, model, strict=True),
-            timeout=timeout,
-        )
+        text = await attempt(strict=True)
         if contains_meta_reasoning(text):
             # Retry also matched — log the warning but return the text rather than
             # returning a 502.  A slightly impure report is better than a broken

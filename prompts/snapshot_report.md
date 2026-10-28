@@ -33,9 +33,13 @@ it has changed. Be direct about weakness.
 - Under 350 words in all. Short sentences. One idea per sentence.
 - Ordinary words. Never write a signal's internal name (anything in CamelCase or with
   underscores, such as `HYSpreadElevated` or `NYTMuseumsTalk`). Describe the thing
-  itself: "junk-bond spreads are wide", "the Times wrote more about museums".
+  itself, in the words of its own field: "the Times wrote more about museums than
+  usual".
 - Be concrete. Prefer "the Times covered an artist the year before Chicago bought their
   work" to "media attention precedes institutional acquisition".
+- Describe each thing as what it is. Never borrow a comparison from another field (a
+  dealer's share of art sales is not "bond-like" anything); if unsure what a
+  signal means, use the plain words its description gives.
 - Say what is not known as plainly as what is. Do not hedge every sentence; hedge once,
   where it matters.
 - No lists or bullet points unless there are genuinely several separate items.
