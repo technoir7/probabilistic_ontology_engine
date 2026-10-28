@@ -1655,6 +1655,178 @@
  },
  "narrative_snapshot": {
   "body": {
+   "case_mechanisms": [
+    {
+     "belief_changes": [
+      "from 2002: NYT coverage that year + contested that year (both praised and condemned)",
+      "from 2003: contested that year (both praised and condemned)",
+      "from 2007: NYT coverage that year"
+     ],
+     "forecast_for": 2026,
+     "gain_nats_over_own_past": 176.9,
+     "leader": "NYT coverage that year",
+     "leader_since": 2007,
+     "mechanisms": [
+      {
+       "gain_nats": 193.2,
+       "mechanism": "NYT coverage that year"
+      },
+      {
+       "gain_nats": 136.4,
+       "mechanism": "NYT coverage that year + Guardian coverage that year"
+      },
+      {
+       "gain_nats": 120.6,
+       "mechanism": "NYT coverage that year + contested that year (both praised and condemned)"
+      },
+      {
+       "gain_nats": 75.7,
+       "mechanism": "critics' approval that year"
+      },
+      {
+       "gain_nats": 74.1,
+       "mechanism": "NYT coverage that year + Guardian coverage that year + contested that year (both praised and condemned)"
+      },
+      {
+       "gain_nats": 60.4,
+       "mechanism": "NYT coverage that year + critics' approval that year"
+      },
+      {
+       "gain_nats": 40.8,
+       "mechanism": "critics' approval that year + contested that year (both praised and condemned)"
+      },
+      {
+       "gain_nats": 27.6,
+       "mechanism": "Guardian coverage that year + critics' approval that year"
+      },
+      {
+       "gain_nats": 5.1,
+       "mechanism": "NYT coverage that year + critics' approval that year + contested that year (both praised and condemned)"
+      },
+      {
+       "gain_nats": 0.7,
+       "mechanism": "NYT coverage that year + Guardian coverage that year + critics' approval that year"
+      },
+      {
+       "gain_nats": -5.1,
+       "mechanism": "contested that year (both praised and condemned)"
+      },
+      {
+       "gain_nats": -5.5,
+       "mechanism": "Guardian coverage that year"
+      },
+      {
+       "gain_nats": -7.6,
+       "mechanism": "Guardian coverage that year + critics' approval that year + contested that year (both praised and condemned)"
+      },
+      {
+       "gain_nats": -24.4,
+       "mechanism": "Guardian coverage that year + contested that year (both praised and condemned)"
+      },
+      {
+       "gain_nats": -40.5,
+       "mechanism": "NYT coverage that year + Guardian coverage that year + critics' approval that year + contested that year (both praised and condemned)"
+      }
+     ],
+     "most_raised": [
+      {
+       "case": "Ellen Auerbach",
+       "own_past_chance": 0.314,
+       "with_leader_chance": 0.356
+      },
+      {
+       "case": "Kay Rosen",
+       "own_past_chance": 0.314,
+       "with_leader_chance": 0.356
+      },
+      {
+       "case": "Meissen Porcelain Manufactory",
+       "own_past_chance": 0.314,
+       "with_leader_chance": 0.356
+      },
+      {
+       "case": "Stefano della Bella",
+       "own_past_chance": 0.314,
+       "with_leader_chance": 0.356
+      },
+      {
+       "case": "Eugene Delatre",
+       "own_past_chance": 0.254,
+       "with_leader_chance": 0.293
+      }
+     ],
+     "outcome": "Chicago and Cleveland acquisitions next year",
+     "title": "Artists"
+    },
+    {
+     "belief_changes": [
+      "from 2015: contested that year (both praised and condemned)"
+     ],
+     "forecast_for": 2026,
+     "gain_nats_over_own_past": 38.1,
+     "leader": "contested that year (both praised and condemned)",
+     "leader_since": 2015,
+     "mechanisms": [
+      {
+       "gain_nats": 12.7,
+       "mechanism": "contested that year (both praised and condemned)"
+      },
+      {
+       "gain_nats": -75.1,
+       "mechanism": "contested that year (both praised and condemned) + predictions or doubts voiced that year"
+      },
+      {
+       "gain_nats": -89.8,
+       "mechanism": "predictions or doubts voiced that year"
+      },
+      {
+       "gain_nats": -119.1,
+       "mechanism": "written about in both papers that year"
+      },
+      {
+       "gain_nats": -195.5,
+       "mechanism": "contested that year (both praised and condemned) + written about in both papers that year"
+      },
+      {
+       "gain_nats": -240.1,
+       "mechanism": "written about in both papers that year + predictions or doubts voiced that year"
+      },
+      {
+       "gain_nats": -288.1,
+       "mechanism": "contested that year (both praised and condemned) + written about in both papers that year + predictions or doubts voiced that year"
+      }
+     ],
+     "most_raised": [
+      {
+       "case": "Annabelle Selldorf's images of the redesigned lobby",
+       "own_past_chance": 0.32,
+       "with_leader_chance": 0.576
+      },
+      {
+       "case": "Turner's Slavers Throwing Overboard the Dead and Dying, Typhoon Coming On",
+       "own_past_chance": 0.556,
+       "with_leader_chance": 0.804
+      },
+      {
+       "case": "Abbey's study for The Hours",
+       "own_past_chance": 0.055,
+       "with_leader_chance": 0.21
+      },
+      {
+       "case": "Arena Homme+ issue",
+       "own_past_chance": 0.055,
+       "with_leader_chance": 0.21
+      },
+      {
+       "case": "Binet's photographs",
+       "own_past_chance": 0.055,
+       "with_leader_chance": 0.21
+      }
+     ],
+     "outcome": "writers taking the concept up next year",
+     "title": "Concepts"
+    }
+   ],
    "competing_candidates": {
     "candidates": [
      {
@@ -1751,7 +1923,8 @@
     "dominant hypothesis was introduced in the current generation",
     "no paradigm shifts recorded since shift logging was enabled",
     "evidence base is small (2 records); scores may not yet be reliable",
-    "no edges are in the explore band: dominant causal structure is well-determined"
+    "no edges are in the explore band: dominant causal structure is well-determined",
+    "this domain is judged by cases: its monthly totals show no lasting links, so the hypotheses, competing candidates and frontier above are a search that has found nothing. Lead BOTTOM LINE, CURRENT BELIEFS and WHY with case_mechanisms: what the leading mechanism predicts for each kind of case, its evidence over each case's own past (gain_nats; 3 is strong), which mechanisms failed (negative gain), when the belief changed, and the cases the leader makes more likely next year"
    ],
    "metadata": {
     "current_generation": 0,

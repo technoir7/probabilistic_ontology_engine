@@ -12,9 +12,9 @@ from __future__ import annotations
 
 import math
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from itertools import combinations
-from typing import Iterable, Optional
+from typing import Iterable, Mapping, Optional
 
 from ..model.cases import LEVELS, CaseSet, CaseYear
 
@@ -118,6 +118,11 @@ class CaseReport:
     mechanisms: tuple[MechanismScore, ...]   # every rival set, best first
     forecast_year: Optional[int]
     most_raised: tuple[Forecast, ...]   # whose chance the leader raises most over own past
+    meanings: Mapping[str, str] = field(default_factory=dict)
+
+    def describe(self, features: tuple) -> str:
+        """A set of mechanisms in words; none is each case's own past alone."""
+        return " + ".join(self.meanings.get(f, f) for f in features) or "each case's own past alone"
 
     @property
     def gain(self) -> float:
@@ -151,4 +156,4 @@ def case_report(cases: CaseSet, top: int = FORECAST_ROWS) -> CaseReport:
                     key=lambda f: (f.with_leader[0] - f.own_past[0], f.label))
     return CaseReport(cases.key, cases.title, cases.outcome, cases.pool, engine.leader, tuple(engine.shifts),
                       tuple(years), tuple(MechanismScore(s, g) for s, g in sorted(gains.items(), key=lambda kv: -kv[1])),
-                      open_rows[0].year if open_rows else None, tuple(raised[:top]))
+                      open_rows[0].year if open_rows else None, tuple(raised[:top]), cases.meanings)

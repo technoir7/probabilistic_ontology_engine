@@ -1516,6 +1516,7 @@
  },
  "narrative_snapshot": {
   "body": {
+   "case_mechanisms": [],
    "competing_candidates": {
     "candidates": [
      {

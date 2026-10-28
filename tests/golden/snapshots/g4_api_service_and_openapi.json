@@ -1122,6 +1122,123 @@
      "title": "MutationCycleDiagOut",
      "type": "object"
     },
+    "NarrativeCaseForecastOut": {
+     "properties": {
+      "case": {
+       "title": "Case",
+       "type": "string"
+      },
+      "own_past_chance": {
+       "title": "Own Past Chance",
+       "type": "number"
+      },
+      "with_leader_chance": {
+       "title": "With Leader Chance",
+       "type": "number"
+      }
+     },
+     "required": [
+      "case",
+      "own_past_chance",
+      "with_leader_chance"
+     ],
+     "title": "NarrativeCaseForecastOut",
+     "type": "object"
+    },
+    "NarrativeCaseMechanismOut": {
+     "properties": {
+      "gain_nats": {
+       "title": "Gain Nats",
+       "type": "number"
+      },
+      "mechanism": {
+       "title": "Mechanism",
+       "type": "string"
+      }
+     },
+     "required": [
+      "mechanism",
+      "gain_nats"
+     ],
+     "title": "NarrativeCaseMechanismOut",
+     "type": "object"
+    },
+    "NarrativeCaseSetOut": {
+     "properties": {
+      "belief_changes": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Belief Changes",
+       "type": "array"
+      },
+      "forecast_for": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Forecast For"
+      },
+      "gain_nats_over_own_past": {
+       "title": "Gain Nats Over Own Past",
+       "type": "number"
+      },
+      "leader": {
+       "title": "Leader",
+       "type": "string"
+      },
+      "leader_since": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Leader Since"
+      },
+      "mechanisms": {
+       "items": {
+        "$ref": "#/components/schemas/NarrativeCaseMechanismOut"
+       },
+       "title": "Mechanisms",
+       "type": "array"
+      },
+      "most_raised": {
+       "items": {
+        "$ref": "#/components/schemas/NarrativeCaseForecastOut"
+       },
+       "title": "Most Raised",
+       "type": "array"
+      },
+      "outcome": {
+       "title": "Outcome",
+       "type": "string"
+      },
+      "title": {
+       "title": "Title",
+       "type": "string"
+      }
+     },
+     "required": [
+      "title",
+      "outcome",
+      "leader",
+      "leader_since",
+      "gain_nats_over_own_past",
+      "mechanisms",
+      "belief_changes",
+      "forecast_for",
+      "most_raised"
+     ],
+     "title": "NarrativeCaseSetOut",
+     "type": "object"
+    },
     "NarrativeCompetingCandidatesOut": {
      "properties": {
       "candidates": {
@@ -1450,6 +1567,14 @@
     },
     "NarrativeSnapshotOut": {
      "properties": {
+      "case_mechanisms": {
+       "default": [],
+       "items": {
+        "$ref": "#/components/schemas/NarrativeCaseSetOut"
+       },
+       "title": "Case Mechanisms",
+       "type": "array"
+      },
       "competing_candidates": {
        "$ref": "#/components/schemas/NarrativeCompetingCandidatesOut"
       },

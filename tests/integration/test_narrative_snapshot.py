@@ -371,3 +371,23 @@ def test_ns_12_regime_state_null_without_evidence(tmp_path, monkeypatch):
             assert entry["degree"] is None, (
                 f"Expected null degree for '{entry['name']}' with no evidence"
             )
+
+
+def test_ns_13_a_domain_judged_by_cases_hands_the_report_its_mechanisms(client):
+    """REFACTOR_SPEC D29: the art report is written from what the case engine found."""
+    body = client.get("/v1/export/narrative-snapshot", params={"domain": "art"}).json()
+    sets = {s["title"]: s for s in body["case_mechanisms"]}
+    assert set(sets) == {"Artists", "Concepts"}
+    artists = sets["Artists"]
+    assert artists["leader"] == "NYT coverage that year" and artists["leader_since"] == 2007
+    assert artists["mechanisms"][0]["mechanism"] == "NYT coverage that year" and artists["mechanisms"][0]["gain_nats"] > 100
+    assert artists["forecast_for"] == 2026 and len(artists["most_raised"]) == 5
+    assert any("judged by cases" in h for h in body["interpretation_hints"])
+
+
+def test_ns_14_a_domain_without_cases_has_none_and_its_report_hash_is_unchanged(client):
+    from src.engine.api.report import snapshot_hash
+    body = client.get("/v1/export/narrative-snapshot", params={"domain": "mr"}).json()
+    assert body["case_mechanisms"] == []
+    without = {k: v for k, v in body.items() if k != "case_mechanisms"}
+    assert snapshot_hash(body) == snapshot_hash(without)

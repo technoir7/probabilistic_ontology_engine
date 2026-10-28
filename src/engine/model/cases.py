@@ -41,3 +41,4 @@ class CaseSet:
     records: tuple[CaseYear, ...]
     labels: Mapping[str, str] = field(default_factory=dict)   # case -> readable name, when it has one
     outcome: str = ""               # what the outcome counts, in words
+    meanings: Mapping[str, str] = field(default_factory=dict)  # mechanism -> what it says, in words

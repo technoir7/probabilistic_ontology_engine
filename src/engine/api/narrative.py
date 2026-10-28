@@ -10,6 +10,8 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 
 from ..engine import ProbabilisticOntologyEngine
+from ..runtime.cases import compute_case_reports
+from ..services.cases import CaseReport
 from ..model.scoring import candidate_score
 from ..schemas import InferenceQuery, PopulationAggregation, QueryType
 from . import context, presenters
@@ -25,17 +27,45 @@ from .dto import (
     NarrativeRecentShiftOut,
     NarrativeRegimeVariableOut,
     NarrativeSnapshotOut,
+    NarrativeCaseForecastOut,
+    NarrativeCaseMechanismOut,
+    NarrativeCaseSetOut,
+)
+
+FORECAST_ROWS = 5
+CASES_HINT = (
+    "this domain is judged by cases: its monthly totals show no lasting links, so the hypotheses, "
+    "competing candidates and frontier above are a search that has found nothing. Lead BOTTOM LINE, "
+    "CURRENT BELIEFS and WHY with case_mechanisms: what the leading mechanism predicts for each kind of "
+    "case, its evidence over each case's own past (gain_nats; 3 is strong), which mechanisms failed "
+    "(negative gain), when the belief changed, and the cases the leader makes more likely next year"
 )
 
 
 def snapshot_for(state: Any, domain: str) -> NarrativeSnapshotOut:
     """The snapshot for a domain key."""
     engine, domain_id, display_name = context.resolve_domain(domain, state)
-    return build_snapshot(engine, domain_id, display_name)
+    return build_snapshot(engine, domain_id, display_name, compute_case_reports(domain.lower()))
+
+
+def _case_set(r: CaseReport) -> NarrativeCaseSetOut:
+    since = r.shifts[-1].year + 1 if r.shifts else (r.years[0].year if r.years else None)
+    return NarrativeCaseSetOut(
+        title=r.title, outcome=r.outcome, leader=r.describe(r.leader), leader_since=since,
+        gain_nats_over_own_past=round(r.gain, 1),
+        mechanisms=[NarrativeCaseMechanismOut(mechanism=r.describe(m.features), gain_nats=round(m.gain, 1))
+                    for m in r.mechanisms],
+        belief_changes=[f"from {s.year + 1}: {r.describe(s.to)}" for s in r.shifts],
+        forecast_for=r.forecast_year + 1 if r.forecast_year is not None else None,
+        most_raised=[NarrativeCaseForecastOut(case=f.label, own_past_chance=round(1 - f.own_past[0], 3),
+                                              with_leader_chance=round(1 - f.with_leader[0], 3))
+                     for f in r.most_raised[:FORECAST_ROWS]],
+    )
 
 
 def build_snapshot(
-    engine: ProbabilisticOntologyEngine, domain_id: str, display_name: str
+    engine: ProbabilisticOntologyEngine, domain_id: str, display_name: str,
+    case_reports: tuple[CaseReport, ...] = (),
 ) -> NarrativeSnapshotOut:
     pop = engine.get_population(domain_id)
     dom = pop.dominant()
@@ -259,6 +289,9 @@ def build_snapshot(
             "dominant causal structure is well-determined"
         )
 
+    if case_reports:
+        hints.append(CASES_HINT)
+
     return NarrativeSnapshotOut(
         metadata=metadata,
         current_regime_state=regime_state,
@@ -267,4 +300,5 @@ def build_snapshot(
         ontology_competition=ontology_out,
         frontier=frontier_out,
         interpretation_hints=hints,
+        case_mechanisms=[_case_set(r) for r in case_reports],
     )

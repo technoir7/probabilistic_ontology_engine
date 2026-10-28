@@ -197,6 +197,29 @@ class NarrativeFrontierOut(BaseModel):
     frontier_edges: list[NarrativeFrontierEdgeOut]
 
 
+class NarrativeCaseMechanismOut(BaseModel):
+    mechanism: str
+    gain_nats: float          # evidence over each case's own past; 3 is strong
+
+
+class NarrativeCaseForecastOut(BaseModel):
+    case: str
+    own_past_chance: float    # of the outcome at all, from the case's own past alone
+    with_leader_chance: float
+
+
+class NarrativeCaseSetOut(BaseModel):
+    title: str
+    outcome: str
+    leader: str
+    leader_since: Optional[int]
+    gain_nats_over_own_past: float
+    mechanisms: list[NarrativeCaseMechanismOut]
+    belief_changes: list[str]
+    forecast_for: Optional[int]
+    most_raised: list[NarrativeCaseForecastOut]
+
+
 class NarrativeSnapshotOut(BaseModel):
     metadata: NarrativeMetadataOut
     current_regime_state: list[NarrativeRegimeVariableOut]
@@ -205,6 +228,7 @@ class NarrativeSnapshotOut(BaseModel):
     ontology_competition: NarrativeOntologyCompetitionOut
     frontier: NarrativeFrontierOut
     interpretation_hints: list[str]
+    case_mechanisms: list[NarrativeCaseSetOut] = []   # D29: only a domain judged by cases
 
 
 class EvidenceRecordOut(BaseModel):

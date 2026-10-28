@@ -57,6 +57,7 @@ def snapshot_hash(snapshot: dict) -> str:
       - competing_candidates (scores, gap)
       - ontology_competition (entropy, shift count, recent shifts)
       - frontier edges
+      - case_mechanisms, when the domain has any (D29)
 
     JSON serialisation uses sort_keys=True so key insertion order is irrelevant.
     """
@@ -66,6 +67,9 @@ def snapshot_hash(snapshot: dict) -> str:
             k: v for k, v in stable["metadata"].items() if k != "timestamp"
         }
     stable.pop("interpretation_hints", None)
+    # Absent for domains without cases (D29), so their cached reports stay valid.
+    if not stable.get("case_mechanisms"):
+        stable.pop("case_mechanisms", None)
     canon = json.dumps(stable, sort_keys=True, separators=(",", ":"), default=str)
     return hashlib.sha256(canon.encode()).hexdigest()
 

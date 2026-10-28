@@ -18,6 +18,16 @@ from ...engine.model.cases import CaseSet, CaseYear
 
 DATA = Path(__file__).parent / "case_data"
 
+# What each mechanism records about a case in its state year, for readers.
+MEANINGS = {
+    "nyt": "NYT coverage that year",
+    "guardian": "Guardian coverage that year",
+    "approval": "critics' approval that year",
+    "contested": "contested that year (both praised and condemned)",
+    "both_papers": "written about in both papers that year",
+    "modality": "predictions or doubts voiced that year",
+}
+
 
 def dump(key: str, title: str, outcome: str, pool: tuple[str, ...], records: Iterable[Mapping],
          labels: Mapping[str, str]) -> dict:
@@ -45,7 +55,7 @@ def load(snapshot: Mapping) -> CaseSet:
     records = [CaseYear(y, tuple(own), features(v), o, weight=w) for y, own, v, o, w in snapshot["closed"]]
     records += [CaseYear(y, tuple(own), features(v), None, case=c) for y, own, v, c in snapshot["open"]]
     return CaseSet(snapshot["key"], snapshot["title"], pool, tuple(records), dict(snapshot["labels"]),
-                   snapshot["outcome"])
+                   snapshot["outcome"], {f: MEANINGS.get(f, f) for f in pool})
 
 
 def case_sets() -> tuple[CaseSet, ...]:
