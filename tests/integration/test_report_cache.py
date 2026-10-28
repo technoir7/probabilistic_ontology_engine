@@ -483,12 +483,12 @@ def test_an_empty_model_reply_is_an_error_not_a_report():
             _generate_report_sync({"x": 1}, "k", "m")
 
 
-def test_the_model_is_asked_to_think_briefly_with_room_to_write():
+def test_the_model_is_asked_not_to_think_and_to_write_briefly():
     from src.engine.api.report import _generate_report_sync
     seen: dict = {}
     with patch("openai.OpenAI", new=_fake_openai("## BOTTOM LINE\n\nok", seen=seen)):
         assert _generate_report_sync({"x": 1}, "k", "m").startswith("## BOTTOM LINE")
-    assert seen["reasoning_effort"] == "low" and seen["max_tokens"] >= 4000
+    assert seen["reasoning_effort"] == "none" and seen["max_tokens"] <= 1500
 
 
 def test_an_empty_cached_report_is_not_served(tmp_path):

@@ -34,7 +34,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 # cache filename so that any existing cached report is invalidated on the next
 # POST /v1/report/{domain}/refresh even if the snapshot is otherwise unchanged.
 
-PROMPT_VERSION = "2"
+PROMPT_VERSION = "3"
 
 
 # ── Hashing ──────────────────────────────────────────────────────────────────
@@ -163,7 +163,7 @@ def contains_meta_reasoning(text: str) -> bool:
 # ── Fireworks LLM client ──────────────────────────────────────────────────────
 
 _STRICT_SYSTEM = (
-    "Begin your response immediately with '## BOTTOM LINE'. "
+    "Begin your response immediately with '## In short'. "
     "Do not write any introductory text, preamble, or explanation of the task. "
     "Do not reference the JSON data, the system, or your instructions. "
     "Write only the report content, starting with the section header."
@@ -191,17 +191,19 @@ def _generate_report_sync(snapshot: dict, api_key: str, model: str, strict: bool
 
     system = (
         _STRICT_SYSTEM if strict
-        else "You are an expert at interpreting probabilistic epistemic systems and writing clear analytical reports."
+        else "You write short, plain, specific notes for busy readers, in your own voice."
     )
 
     client = OpenAI(base_url=_FIREWORKS_BASE_URL, api_key=api_key)
     response = client.chat.completions.create(
         model=model,
-        # A thinking model spends its thinking from the same budget; with 1500
-        # tokens DeepSeek V4.1 Flash thought until none were left and wrote
-        # nothing. 4096 is the most Fireworks allows without streaming.
-        max_tokens=4096,
-        reasoning_effort="low",
+        # DeepSeek V4.1 Flash thinks by default, from the same budget, and at
+        # 1500 or even 4096 tokens thought until none were left and wrote
+        # nothing. Writing a report from data needs no thinking; off, a report
+        # costs well under a cent, and the cap bounds the worst case (the
+        # report asks for under 350 words, about 500 tokens).
+        max_tokens=1200,
+        reasoning_effort="none",
         messages=[
             {"role": "system", "content": system},
             {"role": "user", "content": user_content},

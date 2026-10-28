@@ -35,8 +35,8 @@ from .dto import (
 FORECAST_ROWS = 5
 CASES_HINT = (
     "this domain is judged by cases: its monthly totals show no lasting links, so the hypotheses, "
-    "competing candidates and frontier above are a search that has found nothing. Lead BOTTOM LINE, "
-    "CURRENT BELIEFS and WHY with case_mechanisms: what the leading mechanism predicts for each kind of "
+    "competing candidates and frontier above are a search that has found nothing. Lead the report "
+    "with case_mechanisms: what the leading mechanism predicts for each kind of "
     "case, its evidence over each case's own past (gain_nats; 3 is strong), which mechanisms failed "
     "(negative gain), when the belief changed, and the cases the leader makes more likely next year"
 )
