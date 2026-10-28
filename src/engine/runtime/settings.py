@@ -70,7 +70,7 @@ class Settings:
             log_level=environ.get("LOG_LEVEL", "INFO").upper(),
             fireworks_api_key=environ.get("FIREWORKS_API_KEY", ""),
             fireworks_model=environ.get(
-                "FIREWORKS_REPORT_MODEL", "accounts/fireworks/models/deepseek-v4-pro"
+                "FIREWORKS_REPORT_MODEL", "accounts/fireworks/models/deepseek-v4p1-flash"
             ),
             admin_token=environ.get("POE_ADMIN_TOKEN", "").strip(),
             cors_origins=tuple(

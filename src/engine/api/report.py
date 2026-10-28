@@ -5,7 +5,7 @@ LLM provider: Fireworks AI via its OpenAI-compatible endpoint.
 
 Env vars:
   FIREWORKS_API_KEY   (required for generation)
-  FIREWORKS_REPORT_MODEL  (optional; defaults to accounts/fireworks/models/deepseek-v4-pro)
+  FIREWORKS_REPORT_MODEL  (optional; defaults to accounts/fireworks/models/deepseek-v4p1-flash; Fireworks withdrew v4-pro from serverless on 2026-09-25)
 """
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ _PROMPT_PATH = Path(__file__).resolve().parents[3] / "prompts" / "snapshot_repor
 
 # Fireworks constants matching POE-A defaults.
 _FIREWORKS_BASE_URL = "https://api.fireworks.ai/inference/v1"
-_DEFAULT_MODEL = "accounts/fireworks/models/deepseek-v4-pro"
+_DEFAULT_MODEL = "accounts/fireworks/models/deepseek-v4p1-flash"
 _FIREWORKS_API_KEY_ENV = "FIREWORKS_API_KEY"
 _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 
