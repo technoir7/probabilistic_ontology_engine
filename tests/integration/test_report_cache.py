@@ -456,3 +456,42 @@ def test_refresh_still_returns_200_when_retry_matches_heuristic(tmp_path, monkey
     # Must succeed despite heuristic hits — better than 502.
     assert res.status_code == 200
     assert call_count["n"] == 2  # first attempt + one retry
+
+
+# ─── Thinking models: an empty reply is an error, never a report ─────────────
+
+def _fake_openai(content, finish_reason="stop", seen=None):
+    choice = MagicMock()
+    choice.message.content = content
+    choice.finish_reason = finish_reason
+
+    class Client:
+        def __init__(self, **_):
+            self.chat = MagicMock()
+            def create(**kwargs):
+                if seen is not None:
+                    seen.update(kwargs)
+                return MagicMock(choices=[choice])
+            self.chat.completions.create = create
+    return Client
+
+
+def test_an_empty_model_reply_is_an_error_not_a_report():
+    from src.engine.api.report import _generate_report_sync
+    with patch("openai.OpenAI", new=_fake_openai(None, finish_reason="length")):
+        with pytest.raises(ValueError, match="length"):
+            _generate_report_sync({"x": 1}, "k", "m")
+
+
+def test_the_model_is_asked_to_think_briefly_with_room_to_write():
+    from src.engine.api.report import _generate_report_sync
+    seen: dict = {}
+    with patch("openai.OpenAI", new=_fake_openai("## BOTTOM LINE\n\nok", seen=seen)):
+        assert _generate_report_sync({"x": 1}, "k", "m").startswith("## BOTTOM LINE")
+    assert seen["reasoning_effort"] == "low" and seen["max_tokens"] >= 4000
+
+
+def test_an_empty_cached_report_is_not_served(tmp_path):
+    path = tmp_path / "r.json"
+    path.write_text(json.dumps({"report": "", "generated_at": "x"}))
+    assert load_cache(path) is None

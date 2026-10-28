@@ -115,10 +115,13 @@ def load_cache(path: Path) -> Optional[dict]:
     if not path.exists():
         return None
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         logger.warning("Failed to read report cache %s: %s", path, exc)
         return None
+    # An empty report was once cached as if written (a thinking model's empty
+    # reply); it is no report, so it is neither served nor a cache hit.
+    return data if data.get("report") else None
 
 
 def save_cache(path: Path, data: dict) -> None:
@@ -194,13 +197,20 @@ def _generate_report_sync(snapshot: dict, api_key: str, model: str, strict: bool
     client = OpenAI(base_url=_FIREWORKS_BASE_URL, api_key=api_key)
     response = client.chat.completions.create(
         model=model,
-        max_tokens=1500,
+        # A thinking model spends its thinking from the same budget; with 1500
+        # tokens DeepSeek V4.1 Flash thought until none were left and wrote
+        # nothing. 4096 is the most Fireworks allows without streaming.
+        max_tokens=4096,
+        reasoning_effort="low",
         messages=[
             {"role": "system", "content": system},
             {"role": "user", "content": user_content},
         ],
     )
-    return response.choices[0].message.content or ""
+    choice = response.choices[0]
+    if not choice.message.content:
+        raise ValueError(f"the model wrote no report (finish_reason: {choice.finish_reason})")
+    return choice.message.content
 
 
 async def generate_report(
