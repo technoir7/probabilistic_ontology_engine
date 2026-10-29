@@ -1130,7 +1130,8 @@
     "paradigm_shifts_total": 0,
     "recent_shifts": [],
     "structure_entropy": 0.0
-   }
+   },
+   "trends": null
   },
   "status": 200
  },

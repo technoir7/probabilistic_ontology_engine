@@ -62,7 +62,7 @@ groups of three adjectives, and dashes used as commas.
 - Give a probability as a percentage or in words ("about one in three").
 - `evidence_count` counts the periodic records the signals were read from: weeks or
   months, never years. Say "about five years of monthly readings", not "61 years".
-  The case findings cover their own span, 2001 to 2024.
+  Each case finding covers its own span (from its first year scored).
 - Only use a number if it helps the reader decide something.
 
 ## What the data contains
@@ -79,6 +79,13 @@ groups of three adjectives, and dashes used as commas.
   explanation was judged on how well it predicted next year's outcome beyond each
   case's own history. Lead with it, describe the winning explanation, the ones that
   failed, when the view changed, and a few named cases it makes more likely next year.
+- `trends`, when present: the broad ideas critics wrote about in the year given (new
+  ones, growing, fading, and the most argued over, where critics split between
+  approval and disapproval). In "What the evidence shows", name the few that say most
+  about this year, in plain words, with how fast they grew or shrank. They describe
+  the present: say plainly that no sign in how critics write about a trend has
+  predicted whether it grows (the Trends case set), and never present them as
+  forecasts.
 - `interpretation_hints`: background for you. Do not quote them.
 
 If `evidence_count` is 0, say there is no data yet and stop after "In short".

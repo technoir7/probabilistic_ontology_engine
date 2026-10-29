@@ -10,7 +10,9 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 
 from ..engine import ProbabilisticOntologyEngine
+from ..model.trends import TrendLists
 from ..runtime.cases import compute_case_reports
+from ..runtime.trends import current_trends
 from ..services.cases import CaseReport
 from ..model.scoring import candidate_score
 from ..schemas import InferenceQuery, PopulationAggregation, QueryType
@@ -30,6 +32,8 @@ from .dto import (
     NarrativeCaseForecastOut,
     NarrativeCaseMechanismOut,
     NarrativeCaseSetOut,
+    NarrativeTrendOut,
+    NarrativeTrendsOut,
 )
 
 FORECAST_ROWS = 5
@@ -42,10 +46,38 @@ CASES_HINT = (
 )
 
 
+TRENDS_HINT = (
+    "trends lists the broad ideas critics wrote about this year: new ones, growing, fading, and the most "
+    "argued over (critics split between approval and disapproval). They describe the present, not a "
+    "forecast: in case_mechanisms, no sign in how critics write about a trend has predicted whether it "
+    "grows. Say what the trends are, in plain words"
+)
+TREND_ROWS = 8
+
+
 def snapshot_for(state: Any, domain: str) -> NarrativeSnapshotOut:
     """The snapshot for a domain key."""
     engine, domain_id, display_name = context.resolve_domain(domain, state)
-    return build_snapshot(engine, domain_id, display_name, compute_case_reports(domain.lower()))
+    key = domain.lower()
+    return build_snapshot(engine, domain_id, display_name, compute_case_reports(key), current_trends(key))
+
+
+def _trends(t: TrendLists) -> NarrativeTrendsOut:
+    def row(x) -> NarrativeTrendOut:
+        return NarrativeTrendOut(
+            trend=x.name, broad_since=x.start, writers_this_year=x.writers[t.years.index(t.year)],
+            share_this_year_pct=round(100 * t.share(x.key, t.year), 2),
+            share_before_pct=round(100 * t.share_before(x.key), 2),
+            papers=list(x.papers), approvals=x.verdicts[0], disapprovals=x.verdicts[1])
+
+    def rows(name: str) -> list[NarrativeTrendOut]:
+        return [row(x) for x in t.listed(name)[:TREND_ROWS]]
+
+    return NarrativeTrendsOut(
+        period=f"October {t.year - 1} to September {t.year}",
+        compared_with=f"the {t.before} years to September before",
+        note="writers are critics; a share is of every critic writing in either paper that year",
+        new=rows("new"), growing=rows("growing"), fading=rows("fading"), argued_over=rows("argued"))
 
 
 def _case_set(r: CaseReport) -> NarrativeCaseSetOut:
@@ -66,6 +98,7 @@ def _case_set(r: CaseReport) -> NarrativeCaseSetOut:
 def build_snapshot(
     engine: ProbabilisticOntologyEngine, domain_id: str, display_name: str,
     case_reports: tuple[CaseReport, ...] = (),
+    trends: Optional[TrendLists] = None,
 ) -> NarrativeSnapshotOut:
     pop = engine.get_population(domain_id)
     dom = pop.dominant()
@@ -291,6 +324,8 @@ def build_snapshot(
 
     if case_reports:
         hints.append(CASES_HINT)
+    if trends is not None:
+        hints.append(TRENDS_HINT)
 
     return NarrativeSnapshotOut(
         metadata=metadata,
@@ -301,4 +336,5 @@ def build_snapshot(
         frontier=frontier_out,
         interpretation_hints=hints,
         case_mechanisms=[_case_set(r) for r in case_reports],
+        trends=_trends(trends) if trends is not None else None,
     )

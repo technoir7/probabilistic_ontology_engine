@@ -377,7 +377,7 @@ def test_ns_13_a_domain_judged_by_cases_hands_the_report_its_mechanisms(client):
     """REFACTOR_SPEC D29: the art report is written from what the case engine found."""
     body = client.get("/v1/export/narrative-snapshot", params={"domain": "art"}).json()
     sets = {s["title"]: s for s in body["case_mechanisms"]}
-    assert set(sets) == {"Artists", "Concepts"}
+    assert set(sets) == {"Artists", "Concepts", "Trends"}
     artists = sets["Artists"]
     assert artists["leader"] == "NYT coverage that year" and artists["leader_since"] == 2007
     assert artists["mechanisms"][0]["mechanism"] == "NYT coverage that year" and artists["mechanisms"][0]["gain_nats"] > 100
@@ -388,6 +388,17 @@ def test_ns_13_a_domain_judged_by_cases_hands_the_report_its_mechanisms(client):
 def test_ns_14_a_domain_without_cases_has_none_and_its_report_hash_is_unchanged(client):
     from src.engine.api.report import snapshot_hash
     body = client.get("/v1/export/narrative-snapshot", params={"domain": "mr"}).json()
-    assert body["case_mechanisms"] == []
-    without = {k: v for k, v in body.items() if k != "case_mechanisms"}
+    assert body["case_mechanisms"] == [] and body["trends"] is None
+    without = {k: v for k, v in body.items() if k not in ("case_mechanisms", "trends")}
     assert snapshot_hash(body) == snapshot_hash(without)
+
+
+def test_ns_15_the_art_report_is_handed_this_years_trends_as_description(client):
+    """REFACTOR_SPEC D30."""
+    body = client.get("/v1/export/narrative-snapshot", params={"domain": "art"}).json()
+    t = body["trends"]
+    assert t["period"] == "October 2025 to September 2026"
+    assert t["new"] and len(t["new"]) <= 8
+    row = t["new"][0]
+    assert row["writers_this_year"] >= 12 and row["broad_since"] >= 2021
+    assert any("not a forecast" in h for h in body["interpretation_hints"])

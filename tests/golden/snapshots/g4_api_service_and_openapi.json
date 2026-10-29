@@ -1610,6 +1610,16 @@
       },
       "ontology_competition": {
        "$ref": "#/components/schemas/NarrativeOntologyCompetitionOut"
+      },
+      "trends": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/NarrativeTrendsOut"
+        },
+        {
+         "type": "null"
+        }
+       ]
       }
      },
      "required": [
@@ -1622,6 +1632,112 @@
       "interpretation_hints"
      ],
      "title": "NarrativeSnapshotOut",
+     "type": "object"
+    },
+    "NarrativeTrendOut": {
+     "properties": {
+      "approvals": {
+       "title": "Approvals",
+       "type": "integer"
+      },
+      "broad_since": {
+       "title": "Broad Since",
+       "type": "integer"
+      },
+      "disapprovals": {
+       "title": "Disapprovals",
+       "type": "integer"
+      },
+      "papers": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Papers",
+       "type": "array"
+      },
+      "share_before_pct": {
+       "title": "Share Before Pct",
+       "type": "number"
+      },
+      "share_this_year_pct": {
+       "title": "Share This Year Pct",
+       "type": "number"
+      },
+      "trend": {
+       "title": "Trend",
+       "type": "string"
+      },
+      "writers_this_year": {
+       "title": "Writers This Year",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "trend",
+      "broad_since",
+      "writers_this_year",
+      "share_this_year_pct",
+      "share_before_pct",
+      "papers",
+      "approvals",
+      "disapprovals"
+     ],
+     "title": "NarrativeTrendOut",
+     "type": "object"
+    },
+    "NarrativeTrendsOut": {
+     "properties": {
+      "argued_over": {
+       "items": {
+        "$ref": "#/components/schemas/NarrativeTrendOut"
+       },
+       "title": "Argued Over",
+       "type": "array"
+      },
+      "compared_with": {
+       "title": "Compared With",
+       "type": "string"
+      },
+      "fading": {
+       "items": {
+        "$ref": "#/components/schemas/NarrativeTrendOut"
+       },
+       "title": "Fading",
+       "type": "array"
+      },
+      "growing": {
+       "items": {
+        "$ref": "#/components/schemas/NarrativeTrendOut"
+       },
+       "title": "Growing",
+       "type": "array"
+      },
+      "new": {
+       "items": {
+        "$ref": "#/components/schemas/NarrativeTrendOut"
+       },
+       "title": "New",
+       "type": "array"
+      },
+      "note": {
+       "title": "Note",
+       "type": "string"
+      },
+      "period": {
+       "title": "Period",
+       "type": "string"
+      }
+     },
+     "required": [
+      "period",
+      "compared_with",
+      "note",
+      "new",
+      "growing",
+      "fading",
+      "argued_over"
+     ],
+     "title": "NarrativeTrendsOut",
      "type": "object"
     },
     "ObservedPatternOut": {
@@ -1945,6 +2061,146 @@
       "last_mutation_cycle"
      ],
      "title": "StructureDiagOut",
+     "type": "object"
+    },
+    "TrendListsOut": {
+     "properties": {
+      "all_writers": {
+       "items": {
+        "type": "integer"
+       },
+       "title": "All Writers",
+       "type": "array"
+      },
+      "before": {
+       "title": "Before",
+       "type": "integer"
+      },
+      "lists": {
+       "additionalProperties": {
+        "items": {
+         "type": "string"
+        },
+        "type": "array"
+       },
+       "title": "Lists",
+       "type": "object"
+      },
+      "trends": {
+       "additionalProperties": {
+        "$ref": "#/components/schemas/TrendOut"
+       },
+       "title": "Trends",
+       "type": "object"
+      },
+      "year": {
+       "title": "Year",
+       "type": "integer"
+      },
+      "years": {
+       "items": {
+        "type": "integer"
+       },
+       "title": "Years",
+       "type": "array"
+      }
+     },
+     "required": [
+      "year",
+      "before",
+      "years",
+      "all_writers",
+      "lists",
+      "trends"
+     ],
+     "title": "TrendListsOut",
+     "type": "object"
+    },
+    "TrendOut": {
+     "properties": {
+      "key": {
+       "title": "Key",
+       "type": "string"
+      },
+      "name": {
+       "title": "Name",
+       "type": "string"
+      },
+      "papers": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Papers",
+       "type": "array"
+      },
+      "sample": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Sample",
+       "type": "array"
+      },
+      "start": {
+       "title": "Start",
+       "type": "integer"
+      },
+      "verdicts": {
+       "items": {
+        "type": "integer"
+       },
+       "title": "Verdicts",
+       "type": "array"
+      },
+      "words": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Words",
+       "type": "array"
+      },
+      "writers": {
+       "items": {
+        "type": "integer"
+       },
+       "title": "Writers",
+       "type": "array"
+      }
+     },
+     "required": [
+      "key",
+      "name",
+      "start",
+      "words",
+      "writers",
+      "papers",
+      "verdicts",
+      "sample"
+     ],
+     "title": "TrendOut",
+     "type": "object"
+    },
+    "TrendsOut": {
+     "properties": {
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "trends": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/TrendListsOut"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     "required": [
+      "domain",
+      "trends"
+     ],
+     "title": "TrendsOut",
      "type": "object"
     },
     "ValidationError": {
@@ -2973,6 +3229,45 @@
       }
      },
      "summary": "Domain Report Refresh"
+    }
+   },
+   "/v1/trends": {
+    "get": {
+     "operationId": "trends_v1_trends_get",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "domain",
+       "required": true,
+       "schema": {
+        "title": "Domain",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/TrendsOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Trends"
     }
    }
   }

@@ -220,6 +220,27 @@ class NarrativeCaseSetOut(BaseModel):
     most_raised: list[NarrativeCaseForecastOut]
 
 
+class NarrativeTrendOut(BaseModel):
+    trend: str
+    broad_since: int
+    writers_this_year: int
+    share_this_year_pct: float        # of every critic writing that year
+    share_before_pct: float           # average over the years before
+    papers: list[str]
+    approvals: int
+    disapprovals: int
+
+
+class NarrativeTrendsOut(BaseModel):
+    period: str
+    compared_with: str
+    note: str
+    new: list[NarrativeTrendOut]
+    growing: list[NarrativeTrendOut]
+    fading: list[NarrativeTrendOut]
+    argued_over: list[NarrativeTrendOut]
+
+
 class NarrativeSnapshotOut(BaseModel):
     metadata: NarrativeMetadataOut
     current_regime_state: list[NarrativeRegimeVariableOut]
@@ -229,6 +250,7 @@ class NarrativeSnapshotOut(BaseModel):
     frontier: NarrativeFrontierOut
     interpretation_hints: list[str]
     case_mechanisms: list[NarrativeCaseSetOut] = []   # D29: only a domain judged by cases
+    trends: Optional[NarrativeTrendsOut] = None       # D30: only a domain with trends
 
 
 class EvidenceRecordOut(BaseModel):
@@ -424,3 +446,30 @@ class CaseSetOut(BaseModel):
 class CasesOut(BaseModel):
     domain: str
     case_sets: list[CaseSetOut]
+
+
+# ── Trends (D30) ──────────────────────────────────────────────────────────────
+
+class TrendOut(BaseModel):
+    key: str
+    name: str
+    start: int                # first year broad
+    words: list[str]
+    writers: list[int]        # each year of TrendListsOut.years
+    papers: list[str]         # this year
+    verdicts: list[int]       # approvals, disapprovals this year
+    sample: list[str]         # a few of this year's claims, as the reader put them
+
+
+class TrendListsOut(BaseModel):
+    year: int                 # the year to September shown
+    before: int               # years it is set against
+    years: list[int]
+    all_writers: list[int]    # every writer each year
+    lists: dict[str, list[str]]   # new, growing, fading, argued: trend keys in order
+    trends: dict[str, TrendOut]
+
+
+class TrendsOut(BaseModel):
+    domain: str
+    trends: Optional[TrendListsOut]   # None: the domain has no trends

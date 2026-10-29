@@ -47,6 +47,6 @@ def test_a_snapshot_with_a_bad_row_is_refused():
 
 def test_the_domain_ships_its_case_sets():
     sets = cases.case_sets()
-    assert {s.key for s in sets} <= {"artists", "concepts"}
+    assert {s.key for s in sets} <= {"artists", "concepts", "trends"}
     for s in sets:
         assert s.records and s.pool
