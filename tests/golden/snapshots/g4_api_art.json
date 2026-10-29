@@ -1658,101 +1658,102 @@
    "case_mechanisms": [
     {
      "belief_changes": [
-      "from 2002: NYT coverage that year + contested that year (both praised and condemned)",
-      "from 2003: contested that year (both praised and condemned)",
-      "from 2007: NYT coverage that year"
+      "from 2003: NYT coverage that year",
+      "from 2009: NYT coverage that year + critics' approval that year",
+      "from 2016: NYT coverage that year + Guardian coverage that year + critics' approval that year + contested that year (both praised and condemned)",
+      "from 2023: NYT coverage that year + critics' approval that year"
      ],
      "forecast_for": 2026,
-     "gain_nats_over_own_past": 176.9,
-     "leader": "NYT coverage that year",
-     "leader_since": 2007,
+     "gain_nats_over_own_past": 223.3,
+     "leader": "NYT coverage that year + critics' approval that year",
+     "leader_since": 2023,
      "mechanisms": [
       {
-       "gain_nats": 193.2,
-       "mechanism": "NYT coverage that year"
-      },
-      {
-       "gain_nats": 136.4,
-       "mechanism": "NYT coverage that year + Guardian coverage that year"
-      },
-      {
-       "gain_nats": 120.6,
-       "mechanism": "NYT coverage that year + contested that year (both praised and condemned)"
-      },
-      {
-       "gain_nats": 75.7,
-       "mechanism": "critics' approval that year"
-      },
-      {
-       "gain_nats": 74.1,
-       "mechanism": "NYT coverage that year + Guardian coverage that year + contested that year (both praised and condemned)"
-      },
-      {
-       "gain_nats": 60.4,
-       "mechanism": "NYT coverage that year + critics' approval that year"
-      },
-      {
-       "gain_nats": 40.8,
-       "mechanism": "critics' approval that year + contested that year (both praised and condemned)"
-      },
-      {
-       "gain_nats": 27.6,
-       "mechanism": "Guardian coverage that year + critics' approval that year"
-      },
-      {
-       "gain_nats": 5.1,
+       "gain_nats": 241.3,
        "mechanism": "NYT coverage that year + critics' approval that year + contested that year (both praised and condemned)"
       },
       {
-       "gain_nats": 0.7,
+       "gain_nats": 241.2,
+       "mechanism": "NYT coverage that year + critics' approval that year"
+      },
+      {
+       "gain_nats": 237.3,
+       "mechanism": "NYT coverage that year + Guardian coverage that year + critics' approval that year + contested that year (both praised and condemned)"
+      },
+      {
+       "gain_nats": 236.6,
        "mechanism": "NYT coverage that year + Guardian coverage that year + critics' approval that year"
       },
       {
-       "gain_nats": -5.1,
-       "mechanism": "contested that year (both praised and condemned)"
+       "gain_nats": 219.8,
+       "mechanism": "NYT coverage that year + Guardian coverage that year"
       },
       {
-       "gain_nats": -5.5,
-       "mechanism": "Guardian coverage that year"
+       "gain_nats": 217.8,
+       "mechanism": "NYT coverage that year"
       },
       {
-       "gain_nats": -7.6,
+       "gain_nats": 215.9,
+       "mechanism": "NYT coverage that year + Guardian coverage that year + contested that year (both praised and condemned)"
+      },
+      {
+       "gain_nats": 213.8,
+       "mechanism": "NYT coverage that year + contested that year (both praised and condemned)"
+      },
+      {
+       "gain_nats": 140.9,
+       "mechanism": "Guardian coverage that year + critics' approval that year"
+      },
+      {
+       "gain_nats": 140.9,
        "mechanism": "Guardian coverage that year + critics' approval that year + contested that year (both praised and condemned)"
       },
       {
-       "gain_nats": -24.4,
+       "gain_nats": 139.1,
+       "mechanism": "critics' approval that year"
+      },
+      {
+       "gain_nats": 138.1,
+       "mechanism": "critics' approval that year + contested that year (both praised and condemned)"
+      },
+      {
+       "gain_nats": 47.0,
        "mechanism": "Guardian coverage that year + contested that year (both praised and condemned)"
       },
       {
-       "gain_nats": -40.5,
-       "mechanism": "NYT coverage that year + Guardian coverage that year + critics' approval that year + contested that year (both praised and condemned)"
+       "gain_nats": 43.4,
+       "mechanism": "Guardian coverage that year"
+      },
+      {
+       "gain_nats": 15.9,
+       "mechanism": "contested that year (both praised and condemned)"
       }
      ],
      "most_raised": [
       {
-       "case": "Ellen Auerbach",
-       "own_past_chance": 0.314,
-       "with_leader_chance": 0.356
+       "case": "Gilbert & George",
+       "own_past_chance": 0.228,
+       "with_leader_chance": 0.301
       },
       {
-       "case": "Kay Rosen",
-       "own_past_chance": 0.314,
-       "with_leader_chance": 0.356
+       "case": "Christopher Wool",
+       "own_past_chance": 0.233,
+       "with_leader_chance": 0.302
       },
       {
-       "case": "Meissen Porcelain Manufactory",
-       "own_past_chance": 0.314,
-       "with_leader_chance": 0.356
+       "case": "Giovanni Battista Tiepolo",
+       "own_past_chance": 0.168,
+       "with_leader_chance": 0.211
       },
       {
-       "case": "Stefano della Bella",
-       "own_past_chance": 0.314,
-       "with_leader_chance": 0.356
+       "case": "Takashi Murakami",
+       "own_past_chance": 0.113,
+       "with_leader_chance": 0.148
       },
       {
-       "case": "Eugene Delatre",
-       "own_past_chance": 0.254,
-       "with_leader_chance": 0.293
+       "case": "Bridget Riley",
+       "own_past_chance": 0.153,
+       "with_leader_chance": 0.187
       }
      ],
      "outcome": "Chicago and Cleveland acquisitions next year",
@@ -1760,67 +1761,67 @@
     },
     {
      "belief_changes": [
-      "from 2015: contested that year (both praised and condemned)"
+      "from 2002: contested that year (both praised and condemned) + written about in both papers that year + predictions or doubts voiced that year"
      ],
      "forecast_for": 2026,
-     "gain_nats_over_own_past": 38.1,
-     "leader": "contested that year (both praised and condemned)",
-     "leader_since": 2015,
+     "gain_nats_over_own_past": 153.4,
+     "leader": "contested that year (both praised and condemned) + written about in both papers that year + predictions or doubts voiced that year",
+     "leader_since": 2002,
      "mechanisms": [
       {
-       "gain_nats": 12.7,
-       "mechanism": "contested that year (both praised and condemned)"
+       "gain_nats": 779.3,
+       "mechanism": "contested that year (both praised and condemned) + written about in both papers that year + predictions or doubts voiced that year"
       },
       {
-       "gain_nats": -75.1,
-       "mechanism": "contested that year (both praised and condemned) + predictions or doubts voiced that year"
-      },
-      {
-       "gain_nats": -89.8,
-       "mechanism": "predictions or doubts voiced that year"
-      },
-      {
-       "gain_nats": -119.1,
-       "mechanism": "written about in both papers that year"
-      },
-      {
-       "gain_nats": -195.5,
-       "mechanism": "contested that year (both praised and condemned) + written about in both papers that year"
-      },
-      {
-       "gain_nats": -240.1,
+       "gain_nats": 653.3,
        "mechanism": "written about in both papers that year + predictions or doubts voiced that year"
       },
       {
-       "gain_nats": -288.1,
-       "mechanism": "contested that year (both praised and condemned) + written about in both papers that year + predictions or doubts voiced that year"
+       "gain_nats": 638.2,
+       "mechanism": "contested that year (both praised and condemned) + written about in both papers that year"
+      },
+      {
+       "gain_nats": 509.0,
+       "mechanism": "written about in both papers that year"
+      },
+      {
+       "gain_nats": 345.7,
+       "mechanism": "contested that year (both praised and condemned) + predictions or doubts voiced that year"
+      },
+      {
+       "gain_nats": 191.3,
+       "mechanism": "predictions or doubts voiced that year"
+      },
+      {
+       "gain_nats": 168.4,
+       "mechanism": "contested that year (both praised and condemned)"
       }
      ],
      "most_raised": [
       {
-       "case": "Annabelle Selldorf's images of the redesigned lobby",
-       "own_past_chance": 0.32,
-       "with_leader_chance": 0.576
+       "case": "Calder Gardens",
+       "own_past_chance": 0.265,
+       "with_leader_chance": 0.412
       },
       {
-       "case": "Turner's Slavers Throwing Overboard the Dead and Dying, Typhoon Coming On",
-       "own_past_chance": 0.556,
-       "with_leader_chance": 0.804
+       "case": "Blackhall & Pearl report",
+       "own_past_chance": 0.265,
+       "with_leader_chance": 0.364
       },
       {
-       "case": "Abbey's study for The Hours",
-       "own_past_chance": 0.055,
-       "with_leader_chance": 0.21
+       "case": "Emily Kam Kngwarray",
+       "own_past_chance": 0.265,
+       "with_leader_chance": 0.364
       },
       {
-       "case": "Arena Homme+ issue",
-       "own_past_chance": 0.055,
-       "with_leader_chance": 0.21
+       "case": "Gradel Quadrangles",
+       "own_past_chance": 0.265,
+       "with_leader_chance": 0.364
       },
       {
-       "case": "Binet's photographs",
-       "own_past_chance": 0.055,
-       "with_leader_chance": 0.21
+       "case": "Ian Hamilton Finlay",
+       "own_past_chance": 0.265,
+       "with_leader_chance": 0.364
       }
      ],
      "outcome": "writers taking the concept up next year",
@@ -1828,44 +1829,69 @@
     },
     {
      "belief_changes": [
-      "from 2003: contested that year (both praised and condemned) + written about in both papers that year + predictions or doubts voiced that year",
-      "from 2006: each case's own past alone"
+      "from 2024: contested that year (both praised and condemned)"
      ],
      "forecast_for": 2027,
-     "gain_nats_over_own_past": -23.8,
-     "leader": "each case's own past alone",
-     "leader_since": 2006,
+     "gain_nats_over_own_past": -0.3,
+     "leader": "contested that year (both praised and condemned)",
+     "leader_since": 2024,
      "mechanisms": [
       {
-       "gain_nats": -83.0,
-       "mechanism": "written about in both papers that year"
-      },
-      {
-       "gain_nats": -85.7,
-       "mechanism": "predictions or doubts voiced that year"
-      },
-      {
-       "gain_nats": -95.7,
+       "gain_nats": -2.4,
        "mechanism": "contested that year (both praised and condemned)"
       },
       {
-       "gain_nats": -198.6,
+       "gain_nats": -3.2,
+       "mechanism": "written about in both papers that year"
+      },
+      {
+       "gain_nats": -5.7,
        "mechanism": "contested that year (both praised and condemned) + written about in both papers that year"
       },
       {
-       "gain_nats": -200.2,
+       "gain_nats": -9.9,
+       "mechanism": "predictions or doubts voiced that year"
+      },
+      {
+       "gain_nats": -12.9,
        "mechanism": "written about in both papers that year + predictions or doubts voiced that year"
       },
       {
-       "gain_nats": -222.3,
+       "gain_nats": -13.4,
        "mechanism": "contested that year (both praised and condemned) + predictions or doubts voiced that year"
       },
       {
-       "gain_nats": -324.9,
+       "gain_nats": -17.1,
        "mechanism": "contested that year (both praised and condemned) + written about in both papers that year + predictions or doubts voiced that year"
       }
      ],
-     "most_raised": [],
+     "most_raised": [
+      {
+       "case": "turbine \u00b7 hall \u00b7 modern's",
+       "own_past_chance": 0.6,
+       "with_leader_chance": 0.65
+      },
+      {
+       "case": "Black artists and visibility",
+       "own_past_chance": 0.701,
+       "with_leader_chance": 0.738
+      },
+      {
+       "case": "transgender representation in art",
+       "own_past_chance": 0.747,
+       "with_leader_chance": 0.776
+      },
+      {
+       "case": "art and slavery",
+       "own_past_chance": 0.786,
+       "with_leader_chance": 0.814
+      },
+      {
+       "case": "art and the sea",
+       "own_past_chance": 0.786,
+       "with_leader_chance": 0.814
+      }
+     ],
      "outcome": "trends holding or growing next year",
      "title": "Trends"
     }

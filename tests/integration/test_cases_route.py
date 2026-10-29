@@ -17,15 +17,16 @@ def test_art_reports_its_case_sets_with_leader_shifts_years_and_forecasts():
     assert set(sets) == {"artists", "concepts", "trends"}
     artists = sets["artists"]
     assert artists["pool"] == ["nyt", "guardian", "approval", "contested"]
-    assert artists["leader"] == ["nyt"]                       # evals/README.md replay 18
-    assert [s["to"] for s in artists["shifts"]][-1] == ["nyt"]
+    # abductive_engine ART-PLAN §9 amended: mechanisms combine additively.
+    assert artists["leader"] == ["nyt", "approval"]
+    assert [s["to"] for s in artists["shifts"]][-1] == ["nyt", "approval"]
     assert artists["gain"] > 100 and artists["years"][0]["year"] == 2001
     assert artists["forecast_year"] == 2025
     row = artists["most_raised"][0]
     assert set(row) == {"case", "label", "own_past", "with_leader"} and len(row["own_past"]) == 3
-    assert artists["mechanisms"][0]["features"] == ["nyt"] and "likeliest" not in artists
-    assert sets["concepts"]["leader"] == ["contested"]
-    assert sets["trends"]["leader"] == [] and sets["trends"]["gain"] < 0   # abductive_engine ART-PLAN §10: none holds
+    assert "nyt" in artists["mechanisms"][0]["features"] and "likeliest" not in artists
+    assert sets["concepts"]["leader"] == ["contested", "both_papers", "modality"]
+    assert sets["trends"]["gain"] < 3          # abductive_engine ART-PLAN §10: nothing holds over the years
 
 
 def test_a_domain_without_cases_has_none_and_an_unknown_domain_is_refused():

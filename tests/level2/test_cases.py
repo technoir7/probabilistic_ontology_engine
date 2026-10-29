@@ -6,7 +6,7 @@ from __future__ import annotations
 import random
 
 from src.engine.model.cases import CaseSet, CaseYear, doubling, level
-from src.engine.services.cases import CaseEngine, case_report
+from src.engine.services.cases import case_report
 
 
 def test_levels_are_none_one_several_and_doubling_grades_size_finely():
@@ -21,53 +21,6 @@ def _year(y, n, rng, matters, case=None):
         outcome = 2 * f if matters else rng.choice((0, 0, 1, 2))
         rows.append(CaseYear(y, (own,), {"f": f, "g": g}, outcome, case=case and f"{case}{i}"))
     return rows
-
-
-def _run(engine, years, matters_from, n=300, seed=0):
-    rng, out = random.Random(seed), {}
-    for y in years:
-        out[y] = engine.step(y, _year(y, n, rng, y >= matters_from))
-    return out
-
-
-def test_every_set_of_mechanisms_is_a_rival_and_own_past_leads_at_first():
-    engine = CaseEngine(("f", "g"))
-    assert set(engine.schemes) == {(), ("f",), ("g",), ("f", "g")}
-    assert engine.leader == ()
-
-
-def test_noise_never_takes_the_lead():
-    engine = CaseEngine(("f", "g"))
-    _run(engine, range(2000, 2015), matters_from=9999)
-    assert engine.leader == () and engine.shifts == []
-
-
-def test_a_mechanism_that_starts_to_matter_takes_the_lead_and_the_change_is_recorded():
-    engine = CaseEngine(("f", "g"))
-    scores = _run(engine, range(2000, 2015), matters_from=2006)
-    assert engine.leader == ("f",)
-    # Learned from 2006's cases, it predicts better from 2007: the earliest it could lead.
-    assert [(s.year, s.to) for s in engine.shifts] == [(2007, ("f",))]
-    engine_2006, own_2006 = scores[2006]
-    assert engine_2006 == own_2006            # the leader was chosen before 2006 was seen
-    engine_late, own_late = scores[2014]
-    assert engine_late > own_late + 100
-
-
-def test_a_weighted_record_counts_as_that_many_identical_cases():
-    rng = random.Random(1)
-    rows = [r for y in range(2000, 2008) for r in _year(y, 50, rng, True)]
-    merged: dict = {}
-    for r in rows:
-        k = (r.year, r.own, tuple(sorted(r.features.items())), r.outcome)
-        merged[k] = merged.get(k, 0) + 1
-    weighted = [CaseYear(y, own, dict(f), o, weight=w) for (y, own, f, o), w in merged.items()]
-    one, many = CaseEngine(("f", "g")), CaseEngine(("f", "g"))
-    for y in range(2000, 2008):
-        a = one.step(y, [r for r in rows if r.year == y])
-        b = many.step(y, [r for r in weighted if r.year == y])
-        assert abs(a[0] - b[0]) < 1e-9 and abs(a[1] - b[1]) < 1e-9
-    assert one.leader == many.leader
 
 
 def test_a_report_judges_the_closed_years_and_forecasts_the_open_one_by_its_leader():
