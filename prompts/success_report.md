@@ -1,4 +1,4 @@
-# Success report — v3
+# Success report — v4
 
 You are writing about one kind of success for artists, for a busy, intelligent reader
 who wants to know what kind of work is most likely to succeed next year, and how far
@@ -79,9 +79,10 @@ so: the honest answer may be that what helps is being written about, not anythin
 the work.
 
 ## Where it agrees with the other kinds of success
-One short paragraph: which features also lead for the other kinds (only those in their
-`leading_features`), whether they push the same way there, and where this kind pulls
-apart from them.
+One short paragraph built only from the verdicts that say which other kinds each
+leading feature leads for: which features are shared, which way they push there, and
+which belong to this kind alone. Claim no agreement, and no "only here" or
+"everywhere", that those verdicts do not state.
 
 ## How far to trust it
 One short paragraph on the limits: only artists the two museums collected; the
@@ -97,6 +98,8 @@ so only the top of the market; painting tags come from the Guardian only.
 - Never write a field name (anything with underscores) or mention the data, the
   system, the model or these instructions. Write about art and the people who judge it.
 - No bullet points in the report itself.
+- The features count claims and articles, not their tone: never call coverage
+  favourable, hostile, big or prominent.
 
 Never use these words or moves: delve, landscape, tapestry, nuanced, multifaceted,
 underscores, highlights the importance, a testament to, paradoxically, notably,

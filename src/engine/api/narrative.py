@@ -153,10 +153,12 @@ def _verdicts(s, kind: str) -> list[str]:
     if not k.placebo_fair:
         out.append("The year-after control is no test here: next year's features count part of next year's success.")
     elif k.placebo >= k.gain:
-        out.append("Next year's features predict as well or better, so the coverage comes with this success "
+        out.append("The year-after control is a fair test here, since this success is counted apart from the press; "
+                   "next year's features predict as well or better, so the coverage comes with this success "
                    "rather than before it.")
     else:
-        out.append("This year's features predict better than next year's, so the coverage comes before this success.")
+        out.append("The year-after control is a fair test here, since this success is counted apart from the press; "
+                   "this year's features predict better than next year's, so the coverage comes before this success.")
     last = max((y for y, _ in k.years), default=None)
     for f, deals in k.dealt.items():
         adds = k.gain - sum(deals) / len(deals) if deals else None
@@ -168,11 +170,20 @@ def _verdicts(s, kind: str) -> list[str]:
                        "so no control has tested it yet; its push is a fit to past years, not a tested forecast.")
         else:
             out.append(f"{m.get(f, f)} adds nothing: dealt at random, the engine does as well or better.")
-    everywhere = [f for f in k.leader if all(f in o.leader for o in s.kinds.values())]
-    for f in everywhere:
-        hurts = [o.title.lower() for o in s.kinds.values() if _push(o, f) < 0]
-        out.append(f"Leads for all four kinds of success: {m.get(f, f)}"
-                   + (f"; it helps, except that it hurts for {', '.join(hurts)}." if hurts else "; it helps in all four."))
+    others = [o for kk, o in s.kinds.items() if kk != kind]
+    for f in k.leader:
+        name = m.get(f, f)
+        leads = [o for o in others if f in o.leader]
+        if len(leads) == len(others):
+            hurts = [o.title.lower() for o in s.kinds.values() if _push(o, f) < 0]
+            out.append(f"{name} leads for all four kinds; "
+                       + (f"it helps, except that it hurts for {', '.join(hurts)}." if hurts else "it helps in all four."))
+        elif leads:
+            out.append(f"{name} also leads for "
+                       + ", ".join(f"{o.title.lower()} ({'helps' if _push(o, f) > 0 else 'hurts'})" for o in leads)
+                       + "; not for " + ", ".join(o.title.lower() for o in others if o not in leads) + ".")
+        else:
+            out.append(f"{name} leads for no other kind.")
     return out
 
 

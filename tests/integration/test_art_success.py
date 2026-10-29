@@ -124,4 +124,15 @@ def test_verdicts_are_fixed_by_rule_so_a_report_cannot_soften_them():
 
 def test_a_verdict_names_what_leads_for_every_kind_and_which_way_it_pushes():
     v = _verdicts("approve")
-    assert "Leads for all four kinds of success: NYT coverage" in v and "hurts for more press" in v
+    assert "NYT coverage that year leads for all four kinds; it helps, except that it hurts for more press." in v
+
+
+def test_a_verdict_says_for_each_leading_feature_which_other_kinds_it_leads_for():
+    v = _verdicts("museum")
+    assert ("claims about the artist in an argued-over trend that year also leads for critics approve (helps), "
+            "more press (helps); not for market.") in v
+    assert "articles on the artist tagged photography that year leads for no other kind." in v
+
+
+def test_a_fair_year_after_control_says_why_it_is_fair():
+    assert "counted apart from the press" in _verdicts("market")
