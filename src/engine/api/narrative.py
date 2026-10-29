@@ -32,6 +32,7 @@ from .dto import (
     NarrativeCaseForecastOut,
     NarrativeCaseMechanismOut,
     NarrativeCaseSetOut,
+    NarrativeTrendListOut,
     NarrativeTrendOut,
     NarrativeTrendsOut,
 )
@@ -62,18 +63,41 @@ def snapshot_for(state: Any, domain: str) -> NarrativeSnapshotOut:
     return build_snapshot(engine, domain_id, display_name, compute_case_reports(key), current_trends(key))
 
 
-def _trends(t: TrendLists) -> NarrativeTrendsOut:
-    def row(x) -> NarrativeTrendOut:
-        return NarrativeTrendOut(
-            trend=x.name, broad_since=x.start, writers_this_year=x.writers[t.years.index(t.year)],
-            share_this_year_pct=round(100 * t.share(x.key, t.year), 2),
-            share_before_pct=round(100 * t.share_before(x.key), 2),
-            share_by_year_pct={str(y): round(100 * t.share(x.key, y), 2) for y in range(t.year - t.before, t.year + 1)},
-            papers=list(x.papers), approvals=x.verdicts[0], disapprovals=x.verdicts[1],
-            distinctive_words=list(x.words), what_critics_said=list(x.sample))
+LIST_ROWS = 12
+LIST_RULES = {
+    "new": "broad for the first time (many critics, many subjects) in 2021 or later; ranked by critics writing on it this year",
+    "growing": "its share of critics this year at least 1.5 times its average over the three years before; ranked by that ratio",
+    "fading": "its share of critics this year at most half its best of the three years before, when that year was broad; ranked by that best share",
+    "argued": "at least 10 verdicts this year; ranked by how evenly critics split between approval and disapproval",
+}
 
+
+def trend_list_snapshot(domain: str, name: str) -> NarrativeTrendListOut:
+    """One list's trends for its own report. LookupError for a domain without
+    trends or an unknown list."""
+    key = domain.lower()
+    t = current_trends(key) if key in context.DOMAIN_MAP else None
+    if t is None or name not in t.lists:
+        raise LookupError(f"no trend list '{name}' for domain '{domain}'")
+    period = _trends(t)
+    return NarrativeTrendListOut(
+        domain=key, list=name, rule=LIST_RULES[name], period=period.period, compared_with=period.compared_with,
+        note=period.note, trends=[_trend_row(t, x) for x in t.listed(name)[:LIST_ROWS]])
+
+
+def _trend_row(t: TrendLists, x) -> NarrativeTrendOut:
+    return NarrativeTrendOut(
+        trend=x.name, broad_since=x.start, writers_this_year=x.writers[t.years.index(t.year)],
+        share_this_year_pct=round(100 * t.share(x.key, t.year), 2),
+        share_before_pct=round(100 * t.share_before(x.key), 2),
+        share_by_year_pct={str(y): round(100 * t.share(x.key, y), 2) for y in range(t.year - t.before, t.year + 1)},
+        papers=list(x.papers), approvals=x.verdicts[0], disapprovals=x.verdicts[1],
+        distinctive_words=list(x.words), what_critics_said=list(x.sample))
+
+
+def _trends(t: TrendLists) -> NarrativeTrendsOut:
     def rows(name: str) -> list[NarrativeTrendOut]:
-        return [row(x) for x in t.listed(name)[:TREND_ROWS]]
+        return [_trend_row(t, x) for x in t.listed(name)[:TREND_ROWS]]
 
     return NarrativeTrendsOut(
         period=f"October {t.year - 1} to September {t.year}",

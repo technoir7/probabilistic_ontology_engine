@@ -21,6 +21,8 @@ logger = logging.getLogger(__name__)
 # Resolve prompt path relative to this file — works from any cwd.
 # parents[3] of src/engine/api/report.py is the project root (where prompts/ lives).
 _PROMPT_PATH = Path(__file__).resolve().parents[3] / "prompts" / "snapshot_report.md"
+# One trend list's report (D30): the art domain's new, growing, fading or argued-over trends.
+TREND_PROMPT_PATH = _PROMPT_PATH.parent / "trend_report.md"
 
 # Fireworks constants matching POE-A defaults.
 _FIREWORKS_BASE_URL = "https://api.fireworks.ai/inference/v1"
@@ -35,6 +37,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 # POST /v1/report/{domain}/refresh even if the snapshot is otherwise unchanged.
 
 PROMPT_VERSION = "4"
+TREND_PROMPT_VERSION = "1"   # bump when prompts/trend_report.md changes
 
 
 # ── Hashing ──────────────────────────────────────────────────────────────────
@@ -87,15 +90,15 @@ def reports_dir(data_dir: Path) -> Path:
 
 # "apriori" is left from a retired second ontology mode; kept in the file
 # names so reports already cached on the data volume are still found.
-def _prefix(domain: str) -> str:
-    return f"{domain}__apriori__pv{PROMPT_VERSION}__"
+def _prefix(domain: str, version: Optional[str] = None) -> str:
+    return f"{domain}__apriori__pv{version or PROMPT_VERSION}__"
 
 
-def cache_path(data_dir: Path, domain: str, hash_hex: str) -> Path:
-    return reports_dir(data_dir) / f"{_prefix(domain)}{hash_hex[:16]}.json"
+def cache_path(data_dir: Path, domain: str, hash_hex: str, version: Optional[str] = None) -> Path:
+    return reports_dir(data_dir) / f"{_prefix(domain, version)}{hash_hex[:16]}.json"
 
 
-def stale_cache_path(data_dir: Path, domain: str) -> Optional[Path]:
+def stale_cache_path(data_dir: Path, domain: str, version: Optional[str] = None) -> Optional[Path]:
     """Return the most-recently-written pv{PROMPT_VERSION} cache file, if any.
 
     Version-gated: only files whose name contains the current PROMPT_VERSION are
@@ -103,7 +106,7 @@ def stale_cache_path(data_dir: Path, domain: str) -> Optional[Path]:
     silently ignored so stale prompts are never served.
     """
     rd = reports_dir(data_dir)
-    prefix = _prefix(domain)
+    prefix = _prefix(domain, version)
     candidates = sorted(
         (p for p in rd.glob(f"{prefix}*.json") if p.is_file()),
         key=lambda p: p.stat().st_mtime,
@@ -173,7 +176,8 @@ _STRICT_SYSTEM = (
 )
 
 
-def _generate_report_sync(snapshot: dict, api_key: str, model: str, strict: bool = False) -> str:
+def _generate_report_sync(snapshot: dict, api_key: str, model: str, strict: bool = False,
+                          prompt_path: Path = _PROMPT_PATH) -> str:
     """
     Synchronous Fireworks AI call.  Runs in a thread via asyncio.to_thread() so
     the async FastAPI event loop is not blocked.
@@ -183,7 +187,7 @@ def _generate_report_sync(snapshot: dict, api_key: str, model: str, strict: bool
     """
     from openai import OpenAI
 
-    prompt_text = _PROMPT_PATH.read_text(encoding="utf-8")
+    prompt_text = prompt_path.read_text(encoding="utf-8")
     snapshot_json = json.dumps(snapshot, indent=2, default=str)
     user_content = (
         f"{prompt_text}\n\n"
@@ -228,6 +232,7 @@ async def generate_report(
     api_key: str,
     model: str,
     timeout: float = 90.0,
+    prompt_path: Path = _PROMPT_PATH,
 ) -> str:
     """Async wrapper — runs the synchronous Fireworks call in a thread.
 
@@ -236,7 +241,7 @@ async def generate_report(
     """
     async def attempt(strict: bool = False) -> str:
         return await asyncio.wait_for(
-            asyncio.to_thread(_generate_report_sync, snapshot, api_key, model, strict=strict),
+            asyncio.to_thread(_generate_report_sync, snapshot, api_key, model, strict=strict, prompt_path=prompt_path),
             timeout=timeout,
         )
 

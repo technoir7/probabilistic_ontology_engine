@@ -244,6 +244,17 @@ class NarrativeTrendsOut(BaseModel):
     argued_over: list[NarrativeTrendOut]
 
 
+class NarrativeTrendListOut(BaseModel):
+    """One trend list, for its own written report (D30)."""
+    domain: str
+    list: str
+    rule: str                        # what put a trend on this list
+    period: str
+    compared_with: str
+    note: str
+    trends: list[NarrativeTrendOut]
+
+
 class NarrativeSnapshotOut(BaseModel):
     metadata: NarrativeMetadataOut
     current_regime_state: list[NarrativeRegimeVariableOut]

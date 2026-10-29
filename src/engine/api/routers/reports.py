@@ -41,17 +41,7 @@ async def domain_report_read(
     key = domain.lower()
     if key not in context.DOMAIN_MAP:
         raise HTTPException(status_code=404, detail=f"Unknown domain '{domain}'")
-
-    data_dir = Settings.from_env().data_dir
-    stale_path = _report.stale_cache_path(data_dir, key)
-    if not stale_path:
-        return DomainReportNotFound(domain=key)
-
-    cached = _report.load_cache(stale_path)
-    if not cached:
-        return DomainReportNotFound(domain=key)
-
-    return DomainReportOut(**cached, found=True, cached=True, regenerated=False)
+    return _read(key, key, _report.PROMPT_VERSION)
 
 
 @router.post("/v1/report/{domain}/refresh")
@@ -75,61 +65,84 @@ async def domain_report_refresh(
     key = domain.lower()
     if key not in context.DOMAIN_MAP:
         raise HTTPException(status_code=404, detail=f"Unknown domain '{domain}'")
-
     # Build snapshot once — only here in the POST path, never in GET.
-    snapshot_out = narrative.snapshot_for(request.app.state, key)
-    snapshot_dict = snapshot_out.model_dump()
-    h = _report.snapshot_hash(snapshot_dict)
+    snapshot_dict = narrative.snapshot_for(request.app.state, key).model_dump()
+    return await _refresh(key, key, snapshot_dict, _report.PROMPT_VERSION, _report._PROMPT_PATH)
 
+
+# ── One trend list's report (D30) ─────────────────────────────────────────────
+#
+# GET  /v1/trends/{domain}/{list}/report          — cached only, as above
+# POST /v1/trends/{domain}/{list}/report/refresh  — hash-gated, its own prompt
+
+def _trend_list(domain: str, name: str) -> dict:
+    try:
+        return narrative.trend_list_snapshot(domain, name).model_dump()
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@router.get("/v1/trends/{domain}/{name}/report")
+async def trend_report_read(domain: str, name: str) -> Any:
+    snap = _trend_list(domain, name)
+    return _read(f"{snap['domain']}-trends-{name}", snap["domain"], _report.TREND_PROMPT_VERSION)
+
+
+@router.post("/v1/trends/{domain}/{name}/report/refresh")
+async def trend_report_refresh(domain: str, name: str) -> Any:
+    snap = _trend_list(domain, name)
+    return await _refresh(f"{snap['domain']}-trends-{name}", snap["domain"], snap,
+                          _report.TREND_PROMPT_VERSION, _report.TREND_PROMPT_PATH)
+
+
+# ── Shared by both kinds of report ────────────────────────────────────────────
+# CACHE_KEY names the report's files; DOMAIN is what the response reports.
+
+def _read(cache_key: str, domain: str, version: str) -> Any:
     data_dir = Settings.from_env().data_dir
-    exact_path = _report.cache_path(data_dir, key, h)
+    stale_path = _report.stale_cache_path(data_dir, cache_key, version)
+    cached = _report.load_cache(stale_path) if stale_path else None
+    if not cached:
+        return DomainReportNotFound(domain=domain)
+    return DomainReportOut(**cached, found=True, cached=True, regenerated=False)
+
+
+async def _refresh(cache_key: str, domain: str, snapshot_dict: dict, version: str, prompt_path) -> Any:
+    h = _report.snapshot_hash(snapshot_dict)
+    data_dir = Settings.from_env().data_dir
+    exact_path = _report.cache_path(data_dir, cache_key, h, version)
 
     # Cache hit: snapshot unchanged, return immediately without calling LLM.
     exact = _report.load_cache(exact_path)
     if exact:
-        logger.debug("Report cache hit %s hash=%s", key, h[:12])
+        logger.debug("Report cache hit %s hash=%s", cache_key, h[:12])
         return DomainReportOut(**exact, found=True, cached=True, regenerated=False)
+
+    def stale_or(exc: HTTPException) -> Any:
+        stale_path = _report.stale_cache_path(data_dir, cache_key, version)
+        stale = _report.load_cache(stale_path) if stale_path else None
+        if stale:
+            logger.info("Serving stale report for %s", cache_key)
+            return DomainReportOut(**stale, found=True, cached=True, regenerated=False, stale=True)
+        raise exc
 
     # Need to generate.  Fail fast with a clear message if key is absent.
     settings = Settings.from_env()
     api_key = settings.fireworks_api_key
     if not api_key:
-        stale_path = _report.stale_cache_path(data_dir, key)
-        if stale_path:
-            stale = _report.load_cache(stale_path)
-            if stale:
-                logger.info("Serving stale report for %s (FIREWORKS_API_KEY not set)", key)
-                return DomainReportOut(**stale, found=True, cached=True, regenerated=False, stale=True)
-        raise HTTPException(
-            status_code=503,
-            detail=(
-                "FIREWORKS_API_KEY not configured. "
-                "Set it to enable report generation."
-            ),
-        )
+        return stale_or(HTTPException(
+            status_code=503, detail="FIREWORKS_API_KEY not configured. Set it to enable report generation."))
 
     try:
         report_text = await _report.generate_report(
-            snapshot=snapshot_dict,
-            api_key=api_key,
-            model=settings.fireworks_model,
-            timeout=90.0,
-        )
+            snapshot=snapshot_dict, api_key=api_key, model=settings.fireworks_model, timeout=90.0,
+            prompt_path=prompt_path)
     except Exception as exc:
-        logger.error("Fireworks generation failed for %s: %s", key, exc, exc_info=True)
-        stale_path = _report.stale_cache_path(data_dir, key)
-        if stale_path:
-            stale = _report.load_cache(stale_path)
-            if stale:
-                logger.info("Serving stale report for %s after generation failure", key)
-                return DomainReportOut(**stale, found=True, cached=True, regenerated=False, stale=True)
-        raise HTTPException(
-            status_code=502,
-            detail=f"Report generation failed: {exc}",
-        ) from exc
+        logger.error("Fireworks generation failed for %s: %s", cache_key, exc, exc_info=True)
+        return stale_or(HTTPException(status_code=502, detail=f"Report generation failed: {exc}"))
 
     data = {
-        "domain": key,
+        "domain": domain,
         "generated_at": context.utcnow().isoformat(),
         "snapshot_hash": h,
         "report": report_text,

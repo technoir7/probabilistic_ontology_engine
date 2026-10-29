@@ -444,7 +444,7 @@ def test_refresh_still_returns_200_when_retry_matches_heuristic(tmp_path, monkey
     call_count = {"n": 0}
 
     # Both first and strict attempts return a phrase that matches the heuristic.
-    def always_meta(snapshot, api_key, model, strict=False):
+    def always_meta(snapshot, api_key, model, strict=False, prompt_path=None):
         call_count["n"] += 1
         return "Let me walk through this: the market is tightening."
 
@@ -503,7 +503,7 @@ def test_an_empty_reply_is_tried_once_more_before_failing():
     from src.engine.api.report import generate_report
     replies = iter([ValueError("the model wrote no report (finish_reason: length)"), "## In short\n\nok"])
 
-    def sync(snapshot, api_key, model, strict=False):
+    def sync(snapshot, api_key, model, strict=False, prompt_path=None):
         r = next(replies)
         if isinstance(r, Exception):
             raise r
