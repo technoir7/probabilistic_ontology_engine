@@ -85,7 +85,22 @@ def _diff(expected: Any, actual: Any, path: str = "$") -> list[str]:
         for i, (e, a) in enumerate(zip(expected, actual)):
             out.extend(_diff(e, a, f"{path}[{i}]"))
         return out
+    if isinstance(expected, float) and isinstance(actual, float) and _one_step(expected, actual):
+        return []
     return [] if expected == actual else [f"{path}: {expected!r} != {actual!r}"]
+
+
+def _one_step(expected: float, actual: float) -> bool:
+    """A value the code rounds for display (gains to 0.1, chances to 0.001)
+    can land either side of a rounding edge on another platform's floating
+    point: forgive one step in the expected value's last shown digit."""
+    text = repr(expected)
+    if "e" in text or "." not in text:
+        return False
+    places = len(text.split(".")[1])
+    if places >= _FLOAT_DIGITS:
+        return False            # unrounded: already compared at nine digits
+    return abs(expected - actual) <= 10 ** -places * (1 + 1e-9)
 
 
 def assert_matches_snapshot(name: str, data: Any) -> None:
