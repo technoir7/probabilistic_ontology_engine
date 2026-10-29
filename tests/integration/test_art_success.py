@@ -103,3 +103,25 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
         body = client.post("/v1/success/art/museum/report/refresh").json()
         assert client.get("/v1/success/art/museum/report").json()["found"] is True
     assert seen == {"prompt": report.SUCCESS_PROMPT_PATH, "kind": "museum"} and "Being written about" in body["report"]
+
+
+def _verdicts(kind):
+    from src.engine.api import narrative
+    return " ".join(narrative.success_snapshot("art", kind).verdicts)
+
+
+def test_verdicts_are_fixed_by_rule_so_a_report_cannot_soften_them():
+    assert "too small to claim" in _verdicts("market")                   # +2.4 over seven years
+    assert "overwhelming" in _verdicts("approve")
+    assert "comes with this success rather than before it" in _verdicts("market")   # placebo 7.2 beats 2.4
+    assert "comes before this success" in _verdicts("museum")            # 227 against 191
+    assert "no test here" in _verdicts("press")
+    assert "photography" in _verdicts("museum").split("adds nothing")[0].rsplit(".", 1)[-1]   # dealt, it scored better
+    # new trend joined the press leader in 2025, after the last scored year: untested, not useless
+    assert "new trend that year joined the leader only in 2025" in _verdicts("press")
+    assert "adds nothing" not in _verdicts("press")
+
+
+def test_a_verdict_names_what_leads_for_every_kind_and_which_way_it_pushes():
+    v = _verdicts("approve")
+    assert "Leads for all four kinds of success: NYT coverage" in v and "hurts for more press" in v

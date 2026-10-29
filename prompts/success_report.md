@@ -1,4 +1,4 @@
-# Success report — v2
+# Success report — v3
 
 You are writing about one kind of success for artists, for a busy, intelligent reader
 who wants to know what kind of work is most likely to succeed next year, and how far
@@ -36,6 +36,12 @@ control and the gain over the artist's own past. `critics_rewarded_this_year` is
 year by trend and by medium, with claims critics made. `other_kinds` gives, for each
 other kind of success, its leading features, its gain, and which of them help or hurt.
 A feature leads for another kind only if it is in that kind's `leading_features`.
+
+`verdicts` are conclusions fixed by rule from the numbers. State each one plainly in
+your own words, in the section it belongs to; never soften, hedge or contradict it, and
+draw nothing stronger than it allows. If a verdict says the gain is too small to claim
+anything, the report says that in its first two sentences and treats every push as
+unproven.
 
 ## Numbers
 

@@ -110,7 +110,7 @@ def success_snapshot(domain: str, kind: str) -> NarrativeSuccessOut:
     return NarrativeSuccessOut(
         domain=key, kind=kind, title=k.title, success_means=k.outcome, forecast_for=s.forecast_for,
         leader=words(k.leader), leader_since=k.leader_since, gain_nats_over_own_past=round(k.gain, 1),
-        scored_years=len(k.years),
+        scored_years=len(k.years), verdicts=_verdicts(s, kind),
         best_rival_sets=[NarrativeSuccessMechanismOut(mechanisms=words(m.split("+")), gain_nats=round(g, 1))
                          for m, g in k.mechanisms[:SUCCESS_ROWS]],
         leader_effects=[NarrativeSuccessEffectOut(feature=f"{_AMOUNT.get(v, v)}: {s.meanings.get(f, f)}", push=round(e, 2))
@@ -129,16 +129,60 @@ def success_snapshot(domain: str, kind: str) -> NarrativeSuccessOut:
               f"to {max(y for y, _ in k.years) if k.years else '?'}; what critics rewarded is the year to September {s.year}"))
 
 
+# Gains are totals over every artist and scored year; below SMALL the leader
+# barely beats own past, above LARGE it dwarfs every control.
+SMALL_NATS, LARGE_NATS = 10.0, 100.0
+
+
+def _push(k, f: str) -> float:
+    return sum(e for (g, _), e in k.effects.items() if g == f)
+
+
+def _verdicts(s, kind: str) -> list[str]:
+    """What a success report must say, decided by rule, so the writer cannot
+    soften a weak result or invent agreement between kinds."""
+    k, m = s.kinds[kind], s.meanings
+    out = []
+    if k.gain < SMALL_NATS:
+        out.append("The leading features barely beat each artist's own past over all artists and years: "
+                   "too small to claim anything.")
+    elif k.gain >= LARGE_NATS:
+        out.append("The leading features beat each artist's own past by an overwhelming margin.")
+    else:
+        out.append("The leading features beat each artist's own past clearly but modestly.")
+    if not k.placebo_fair:
+        out.append("The year-after control is no test here: next year's features count part of next year's success.")
+    elif k.placebo >= k.gain:
+        out.append("Next year's features predict as well or better, so the coverage comes with this success "
+                   "rather than before it.")
+    else:
+        out.append("This year's features predict better than next year's, so the coverage comes before this success.")
+    last = max((y for y, _ in k.years), default=None)
+    for f, deals in k.dealt.items():
+        adds = k.gain - sum(deals) / len(deals) if deals else None
+        if adds is None or adds > 1.0:
+            continue
+        if abs(adds) < 0.05 and k.leader_since is not None and last is not None and k.leader_since > last:
+            # Dealing it changed nothing scored: the engine never used it.
+            out.append(f"{m.get(f, f)} joined the leader only in {k.leader_since}, after the last scored year, "
+                       "so no control has tested it yet; its push is a fit to past years, not a tested forecast.")
+        else:
+            out.append(f"{m.get(f, f)} adds nothing: dealt at random, the engine does as well or better.")
+    everywhere = [f for f in k.leader if all(f in o.leader for o in s.kinds.values())]
+    for f in everywhere:
+        hurts = [o.title.lower() for o in s.kinds.values() if _push(o, f) < 0]
+        out.append(f"Leads for all four kinds of success: {m.get(f, f)}"
+                   + (f"; it helps, except that it hurts for {', '.join(hurts)}." if hurts else "; it helps in all four."))
+    return out
+
+
 def _other_kind(o, meanings) -> NarrativeOtherKindOut:
     """Another kind's leading features and which way each pushes (summed
     over its levels), so a report cannot claim agreement that is not there."""
-    push: dict = {}
-    for (f, _), e in o.effects.items():
-        push[f] = push.get(f, 0.0) + e
     return NarrativeOtherKindOut(
         leading_features=[meanings.get(f, f) for f in o.leader], gain_nats_over_own_past=round(o.gain, 1),
-        helps=[meanings.get(f, f) for f in o.leader if push.get(f, 0.0) > 0],
-        hurts=[meanings.get(f, f) for f in o.leader if push.get(f, 0.0) < 0])
+        helps=[meanings.get(f, f) for f in o.leader if _push(o, f) > 0],
+        hurts=[meanings.get(f, f) for f in o.leader if _push(o, f) < 0])
 
 
 def _trend_row(t: TrendLists, x) -> NarrativeTrendOut:
