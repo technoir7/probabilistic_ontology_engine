@@ -67,7 +67,7 @@ async def domain_report_refresh(
         raise HTTPException(status_code=404, detail=f"Unknown domain '{domain}'")
     # Build snapshot once — only here in the POST path, never in GET.
     snapshot_dict = narrative.snapshot_for(request.app.state, key).model_dump()
-    return await _refresh(key, key, snapshot_dict, _report.PROMPT_VERSION, _report._PROMPT_PATH)
+    return await _refresh(key, key, snapshot_dict, _report.PROMPT_VERSION, _report.PROMPT_PATH)
 
 
 # ── One trend list's report (D30) ─────────────────────────────────────────────

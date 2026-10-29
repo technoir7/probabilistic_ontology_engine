@@ -20,9 +20,9 @@ logger = logging.getLogger(__name__)
 
 # Resolve prompt path relative to this file — works from any cwd.
 # parents[3] of src/engine/api/report.py is the project root (where prompts/ lives).
-_PROMPT_PATH = Path(__file__).resolve().parents[3] / "prompts" / "snapshot_report.md"
+PROMPT_PATH = Path(__file__).resolve().parents[3] / "prompts" / "snapshot_report.md"
 # One trend list's report (D30): the art domain's new, growing, fading or argued-over trends.
-TREND_PROMPT_PATH = _PROMPT_PATH.parent / "trend_report.md"
+TREND_PROMPT_PATH = PROMPT_PATH.parent / "trend_report.md"
 
 # Fireworks constants matching POE-A defaults.
 _FIREWORKS_BASE_URL = "https://api.fireworks.ai/inference/v1"
@@ -177,7 +177,7 @@ _STRICT_SYSTEM = (
 
 
 def _generate_report_sync(snapshot: dict, api_key: str, model: str, strict: bool = False,
-                          prompt_path: Path = _PROMPT_PATH) -> str:
+                          prompt_path: Path = PROMPT_PATH) -> str:
     """
     Synchronous Fireworks AI call.  Runs in a thread via asyncio.to_thread() so
     the async FastAPI event loop is not blocked.
@@ -232,7 +232,7 @@ async def generate_report(
     api_key: str,
     model: str,
     timeout: float = 90.0,
-    prompt_path: Path = _PROMPT_PATH,
+    prompt_path: Path = PROMPT_PATH,
 ) -> str:
     """Async wrapper — runs the synchronous Fireworks call in a thread.
 
