@@ -40,7 +40,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 
 PROMPT_VERSION = "4"
 TREND_PROMPT_VERSION = "1"   # bump when prompts/trend_report.md changes
-SUCCESS_PROMPT_VERSION = "1"   # bump when prompts/success_report.md changes
+SUCCESS_PROMPT_VERSION = "2"   # bump when prompts/success_report.md changes
 
 
 # ── Hashing ──────────────────────────────────────────────────────────────────

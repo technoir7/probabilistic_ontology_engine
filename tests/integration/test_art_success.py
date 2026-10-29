@@ -67,8 +67,19 @@ def test_each_kind_has_a_report_snapshot(kind):
     snap = narrative.success_snapshot("art", kind)
     assert snap.kind == kind and snap.leader and snap.critics_rewarded_this_year
     assert snap.control_placebo_is_a_fair_test == success.current().kinds[kind].placebo_fair
-    others = {v.title for k, v in success.current().kinds.items() if k != kind}
+    s = success.current()
+    k = s.kinds[kind]
+    others = {v.title for kk, v in s.kinds.items() if kk != kind}
     assert set(snap.other_kinds) == others
+    for title, o in snap.other_kinds.items():
+        theirs = next(v for v in s.kinds.values() if v.title == title)
+        assert len(o.leading_features) == len(theirs.leader)        # only what leads there, in words
+    # What each leading feature adds: the gain lost when it alone is dealt at random
+    adds = {a.feature: a.nats for a in snap.each_leading_feature_adds}
+    assert len(adds) == len(k.dealt)
+    f, deals = next(iter(k.dealt.items()))
+    assert adds[s.meanings[f]] == round(k.gain - sum(deals) / len(deals), 1)
+    assert snap.scored_years == len(k.years)
 
 
 def test_an_unknown_kind_or_a_domain_without_success_has_no_report():

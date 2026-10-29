@@ -538,6 +538,18 @@ class NarrativeSuccessEffectOut(BaseModel):
     push: float                       # change in the log-odds of any success next year: + helps, - hurts
 
 
+class NarrativeSuccessAddsOut(BaseModel):
+    feature: str                      # in words
+    nats: float                       # gain lost when this feature alone is dealt at random, mean of the deals
+
+
+class NarrativeOtherKindOut(BaseModel):
+    leading_features: list[str]       # in words; empty: own past alone
+    gain_nats_over_own_past: float
+    helps: list[str]                  # leading features whose pushes are above 0
+    hurts: list[str]
+
+
 class NarrativeSuccessOut(BaseModel):
     """One kind of success, for its own written report (D31)."""
     domain: str
@@ -548,12 +560,13 @@ class NarrativeSuccessOut(BaseModel):
     leader: str
     leader_since: Optional[int]
     gain_nats_over_own_past: float
+    scored_years: int
     best_rival_sets: list[NarrativeSuccessMechanismOut]
     leader_effects: list[NarrativeSuccessEffectOut]
-    control_feature_dealt_at_random_gain_nats: dict[str, list[float]]
+    each_leading_feature_adds: list[NarrativeSuccessAddsOut]
     control_placebo_features_from_the_year_after_gain_nats: float
     control_placebo_is_a_fair_test: bool   # False: next year's features count part of next year's success
     artists_the_leader_favours: list[NarrativeCaseForecastOut]
-    other_kinds: dict[str, str]       # each other kind's leader and gain, for where they agree
+    other_kinds: dict[str, NarrativeOtherKindOut]   # by title
     critics_rewarded_this_year: list[RewardedOut]
     note: str

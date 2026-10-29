@@ -1,4 +1,4 @@
-# Success report — v1
+# Success report — v2
 
 You are writing about one kind of success for artists, for a busy, intelligent reader
 who wants to know what kind of work is most likely to succeed next year, and how far
@@ -19,21 +19,32 @@ of features was judged on how well it predicted next year's success beyond the
 artist's own past, every year using only the years before (gains in nats). The
 `leader` is the set that predicts best now; `leader_effects` says which way each of
 its features pushes (`push` above 0 helps, below 0 hurts; 0.7 roughly doubles the
-odds). Two controls: each leading feature dealt out at random among the year's artists
-(it should then gain nothing), and a placebo using each artist's features from the year
-after (if that predicts as well, the features come with success rather than before
-it). Where `control_placebo_is_a_fair_test` is false, next year's features count some
+odds). Every push holds the artist's own past fixed, and the own past is this year's
+and earlier amounts of the same kind of success: so a negative push means that of two
+artists with the same record so far, the one with this feature does worse next year.
+Two controls. First, each leading feature dealt out at random among the year's
+artists while the others keep theirs: `each_leading_feature_adds` is how many nats the
+engine loses when that one feature is dealt, which is what that feature contributes
+(near 0 or below: it adds nothing; it can exceed the total gain, when without that
+feature the engine would do worse than the own past alone, so it never makes a small
+total large). Second, a placebo using each artist's features
+from the year after: if that predicts as well or better, the features come with
+success rather than before it. Where `control_placebo_is_a_fair_test` is false, next year's features count some
 of the very claims or articles that make up next year's success, so the placebo is
 bound to win and proves nothing; say so in a sentence and rest the case on the dealt
 control and the gain over the artist's own past. `critics_rewarded_this_year` is description only: approvals and disapprovals this
-year by trend and by medium, with claims critics made. `other_kinds` gives what
-predicts each other kind of success.
+year by trend and by medium, with claims critics made. `other_kinds` gives, for each
+other kind of success, its leading features, its gain, and which of them help or hurt.
+A feature leads for another kind only if it is in that kind's `leading_features`.
 
 ## Numbers
 
-1 nat is weak, 3 is strong (about 20 to 1), 10 or more is overwhelming; above 10 say
-"overwhelming" or compare with the controls rather than give the raw number. Give
-chances as percentages or in words.
+Every gain is a total over every artist in every scored year (`scored_years` of them,
+thousands of artists each), so it is not a change in anyone's odds. Judge it against
+the controls and the other kinds: a gain in the hundreds is overwhelming; under about
+10 is too small to claim anything, however the pushes look, and the report must say
+so in its first section. Do not give a gain in nats as a raw number; compare instead.
+Give chances as percentages or in words.
 
 ## Structure
 
@@ -62,8 +73,9 @@ so: the honest answer may be that what helps is being written about, not anythin
 the work.
 
 ## Where it agrees with the other kinds of success
-One short paragraph: which features also lead for the other kinds, and where this kind
-pulls apart from them.
+One short paragraph: which features also lead for the other kinds (only those in their
+`leading_features`), whether they push the same way there, and where this kind pulls
+apart from them.
 
 ## How far to trust it
 One short paragraph on the limits: only artists the two museums collected; the
