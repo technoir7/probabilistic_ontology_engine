@@ -1664,28 +1664,28 @@
       "from 2023: NYT coverage that year + critics' approval that year"
      ],
      "forecast_for": 2026,
-     "gain_nats_over_own_past": 223.3,
+     "gain_nats_over_own_past": 223.6,
      "leader": "NYT coverage that year + critics' approval that year",
      "leader_since": 2023,
      "mechanisms": [
       {
-       "gain_nats": 241.3,
-       "mechanism": "NYT coverage that year + critics' approval that year + contested that year (both praised and condemned)"
-      },
-      {
-       "gain_nats": 241.2,
+       "gain_nats": 241.5,
        "mechanism": "NYT coverage that year + critics' approval that year"
       },
       {
-       "gain_nats": 237.3,
+       "gain_nats": 241.4,
+       "mechanism": "NYT coverage that year + critics' approval that year + contested that year (both praised and condemned)"
+      },
+      {
+       "gain_nats": 237.5,
        "mechanism": "NYT coverage that year + Guardian coverage that year + critics' approval that year + contested that year (both praised and condemned)"
       },
       {
-       "gain_nats": 236.6,
+       "gain_nats": 237.0,
        "mechanism": "NYT coverage that year + Guardian coverage that year + critics' approval that year"
       },
       {
-       "gain_nats": 219.8,
+       "gain_nats": 220.0,
        "mechanism": "NYT coverage that year + Guardian coverage that year"
       },
       {
@@ -1693,7 +1693,7 @@
        "mechanism": "NYT coverage that year"
       },
       {
-       "gain_nats": 215.9,
+       "gain_nats": 216.0,
        "mechanism": "NYT coverage that year + Guardian coverage that year + contested that year (both praised and condemned)"
       },
       {
@@ -1701,39 +1701,39 @@
        "mechanism": "NYT coverage that year + contested that year (both praised and condemned)"
       },
       {
-       "gain_nats": 140.9,
+       "gain_nats": 141.1,
        "mechanism": "Guardian coverage that year + critics' approval that year"
       },
       {
-       "gain_nats": 140.9,
+       "gain_nats": 141.0,
        "mechanism": "Guardian coverage that year + critics' approval that year + contested that year (both praised and condemned)"
       },
       {
-       "gain_nats": 139.1,
+       "gain_nats": 139.2,
        "mechanism": "critics' approval that year"
       },
       {
-       "gain_nats": 138.1,
+       "gain_nats": 138.2,
        "mechanism": "critics' approval that year + contested that year (both praised and condemned)"
       },
       {
-       "gain_nats": 47.0,
+       "gain_nats": 47.1,
        "mechanism": "Guardian coverage that year + contested that year (both praised and condemned)"
       },
       {
-       "gain_nats": 43.4,
+       "gain_nats": 43.6,
        "mechanism": "Guardian coverage that year"
       },
       {
-       "gain_nats": 15.9,
+       "gain_nats": 16.0,
        "mechanism": "contested that year (both praised and condemned)"
       }
      ],
      "most_raised": [
       {
        "case": "Gilbert & George",
-       "own_past_chance": 0.228,
-       "with_leader_chance": 0.301
+       "own_past_chance": 0.227,
+       "with_leader_chance": 0.3
       },
       {
        "case": "Christopher Wool",
@@ -1764,36 +1764,36 @@
       "from 2002: contested that year (both praised and condemned) + written about in both papers that year + predictions or doubts voiced that year"
      ],
      "forecast_for": 2026,
-     "gain_nats_over_own_past": 153.4,
+     "gain_nats_over_own_past": 153.2,
      "leader": "contested that year (both praised and condemned) + written about in both papers that year + predictions or doubts voiced that year",
      "leader_since": 2002,
      "mechanisms": [
       {
-       "gain_nats": 779.3,
+       "gain_nats": 776.7,
        "mechanism": "contested that year (both praised and condemned) + written about in both papers that year + predictions or doubts voiced that year"
       },
       {
-       "gain_nats": 653.3,
+       "gain_nats": 658.0,
        "mechanism": "written about in both papers that year + predictions or doubts voiced that year"
       },
       {
-       "gain_nats": 638.2,
+       "gain_nats": 631.9,
        "mechanism": "contested that year (both praised and condemned) + written about in both papers that year"
       },
       {
-       "gain_nats": 509.0,
+       "gain_nats": 507.7,
        "mechanism": "written about in both papers that year"
       },
       {
-       "gain_nats": 345.7,
+       "gain_nats": 349.6,
        "mechanism": "contested that year (both praised and condemned) + predictions or doubts voiced that year"
       },
       {
-       "gain_nats": 191.3,
+       "gain_nats": 188.2,
        "mechanism": "predictions or doubts voiced that year"
       },
       {
-       "gain_nats": 168.4,
+       "gain_nats": 172.0,
        "mechanism": "contested that year (both praised and condemned)"
       }
      ],
@@ -1837,19 +1837,19 @@
      "leader_since": 2024,
      "mechanisms": [
       {
-       "gain_nats": -2.4,
+       "gain_nats": -2.3,
        "mechanism": "contested that year (both praised and condemned)"
       },
       {
-       "gain_nats": -3.2,
+       "gain_nats": -3.3,
        "mechanism": "written about in both papers that year"
       },
       {
-       "gain_nats": -5.7,
+       "gain_nats": -5.6,
        "mechanism": "contested that year (both praised and condemned) + written about in both papers that year"
       },
       {
-       "gain_nats": -9.9,
+       "gain_nats": -9.8,
        "mechanism": "predictions or doubts voiced that year"
       },
       {
@@ -1874,7 +1874,7 @@
       {
        "case": "Black artists and visibility",
        "own_past_chance": 0.701,
-       "with_leader_chance": 0.738
+       "with_leader_chance": 0.739
       },
       {
        "case": "transgender representation in art",

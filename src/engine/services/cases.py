@@ -111,7 +111,7 @@ class CaseScheme:
             value = -(N * logp).sum() + 0.5 * (precision * W ** 2).sum()
             grad = X.T @ (P[:, 1:] * total - N[:, 1:]) + precision * W
             return value, grad.ravel()
-        out = minimize(loss, start.ravel(), jac=True, method="L-BFGS-B")
+        out = minimize(loss, start.ravel(), jac=True, method="L-BFGS-B", options={"gtol": 1e-9, "ftol": 1e-15, "maxiter": 5000})
         # An abnormal line search means no further step could be taken at
         # machine precision, i.e. converged; anything else is a failure.
         if not out.success and "ABNORMAL" not in str(out.message):
