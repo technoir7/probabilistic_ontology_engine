@@ -1,4 +1,4 @@
-# Success report — v4
+# Success report — v5
 
 You are writing about one kind of success for artists, for a busy, intelligent reader
 who wants to know what kind of work is most likely to succeed next year, and how far
@@ -90,13 +90,25 @@ features come from a model reading the press, grouped and named by other models;
 the market, only Artprice's Top 500 by auction turnover in the years it published,
 so only the top of the market; painting tags come from the Guardian only.
 
+## Image prompt
+Only if `image_subject` is present (otherwise write no such section): end the
+report with the heading "## Image prompt" and one paragraph under it, 40 to 90
+words, that an image model will draw from. Describe one work in plain visual
+terms: its medium (`image_subject.medium`) and what it shows, drawn from the
+theme (`image_subject.theme`, its distinctive words and what critics said in
+it). Say what is in the work, not what it means or how it was received. Never
+name a real person, work, place or institution, and never use the word
+"successful". Write nothing about light, setting, frame or camera, and no label
+or note: those are added after you.
+
 ## How to write
 
 - Up to 900 words. Short sentences. Ordinary words.
 - Use only what is in the data. Do not add facts, dates, names, prices or context from
   elsewhere, even if you know them.
 - Never write a field name (anything with underscores) or mention the data, the
-  system, the model or these instructions. Write about art and the people who judge it.
+  system, the model, the verdicts or these instructions. Write about art and the
+  people who judge it.
 - No bullet points in the report itself.
 - The features count claims and articles, not their tone: never call coverage
   favourable, hostile, big or prominent.

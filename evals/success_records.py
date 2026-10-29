@@ -26,7 +26,7 @@ from pathlib import Path
 from typing import Iterable, Mapping, Optional
 
 from src.domains.art_prestige_regime_v1 import cases
-from src.domains.art_prestige_regime_v1.success import POOL
+from src.domains.art_prestige_regime_v1.success import LISTS as FEATURE_LISTS, POOL
 from src.engine.model.cases import doubling
 
 from .art_artists import cma_person, normalise, nyt_person
@@ -36,7 +36,7 @@ from .reception import linked
 from .replay17 import DATA, TEXTS
 
 YEARS = range(2003, 2026)      # trend lists start in 2003; 2025 is open
-LISTS = {"new": "new_trend", "growing": "growing_trend", "fading": "fading_trend", "argued": "argued_trend"}
+LISTS = {name: f for f, name in FEATURE_LISTS.items()}
 MEDIA = {("guardian", "artanddesign/painting"): "painting", ("guardian", "artanddesign/photography"): "photography",
          ("guardian", "artanddesign/sculpture"): "sculpture", ("nyt", "Photography"): "photography",
          ("nyt", "Sculpture"): "sculpture"}

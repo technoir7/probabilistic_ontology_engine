@@ -44,3 +44,5 @@ class Success:
     kinds: Mapping[str, SuccessKind]
     rewarded: tuple[Rewarded, ...]
     meanings: Mapping[str, str]             # feature -> what it records, in words
+    lists: Mapping[str, str]                # feature -> the trend list (TrendLists.lists) whose claims it counts
+    media: Mapping[str, str]                # feature -> the medium (as Rewarded.name) whose articles it counts

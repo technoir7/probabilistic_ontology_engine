@@ -16,6 +16,8 @@ from .cases import MEANINGS
 DATA = Path(__file__).parent / "success_data" / "success.json"
 KINDS = ("approve", "press", "museum", "market")
 POOL = ("new_trend", "growing_trend", "fading_trend", "argued_trend", "painting", "photography", "sculpture", "nyt")
+LISTS = {"new_trend": "new", "growing_trend": "growing", "fading_trend": "fading", "argued_trend": "argued"}
+MEDIA = {"painting": "painting", "photography": "photography", "sculpture": "sculpture"}
 
 
 def _kind(key: str, k: Mapping) -> SuccessKind:
@@ -36,7 +38,7 @@ def load(snapshot: Mapping) -> Success:
                    {key: _kind(key, k) for key, k in snapshot["kinds"].items()},
                    tuple(Rewarded(r["kind"], r["name"], r["approvals"], r["disapprovals"],
                                   tuple(r["approved"]), tuple(r["disapproved"])) for r in snapshot["rewarded"]),
-                   {f: MEANINGS[f] for f in POOL})
+                   {f: MEANINGS[f] for f in POOL}, LISTS, MEDIA)
 
 
 def current() -> Optional[Success]:

@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
+from typing import Any, Callable
 
 from fastapi import APIRouter, HTTPException, Request
 
@@ -117,7 +117,8 @@ async def success_report_read(domain: str, kind: str) -> Any:
 async def success_report_refresh(domain: str, kind: str) -> Any:
     snap = _success(domain, kind)
     return await _refresh(f"{snap['domain']}-success-{kind}", snap["domain"], snap,
-                          _report.SUCCESS_PROMPT_VERSION, _report.SUCCESS_PROMPT_PATH)
+                          _report.SUCCESS_PROMPT_VERSION, _report.SUCCESS_PROMPT_PATH,
+                          finish=lambda text: _report.finish_success_report(text, snap["image_subject"] is not None))
 
 
 # ── Shared by every kind of report ────────────────────────────────────────────
@@ -132,7 +133,8 @@ def _read(cache_key: str, domain: str, version: str) -> Any:
     return DomainReportOut(**cached, found=True, cached=True, regenerated=False)
 
 
-async def _refresh(cache_key: str, domain: str, snapshot_dict: dict, version: str, prompt_path) -> Any:
+async def _refresh(cache_key: str, domain: str, snapshot_dict: dict, version: str, prompt_path,
+                   finish: Callable[[str], str] = lambda text: text) -> Any:
     h = _report.snapshot_hash(snapshot_dict)
     data_dir = Settings.from_env().data_dir
     exact_path = _report.cache_path(data_dir, cache_key, h, version)
@@ -162,6 +164,7 @@ async def _refresh(cache_key: str, domain: str, snapshot_dict: dict, version: st
         report_text = await _report.generate_report(
             snapshot=snapshot_dict, api_key=api_key, model=settings.fireworks_model, timeout=90.0,
             prompt_path=prompt_path)
+        report_text = finish(report_text)
     except Exception as exc:
         logger.error("Fireworks generation failed for %s: %s", cache_key, exc, exc_info=True)
         return stale_or(HTTPException(status_code=502, detail=f"Report generation failed: {exc}"))

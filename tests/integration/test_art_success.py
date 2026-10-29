@@ -94,7 +94,7 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
 
     async def fake(snapshot, *, prompt_path, **_):
         seen["prompt"], seen["kind"] = prompt_path, snapshot["kind"]
-        return "## In short\nBeing written about helps."
+        return "## In short\nBeing written about helps.\n\n## Image prompt\nA photograph of a woman at work."
     monkeypatch.setattr(report, "generate_report", fake)
     monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
@@ -103,6 +103,7 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
         body = client.post("/v1/success/art/museum/report/refresh").json()
         assert client.get("/v1/success/art/museum/report").json()["found"] is True
     assert seen == {"prompt": report.SUCCESS_PROMPT_PATH, "kind": "museum"} and "Being written about" in body["report"]
+    assert body["report"].endswith(f"A photograph of a woman at work. {report.IMAGE_SETTING}")    # finished by code
 
 
 def _verdicts(kind):
@@ -136,3 +137,62 @@ def test_a_verdict_says_for_each_leading_feature_which_other_kinds_it_leads_for(
 
 def test_a_fair_year_after_control_says_why_it_is_fair():
     assert "counted apart from the press" in _verdicts("market")
+
+
+def test_each_feature_says_which_trend_list_or_medium_it_counts():
+    s = success.current()
+    assert s.lists == {"new_trend": "new", "growing_trend": "growing", "fading_trend": "fading", "argued_trend": "argued"}
+    assert s.media == {"painting": "painting", "photography": "photography", "sculpture": "sculpture"}
+
+
+def _subject(kind):
+    from src.engine.api import narrative
+    return narrative.success_snapshot("art", kind).image_subject
+
+
+def test_the_image_subject_is_chosen_by_rule():
+    """ART-PLAN §12.8: the theme the leader's lists push up most, ties to this
+    year's net approvals; the leader's medium, else this year's most approved."""
+    approve, press, museum = _subject("approve"), _subject("press"), _subject("museum")
+    # on growing and argued, as is biennale political controversies, but approved 11 to 0, not 0 to 16
+    assert (approve.theme, approve.medium) == ("indigenous and subcontinental art", "painting")
+    assert approve.medium_from_the_leading_features is True
+    # press's new trend pushes down, so the themes on it lose
+    assert "new" not in press.theme_is_on_this_years_lists
+    assert (press.theme, press.medium, press.medium_from_the_leading_features) == (
+        "women artists' careers", "photography", False)
+    assert (museum.theme, museum.medium, museum.medium_from_the_leading_features) == (
+        "women artists' careers", "photography", True)
+    assert approve.distinctive_words and approve.what_critics_said
+
+
+def test_nothing_is_illustrated_where_the_gain_is_too_small_to_claim():
+    assert _subject("market") is None
+
+
+def test_code_finishes_the_image_prompt_so_the_writer_cannot_change_its_label_or_setting():
+    from src.engine.api import report
+    text = report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA large painting of a river.\n", True)
+    assert text == ("## In short\nA.\n\n" + report.IMAGE_HEADING + "\n\n" + report.IMAGE_LABEL + "\n\n"
+                    "A large painting of a river. " + report.IMAGE_SETTING)
+
+
+def test_words_the_writer_adds_to_the_image_prompt_heading_are_not_part_of_the_prompt():
+    from src.engine.api import report
+    text = report.finish_success_report("## In short\nA.\n\n## Image prompt: a vision\nA river.", True)
+    assert text.endswith(report.IMAGE_LABEL + "\n\nA river. " + report.IMAGE_SETTING) and "vision" not in text
+
+
+def test_an_image_prompt_wanted_but_not_written_is_an_error():
+    from src.engine.api import report
+    with pytest.raises(ValueError):
+        report.finish_success_report("## In short\nA.", True)
+    with pytest.raises(ValueError):
+        report.finish_success_report("## In short\nA.\n\n## Image prompt\n\n", True)
+
+
+def test_where_nothing_is_illustrated_code_says_so_whatever_the_writer_wrote():
+    from src.engine.api import report
+    for written in ("## In short\nA.", "## In short\nA.\n\n## Image prompt\nA bird."):
+        assert report.finish_success_report(written, False) == (
+            "## In short\nA.\n\n" + report.IMAGE_HEADING + "\n\n" + report.NOTHING_TO_ILLUSTRATE)

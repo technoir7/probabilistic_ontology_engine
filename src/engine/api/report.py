@@ -40,7 +40,33 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 
 PROMPT_VERSION = "4"
 TREND_PROMPT_VERSION = "1"   # bump when prompts/trend_report.md changes
-SUCCESS_PROMPT_VERSION = "4"   # bump when prompts/success_report.md changes
+SUCCESS_PROMPT_VERSION = "5"   # bump when prompts/success_report.md changes
+
+
+# ── A success report's image prompt (abductive_engine ART-PLAN §12.8) ─────────
+# The writer writes only the description; the label and the setting are fixed
+# here so that neither it nor an image model fills what the data does not say.
+
+IMAGE_HEADING = "## Image prompt"
+IMAGE_LABEL = ('*An illustration of what a "successful" work looks like by this measure, built from the '
+               'findings above. It is not a real work, and nothing guarantees success.*')
+IMAGE_SETTING = "The work alone in an empty white gallery, photographed straight on for a museum catalogue, in even, soft daylight."
+NOTHING_TO_ILLUSTRATE = ("Nothing in the coverage reliably predicts this kind of success, so there is no "
+                         "illustration of it.")
+
+
+def finish_success_report(text: str, illustrated: bool) -> str:
+    """Replace the writer's image prompt section with the finished one. ValueError
+    when an illustration is wanted and the writer gave no description."""
+    body, _, written = text.partition(f"\n{IMAGE_HEADING}")
+    body = body.rstrip()
+    if not illustrated:
+        return f"{body}\n\n{IMAGE_HEADING}\n\n{NOTHING_TO_ILLUSTRATE}"
+    section = written.partition("\n")[2]          # past the heading line, whatever the writer put on it
+    description = " ".join(section.split("\n## ")[0].split())
+    if not description:
+        raise ValueError("the report has no image prompt description")
+    return f"{body}\n\n{IMAGE_HEADING}\n\n{IMAGE_LABEL}\n\n{description} {IMAGE_SETTING}"
 
 
 # ── Hashing ──────────────────────────────────────────────────────────────────

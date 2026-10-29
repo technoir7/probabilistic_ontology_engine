@@ -550,6 +550,16 @@ class NarrativeOtherKindOut(BaseModel):
     hurts: list[str]
 
 
+class NarrativeImageSubjectOut(BaseModel):
+    """What the report's image prompt shows, chosen by rule (narrative._image_subject)."""
+    theme: str
+    theme_is_on_this_years_lists: list[str]
+    distinctive_words: list[str]
+    what_critics_said: list[str]
+    medium: str
+    medium_from_the_leading_features: bool   # False: this year's most approved medium, not a tested feature
+
+
 class NarrativeSuccessOut(BaseModel):
     """One kind of success, for its own written report (D31)."""
     domain: str
@@ -570,4 +580,5 @@ class NarrativeSuccessOut(BaseModel):
     artists_the_leader_favours: list[NarrativeCaseForecastOut]
     other_kinds: dict[str, NarrativeOtherKindOut]   # by title
     critics_rewarded_this_year: list[RewardedOut]
+    image_subject: Optional[NarrativeImageSubjectOut]   # None: too small to claim, so nothing to illustrate
     note: str

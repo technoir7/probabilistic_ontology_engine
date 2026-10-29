@@ -36,6 +36,7 @@ from .dto import (
     NarrativeSuccessEffectOut,
     NarrativeSuccessMechanismOut,
     NarrativeOtherKindOut,
+    NarrativeImageSubjectOut,
     NarrativeSuccessAddsOut,
     NarrativeSuccessOut,
     NarrativeTrendListOut,
@@ -125,8 +126,41 @@ def success_snapshot(domain: str, kind: str) -> NarrativeSuccessOut:
         other_kinds={o.title: _other_kind(o, s.meanings) for kk, o in s.kinds.items() if kk != kind},
         critics_rewarded_this_year=[RewardedOut(kind=r.kind, name=r.name, approvals=r.approvals, disapprovals=r.disapprovals,
                                                 approved=list(r.approved), disapproved=list(r.disapproved)) for r in s.rewarded],
+        image_subject=_image_subject(s, key, kind),
         note=(f"artists are those Chicago or Cleveland ever acquired; years run {min(y for y, _ in k.years) if k.years else '?'} "
               f"to {max(y for y, _ in k.years) if k.years else '?'}; what critics rewarded is the year to September {s.year}"))
+
+
+def _image_subject(s, domain: str, kind: str) -> Optional[NarrativeImageSubjectOut]:
+    """What the image prompt shows (abductive_engine ART-PLAN §12.8), by rule
+    so the four prompts differ only where the findings do: the theme the
+    leader's trend lists push up most (one claim's push, so a list that
+    pushes down counts against), ties to this year's net approvals, then
+    writers; the leader's medium that pushes up most, else this year's most
+    approved medium. None where the gain is too small to claim."""
+    k = s.kinds[kind]
+    if k.gain < SMALL_NATS:
+        return None
+    t = current_trends(domain)
+    if t is None or t.year != s.year:
+        raise ValueError(f"success describes {s.year} but the trend lists {t.year if t else 'are missing'}")
+    now = t.years.index(t.year)
+    push = {s.lists[f]: k.effects.get((f, 1), 0.0) for f in k.leader if f in s.lists}
+
+    def rank(x):
+        on = sum(p for name, p in push.items() if x.key in t.lists[name])
+        return (on, x.verdicts[0] - x.verdicts[1], x.writers[now])
+    theme = max(t.trends.values(), key=rank)
+    media = [(k.effects.get((f, 1), 0.0), s.media[f]) for f in k.leader if f in s.media]
+    media = [m for p, m in sorted(media, reverse=True) if p > 0]
+    if media:
+        medium = media[0]
+    else:
+        medium = max((r for r in s.rewarded if r.kind == "medium"), key=lambda r: r.approvals - r.disapprovals).name
+    return NarrativeImageSubjectOut(
+        theme=theme.name, theme_is_on_this_years_lists=[n for n in t.lists if theme.key in t.lists[n]],
+        distinctive_words=list(theme.words), what_critics_said=list(theme.sample),
+        medium=medium, medium_from_the_leading_features=bool(media))
 
 
 # Gains are totals over every artist and scored year; below SMALL the leader
