@@ -23,6 +23,8 @@ logger = logging.getLogger(__name__)
 PROMPT_PATH = Path(__file__).resolve().parents[3] / "prompts" / "snapshot_report.md"
 # One trend list's report (D30): the art domain's new, growing, fading or argued-over trends.
 TREND_PROMPT_PATH = PROMPT_PATH.parent / "trend_report.md"
+# One kind of success's report (D31): what predicts an artist's success next year.
+SUCCESS_PROMPT_PATH = PROMPT_PATH.parent / "success_report.md"
 
 # Fireworks constants matching POE-A defaults.
 _FIREWORKS_BASE_URL = "https://api.fireworks.ai/inference/v1"
@@ -38,6 +40,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 
 PROMPT_VERSION = "4"
 TREND_PROMPT_VERSION = "1"   # bump when prompts/trend_report.md changes
+SUCCESS_PROMPT_VERSION = "1"   # bump when prompts/success_report.md changes
 
 
 # ── Hashing ──────────────────────────────────────────────────────────────────

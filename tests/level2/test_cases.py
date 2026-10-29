@@ -67,3 +67,10 @@ def test_a_case_set_with_no_open_year_has_no_forecast():
     closed = [r for y in range(2000, 2004) for r in _year(y, 50, rng, False)]
     report = case_report(CaseSet("t", "Test", ("f", "g"), tuple(closed), {}))
     assert report.forecast_year is None and report.most_raised == ()
+
+
+def test_a_report_says_which_way_the_leaders_mechanisms_push():
+    rng = random.Random(5)
+    closed = [r for y in range(2000, 2010) for r in _year(y, 200, rng, True)]
+    report = case_report(CaseSet("t", "Test", ("f", "g"), tuple(closed)))
+    assert report.leader == ("f",) and report.effects[("f", 1)] > 1

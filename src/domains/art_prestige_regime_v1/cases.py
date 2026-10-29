@@ -26,6 +26,14 @@ MEANINGS = {
     "contested": "contested that year (both praised and condemned)",
     "both_papers": "written about in both papers that year",
     "modality": "predictions or doubts voiced that year",
+    # Success (D31): the artist's coverage that year.
+    "new_trend": "claims about the artist in a new trend that year",
+    "growing_trend": "claims about the artist in a growing trend that year",
+    "fading_trend": "claims about the artist in a fading trend that year",
+    "argued_trend": "claims about the artist in an argued-over trend that year",
+    "painting": "Guardian articles on the artist tagged painting that year",
+    "photography": "articles on the artist tagged photography that year",
+    "sculpture": "articles on the artist tagged sculpture that year",
 }
 
 

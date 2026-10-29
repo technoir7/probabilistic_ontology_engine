@@ -12,6 +12,7 @@ from typing import Any, Callable, Mapping, Optional
 
 from ...domains.ai_regime_v1 import source as ai_source
 from ...domains.art_prestige_regime_v1 import cases as art_cases
+from ...domains.art_prestige_regime_v1 import success as art_success
 from ...domains.art_prestige_regime_v1 import trends as art_trends
 from ...domains.art_prestige_regime_v1 import source as art_source
 from ...domains.art_prestige_regime_v1.domain import ArtPrestigeRegimeV1
@@ -36,6 +37,7 @@ from ...domains.sovereign_debt_v1 import source as sd_source
 from ...domains.sovereign_debt_v1.domain import SovereignDebtV1
 from ..model.cadence import Cadence, Daily, Monthly, Weekly
 from ..model.cases import CaseSet
+from ..model.success import Success
 from ..model.trends import TrendLists
 
 OpenSource = Callable[[Mapping[str, str]], AbstractAsyncContextManager[Any]]
@@ -46,6 +48,10 @@ def no_cases() -> tuple[CaseSet, ...]:
 
 
 def no_trends() -> Optional[TrendLists]:
+    return None
+
+
+def no_success() -> Optional[Success]:
     return None
 
 
@@ -70,6 +76,8 @@ class DomainRegistration:
     case_sets: Callable[[], tuple[CaseSet, ...]] = no_cases
     # This year's trends in what is written about the domain (D30); only art has them.
     trend_lists: Callable[[], Optional[TrendLists]] = no_trends
+    # What predicts an artist's success next year, four ways (D31); only art.
+    success: Callable[[], Optional[Success]] = no_success
 
     @property
     def scheduler_task_name(self) -> str:
@@ -103,7 +111,8 @@ REGISTRY: tuple[DomainRegistration, ...] = (
     DomainRegistration("art", "art_prestige_regime_v1", "Art Prestige Regime", "art_prestige_regime.db",
                        ArtPrestigeRegimeV1, art_source.open_source, ("GUARDIAN_API_KEY", "NYT_API_KEY"), "ART",
                        cadence=Monthly(),
-                       backfill_pause_s=1.0, case_sets=art_cases.case_sets, trend_lists=art_trends.current),
+                       backfill_pause_s=1.0, case_sets=art_cases.case_sets, trend_lists=art_trends.current,
+                       success=art_success.current),
 )
 
 BY_KEY: dict[str, DomainRegistration] = {r.key: r for r in REGISTRY}

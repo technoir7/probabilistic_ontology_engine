@@ -2042,6 +2042,50 @@
      "title": "QueryBodyIn",
      "type": "object"
     },
+    "RewardedOut": {
+     "properties": {
+      "approvals": {
+       "title": "Approvals",
+       "type": "integer"
+      },
+      "approved": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Approved",
+       "type": "array"
+      },
+      "disapprovals": {
+       "title": "Disapprovals",
+       "type": "integer"
+      },
+      "disapproved": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Disapproved",
+       "type": "array"
+      },
+      "kind": {
+       "title": "Kind",
+       "type": "string"
+      },
+      "name": {
+       "title": "Name",
+       "type": "string"
+      }
+     },
+     "required": [
+      "kind",
+      "name",
+      "approvals",
+      "disapprovals",
+      "approved",
+      "disapproved"
+     ],
+     "title": "RewardedOut",
+     "type": "object"
+    },
     "StructureDiagOut": {
      "properties": {
       "candidates": {
@@ -2085,6 +2129,198 @@
       "last_mutation_cycle"
      ],
      "title": "StructureDiagOut",
+     "type": "object"
+    },
+    "SuccessKindOut": {
+     "properties": {
+      "dealt": {
+       "additionalProperties": {
+        "items": {
+         "type": "number"
+        },
+        "type": "array"
+       },
+       "title": "Dealt",
+       "type": "object"
+      },
+      "effects": {
+       "additionalProperties": {
+        "type": "number"
+       },
+       "title": "Effects",
+       "type": "object"
+      },
+      "gain": {
+       "title": "Gain",
+       "type": "number"
+      },
+      "key": {
+       "title": "Key",
+       "type": "string"
+      },
+      "leader": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Leader",
+       "type": "array"
+      },
+      "leader_since": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Leader Since"
+      },
+      "mechanisms": {
+       "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "number"
+         }
+        ],
+        "type": "array"
+       },
+       "title": "Mechanisms",
+       "type": "array"
+      },
+      "most_raised": {
+       "items": {
+        "maxItems": 3,
+        "minItems": 3,
+        "prefixItems": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "number"
+         },
+         {
+          "type": "number"
+         }
+        ],
+        "type": "array"
+       },
+       "title": "Most Raised",
+       "type": "array"
+      },
+      "outcome": {
+       "title": "Outcome",
+       "type": "string"
+      },
+      "placebo": {
+       "title": "Placebo",
+       "type": "number"
+      },
+      "placebo_fair": {
+       "title": "Placebo Fair",
+       "type": "boolean"
+      },
+      "title": {
+       "title": "Title",
+       "type": "string"
+      },
+      "years": {
+       "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "number"
+         }
+        ],
+        "type": "array"
+       },
+       "title": "Years",
+       "type": "array"
+      }
+     },
+     "required": [
+      "key",
+      "title",
+      "outcome",
+      "leader",
+      "leader_since",
+      "gain",
+      "mechanisms",
+      "effects",
+      "dealt",
+      "placebo",
+      "placebo_fair",
+      "most_raised",
+      "years"
+     ],
+     "title": "SuccessKindOut",
+     "type": "object"
+    },
+    "SuccessOut": {
+     "properties": {
+      "domain": {
+       "title": "Domain",
+       "type": "string"
+      },
+      "success": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/SuccessSnapshotOut"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     "required": [
+      "domain",
+      "success"
+     ],
+     "title": "SuccessOut",
+     "type": "object"
+    },
+    "SuccessSnapshotOut": {
+     "properties": {
+      "forecast_for": {
+       "title": "Forecast For",
+       "type": "integer"
+      },
+      "kinds": {
+       "additionalProperties": {
+        "$ref": "#/components/schemas/SuccessKindOut"
+       },
+       "title": "Kinds",
+       "type": "object"
+      },
+      "rewarded": {
+       "items": {
+        "$ref": "#/components/schemas/RewardedOut"
+       },
+       "title": "Rewarded",
+       "type": "array"
+      },
+      "year": {
+       "title": "Year",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "year",
+      "forecast_for",
+      "kinds",
+      "rewarded"
+     ],
+     "title": "SuccessSnapshotOut",
      "type": "object"
     },
     "TrendListsOut": {
@@ -3253,6 +3489,141 @@
       }
      },
      "summary": "Domain Report Refresh"
+    }
+   },
+   "/v1/success": {
+    "get": {
+     "operationId": "success_v1_success_get",
+     "parameters": [
+      {
+       "in": "query",
+       "name": "domain",
+       "required": true,
+       "schema": {
+        "title": "Domain",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/SuccessOut"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Success"
+    }
+   },
+   "/v1/success/{domain}/{kind}/report": {
+    "get": {
+     "operationId": "success_report_read_v1_success__domain___kind__report_get",
+     "parameters": [
+      {
+       "in": "path",
+       "name": "domain",
+       "required": true,
+       "schema": {
+        "title": "Domain",
+        "type": "string"
+       }
+      },
+      {
+       "in": "path",
+       "name": "kind",
+       "required": true,
+       "schema": {
+        "title": "Kind",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "title": "Response Success Report Read V1 Success  Domain   Kind  Report Get"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Success Report Read"
+    }
+   },
+   "/v1/success/{domain}/{kind}/report/refresh": {
+    "post": {
+     "operationId": "success_report_refresh_v1_success__domain___kind__report_refresh_post",
+     "parameters": [
+      {
+       "in": "path",
+       "name": "domain",
+       "required": true,
+       "schema": {
+        "title": "Domain",
+        "type": "string"
+       }
+      },
+      {
+       "in": "path",
+       "name": "kind",
+       "required": true,
+       "schema": {
+        "title": "Kind",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "title": "Response Success Report Refresh V1 Success  Domain   Kind  Report Refresh Post"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Success Report Refresh"
     }
    },
    "/v1/trends": {

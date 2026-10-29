@@ -12,6 +12,7 @@ from typing import Any, Optional
 from ..engine import ProbabilisticOntologyEngine
 from ..model.trends import TrendLists
 from ..runtime.cases import compute_case_reports
+from ..runtime.success import current_success
 from ..runtime.trends import current_trends
 from ..services.cases import CaseReport
 from ..model.scoring import candidate_score
@@ -32,7 +33,11 @@ from .dto import (
     NarrativeCaseForecastOut,
     NarrativeCaseMechanismOut,
     NarrativeCaseSetOut,
+    NarrativeSuccessEffectOut,
+    NarrativeSuccessMechanismOut,
+    NarrativeSuccessOut,
     NarrativeTrendListOut,
+    RewardedOut,
     NarrativeTrendOut,
     NarrativeTrendsOut,
 )
@@ -83,6 +88,40 @@ def trend_list_snapshot(domain: str, name: str) -> NarrativeTrendListOut:
     return NarrativeTrendListOut(
         domain=key, list=name, rule=LIST_RULES[name], period=period.period, compared_with=period.compared_with,
         note=period.note, trends=[_trend_row(t, x) for x in t.listed(name)[:LIST_ROWS]])
+
+
+SUCCESS_ROWS = 12
+_AMOUNT = {1: "one", 2: "several"}
+
+
+def success_snapshot(domain: str, kind: str) -> NarrativeSuccessOut:
+    """One kind of success for its report. LookupError for a domain without
+    success or an unknown kind."""
+    key = domain.lower()
+    s = current_success(key) if key in context.DOMAIN_MAP else None
+    if s is None or kind not in s.kinds:
+        raise LookupError(f"no kind of success '{kind}' for domain '{domain}'")
+    k = s.kinds[kind]
+
+    def words(features) -> str:
+        return " + ".join(s.meanings.get(f, f) for f in features) or "each artist's own past alone"
+    return NarrativeSuccessOut(
+        domain=key, kind=kind, title=k.title, success_means=k.outcome, forecast_for=s.forecast_for,
+        leader=words(k.leader), leader_since=k.leader_since, gain_nats_over_own_past=round(k.gain, 1),
+        best_rival_sets=[NarrativeSuccessMechanismOut(mechanisms=words(m.split("+")), gain_nats=round(g, 1))
+                         for m, g in k.mechanisms[:SUCCESS_ROWS]],
+        leader_effects=[NarrativeSuccessEffectOut(feature=f"{_AMOUNT.get(v, v)}: {s.meanings.get(f, f)}", push=round(e, 2))
+                        for (f, v), e in sorted(k.effects.items(), key=lambda kv: -abs(kv[1]))],
+        control_feature_dealt_at_random_gain_nats={s.meanings.get(f, f): [round(x, 1) for x in g] for f, g in k.dealt.items()},
+        control_placebo_features_from_the_year_after_gain_nats=round(k.placebo, 1),
+        control_placebo_is_a_fair_test=k.placebo_fair,
+        artists_the_leader_favours=[NarrativeCaseForecastOut(case=a, own_past_chance=round(o, 3), with_leader_chance=round(w, 3))
+                                    for a, o, w in k.most_raised[:SUCCESS_ROWS]],
+        other_kinds={o.title: f"{words(o.leader)} ({o.gain:+.0f} nats over own past)" for kk, o in s.kinds.items() if kk != kind},
+        critics_rewarded_this_year=[RewardedOut(kind=r.kind, name=r.name, approvals=r.approvals, disapprovals=r.disapprovals,
+                                                approved=list(r.approved), disapproved=list(r.disapproved)) for r in s.rewarded],
+        note=(f"artists are those Chicago or Cleveland ever acquired; years run {min(y for y, _ in k.years) if k.years else '?'} "
+              f"to {max(y for y, _ in k.years) if k.years else '?'}; what critics rewarded is the year to September {s.year}"))
 
 
 def _trend_row(t: TrendLists, x) -> NarrativeTrendOut:

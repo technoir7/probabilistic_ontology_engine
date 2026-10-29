@@ -95,7 +95,32 @@ async def trend_report_refresh(domain: str, name: str) -> Any:
                           _report.TREND_PROMPT_VERSION, _report.TREND_PROMPT_PATH)
 
 
-# ── Shared by both kinds of report ────────────────────────────────────────────
+# ── One kind of success's report (D31) ────────────────────────────────────────
+#
+# GET  /v1/success/{domain}/{kind}/report          — cached only
+# POST /v1/success/{domain}/{kind}/report/refresh  — hash-gated, its own prompt
+
+def _success(domain: str, kind: str) -> dict:
+    try:
+        return narrative.success_snapshot(domain, kind).model_dump()
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@router.get("/v1/success/{domain}/{kind}/report")
+async def success_report_read(domain: str, kind: str) -> Any:
+    snap = _success(domain, kind)
+    return _read(f"{snap['domain']}-success-{kind}", snap["domain"], _report.SUCCESS_PROMPT_VERSION)
+
+
+@router.post("/v1/success/{domain}/{kind}/report/refresh")
+async def success_report_refresh(domain: str, kind: str) -> Any:
+    snap = _success(domain, kind)
+    return await _refresh(f"{snap['domain']}-success-{kind}", snap["domain"], snap,
+                          _report.SUCCESS_PROMPT_VERSION, _report.SUCCESS_PROMPT_PATH)
+
+
+# ── Shared by every kind of report ────────────────────────────────────────────
 # CACHE_KEY names the report's files; DOMAIN is what the response reports.
 
 def _read(cache_key: str, domain: str, version: str) -> Any:

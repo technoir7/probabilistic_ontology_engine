@@ -487,3 +487,73 @@ class TrendListsOut(BaseModel):
 class TrendsOut(BaseModel):
     domain: str
     trends: Optional[TrendListsOut]   # None: the domain has no trends
+
+
+# ── Success (D31) ─────────────────────────────────────────────────────────────
+
+class SuccessKindOut(BaseModel):
+    key: str
+    title: str
+    outcome: str
+    leader: list[str]                 # empty: own past alone
+    leader_since: Optional[int]
+    gain: float                       # nats over own past, all scored years
+    mechanisms: list[tuple[str, float]]
+    effects: dict[str, float]         # "feature=level" -> push on the log-odds of any outcome
+    dealt: dict[str, list[float]]     # engine gain with that feature dealt at random
+    placebo: float                    # engine gain with features from the year after
+    placebo_fair: bool                # False: the year-after features count part of the outcome itself
+    most_raised: list[tuple[str, float, float]]   # artist, chance from own past, with the leader
+    years: list[tuple[int, float]]
+
+
+class RewardedOut(BaseModel):
+    kind: str
+    name: str
+    approvals: int
+    disapprovals: int
+    approved: list[str]
+    disapproved: list[str]
+
+
+class SuccessSnapshotOut(BaseModel):
+    year: int
+    forecast_for: int
+    kinds: dict[str, SuccessKindOut]
+    rewarded: list[RewardedOut]
+
+
+class SuccessOut(BaseModel):
+    domain: str
+    success: Optional[SuccessSnapshotOut]   # None: the domain has none
+
+
+class NarrativeSuccessMechanismOut(BaseModel):
+    mechanisms: str                   # in words
+    gain_nats: float
+
+
+class NarrativeSuccessEffectOut(BaseModel):
+    feature: str                      # in words, with its level ("one" or "several")
+    push: float                       # change in the log-odds of any success next year: + helps, - hurts
+
+
+class NarrativeSuccessOut(BaseModel):
+    """One kind of success, for its own written report (D31)."""
+    domain: str
+    kind: str
+    title: str
+    success_means: str
+    forecast_for: int
+    leader: str
+    leader_since: Optional[int]
+    gain_nats_over_own_past: float
+    best_rival_sets: list[NarrativeSuccessMechanismOut]
+    leader_effects: list[NarrativeSuccessEffectOut]
+    control_feature_dealt_at_random_gain_nats: dict[str, list[float]]
+    control_placebo_features_from_the_year_after_gain_nats: float
+    control_placebo_is_a_fair_test: bool   # False: next year's features count part of next year's success
+    artists_the_leader_favours: list[NarrativeCaseForecastOut]
+    other_kinds: dict[str, str]       # each other kind's leader and gain, for where they agree
+    critics_rewarded_this_year: list[RewardedOut]
+    note: str

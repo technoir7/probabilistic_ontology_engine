@@ -212,6 +212,9 @@ class CaseReport:
     forecast_year: Optional[int]
     most_raised: tuple[Forecast, ...]   # whose chance the leader raises most over own past
     meanings: Mapping[str, str] = field(default_factory=dict)
+    # The leader's push of each mechanism level on the log-odds of any
+    # outcome against none, at the average own past (CaseScheme.effects).
+    effects: Mapping[tuple, float] = field(default_factory=dict)
 
     def describe(self, features: tuple) -> str:
         """A set of mechanisms in words; none is each case's own past alone."""
@@ -249,4 +252,5 @@ def case_report(cases: CaseSet, top: int = FORECAST_ROWS) -> CaseReport:
                     key=lambda f: (f.with_leader[0] - f.own_past[0], f.label))
     return CaseReport(cases.key, cases.title, cases.outcome, cases.pool, engine.leader, tuple(engine.shifts),
                       tuple(years), tuple(MechanismScore(s, g) for s, g in sorted(gains.items(), key=lambda kv: -kv[1])),
-                      open_rows[0].year if open_rows else None, tuple(raised[:top]), cases.meanings)
+                      open_rows[0].year if open_rows else None, tuple(raised[:top]), cases.meanings,
+                      engine.schemes[engine.leader].effects())
