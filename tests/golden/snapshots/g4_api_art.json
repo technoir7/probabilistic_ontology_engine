@@ -1967,8 +1967,8 @@
     "no paradigm shifts recorded since shift logging was enabled",
     "evidence base is small (2 records); scores may not yet be reliable",
     "no edges are in the explore band: dominant causal structure is well-determined",
-    "this domain is judged by cases: its monthly totals show no lasting links, so the hypotheses, competing candidates and frontier above are a search that has found nothing. Lead the report with case_mechanisms: what the leading mechanism predicts for each kind of case, its evidence over each case's own past (gain_nats; 3 is strong), which mechanisms failed (negative gain), when the belief changed, and the cases the leader makes more likely next year",
-    "trends lists the broad ideas critics wrote about this year: new ones, growing, fading, and the most argued over (critics split between approval and disapproval). They describe the present, not a forecast: in case_mechanisms, no sign in how critics write about a trend has predicted whether it grows. Say what the trends are, in plain words"
+    "this domain is judged by cases: its monthly totals show no lasting links, so the hypotheses, competing candidates and frontier above are a search that has found nothing. Lead the report with case_mechanisms (after the trends, when there are trends): what the leading mechanism predicts for each kind of case, its evidence over each case's own past (gain_nats; 3 is strong), which mechanisms failed (negative gain), when the belief changed, and the cases the leader makes more likely next year",
+    "trends lists the broad ideas critics wrote about this year: new ones, growing, fading, and the most argued over (critics split between approval and disapproval). They describe the present, not a forecast: in case_mechanisms, no sign in how critics write about a trend has predicted whether it grows. Lead the report with them and analyse each from what critics said"
    ],
    "metadata": {
     "current_generation": 0,
@@ -1990,104 +1990,222 @@
       "approvals": 6,
       "broad_since": 2002,
       "disapprovals": 6,
+      "distinctive_words": [
+       "sound",
+       "audio",
+       "sounds",
+       "noise",
+       "recordings",
+       "soundtrack"
+      ],
       "papers": [
        "guardian"
       ],
       "share_before_pct": 2.36,
+      "share_by_year_pct": {
+       "2023": 2.92,
+       "2024": 2.04,
+       "2025": 2.12,
+       "2026": 2.08
+      },
       "share_this_year_pct": 2.08,
       "trend": "sound and audio in art",
+      "what_critics_said": [
+       "La Caverne's sound design by Thomas Bangalter: an undulating wind-tunnel sound effect",
+       "the Frameless experience: it is loud, frenetic, and images are here one second and gone the next",
+       "the ambisonic sound piece about Tule Lake: recreates a different kind of silence, processed through a virtual barrack",
+       "450XL: The Story of a Fugitive Sound: is on show in Canicula, at Complesso dell'Ospedaletto, Venice, until 22 November",
+       "Louise Bourgeois's wailing stuffed head in a vitrine: it is Bourgeois's answer to Munch's Scream",
+       "Ceal Floyer's audio sampling a Tammy Wynette track, shown at Documenta 13: the audio loop echoed through the Fridericianum in Kassel",
+       "Taryn Simon's installation in the Santa Clara-a-Nova dormitory: features laments sung in Albanian, Chinese, Kurdish, Kyrgyz and Turkish",
+       "Rhea Storr's New Territories (Spectacle Is King): the lack of sound draws the viewer in to study the contrast between costumes and mundane high streets"
+      ],
       "writers_this_year": 15
      },
      {
       "approvals": 9,
       "broad_since": 2008,
       "disapprovals": 9,
+      "distinctive_words": [
+       "women",
+       "gender",
+       "women's",
+       "feminist",
+       "feminism",
+       "men"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 4.54,
+      "share_by_year_pct": {
+       "2023": 5.42,
+       "2024": 3.94,
+       "2025": 4.24,
+       "2026": 3.6
+      },
       "share_this_year_pct": 3.6,
       "trend": "gender and feminism",
+      "what_critics_said": [
+       "medicine: 'most medicine is based or predicated on the male body'",
+       "some of the women watching the female nudity: didn't much like it, or at least asked where all the men were",
+       "Holzinger's work: it tackles the control the Catholic church has had over women's bodies",
+       "Up to the 1990s, local authorities and public sector design services: provided positive opportunities for women and ethnic minorities to flourish",
+       "a bodybuilder from south India in the PhotoVogue festival: she challenges ideas about femininity and the notion that strength and muscularity are masculine",
+       "the establishment: has long underrated women's work",
+       "the toilet women performers: people treat the performers as 'just' toilet women, which says a lot about the value afforded different kinds of labour",
+       "the Madre series: is about the depiction of womanhood"
+      ],
       "writers_this_year": 26
      },
      {
       "approvals": 6,
       "broad_since": 2001,
       "disapprovals": 7,
+      "distinctive_words": [
+       "room",
+       "rooms",
+       "interior",
+       "interiors",
+       "ceiling",
+       "space"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 2.64,
+      "share_by_year_pct": {
+       "2023": 3.06,
+       "2024": 2.45,
+       "2025": 2.4,
+       "2026": 2.35
+      },
       "share_this_year_pct": 2.35,
       "trend": "art in interior spaces",
+      "what_critics_said": [
+       "Simeon Barclay's room at Mima: is a dramatic tableau reminiscent of the immersive theatre company Punchdrunk",
+       "El Museo del Barrio: is exploring Coco Fusco's life and legacy outside the cage",
+       "the mirror reflections in The Great Room: the reflections give a feeling of transition and loss, an image about to disappear",
+       "Michelangelo's secret room: the documents showed the room was later emptied and its contents transferred to religious institutions and other sites",
+       "the eighth-floor contemplative space and its Selma speech lettering: a noble sentiment that aims to soar above the rancour of <ago>'s Washington",
+       "Roy DeCarava's Hallway: a work of achingly simple genius that finds richness and expressivity in the colour black",
+       "his room installation: it is a meditative little pause space that transports visitors to an imagined pre-colonial landscape",
+       "Barlow's work: The whole room reverberates with Barlow's irreverent punk attitude"
+      ],
       "writers_this_year": 17
      },
      {
       "approvals": 6,
       "broad_since": 2006,
       "disapprovals": 7,
+      "distinctive_words": [
+       "money",
+       "investment",
+       "business",
+       "value",
+       "buying",
+       "rich"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 2.63,
+      "share_by_year_pct": {
+       "2023": 3.34,
+       "2024": 2.58,
+       "2025": 1.98,
+       "2026": 2.22
+      },
       "share_this_year_pct": 2.22,
       "trend": "art and money",
+      "what_critics_said": [
+       "the underworld's interest in art: any interest in art by the underworld has been replaced by cold calculating greed",
+       "long-short investment funds buying art: These long-short funds never apply caution to buying art",
+       "Buck Ellison's work about the fictional Orlo & Co bank: three light boxes pair classical paintings by Bronzino and Manet with taglines, and it is weaponised culture, aesthetics for profit",
+       "industrial capitalism and technology: artists' shadows are put in service of industrial capitalism to make a few people very wealthy",
+       "Marcel Duchamp: flipped the notion of art's value on its head",
+       "Genuine Fake Premium Economy at the ICA, London: a bitter, resentful exhibition by a handful of bitter, resentful artists",
+       "Valie Export's art: carried revolutionary potential",
+       "Haring's art and fame: there is nothing precious about art until you make it precious, and Haring could do that"
+      ],
       "writers_this_year": 16
      },
      {
       "approvals": 5,
       "broad_since": 2011,
       "disapprovals": 6,
+      "distinctive_words": [
+       "interiors",
+       "interior",
+       "carpet",
+       "foyer",
+       "ceilings",
+       "ceiling"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 2.23,
+      "share_by_year_pct": {
+       "2023": 3.06,
+       "2024": 1.36,
+       "2025": 2.26,
+       "2026": 1.66
+      },
       "share_this_year_pct": 1.66,
       "trend": "interior design and architecture",
+      "what_critics_said": [
+       "Fondation Cartier interior: reconfigured around five modular, movable platforms that can instantly restructure space and transform how objects are displayed",
+       "the Jim Thompson living room recreated in the Guggenheim lobby: is being transformed in the lobby, based on the Bangkok living room of Jim Thompson",
+       "Renderings of the White House ballroom: show a vast, glacially white aircraft hangar of a structure with gilded Corinthian columns",
+       "the swinging saloon bar doors installation: removed from context, they act as dividers and architecture of separation and permission",
+       "The Peacock Room reconstruction: the notoriously extravagant installation Whistler made out of Frederick Leyland's dining room, ignoring Leyland's wishes",
+       "Veronica Ryan's earlier work upstairs: loads of it is fantastic",
+       "tidying up his home and workspace: tidying makes a tangible difference and works",
+       "the removal of the 'Angels' window: the first task in February 2024 was removing the big, heavy window safely from its position above the south quire aisle"
+      ],
       "writers_this_year": 12
      },
      {
       "approvals": 6,
       "broad_since": 2013,
       "disapprovals": 5,
+      "distinctive_words": [
+       "fashion",
+       "clothing",
+       "clothes",
+       "fashioning",
+       "menswear",
+       "industry"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 3.15,
+      "share_by_year_pct": {
+       "2023": 3.34,
+       "2024": 2.72,
+       "2025": 3.39,
+       "2026": 2.35
+      },
       "share_this_year_pct": 2.35,
       "trend": "fashion and art",
+      "what_critics_said": [
+       "Vogue's praise of Akhuetie's wearable art: Vogue praised her 'super textural and avant-garde garments', saying they give new meaning to the term 'body hair'",
+       "Cecil Beaton's Fashionable World exhibition: it presents Beaton as a sharp-tongued socialite obsessed with high society, beauty and himself",
+       "Ffasiwn at National Museum Cardiff: young people work with artists Cl\u00e9mentine Schneidermann and Charlotte James to deconstruct fashion, until 4 April 2027",
+       "\"Costume Art\" at the Met: a fashion revolution at the Met",
+       "fashion and art audiences: the fashion world is interested in a group of people it can reach through art, and the artist is interested in a group it can reach through the fashion world",
+       "Kusama's psychedelic fashion designs: included a Party Dress accommodating up to 25 people and a Homo Dress with a strategic cut-out",
+       "trends, fashions and social change over the coming decades: will happen, and Parr will not be there to document them",
+       "Virgil Abloh's high-low streetwear: sought to open up the rarefied world of fashion to kids who had been shut out of it"
+      ],
       "writers_this_year": 17
-     },
-     {
-      "approvals": 7,
-      "broad_since": 2008,
-      "disapprovals": 4,
-      "papers": [
-       "guardian",
-       "nyt"
-      ],
-      "share_before_pct": 2.73,
-      "share_this_year_pct": 3.32,
-      "trend": "biographies and memoirs",
-      "writers_this_year": 24
-     },
-     {
-      "approvals": 9,
-      "broad_since": 2008,
-      "disapprovals": 5,
-      "papers": [
-       "guardian",
-       "nyt"
-      ],
-      "share_before_pct": 2.59,
-      "share_this_year_pct": 2.49,
-      "trend": "music and visual art",
-      "writers_this_year": 18
      }
     ],
     "compared_with": "the 3 years to September before",
@@ -2096,103 +2214,217 @@
       "approvals": 4,
       "broad_since": 2014,
       "disapprovals": 1,
+      "distinctive_words": [
+       "women",
+       "female",
+       "women's",
+       "gender",
+       "feminist",
+       "imbalance"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 3.95,
+      "share_by_year_pct": {
+       "2023": 3.89,
+       "2024": 5.84,
+       "2025": 2.12,
+       "2026": 1.94
+      },
       "share_this_year_pct": 1.94,
       "trend": "gender representation in art",
+      "what_critics_said": [
+       "further finds of women's work: there will be lots more of these finds in the future",
+       "What Remains exhibition: brings together archival materials and works by contemporary artists engaged with feminist concerns, from 23 September until 28 February",
+       "the Royal Museum of Fine Arts (KMSKA): it reopened in 2022 after renovation and wants to promote female artists in its collection",
+       "three exhibitions of lesbian artists in Los Angeles: give lesbian artists a more prominent institutional presence in Los Angeles",
+       "recovery of neglected female artists: the exhibition reflects a growing movement to recover long-neglected female masters",
+       "the Women's Art Collection's 2024 acquisitions: partnered with Spirit Now London to acquire three works by young female artists",
+       "lesbian artists' presence in the three exhibitions: We aren't all just out playing golf",
+       "Women Choose Women's curatorial system: was a democratic system in which artists nominated each other, proving the value of new democratic forms of curation"
+      ],
       "writers_this_year": 14
      },
      {
       "approvals": 5,
       "broad_since": 2005,
       "disapprovals": 2,
+      "distinctive_words": [
+       "black",
+       "black's",
+       "afrofuturism",
+       "blackness",
+       "soul",
+       "artists"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 5.41,
+      "share_by_year_pct": {
+       "2023": 5.7,
+       "2024": 5.16,
+       "2025": 5.37,
+       "2026": 1.52
+      },
       "share_this_year_pct": 1.52,
       "trend": "Black artists and visibility",
+      "what_critics_said": [
+       "his own identity as a painter: in 1958 he wrote to John Berger: 'All I know is I want to paint my people: that is black people'",
+       "Now Dig This! at the Hammer Museum in 2011: brought to prominence the pioneering work of Black artists working in Los Angeles",
+       "the black figures in Lubaina Himid's paintings: don't look as if they feel particularly welcomed and accepted",
+       "the Centre for Chinese Contemporary Art's diversity initiative: recruited seven artists of Chinese heritage, then cancelled the initiative after they raised institutional racism",
+       "CAAM's residency program: it reflects the museum's ongoing commitment to Black artistic practices that create frameworks for healing",
+       "The Nue Black Aesthetic at the Design Museum, London: 2 November to 8 August",
+       "Kwam\u00e9 Azure Gomez at Marianne Boesky Gallery: is an up and coming Black artist",
+       "The Nue Black Aesthetic: values the work of contemporary Black designers across furniture, architecture, fashion and installation"
+      ],
       "writers_this_year": 11
      },
      {
       "approvals": 5,
       "broad_since": 2016,
       "disapprovals": 0,
+      "distinctive_words": [
+       "animals",
+       "animal",
+       "wildlife",
+       "kangaroo",
+       "deer",
+       "bull"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 2.77,
+      "share_by_year_pct": {
+       "2023": 1.81,
+       "2024": 3.8,
+       "2025": 2.69,
+       "2026": 1.8
+      },
       "share_this_year_pct": 1.8,
       "trend": "art depicting animals",
+      "what_critics_said": [
+       "Animal Model at Luma Arles: it gives a new entry point to Elliot Erwitt, Andreas Gursky, Roni Horn and Hiroshi Sugimoto",
+       "Stubbs's paintings of animals: ask questions about how we treat other species and other humans",
+       "Zhanna Kadyrova's concrete deer: The huge concrete deer has come all the way across eastern and central Europe from the city of Pokrovsk",
+       "scaling the reindeer nose up to larger than human size: creates a sense of inferiority that you as a human being are not dominant over nature",
+       "the deer's installation at the Giardini: it will be suspended from a crane near the entrance to the Giardini",
+       "Zhanna Kadyrova's deer footage in the Ukrainian pavilion: watch touching footage of the origami deer's journey",
+       "Gehry's non-architectural works: include fish, bears, crocodiles and snakes",
+       "the suspended deer: it is a visual game inviting viewers to speculate whether it is being removed or put in place"
+      ],
       "writers_this_year": 13
      },
      {
       "approvals": 2,
       "broad_since": 2005,
       "disapprovals": 6,
+      "distinctive_words": [
+       "political",
+       "politics",
+       "democracy",
+       "politicians",
+       "democratic",
+       "election"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 2.6,
+      "share_by_year_pct": {
+       "2023": 1.53,
+       "2024": 2.58,
+       "2025": 3.68,
+       "2026": 1.66
+      },
       "share_this_year_pct": 1.66,
       "trend": "art and politics",
+      "what_critics_said": [
+       "Obama Presidential Center: we did it to unlock your change, not to celebrate my ability to bring about change",
+       "President Trump's latest denunciation of the Smithsonian: the latest salvo came on the nation's 250th birthday",
+       "Partisan: Partisan will show Hazell's first selection, Different Faces, from 17 December to 1 March",
+       "White House occupants: have a history of tweaking, expanding and remodelling",
+       "the political necessity to subvert how we handle nudity and real bodies: the core political necessity endures and has become more urgent and complicated than ever",
+       "Sir Robert Walpole: Britain's first and most corrupt prime minister",
+       "Obama Presidential Center: it is a defensive bunker fortified against the present regime to protect its fragile values from siege",
+       "Donald Trump's plans for 4 July: jingoistic, flag-waving orgy"
+      ],
       "writers_this_year": 12
      },
      {
       "approvals": 0,
       "broad_since": 2004,
       "disapprovals": 0,
+      "distinctive_words": [
+       "estimate",
+       "estimated",
+       "sold",
+       "price",
+       "fetch",
+       "cost"
+      ],
       "papers": [
        "guardian"
       ],
       "share_before_pct": 3.0,
+      "share_by_year_pct": {
+       "2023": 3.62,
+       "2024": 3.12,
+       "2025": 2.26,
+       "2026": 1.25
+      },
       "share_this_year_pct": 1.25,
       "trend": "art market prices and sales",
+      "what_critics_said": [
+       "Hauser & Wirth: reported a 90% drop in UK profits this week",
+       "Schiele\u2019s Dana\u00eb: is estimated to fetch \u00a312-18m, breaking the previous record for a Schiele work",
+       "the photobook Chizu (The Map): people have paid up to \u00a325,000 for a copy",
+       "the Pauline Karpidas collection sale: made \u00a3101m and became the highest-value single-owner sale staged in London",
+       "Going to the Match: it was bought for \u00a37.8m in 2022 by the Lowry arts centre, saving it from a private collection",
+       "Monochrome Till Receipt (White), 1999, by Ceal Floyer: Tate acquired it for considerably more than the \u00a348.44 printed on the receipt",
+       "the value of the Treasure of Villena: the gold alone is worth about \u20ac1.7m, while the treasure's value is incalculable",
+       "Rijksmuseum's recent purchase of a Rembrandt: bought for \u20ac175m (\u00a3153m)"
+      ],
       "writers_this_year": 9
      },
      {
       "approvals": 0,
       "broad_since": 2013,
       "disapprovals": 0,
+      "distinctive_words": [
+       "attribution",
+       "painting's",
+       "provenance",
+       "authenticity",
+       "experts",
+       "dating"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 2.72,
+      "share_by_year_pct": {
+       "2023": 3.62,
+       "2024": 2.85,
+       "2025": 1.7,
+       "2026": 0.42
+      },
       "share_this_year_pct": 0.42,
       "trend": "disputed attribution and authenticity",
+      "what_critics_said": [
+       "the show's curator's documents on the lithographs: the curator says he has documents to prove authenticity",
+       "Marion Mahony Griffin: half of the lithographs in Wasmuth Portfolio are her work despite Wright's attempts to claim otherwise",
+       "Centre Point artwork: Banksy's representatives have yet to confirm its provenance"
+      ],
       "writers_this_year": 3
-     },
-     {
-      "approvals": 0,
-      "broad_since": 2005,
-      "disapprovals": 0,
-      "papers": [
-       "guardian",
-       "nyt"
-      ],
-      "share_before_pct": 2.35,
-      "share_this_year_pct": 1.66,
-      "trend": "art and money",
-      "writers_this_year": 12
-     },
-     {
-      "approvals": 0,
-      "broad_since": 2005,
-      "disapprovals": 0,
-      "papers": [
-       "guardian"
-      ],
-      "share_before_pct": 3.01,
-      "share_this_year_pct": 1.39,
-      "trend": "artists' personal relationships",
-      "writers_this_year": 10
      }
     ],
     "growing": [
@@ -2200,103 +2432,222 @@
       "approvals": 3,
       "broad_since": 2026,
       "disapprovals": 1,
+      "distinctive_words": [
+       "storage",
+       "seen",
+       "when",
+       "museum",
+       "it",
+       "have"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 0.0,
+      "share_by_year_pct": {
+       "2023": 0.0,
+       "2024": 0.0,
+       "2025": 0.0,
+       "2026": 2.49
+      },
       "share_this_year_pct": 2.49,
       "trend": "art in storage and display",
+      "what_critics_said": [
+       "a storage unit of Stevenson's lost work: it holds jewellery, collaborations with Ray Johnson, and clues to a surviving print of Ecstatic Stigmatic",
+       "the scale model: it is in great condition because it has never seen sunlight",
+       "Phyllis Diller's filing cabinet: contains over 52,000 handwritten jokes, each on a different note card",
+       "people who have seen Exworth's sheds: only 20 people have seen inside Ray's sheds",
+       "the RA gallery barriers: the string barriers are just for show and the toy could be retrieved",
+       "Lydia Ourahmane's coin-slot piece: a contraption once used in a church to illuminate a Bellini now switches on the show's lights when you put a euro coin in the slot",
+       "Naoshima: has two of Yayoi Kusama's pumpkins on display, and Red Pumpkin can be climbed inside",
+       "the Banksy piranha sentry box: it is due to go on display at the London Museum when it reopens in November"
+      ],
       "writers_this_year": 18
      },
      {
       "approvals": 0,
       "broad_since": 2026,
       "disapprovals": 16,
+      "distinctive_words": [
+       "biennale",
+       "biennale's",
+       "jury",
+       "participation",
+       "crimes",
+       "barred"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 0.0,
+      "share_by_year_pct": {
+       "2023": 0.0,
+       "2024": 0.0,
+       "2025": 0.0,
+       "2026": 3.19
+      },
       "share_this_year_pct": 3.19,
       "trend": "biennale political controversies",
+      "what_critics_said": [
+       "the Venice Biennale's hottest exhibitions: were shuttered, adding to upheaval",
+       "Venice Biennale EU funding: The European Commission has warned it will cut funding for the Venice Biennale if organisers go ahead with plans to include Russia",
+       "1968 Venice Biennale protests: At the 1968 edition, students occupied pavilions as they called for reforms, and their actions eventually led to the cancellation of the awards",
+       "the Venice Biennale international jury: the five-member jury has quit days before the exhibition opens",
+       "the jury of the Venice Biennale: said it would not give awards to artists from countries whose leaders face ICC charges of crimes against humanity, in a statement apparently aimed at Russia and Israel",
+       "Giorgia Meloni's appointment at the Venice Biennale: Meloni has appointed a rightwing president of the Venice Biennale",
+       "the Venice Biennale: moved to close down Yayoi Kusama's operation of selling balls for $2 each",
+       "the 2026 Venice Biennale strike: A strike called in protest over the inclusion of Israel at the 2026 Venice Biennale meant several pavilions closed on the last day of the preview"
+      ],
       "writers_this_year": 23
      },
      {
       "approvals": 2,
       "broad_since": 2026,
       "disapprovals": 0,
+      "distinctive_words": [
+       "blast",
+       "bomb",
+       "used",
+       "off",
+       "into",
+       "been"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 0.42,
+      "share_by_year_pct": {
+       "2023": 0.0,
+       "2024": 0.0,
+       "2025": 1.27,
+       "2026": 1.94
+      },
       "share_this_year_pct": 1.94,
       "trend": "art and warfare",
+      "what_critics_said": [
+       "Blast, issue 1, 1914: Blast was published a month before Britain entered the first world war and was a call to arms",
+       "1908 Messina earthquake: still considered the deadliest natural catastrophe in modern European history, killing half the city's population",
+       "Mr and Mrs Arnolfini (1978): pieces of Bath stone were taken up to their shatterpoint",
+       "Lawrence Abu Hamdan's 450XL: he gathers testimony from demonstrators in Serbia who appear to have been dispersed by a form of sonic weapon",
+       "Racheal Crowther's installation: a document shows the unit was used in decontamination after the Skripal novichok attack",
+       "Blast, issue 1, 1914: Blast often reads exactly like a Fall song",
+       "Thomas's Blast Off: Blast Off captures the violent power of the Saturn V rocket",
+       "Tantura attack: the Haganah attacked Tantura in May 1948"
+      ],
       "writers_this_year": 14
      },
      {
       "approvals": 1,
       "broad_since": 2003,
       "disapprovals": 8,
+      "distinctive_words": [
+       "theft",
+       "stolen",
+       "thieves",
+       "heist",
+       "thief",
+       "police"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 1.33,
+      "share_by_year_pct": {
+       "2023": 1.25,
+       "2024": 2.17,
+       "2025": 0.57,
+       "2026": 4.43
+      },
       "share_this_year_pct": 4.43,
       "trend": "art theft and recovery",
+      "what_critics_said": [
+       "Invader and Shepard Fairey's work: take Invader off the street or Fairey off sweatshirts and you strip them of their power",
+       "the Villena theft operation: the operation was super-fast and super-professional",
+       "the thieves who took royal jewels from the Louvre: Instead, what did they do? Brought me trinkets!",
+       "The robbery at the Paris museum on Sunday: Is only the latest in a long line of breaches",
+       "robberies at museums across France: A spate of robberies, many in small towns",
+       "helmet and two bracelets: were recovered on 1 April as part of a plea deal",
+       "the mastermind of the Louvre heist: reportedly disappointed by the haul and thought they could have taken more",
+       "the Louvre break-in last October: thieves stole crown jewellery worth \u20ac88m (\u00a375m), including tiaras, a brooch, necklaces and earrings"
+      ],
       "writers_this_year": 32
      },
      {
       "approvals": 3,
       "broad_since": 2015,
       "disapprovals": 1,
+      "distinctive_words": [
+       "selfie",
+       "selfies",
+       "sticks",
+       "smartphones",
+       "data",
+       "stick"
+      ],
       "papers": [
        "guardian"
       ],
       "share_before_pct": 1.02,
+      "share_by_year_pct": {
+       "2023": 0.28,
+       "2024": 1.36,
+       "2025": 1.41,
+       "2026": 2.08
+      },
       "share_this_year_pct": 2.08,
       "trend": "the selfie phenomenon",
+      "what_critics_said": [
+       "Ellen DeGeneres's Oscars selfie: broke the internet",
+       "Mark McEvoy's photographs: the lack of smartphones in these photos is striking",
+       "the mirrors at the Balloon Museum: the museum sometimes felt tailored to visitors' desires to take selfies",
+       "Yayoi Kusama's infinity mirror room installations: helped her find a huge audience in the age of the social media selfie",
+       "Es Devlin's national portrait of the UK: is being created using selfies submitted by viewers",
+       "social media: has changed celebrity photography an awful lot, letting celebrities promote themselves",
+       "Tony Cragg: is fine with selfie-takers",
+       "visitors taking selfies with his sculpture: I don't have a problem with that"
+      ],
       "writers_this_year": 15
      },
      {
       "approvals": 11,
       "broad_since": 2026,
       "disapprovals": 0,
+      "distinctive_words": [
+       "raghu",
+       "dhruv",
+       "subcontinent",
+       "sustained",
+       "names",
+       "culture"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 1.06,
+      "share_by_year_pct": {
+       "2023": 0.0,
+       "2024": 1.49,
+       "2025": 1.7,
+       "2026": 2.08
+      },
       "share_this_year_pct": 2.08,
       "trend": "indigenous and subcontinental art",
+      "what_critics_said": [
+       "Nyaparu (William) Gardiner's paintings: she loves the way his works are quite ghostly, almost melding into country",
+       "Cuban scholars seeing The Jungle: it was very moving seeing Cuban scholars who had studied Lam for their whole lives see The Jungle in person for the first time",
+       "Nyaparu (William) Gardiner: he died in 2018, shortly before many of these paintings were featured in the 2019 festival",
+       "the portrait of Carl Linnaeus in S\u00e1mi costume: allies Linnaeus with beliefs that humans can commune magically with nature",
+       "Bukhara: increasingly a place for contemporary art and culture",
+       "Raghu Rai's photographs: avoiding the cliches often associated with outsider views of the subcontinent",
+       "Raghu Rai's access to figures: He was given sustained access to political and spiritual figures including Indira Gandhi, Mother Teresa, the Dalai Lama and Sadhguru",
+       "Sagarika Sundaram: is an up-and-coming name in the art world"
+      ],
       "writers_this_year": 15
-     },
-     {
-      "approvals": 8,
-      "broad_since": 2007,
-      "disapprovals": 1,
-      "papers": [
-       "guardian",
-       "nyt"
-      ],
-      "share_before_pct": 1.76,
-      "share_this_year_pct": 3.32,
-      "trend": "birds and insects in art",
-      "writers_this_year": 24
-     },
-     {
-      "approvals": 0,
-      "broad_since": 2008,
-      "disapprovals": 4,
-      "papers": [
-       "guardian"
-      ],
-      "share_before_pct": 1.07,
-      "share_this_year_pct": 1.94,
-      "trend": "heritage conservation and listing",
-      "writers_this_year": 14
      }
     ],
     "new": [
@@ -2304,103 +2655,221 @@
       "approvals": 3,
       "broad_since": 2022,
       "disapprovals": 3,
+      "distinctive_words": [
+       "bed",
+       "my",
+       "unmade",
+       "bedroom",
+       "sleeping",
+       "slept"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 3.24,
+      "share_by_year_pct": {
+       "2023": 3.2,
+       "2024": 3.26,
+       "2025": 3.25,
+       "2026": 4.43
+      },
       "share_this_year_pct": 4.43,
       "trend": "art in the domestic sphere",
+      "what_critics_said": [
+       "nearby marshlands near Salt Lake: they have transformed to concrete since she moved there in the 80s",
+       "her Edinburgh alley mosaic near Holyrood: it was made in response to the atrocities in Gaza",
+       "Joan Semmel's SoHo studio: she has lived in the apartment since 1970",
+       "her opening mural Back in the Air at the Artist's Garden: the mural unfurled across the entire 140 sq-metre space and the site holds emotional significance for her",
+       "Bettina's Chelsea Hotel apartment: Barrada thought Bettina lived in a parallel world of her own making",
+       "Bettina: slept in her hallway on a lawn chair as her output colonised every room",
+       "Beverly Hills Housewife by Hockney: completed a year after his visit, it shows a beautiful woman outside a beautiful house",
+       "Lee Krasner: Krasner had to settle for the kitchen as her studio"
+      ],
       "writers_this_year": 32
      },
      {
       "approvals": 0,
       "broad_since": 2026,
       "disapprovals": 16,
+      "distinctive_words": [
+       "biennale",
+       "biennale's",
+       "jury",
+       "participation",
+       "crimes",
+       "barred"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 0.0,
+      "share_by_year_pct": {
+       "2023": 0.0,
+       "2024": 0.0,
+       "2025": 0.0,
+       "2026": 3.19
+      },
       "share_this_year_pct": 3.19,
       "trend": "biennale political controversies",
+      "what_critics_said": [
+       "the Venice Biennale's hottest exhibitions: were shuttered, adding to upheaval",
+       "Venice Biennale EU funding: The European Commission has warned it will cut funding for the Venice Biennale if organisers go ahead with plans to include Russia",
+       "1968 Venice Biennale protests: At the 1968 edition, students occupied pavilions as they called for reforms, and their actions eventually led to the cancellation of the awards",
+       "the Venice Biennale international jury: the five-member jury has quit days before the exhibition opens",
+       "the jury of the Venice Biennale: said it would not give awards to artists from countries whose leaders face ICC charges of crimes against humanity, in a statement apparently aimed at Russia and Israel",
+       "Giorgia Meloni's appointment at the Venice Biennale: Meloni has appointed a rightwing president of the Venice Biennale",
+       "the Venice Biennale: moved to close down Yayoi Kusama's operation of selling balls for $2 each",
+       "the 2026 Venice Biennale strike: A strike called in protest over the inclusion of Israel at the 2026 Venice Biennale meant several pavilions closed on the last day of the preview"
+      ],
       "writers_this_year": 23
      },
      {
       "approvals": 1,
       "broad_since": 2021,
       "disapprovals": 4,
+      "distinctive_words": [
+       "mental",
+       "trauma",
+       "abuse",
+       "suffering",
+       "illness",
+       "health"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 1.9,
+      "share_by_year_pct": {
+       "2023": 2.09,
+       "2024": 1.63,
+       "2025": 1.98,
+       "2026": 2.91
+      },
       "share_this_year_pct": 2.91,
       "trend": "art and psychological trauma",
+      "what_critics_said": [
+       "their use of their psychiatric documents in performance: there has been anxiety about their behaviour in performance being pathologised",
+       "the word confessional: women's expression of their experiences is implied to be guilt-inducing and shameful when labelled confessional",
+       "Charlotte Johnson Wahl's Morning Group: shows her horror of group therapy sessions",
+       "Carrington's psychiatric treatment: the treatments were brutal, including cardiazol injections, and were really traumatic",
+       "Her endometriosis portraits' bodily experience: Her body is both helping her be resilient and needing to be disconnected because it carries a lot of pain",
+       "mental illnesses such as OCD: are not necessarily the same as neurodivergence and should not be grouped together",
+       "Mud's three pieces: depict their journey from distrust to healing through therapy",
+       "the description of Turner's mother's mental illness in the Guardian review of Turner: The Secret Sketchbooks: her mental illness should be described as purported"
+      ],
       "writers_this_year": 21
      },
      {
       "approvals": 7,
       "broad_since": 2024,
       "disapprovals": 1,
+      "distinctive_words": [
+       "band",
+       "punk",
+       "pistols",
+       "teenage",
+       "indie",
+       "bands"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 2.0,
+      "share_by_year_pct": {
+       "2023": 1.25,
+       "2024": 1.77,
+       "2025": 2.97,
+       "2026": 2.63
+      },
       "share_this_year_pct": 2.63,
       "trend": "punk and rock music",
+      "what_critics_said": [
+       "Colin Self's early pop works: they have an overwhelming atmosphere of paranoia and dread that sets Self apart from other pop artists",
+       "David Rock: recognised that small outfits exuded the greatest energy, potential and creativity",
+       "Tracey Emin and Gilbert & George: all three were part of the Britart scene in the 90s",
+       "Teenage Jesus and the Jerks: they were really intense, abrasive, not friendly, just a perfect band",
+       "Brian Smith: played a role in the British blues boom of the 1960s",
+       "the beatboxers of the Beatbox House: invented new possibilities for the voice in trying to emulate drum kits",
+       "Throbbing Gristle's 20 Jazz Funk Greats: is a sardonically titled album produced by a band described as wreckers of civilisation",
+       "\"Idols\": is an intimate look at a vital New York underground"
+      ],
       "writers_this_year": 19
      },
      {
       "approvals": 10,
       "broad_since": 2024,
       "disapprovals": 3,
+      "distinctive_words": [
+       "teapots",
+       "tea",
+       "lolly",
+       "meringue",
+       "wrappers",
+       "food"
+      ],
       "papers": [
        "guardian",
        "nyt"
       ],
       "share_before_pct": 1.76,
+      "share_by_year_pct": {
+       "2023": 0.0,
+       "2024": 2.31,
+       "2025": 2.97,
+       "2026": 2.63
+      },
       "share_this_year_pct": 2.63,
       "trend": "food and art",
+      "what_critics_said": [
+       "Denton Welch's taste in objects: vigorous, bright, eclectic non-English taste, not boringly 18th-century revival taste",
+       "Quaker Foods North America's retirement of the Aunt Jemima branding: her first thought was Oh, finally",
+       "regional napkin graphics: you can even see cultural and regional differences reflected in the serviettes",
+       "Jonny Trunk's book Fancy an Ice Cream? A Collection of Vintage Ice Lolly Wrappers: memorialises incredibly rare vintage ice lolly wrappers in a 96-page book",
+       "guests at Jennie Jieun Lee's lunch in the Catskills: the guests glazed their own pots",
+       "Heinz baked beans logo: the Heinz logo <ago> remains the same as it was in the 1920s",
+       "the old crisp packets: this is children's culture",
+       "Rasmus Munk: has been recently voted world's best chef and is creating a dish that will taste of detention under an authoritarian regime"
+      ],
       "writers_this_year": 19
      },
      {
       "approvals": 2,
       "broad_since": 2021,
       "disapprovals": 1,
+      "distinctive_words": [
+       "disease",
+       "bacteria",
+       "health",
+       "measles",
+       "epidemics",
+       "cures"
+      ],
       "papers": [
        "guardian"
       ],
       "share_before_pct": 2.04,
+      "share_by_year_pct": {
+       "2023": 1.53,
+       "2024": 2.17,
+       "2025": 2.4,
+       "2026": 2.49
+      },
       "share_this_year_pct": 2.49,
       "trend": "art and health",
-      "writers_this_year": 18
-     },
-     {
-      "approvals": 8,
-      "broad_since": 2025,
-      "disapprovals": 3,
-      "papers": [
-       "guardian",
-       "nyt"
+      "what_critics_said": [
+       "the reindeer's nose: can heat the surrounding air it inhales by 80 degrees Celsius in under a second",
+       "the servilletas' papery texture: has somehow endured despite their most common purpose being to clean your fingers and lips",
+       "Rotterdam ROCKS! by MVRDV: an online commentator said it looks like something Shrek would throw up",
+       "David Hockney's Cleaning Teeth, Early Evening (10pm) W11: its toothpaste tubes are positioned suggestively",
+       "Buchanan's tabby bricks process: a filthy, dangerous process",
+       "Claire Warden's No 15 (Genetics): shows her fingerprint etched into the film emulsion by way of her own saliva",
+       "Michaelina Wautier's Five Senses series: it upends traditional depictions, as in Smell showing a boy recoiling from a rotten egg",
+       "Hirst formaldehyde case with an Invader alien: a huge Hirst formaldehyde case with an alien drowning in blue fluid, like walking in on a crime scene"
       ],
-      "share_before_pct": 2.18,
-      "share_this_year_pct": 2.49,
-      "trend": "optimism and hope",
-      "writers_this_year": 18
-     },
-     {
-      "approvals": 3,
-      "broad_since": 2026,
-      "disapprovals": 1,
-      "papers": [
-       "guardian",
-       "nyt"
-      ],
-      "share_before_pct": 0.0,
-      "share_this_year_pct": 2.49,
-      "trend": "art in storage and display",
       "writers_this_year": 18
      }
     ],

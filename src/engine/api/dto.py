@@ -226,9 +226,12 @@ class NarrativeTrendOut(BaseModel):
     writers_this_year: int
     share_this_year_pct: float        # of every critic writing that year
     share_before_pct: float           # average over the years before
+    share_by_year_pct: dict[str, float]   # this year and the years it is set against
     papers: list[str]
     approvals: int
     disapprovals: int
+    distinctive_words: list[str]
+    what_critics_said: list[str]      # this year's claims, as the reader of the press put them
 
 
 class NarrativeTrendsOut(BaseModel):

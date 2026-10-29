@@ -1648,6 +1648,13 @@
        "title": "Disapprovals",
        "type": "integer"
       },
+      "distinctive_words": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Distinctive Words",
+       "type": "array"
+      },
       "papers": {
        "items": {
         "type": "string"
@@ -1659,6 +1666,13 @@
        "title": "Share Before Pct",
        "type": "number"
       },
+      "share_by_year_pct": {
+       "additionalProperties": {
+        "type": "number"
+       },
+       "title": "Share By Year Pct",
+       "type": "object"
+      },
       "share_this_year_pct": {
        "title": "Share This Year Pct",
        "type": "number"
@@ -1666,6 +1680,13 @@
       "trend": {
        "title": "Trend",
        "type": "string"
+      },
+      "what_critics_said": {
+       "items": {
+        "type": "string"
+       },
+       "title": "What Critics Said",
+       "type": "array"
       },
       "writers_this_year": {
        "title": "Writers This Year",
@@ -1678,9 +1699,12 @@
       "writers_this_year",
       "share_this_year_pct",
       "share_before_pct",
+      "share_by_year_pct",
       "papers",
       "approvals",
-      "disapprovals"
+      "disapprovals",
+      "distinctive_words",
+      "what_critics_said"
      ],
      "title": "NarrativeTrendOut",
      "type": "object"

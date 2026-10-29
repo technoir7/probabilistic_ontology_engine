@@ -40,7 +40,7 @@ FORECAST_ROWS = 5
 CASES_HINT = (
     "this domain is judged by cases: its monthly totals show no lasting links, so the hypotheses, "
     "competing candidates and frontier above are a search that has found nothing. Lead the report "
-    "with case_mechanisms: what the leading mechanism predicts for each kind of "
+    "with case_mechanisms (after the trends, when there are trends): what the leading mechanism predicts for each kind of "
     "case, its evidence over each case's own past (gain_nats; 3 is strong), which mechanisms failed "
     "(negative gain), when the belief changed, and the cases the leader makes more likely next year"
 )
@@ -50,9 +50,9 @@ TRENDS_HINT = (
     "trends lists the broad ideas critics wrote about this year: new ones, growing, fading, and the most "
     "argued over (critics split between approval and disapproval). They describe the present, not a "
     "forecast: in case_mechanisms, no sign in how critics write about a trend has predicted whether it "
-    "grows. Say what the trends are, in plain words"
+    "grows. Lead the report with them and analyse each from what critics said"
 )
-TREND_ROWS = 8
+TREND_ROWS = 6
 
 
 def snapshot_for(state: Any, domain: str) -> NarrativeSnapshotOut:
@@ -68,7 +68,9 @@ def _trends(t: TrendLists) -> NarrativeTrendsOut:
             trend=x.name, broad_since=x.start, writers_this_year=x.writers[t.years.index(t.year)],
             share_this_year_pct=round(100 * t.share(x.key, t.year), 2),
             share_before_pct=round(100 * t.share_before(x.key), 2),
-            papers=list(x.papers), approvals=x.verdicts[0], disapprovals=x.verdicts[1])
+            share_by_year_pct={str(y): round(100 * t.share(x.key, y), 2) for y in range(t.year - t.before, t.year + 1)},
+            papers=list(x.papers), approvals=x.verdicts[0], disapprovals=x.verdicts[1],
+            distinctive_words=list(x.words), what_critics_said=list(x.sample))
 
     def rows(name: str) -> list[NarrativeTrendOut]:
         return [row(x) for x in t.listed(name)[:TREND_ROWS]]

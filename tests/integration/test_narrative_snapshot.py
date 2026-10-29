@@ -398,7 +398,10 @@ def test_ns_15_the_art_report_is_handed_this_years_trends_as_description(client)
     body = client.get("/v1/export/narrative-snapshot", params={"domain": "art"}).json()
     t = body["trends"]
     assert t["period"] == "October 2025 to September 2026"
-    assert t["new"] and len(t["new"]) <= 8
+    assert t["new"] and len(t["new"]) <= 6
     row = t["new"][0]
     assert row["writers_this_year"] >= 12 and row["broad_since"] >= 2021
+    # Enough of what critics said for the report to analyse each trend, not just name it.
+    assert 3 <= len(row["what_critics_said"]) <= 8 and row["distinctive_words"]
+    assert list(row["share_by_year_pct"]) == ["2023", "2024", "2025", "2026"]
     assert any("not a forecast" in h for h in body["interpretation_hints"])

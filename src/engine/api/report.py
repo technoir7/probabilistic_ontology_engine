@@ -204,8 +204,9 @@ def _generate_report_sync(snapshot: dict, api_key: str, model: str, strict: bool
         # 1500 or even 4096 tokens thought until none were left and wrote
         # nothing. Writing a report from data needs no thinking; off, a report
         # costs well under a cent, and the cap bounds the worst case (the
-        # report asks for under 350 words, about 500 tokens).
-        max_tokens=1200,
+        # report asks for under 350 words, about 500 tokens; art's, with
+        # trends, up to 750, about 1,100).
+        max_tokens=2000,
         reasoning_effort="none",
         messages=[
             {"role": "system", "content": system},

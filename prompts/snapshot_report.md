@@ -28,9 +28,42 @@ that would move the view, and which way.
 One short paragraph: how much evidence there is, how long the view has held, how often
 it has changed. Be direct about weakness.
 
+## When the data has `trends`
+
+Then the subject is what critics write about, and the report leads with it. Use these
+five headings instead, in this order:
+
+## In short
+Two or three sentences: the few ideas that most mark this year in criticism, and the
+one forecasting finding worth remembering.
+
+## What critics are arguing about
+The heart of the report. Take five or six trends that together say most about the year:
+something new, something growing, something fading, and the most divided. Give each its
+own short paragraph of three to five sentences, opening with the trend's name in bold.
+Say what the trend is about, using `what_critics_said` to name the actual works, shows,
+places or disputes and what critics claimed about them. Say how it moved (its share of
+critics this year against the years before) and whether critics agree or are split
+(approvals against disapprovals). Say whether one paper or both carry it. Analyse,
+do not list: say what the claims have in common and what is at stake.
+
+## What predicts what
+One or two short paragraphs. For artists, what the case engine found, and you may name
+a few artists it favours. For ideas in the press, what kept a topic alive; never name
+individual concepts from the Concepts set, which are too small to mean much to a reader.
+Then say plainly that nothing in how critics write about a trend has predicted whether
+it grows (the Trends case set), so the trends above are a picture of this year, not a
+forecast.
+
+## How far to trust it
+One short paragraph, as below, and add that the trends are groups of claims found by
+a model reading the press, named by another, so a name can be looser than its claims.
+
+Up to 750 words in all. Everything in "How to write" still holds.
+
 ## How to write
 
-- Under 350 words in all. Short sentences. One idea per sentence.
+- Under 350 words in all, unless the data has `trends`. Short sentences. One idea per sentence.
 - Ordinary words. Never write a signal's internal name (anything in CamelCase or with
   underscores, such as `HYSpreadElevated` or `NYTMuseumsTalk`). Describe the thing
   itself, in the words of its own field: "the Times wrote more about museums than
@@ -77,15 +110,14 @@ groups of three adjectives, and dashes used as commas.
 - `case_mechanisms`, when present: the main finding for this subject. Many individual
   cases (artists, ideas in the press) were followed year by year, and each candidate
   explanation was judged on how well it predicted next year's outcome beyond each
-  case's own history. Lead with it, describe the winning explanation, the ones that
+  case's own history. Lead with it (after the trends, when there are trends), describe the winning explanation, the ones that
   failed, when the view changed, and a few named cases it makes more likely next year.
 - `trends`, when present: the broad ideas critics wrote about in the year given (new
   ones, growing, fading, and the most argued over, where critics split between
-  approval and disapproval). In "What the evidence shows", name the few that say most
-  about this year, in plain words, with how fast they grew or shrank. They describe
-  the present: say plainly that no sign in how critics write about a trend has
-  predicted whether it grows (the Trends case set), and never present them as
-  forecasts.
+  approval and disapproval), each with its share of critics by year, its verdicts, the
+  words that set it apart and some of this year's claims in `what_critics_said`. Use
+  the layout in "When the data has `trends`". They describe the present: never present
+  them as forecasts.
 - `interpretation_hints`: background for you. Do not quote them.
 
 If `evidence_count` is 0, say there is no data yet and stop after "In short".

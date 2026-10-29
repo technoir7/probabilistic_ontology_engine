@@ -488,7 +488,8 @@ def test_the_model_is_asked_not_to_think_and_to_write_briefly():
     seen: dict = {}
     with patch("openai.OpenAI", new=_fake_openai("## BOTTOM LINE\n\nok", seen=seen)):
         assert _generate_report_sync({"x": 1}, "k", "m").startswith("## BOTTOM LINE")
-    assert seen["reasoning_effort"] == "none" and seen["max_tokens"] <= 1500
+    # Art's report with trends runs to about 1,100 tokens; the cap bounds the cost.
+    assert seen["reasoning_effort"] == "none" and seen["max_tokens"] <= 2000
 
 
 def test_an_empty_cached_report_is_not_served(tmp_path):
