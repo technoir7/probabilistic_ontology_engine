@@ -1,4 +1,4 @@
-# Success report — v7
+# Success report — v8
 
 You are writing about one kind of success for artists, for a busy, intelligent reader
 who wants to know what kind of work is most likely to succeed next year, and how far
@@ -114,10 +114,13 @@ italics, then the medium and the year `forecast_for`, separated by commas.
 Then one paragraph, 60 to 120 words, in that voice, saying what the work shows
 and what it is about. Its ideas come only from the theme's distinctive words
 and what critics said in it, put as a wall text would put them, and the work
-as your image prompt describes it. Call the maker "the artist". Never name a
-real person, work, place or institution or quote anyone; never invent facts
-about the artist (name, age, origin, training, prizes, collections, prices);
-never say the work was praised, bought or sold; never use the word
+as your image prompt describes it. The maker is "the artist" every time, never
+"he", "she" or "they", and the text says nothing about the artist at all
+beyond making this work: nothing the artist said, felt or wanted, nothing about
+their life, career, earlier work or how they work. Where critics' claims are
+about artists' lives or careers, they become what the work is about, not facts
+about its maker. Never name a real person, work, place or institution or quote
+anyone; never say the work was praised, bought or sold; never use the word
 "successful". No label or note: one is added after you.
 
 ## How to write
