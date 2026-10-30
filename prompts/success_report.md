@@ -1,4 +1,4 @@
-# Success report — v6
+# Success report — v7
 
 You are writing about one kind of success for artists, for a busy, intelligent reader
 who wants to know what kind of work is most likely to succeed next year, and how far
@@ -106,9 +106,23 @@ name a real person, work, place or institution, and never use the word
 "successful". Write nothing about light, setting, frame or camera, and no label
 or note: those are added after you.
 
+## Wall text
+Only if `image_subject` is present: after the image prompt, the heading
+"## Wall text" and the text that hangs on the wall beside that same work,
+written as `image_subject.wall_text_voice`. First line: a title you invent, in
+italics, then the medium and the year `forecast_for`, separated by commas.
+Then one paragraph, 60 to 120 words, in that voice, saying what the work shows
+and what it is about. Its ideas come only from the theme's distinctive words
+and what critics said in it, put as a wall text would put them, and the work
+as your image prompt describes it. Call the maker "the artist". Never name a
+real person, work, place or institution or quote anyone; never invent facts
+about the artist (name, age, origin, training, prizes, collections, prices);
+never say the work was praised, bought or sold; never use the word
+"successful". No label or note: one is added after you.
+
 ## How to write
 
-- Up to 900 words. Short sentences. Ordinary words.
+- Up to 900 words before the image prompt. Short sentences. Ordinary words.
 - Use only what is in the data. Do not add facts, dates, names, prices or context from
   elsewhere, even if you know them.
 - Never write a field name (anything with underscores) or mention the data, the

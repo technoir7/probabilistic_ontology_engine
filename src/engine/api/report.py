@@ -42,7 +42,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 
 PROMPT_VERSION = "4"
 TREND_PROMPT_VERSION = "1"   # bump when prompts/trend_report.md changes
-SUCCESS_PROMPT_VERSION = "6"   # bump when prompts/success_report.md changes
+SUCCESS_PROMPT_VERSION = "7"   # bump when prompts/success_report.md changes
 THEMES_PROMPT_VERSION = "2"    # bump when prompts/themes_report.md changes
 
 
@@ -59,22 +59,41 @@ NOTHING_TO_ILLUSTRATE = ("Nothing in the coverage reliably predicts this kind of
                          "illustration of it.")
 
 
-def finish_success_report(text: str, reasons: Optional[list[str]]) -> str:
+WALL_HEADING = "## Wall text"
+
+
+def wall_text_label(voice: str) -> str:
+    return (f"*A fictional wall text for the imagined work above, written as {voice} (ART-PLAN §12.11). Its ideas "
+            "are the critics' claims in this theme; nothing in it is a fact about any real work or artist.*")
+
+
+def finish_success_report(text: str, reasons: Optional[list[str]], voice: Optional[str]) -> str:
     """Replace the writer's image prompt section with the finished one: the
-    rule's REASONS, then the label, the writer's description and the setting.
-    REASONS None: nothing to illustrate. ValueError when an illustration is
-    wanted and the writer gave no description."""
+    rule's REASONS, then the label, the writer's description and the
+    setting; then the writer's wall text under its label, in VOICE.
+    REASONS None: nothing to illustrate, so no wall text either. ValueError
+    when an illustration is wanted and the writer gave no description or no
+    wall text."""
     body, _, written = text.partition(f"\n{IMAGE_HEADING}")
     body = body.rstrip()
     if reasons is None:
         return f"{body}\n\n{IMAGE_HEADING}\n\n{NOTHING_TO_ILLUSTRATE}"
-    section = written.partition("\n")[2]          # past the heading line, whatever the writer put on it
-    description = " ".join(section.split("\n## ")[0].split())
+    image, _, wall = written.partition(f"\n{WALL_HEADING}")
+    description = " ".join(_section(image).split())
     if not description:
         raise ValueError("the report has no image prompt description")
+    wall = _section(wall).strip()
+    if not wall:
+        raise ValueError("the report has no wall text")
     why = "\n\n".join(reasons)
     return (f"{body}\n\n{REASONS_HEADING}\n\n{why}\n\n{IMAGE_HEADING}\n\n{IMAGE_LABEL}\n\n"
-            f"{description} {IMAGE_SETTING}")
+            f"{description} {IMAGE_SETTING}\n\n{WALL_HEADING}\n\n{wall_text_label(voice)}\n\n{wall}")
+
+
+def _section(written: str) -> str:
+    """A section's text past its heading line, whatever the writer put on
+    that line, up to any heading after it."""
+    return written.partition("\n")[2].split("\n## ")[0]
 
 
 # ── Hashing ──────────────────────────────────────────────────────────────────

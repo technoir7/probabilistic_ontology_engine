@@ -126,6 +126,13 @@ def _theme_verdicts(t, kind) -> list[str]:
     return out
 
 
+_GALLERY_SALE = "the wall text of a commercial gallery showing it for sale"
+_EXHIBITION = "the wall text of the exhibition critics are writing about"
+# Who speaks beside each kind's imagined work (ART-PLAN §12.11): a voice, not a finding.
+WALL_TEXT_VOICES = {"museum": "the label of a museum that has just acquired it", "market": _GALLERY_SALE,
+                    "movers": _GALLERY_SALE, "approve": _EXHIBITION, "press": _EXHIBITION}
+
+
 def _image_subject(s, domain: str, kind: str) -> Optional[NarrativeImageSubjectOut]:
     """What the image prompt shows (abductive_engine ART-PLAN §12.8), by rule
     so the four prompts differ only where the findings do: the theme the
@@ -137,7 +144,7 @@ def _image_subject(s, domain: str, kind: str) -> Optional[NarrativeImageSubjectO
     k = s.kinds[kind]
     top = s.at_the_top.get(kind)
     if top:                     # this kind describes, by the user's choice (ART-PLAN §12 deviation 6)
-        return _described_subject(s, k, _trends_now(s, domain), top)
+        return _described_subject(s, k, _trends_now(s, domain), top, WALL_TEXT_VOICES[kind])
     if k.gain < SMALL_NATS:
         return None
     t = _trends_now(s, domain)
@@ -160,7 +167,7 @@ def _image_subject(s, domain: str, kind: str) -> Optional[NarrativeImageSubjectO
         medium=medium, medium_from_the_leading_features=feature is not None,
         reasons=[_theme_reason(k, t, push, theme, tied), _medium_reason(s, k, feature, approved),
                  _details("what critics said in it")],
-        describes_instead=False)
+        describes_instead=False, wall_text_voice=WALL_TEXT_VOICES[kind])
 
 
 def _trends_now(s, domain: str) -> TrendLists:
@@ -170,7 +177,7 @@ def _trends_now(s, domain: str) -> TrendLists:
     return t
 
 
-def _described_subject(s, k, t: TrendLists, top) -> Optional[NarrativeImageSubjectOut]:
+def _described_subject(s, k, t: TrendLists, top, voice: str) -> Optional[NarrativeImageSubjectOut]:
     """The prompt shows those who have this success now (ART-PLAN §12.9): the
     theme whose claims name the most of them, ties to claims about them, then
     net approvals; the medium tag on the most of their articles, ties in the
@@ -203,7 +210,8 @@ def _described_subject(s, k, t: TrendLists, top) -> Optional[NarrativeImageSubje
     return NarrativeImageSubjectOut(
         theme=theme.name, theme_is_on_this_years_lists=[n for n in t.lists if theme.key in t.lists[n]],
         distinctive_words=list(theme.words), what_critics_said=list(top.said.get(themes[0], ())),
-        medium=medium, medium_from_the_leading_features=False, reasons=reasons, describes_instead=True)
+        medium=medium, medium_from_the_leading_features=False, reasons=reasons, describes_instead=True,
+        wall_text_voice=voice)
 
 
 def _details(said: str) -> str:

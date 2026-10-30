@@ -96,6 +96,7 @@ class NarrativeImageSubjectOut(BaseModel):
     medium_from_the_leading_features: bool   # False: this year's most approved medium, not a tested feature
     reasons: list[str]                       # the rule's reasons, in words; the report prints them before the prompt
     describes_instead: bool                  # True: nothing predicts this kind, so it shows those who have it now
+    wall_text_voice: str                     # who speaks in the wall text, fixed by kind (ART-PLAN §12.11)
 
 
 class NarrativeThemeKindOut(BaseModel):

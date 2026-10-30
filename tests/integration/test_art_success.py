@@ -100,7 +100,8 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
 
     async def fake(snapshot, *, prompt_path, **_):
         seen["prompt"], seen["kind"] = prompt_path, snapshot["kind"]
-        return "## In short\nBeing written about helps.\n\n## Image prompt\nA photograph of a woman at work."
+        return ("## In short\nBeing written about helps.\n\n## Image prompt\nA photograph of a woman at work."
+                "\n\n## Wall text\n*At Work*, photography, 2026\n\nThe artist photographs work.")
     monkeypatch.setattr(report, "generate_report", fake)
     monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
@@ -109,7 +110,9 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
         body = client.post("/v1/success/art/museum/report/refresh").json()
         assert client.get("/v1/success/art/museum/report").json()["found"] is True
     assert seen == {"prompt": report.SUCCESS_PROMPT_PATH, "kind": "museum"} and "Being written about" in body["report"]
-    assert body["report"].endswith(f"A photograph of a woman at work. {report.IMAGE_SETTING}")    # finished by code
+    assert f"A photograph of a woman at work. {report.IMAGE_SETTING}" in body["report"]     # finished by code
+    voice = success_narrative.WALL_TEXT_VOICES["museum"]
+    assert body["report"].endswith(f"{report.wall_text_label(voice)}\n\n*At Work*, photography, 2026\n\nThe artist photographs work.")
     assert report.REASONS_HEADING in body["report"]
 
 
@@ -200,34 +203,60 @@ def test_where_nothing_predicts_the_market_its_prompt_describes_the_artists_at_t
     assert not _subject("museum").describes_instead
 
 
+WALL = "\n\n## Wall text\n\n*River Hours*, painting, 2027\n\nThe artist paints a river.\n"
+VOICE = "the label of a museum that has just acquired it"
+
+
 def test_code_finishes_the_image_prompt_so_the_writer_cannot_change_its_label_or_setting():
     from src.engine.api import report
-    text = report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA large painting of a river.\n",
-                                        ["Why the river.", "Why paint."])
+    text = report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA large painting of a river.\n" + WALL,
+                                        ["Why the river.", "Why paint."], VOICE)
     assert text == ("## In short\nA.\n\n" + report.REASONS_HEADING + "\n\nWhy the river.\n\nWhy paint.\n\n"
                     + report.IMAGE_HEADING + "\n\n" + report.IMAGE_LABEL + "\n\n"
-                    "A large painting of a river. " + report.IMAGE_SETTING)
+                    "A large painting of a river. " + report.IMAGE_SETTING + "\n\n"
+                    + report.WALL_HEADING + "\n\n" + report.wall_text_label(VOICE) + "\n\n"
+                    "*River Hours*, painting, 2027\n\nThe artist paints a river.")
+
+
+def test_the_wall_text_label_names_the_voice_and_says_it_is_fiction():
+    from src.engine.api import report
+    label = report.wall_text_label(VOICE)
+    assert VOICE in label and "fictional" in label and "not" in label
 
 
 def test_words_the_writer_adds_to_the_image_prompt_heading_are_not_part_of_the_prompt():
     from src.engine.api import report
-    text = report.finish_success_report("## In short\nA.\n\n## Image prompt: a vision\nA river.", ["Why."])
-    assert text.endswith(report.IMAGE_LABEL + "\n\nA river. " + report.IMAGE_SETTING) and "vision" not in text
+    text = report.finish_success_report("## In short\nA.\n\n## Image prompt: a vision\nA river." + WALL, ["Why."], VOICE)
+    assert ("\n\nA river. " + report.IMAGE_SETTING + "\n\n" + report.WALL_HEADING) in text and "vision" not in text
 
 
-def test_an_image_prompt_wanted_but_not_written_is_an_error():
+@pytest.mark.parametrize("written", [
+    "## In short\nA.",
+    "## In short\nA.\n\n## Image prompt\n\n" + WALL,
+    "## In short\nA.\n\n## Image prompt\n\nA river.",
+    "## In short\nA.\n\n## Image prompt\n\nA river.\n\n## Wall text\n\n",
+])
+def test_an_image_prompt_or_wall_text_wanted_but_not_written_is_an_error(written):
     from src.engine.api import report
     with pytest.raises(ValueError):
-        report.finish_success_report("## In short\nA.", ["Why."])
-    with pytest.raises(ValueError):
-        report.finish_success_report("## In short\nA.\n\n## Image prompt\n\n", ["Why."])
+        report.finish_success_report(written, ["Why."], VOICE)
 
 
 def test_where_nothing_is_illustrated_code_says_so_whatever_the_writer_wrote():
     from src.engine.api import report
-    for written in ("## In short\nA.", "## In short\nA.\n\n## Image prompt\nA bird."):
-        assert report.finish_success_report(written, None) == (
+    for written in ("## In short\nA.", "## In short\nA.\n\n## Image prompt\nA bird." + WALL):
+        assert report.finish_success_report(written, None, None) == (
             "## In short\nA.\n\n" + report.IMAGE_HEADING + "\n\n" + report.NOTHING_TO_ILLUSTRATE)
+
+
+@pytest.mark.parametrize("kind, words", [("museum", "acquired"), ("market", "for sale"), ("movers", "for sale"),
+                                         ("approve", "exhibition"), ("press", "exhibition")])
+def test_who_speaks_in_the_wall_text_is_fixed_by_kind(kind, words):
+    """ART-PLAN §12.11: a voice, not a finding."""
+    assert words in success_narrative.WALL_TEXT_VOICES[kind]
+    subject = _subject(kind)
+    if subject:
+        assert subject.wall_text_voice == success_narrative.WALL_TEXT_VOICES[kind]
 
 
 def _reasons(kind):

@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Callable
+from typing import Any, Callable, Optional
 
 from fastapi import APIRouter, HTTPException, Request
 
@@ -142,8 +142,12 @@ async def success_report_refresh(domain: str, kind: str) -> Any:
     snap = _success(domain, kind)
     return await _refresh(f"{snap['domain']}-success-{kind}", snap["domain"], snap,
                           _report.SUCCESS_PROMPT_VERSION, _report.SUCCESS_PROMPT_PATH,
-                          finish=lambda text: _report.finish_success_report(
-                              text, snap["image_subject"]["reasons"] if snap["image_subject"] else None))
+                          finish=lambda text: _report.finish_success_report(text, *_illustration(snap["image_subject"])))
+
+
+def _illustration(subject: Optional[dict]) -> tuple[Optional[list[str]], Optional[str]]:
+    """The image prompt's reasons and the wall text's voice; both None where nothing is illustrated."""
+    return (subject["reasons"], subject["wall_text_voice"]) if subject else (None, None)
 
 
 # ── Shared by every kind of report ────────────────────────────────────────────
