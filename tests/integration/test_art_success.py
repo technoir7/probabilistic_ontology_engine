@@ -25,7 +25,7 @@ def _snapshot():
             "rewarded": [{"kind": "medium", "name": "photography", "approvals": 10, "disapprovals": 2,
                           "approved": ["a: good"], "disapproved": ["b: bad"]}],
             "at_the_top": {"market": {"table_year": 2025, "artists": 300, "themes": {"7": [12, 30]},
-                                      "media": {"painting": 13}}}}
+                                      "media": {"painting": 13}, "said": {"7": ["a's show: bold"]}}}}
 
 
 def test_a_snapshot_loads_with_its_four_kinds_and_what_critics_rewarded():
@@ -118,9 +118,9 @@ def _verdicts(kind):
 
 
 def test_verdicts_are_fixed_by_rule_so_a_report_cannot_soften_them():
-    assert "too small to claim" in _verdicts("market")                   # +2.4 over seven years
+    assert "clearly but modestly" in _verdicts("market")                 # +58 over fourteen years (ART-PLAN §12.10)
     assert "overwhelming" in _verdicts("approve")
-    assert "comes with this success rather than before it" in _verdicts("market")   # placebo 7.2 beats 2.4
+    assert "comes with this success rather than before it" in _verdicts("market")   # placebo 96 beats 58
     assert "comes before this success" in _verdicts("museum")            # 227 against 191
     assert "no test here" in _verdicts("press")
     assert "photography" in _verdicts("museum").split("adds nothing")[0].rsplit(".", 1)[-1]   # dealt, it scored better
@@ -190,8 +190,12 @@ def test_where_nothing_predicts_the_market_its_prompt_describes_the_artists_at_t
     best = max((k for k in top.themes if k in t.trends), key=lambda k: top.themes[k])
     assert m.theme == t.trends[best].name and m.describes_instead
     assert m.medium == max(top.media, key=top.media.get)
+    assert m.what_critics_said == list(top.said[best])         # about the artists at the top, not the theme at large
     r = _reasons("market")
     assert "describes" in r and "not what leads to it" in r and f"{top.artists}" in r and f"{top.table_year}" in r
+    # by the user's choice the market describes whatever its gain (deviation 6); why, from its verdicts
+    assert s.kinds["market"].gain >= 10 and "goes with market success rather than ahead of it" in r
+    assert "what critics said about these artists" in r
     assert not _subject("museum").describes_instead
 
 

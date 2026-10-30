@@ -39,9 +39,20 @@ def test_a_market_case_needs_a_table_this_year_next_year_and_before_never_readin
 def test_at_the_top_counts_what_the_press_says_about_artists_in_the_latest_table():
     from evals.success_records import at_the_top
     ranks = {"a": {2025: 3}, "b": {2025: 400, 2024: 10}, "c": {2024: 1}}      # c is not in the latest table
-    claims = [("a", "7"), ("a", "7"), ("b", "7"), ("c", "7"), ("b", "9")]
+    claims = [("a", "7", "a's show: bold", "2026-01-02 g x"), ("a", "7", "a's paintings: thin", "2026-03-01 g y"),
+              ("b", "7", "b: big", "2026-02-01 n z"), ("c", "7", "c: not at the top", "2026-04-01 g w"),
+              ("b", "9", "b's bronzes: heavy", "2026-01-01 g v")]
     media = [("a", "painting"), ("c", "painting"), ("b", "sculpture"), ("b", "painting")]
     top = at_the_top(ranks, 2025, claims, media)
     assert top["artists"] == 2 and top["table_year"] == 2025
     assert top["themes"] == {"7": [2, 3], "9": [1, 1]}           # artists named, claims about them
     assert top["media"] == {"painting": 2, "sculpture": 1}
+    # what critics said about those at the top, most recent first (ART-PLAN §12.9 amended)
+    assert top["said"] == {"7": ["a's paintings: thin", "b: big", "a's show: bold"], "9": ["b's bronzes: heavy"]}
+
+
+def test_at_the_top_keeps_only_the_most_recent_claims_of_a_theme():
+    from evals.success_records import SAID, at_the_top
+    claims = [("a", "7", f"claim {i}", f"2026-01-{i:02d}") for i in range(1, SAID + 3)]
+    assert at_the_top({"a": {2025: 1}}, 2025, claims, [])["said"]["7"][0] == f"claim {SAID + 2}"
+    assert len(at_the_top({"a": {2025: 1}}, 2025, claims, [])["said"]["7"]) == SAID

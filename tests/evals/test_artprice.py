@@ -1,6 +1,6 @@
 """Artprice's yearly Top 500 artists by auction turnover, read from its free
 report PDFs (abductive_engine ART-PLAN §12.7)."""
-from evals.artprice import Row, key, parse_row, table
+from evals.artprice import Row, html_table, in_rank_order, key, parse_row, table
 
 
 def test_rows_of_the_recent_layout_give_rank_name_birth_and_turnover():
@@ -53,3 +53,40 @@ def test_a_tables_first_page_before_the_repeated_heading_is_kept():
         "3 Joan MITCHELL (1925-1992) United States $100,000,000 10 1 $1",
     ])
     assert [(r.rank, r.turnover) for r in table(text)] == [(1, 312_337_360), (2, 223_195_610), (3, 100_000_000)]
+
+
+def test_a_stray_space_before_a_comma_is_not_a_misread():
+    assert parse_row("2 ZhAnG Daqian (1899-1983) $287 ,223,639") == Row(2, "ZhAnG Daqian", 1899, 287_223_639)
+
+
+def test_a_table_whose_figures_are_grouped_by_spaces_is_read_by_rank_order_alone():
+    """2011's figures run together ("554 537 029 314 944 104" is two years'
+    turnover), so no turnover is read and a row is kept only in rank order."""
+    text = "\n".join([
+        "Top 500 artists by auction revenue in 2011",
+        "1 3 ZHANG Daqian (1899-1983) 554 537 029 314 944 104 1 371 999 21 845 000 13 203 000",
+        "2 2 QI Baishi (1864-1957) 510 576 030 352 311 466 1 350 1 160 57 202 000 9 535 500",
+        "7 9 FU Baoshi (1904-1965) 198 335 740 128 865 589 199 238 31 520 000 7 985 600",   # out of order: a misread
+        "3 4 WARHOL Andy (1928-1987) 325 884 120 313 767 658 1 624 1 543 34 250 000 56 500 000",
+        "4 1 PICASSO Pablo (1881-1973) 314 692 605 362 716 708 3 387 2 930 36 274 500 95 000 000",
+    ])
+    rows = in_rank_order(text)
+    assert [(r.rank, r.name, r.born, r.turnover) for r in rows] == [
+        (1, "ZHANG Daqian", 1899, None), (2, "QI Baishi", 1864, None), (3, "WARHOL Andy", 1928, None),
+        (4, "PICASSO Pablo", 1881, None)]
+
+
+def test_an_archived_report_page_gives_its_table_rows():
+    html = """<table><tbody><tr><th>Rank</th><th>Artist</th><th>Country of birth</th><th>Turnover ($)</th></tr>
+    <tr><td style="text-align: center;">1</td><td class="wrap"><a href="/artist/17205/leonardo-da-vinci">Leonardo da VINCI
+    (1452-1519)</a></td><td>Italy</td><td style="text-align: right;">450,312,500</td><td>1</td></tr>
+    <tr><td>2</td><td><a href="/artist/22796/pablo-picasso">Pablo PICASSO (1881-1973)</a></td><td>Spain</td>
+    <td>446,404,736</td><td>2,879</td></tr></tbody></table>"""
+    assert html_table(html) == [Row(1, "Leonardo da VINCI", 1452, 450_312_500), Row(2, "Pablo PICASSO", 1881, 446_404_736)]
+
+
+def test_a_name_split_after_a_typeset_ligature_is_joined_again():
+    """The 2022–2025 PDFs print "ff", "fi" and "fl" as one glyph followed by a
+    space, so "Clyﬀ ord STILL" never matched Clyfford Still."""
+    r = parse_row("206 Clyﬀ  ord STILL (1904-1980) United States $7,540,000 3 1 $7,540,000")
+    assert key(r.name, r.born) == key("Clyfford Still", 1904)

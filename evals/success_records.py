@@ -41,6 +41,7 @@ MEDIA = {("guardian", "artanddesign/painting"): "painting", ("guardian", "artand
          ("guardian", "artanddesign/sculpture"): "sculpture", ("nyt", "Photography"): "photography",
          ("nyt", "Sculpture"): "sculpture"}
 UNKNOWN = 3                    # the open year without a table
+SAID = 8                       # claims kept per theme about the artists at the top, most recent first
 
 
 def _features(s: Mapping, year: int, pool: tuple[str, ...]) -> dict:
@@ -96,24 +97,27 @@ def market_records(people: Mapping, ranks: Mapping[str, Mapping[int, int]], cove
 
 
 def at_the_top(ranks: Mapping[str, Mapping[int, int]], table_year: int,
-               claims: Iterable[tuple[str, str]], media: Iterable[tuple[str, str]]) -> dict:
+               claims: Iterable[tuple[str, str, str, str]], media: Iterable[tuple[str, str]]) -> dict:
     """What the press said in a year about the artists in TABLE_YEAR's Top 500
-    (ART-PLAN §12.9): each theme's (artists named, claims about them) from
-    (artist, trend) CLAIMS, and articles per medium tag from (artist, medium)
-    MEDIA."""
+    (ART-PLAN §12.9): from (artist, trend, claim, when) CLAIMS, each theme's
+    (artists named, claims about them) and its SAID most recent claims about
+    them; from (artist, medium) MEDIA, articles per medium tag."""
     top = {a for a, r in ranks.items() if table_year in r}
     named: dict = defaultdict(set)
     counted: dict = defaultdict(int)
-    for a, trend in claims:
+    said: dict = defaultdict(list)
+    for a, trend, text, when in claims:
         if a in top:
             named[trend].add(a)
             counted[trend] += 1
+            said[trend].append((when, text))
     tags: dict = defaultdict(int)
     for a, m in media:
         if a in top:
             tags[m] += 1
     return {"table_year": table_year, "artists": len(top),
-            "themes": {t: [len(named[t]), counted[t]] for t in named}, "media": dict(tags)}
+            "themes": {t: [len(named[t]), counted[t]] for t in named}, "media": dict(tags),
+            "said": {t: [text for _, text in sorted(said[t], reverse=True)[:SAID]] for t in said}}
 
 
 # ── Reading the sources (glue) ────────────────────────────────────────────────
@@ -155,8 +159,9 @@ def _media(names: set[str]) -> dict[str, dict[str, dict[int, int]]]:
 
 
 def _claims(names: set[str]):
-    """(artist, trend, calendar year, year to September) for each claim about
-    one of NAMES that was grouped into a trend."""
+    """(artist, trend, calendar year, year to September, "about: asserts",
+    when it was published) for each claim about one of NAMES that was grouped
+    into a trend."""
     trend_of = {}
     for line in (TEXTS / "trends" / "claims.jsonl").read_text().splitlines():
         r = json.loads(line)
@@ -173,7 +178,8 @@ def _claims(names: set[str]):
                     continue
                 artist = linked(a["about"], names)
                 if artist is not None:
-                    yield artist, t, y, y + (m >= 10)
+                    yield (artist, t, y, y + (m >= 10), f"{a['about']}: {a['asserts']}",
+                           f"{row.get('published', month)} {paper} {row['id']}")
 
 
 def _trend_claims(names: set[str]) -> dict[str, dict[str, dict[int, int]]]:
@@ -184,7 +190,7 @@ def _trend_claims(names: set[str]) -> dict[str, dict[str, dict[int, int]]]:
         r = json.loads(line)
         status[(r["trend"], r["year"])] = [LISTS[k] for k in LISTS if r[k]]
     out: dict = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
-    for artist, t, year, year_to_sep in _claims(names):
+    for artist, t, year, year_to_sep, _, _ in _claims(names):
         for f in status.get((t, year_to_sep), []):
             out[artist][f][year] += 1
     return out
@@ -218,7 +224,8 @@ def market_top(year: int) -> dict:
     names = set(people)
     museums = json.loads((DATA / "artists" / "museums.json").read_text())
     ranks, covered = _ranks(people, _births(museums))
-    return at_the_top(ranks, max(covered), ((a, str(t)) for a, t, _, ys in _claims(names) if ys == year),
+    return at_the_top(ranks, max(covered),
+                      ((a, str(t), text, when) for a, t, _, ys, text, when in _claims(names) if ys == year),
                       ((a, m) for a, m, _, ys in _media_articles(names) if ys == year))
 
 

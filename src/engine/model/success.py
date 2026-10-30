@@ -45,6 +45,7 @@ class AtTheTop:
     artists: int
     themes: Mapping[str, tuple[int, int]]   # trend key -> (artists named, claims about them)
     media: Mapping[str, int]                # medium -> articles naming them with that tag
+    said: Mapping[str, tuple[str, ...]]     # trend key -> the most recent claims about them in it
 
 
 @dataclass(frozen=True)

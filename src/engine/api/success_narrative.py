@@ -68,9 +68,11 @@ def _image_subject(s, domain: str, kind: str) -> Optional[NarrativeImageSubjectO
     approved medium. With the rule's reasons, in words. None where the gain
     is too small to claim."""
     k = s.kinds[kind]
+    top = s.at_the_top.get(kind)
+    if top:                     # this kind describes, by the user's choice (ART-PLAN §12 deviation 6)
+        return _described_subject(s, k, _trends_now(s, domain), top)
     if k.gain < SMALL_NATS:
-        top = s.at_the_top.get(kind)
-        return _described_subject(s, _trends_now(s, domain), top) if top else None
+        return None
     t = _trends_now(s, domain)
     now = t.years.index(t.year)
     push = {s.lists[f]: k.effects.get((f, 1), 0.0) for f in k.leader if f in s.lists}
@@ -89,7 +91,8 @@ def _image_subject(s, domain: str, kind: str) -> Optional[NarrativeImageSubjectO
         theme=theme.name, theme_is_on_this_years_lists=[n for n in t.lists if theme.key in t.lists[n]],
         distinctive_words=list(theme.words), what_critics_said=list(theme.sample),
         medium=medium, medium_from_the_leading_features=feature is not None,
-        reasons=[_theme_reason(k, t, push, theme, tied), _medium_reason(s, k, feature, approved), _DETAILS],
+        reasons=[_theme_reason(k, t, push, theme, tied), _medium_reason(s, k, feature, approved),
+                 _details("what critics said in it")],
         describes_instead=False)
 
 
@@ -100,11 +103,12 @@ def _trends_now(s, domain: str) -> TrendLists:
     return t
 
 
-def _described_subject(s, t: TrendLists, top) -> Optional[NarrativeImageSubjectOut]:
-    """Where nothing predicts a kind of success, the prompt shows those who have
-    it now (ART-PLAN §12.9): the theme whose claims name the most of them, ties
-    to claims about them, then net approvals; the medium tag on the most of
-    their articles, ties in the order of the tagged media."""
+def _described_subject(s, k, t: TrendLists, top) -> Optional[NarrativeImageSubjectOut]:
+    """The prompt shows those who have this success now (ART-PLAN §12.9): the
+    theme whose claims name the most of them, ties to claims about them, then
+    net approvals; the medium tag on the most of their articles, ties in the
+    order of the tagged media. The first reason says why it describes, from
+    the verdicts."""
     themes = sorted((k for k in top.themes if k in t.trends), reverse=True,
                     key=lambda k: (*top.themes[k], t.trends[k].verdicts[0] - t.trends[k].verdicts[1]))
     if not themes or not top.media:
@@ -112,26 +116,33 @@ def _described_subject(s, t: TrendLists, top) -> Optional[NarrativeImageSubjectO
     theme, order = t.trends[themes[0]], list(s.media.values())
     medium = max(top.media, key=lambda m: (top.media[m], -order.index(m) if m in order else -len(order)))
     named = top.themes[themes[0]]
+    if k.gain < SMALL_NATS:
+        why = "Nothing in the coverage reliably predicts this kind of success, so this prompt describes instead"
+    elif k.placebo_fair and k.placebo >= k.gain:
+        why = ("The coverage goes with market success rather than ahead of it: next year's coverage predicts a place "
+               "as well as this year's or better. So this prompt describes instead")
+    else:
+        why = "This prompt describes those who have this success now rather than what predicts it"
     reasons = [
-        "Nothing in the coverage reliably predicts this kind of success, so this prompt describes instead: what "
-        f"the press wrote this year about the {top.artists} artists here who were in Artprice's {top.table_year} "
-        "Top 500. It shows what goes with market success, not what leads to it.",
+        f"{why}: what the press wrote this year about the {top.artists} artists here who were in Artprice's "
+        f"{top.table_year} Top 500. It shows what goes with market success, not what leads to it.",
         f"The subject is {theme.name}: of this year's themes, its claims named the most of these artists "
         f"({named[0]}, in {named[1]} claims)."
         + (f" Next came {t.trends[themes[1]].name} ({top.themes[themes[1]][0]}, in {top.themes[themes[1]][1]} claims)."
            if len(themes) > 1 else ""),
         f"The medium is {medium}: more articles about these artists were tagged {medium} than anything else "
         f"({top.media[medium]} articles).{_untested_media(s, 'are counted')}",
-        _DETAILS]
+        _details("what critics said about these artists in it")]
     return NarrativeImageSubjectOut(
         theme=theme.name, theme_is_on_this_years_lists=[n for n in t.lists if theme.key in t.lists[n]],
-        distinctive_words=list(theme.words), what_critics_said=list(theme.sample),
+        distinctive_words=list(theme.words), what_critics_said=list(top.said.get(themes[0], ())),
         medium=medium, medium_from_the_leading_features=False, reasons=reasons, describes_instead=True)
 
 
-_DETAILS = ("The details of the work below are a reading of the theme's words and of what critics said in it, not "
-            "findings. The setting at the end is the same for every prompt, so that the image model has as little as "
-            "possible left to choose.")
+def _details(said: str) -> str:
+    return (f"The details of the work below are a reading of the theme's words and of {said}, not findings. The "
+            "setting at the end is the same for every prompt, so that the image model has as little as possible left "
+            "to choose.")
 
 
 _LIST_WORDS = {"argued": "argued over"}

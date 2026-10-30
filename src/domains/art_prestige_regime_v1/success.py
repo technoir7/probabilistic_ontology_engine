@@ -32,7 +32,8 @@ def _kind(key: str, k: Mapping) -> SuccessKind:
 
 
 def _at_the_top(t: Mapping) -> AtTheTop:
-    return AtTheTop(t["table_year"], t["artists"], {k: (a, c) for k, (a, c) in t["themes"].items()}, dict(t["media"]))
+    return AtTheTop(t["table_year"], t["artists"], {k: (a, c) for k, (a, c) in t["themes"].items()}, dict(t["media"]),
+                    {k: tuple(said) for k, said in t["said"].items()})
 
 
 def load(snapshot: Mapping) -> Success:
