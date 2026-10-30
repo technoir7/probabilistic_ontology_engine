@@ -559,6 +559,7 @@ class NarrativeImageSubjectOut(BaseModel):
     medium: str
     medium_from_the_leading_features: bool   # False: this year's most approved medium, not a tested feature
     reasons: list[str]                       # the rule's reasons, in words; the report prints them before the prompt
+    describes_instead: bool                  # True: nothing predicts this kind, so it shows those who have it now
 
 
 class NarrativeSuccessOut(BaseModel):
@@ -572,7 +573,7 @@ class NarrativeSuccessOut(BaseModel):
     leader_since: Optional[int]
     gain_nats_over_own_past: float
     scored_years: int
-    verdicts: list[str]               # fixed by rule (narrative._verdicts); the report states them as they are
+    verdicts: list[str]               # fixed by rule (success_narrative._verdicts); the report states them as they are
     best_rival_sets: list[NarrativeSuccessMechanismOut]
     leader_effects: list[NarrativeSuccessEffectOut]
     each_leading_feature_adds: list[NarrativeSuccessAddsOut]

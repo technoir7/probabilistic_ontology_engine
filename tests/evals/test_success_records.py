@@ -34,3 +34,14 @@ def test_a_market_case_needs_a_table_this_year_next_year_and_before_never_readin
     assert by_year[2017]["own"] == [2, 2] and by_year[2017]["outcome"] == 1
     assert by_year[2020]["own"] == [1, 2] and by_year[2020]["outcome"] == 0   # not listed in 2021
     assert by_year[2021]["outcome"] is None          # the open year
+
+
+def test_at_the_top_counts_what_the_press_says_about_artists_in_the_latest_table():
+    from evals.success_records import at_the_top
+    ranks = {"a": {2025: 3}, "b": {2025: 400, 2024: 10}, "c": {2024: 1}}      # c is not in the latest table
+    claims = [("a", "7"), ("a", "7"), ("b", "7"), ("c", "7"), ("b", "9")]
+    media = [("a", "painting"), ("c", "painting"), ("b", "sculpture"), ("b", "painting")]
+    top = at_the_top(ranks, 2025, claims, media)
+    assert top["artists"] == 2 and top["table_year"] == 2025
+    assert top["themes"] == {"7": [2, 3], "9": [1, 1]}           # artists named, claims about them
+    assert top["media"] == {"painting": 2, "sculpture": 1}

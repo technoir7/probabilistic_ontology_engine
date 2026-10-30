@@ -38,6 +38,16 @@ class Rewarded:
 
 
 @dataclass(frozen=True)
+class AtTheTop:
+    """What the press said this year about the artists who have one kind of
+    success now (ART-PLAN §12.9): description, for a kind nothing predicts."""
+    table_year: int                         # the latest table the artists are in
+    artists: int
+    themes: Mapping[str, tuple[int, int]]   # trend key -> (artists named, claims about them)
+    media: Mapping[str, int]                # medium -> articles naming them with that tag
+
+
+@dataclass(frozen=True)
 class Success:
     year: int                               # the year described (years to September)
     forecast_for: int                       # the year the kinds of success are forecast for
@@ -46,3 +56,4 @@ class Success:
     meanings: Mapping[str, str]             # feature -> what it records, in words
     lists: Mapping[str, str]                # feature -> the trend list (TrendLists.lists) whose claims it counts
     media: Mapping[str, str]                # feature -> the medium (as Rewarded.name) whose articles it counts
+    at_the_top: Mapping[str, AtTheTop]      # kind -> what the press said about those who have it now

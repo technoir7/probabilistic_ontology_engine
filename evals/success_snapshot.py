@@ -13,7 +13,7 @@ from src.domains.art_prestige_regime_v1 import success
 
 from .artist_records import display_names
 from .replay17 import DATA
-from .success_records import YEARS
+from .success_records import YEARS, market_top
 
 ROWS = 15
 
@@ -54,7 +54,9 @@ def main() -> None:
     labels = display_names(museums, {a for r in runs.values() for a, _, _ in r["real"]["most_raised"]})
     snap = {"year": rewarded["year"], "forecast_for": YEARS[-1] + 1,
             "kinds": {k: kind(k, *TITLES[k], runs[k], labels) for k in success.KINDS},
-            "rewarded": rewarded["rewarded"]}
+            "rewarded": rewarded["rewarded"],
+            # Nothing predicts the market, so its image prompt describes who is at the top (ART-PLAN §12.9).
+            "at_the_top": {"market": market_top(rewarded["year"])}}
     success.load(snap)          # refuse a snapshot that does not hang together
     success.DATA.parent.mkdir(exist_ok=True)
     success.DATA.write_text(json.dumps(snap, separators=(",", ":"), ensure_ascii=False))

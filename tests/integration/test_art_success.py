@@ -23,7 +23,9 @@ def _snapshot():
     return {"year": 2026, "forecast_for": 2026,
             "kinds": {k: _kind(["nyt"]) for k in success.KINDS},
             "rewarded": [{"kind": "medium", "name": "photography", "approvals": 10, "disapprovals": 2,
-                          "approved": ["a: good"], "disapproved": ["b: bad"]}]}
+                          "approved": ["a: good"], "disapproved": ["b: bad"]}],
+            "at_the_top": {"market": {"table_year": 2025, "artists": 300, "themes": {"7": [12, 30]},
+                                      "media": {"painting": 13}}}}
 
 
 def test_a_snapshot_loads_with_its_four_kinds_and_what_critics_rewarded():
@@ -31,12 +33,15 @@ def test_a_snapshot_loads_with_its_four_kinds_and_what_critics_rewarded():
     assert set(s.kinds) == set(success.KINDS) and s.kinds["museum"].leader == ("nyt",)
     assert s.kinds["museum"].effects[("nyt", 2)] == 1.4 and s.rewarded[0].name == "photography"
     assert s.kinds["museum"].placebo_fair is True
+    assert s.at_the_top["market"].artists == 300 and s.at_the_top["market"].themes["7"] == (12, 30)
 
 
 @pytest.mark.parametrize("break_it", [
     lambda s: s["kinds"].pop("market"),
     lambda s: s["kinds"]["press"]["leader"].append("unheard_of"),     # a leader outside the pool
     lambda s: s["kinds"]["press"].pop("placebo_fair"),                # unsaid whether the placebo is a fair test
+    lambda s: s["at_the_top"].update(fame=s["at_the_top"]["market"]),  # a kind of success there is not
+    lambda s: s.pop("at_the_top"),
 ])
 def test_a_snapshot_that_does_not_hang_together_is_refused(break_it):
     snap = copy.deepcopy(_snapshot())
@@ -63,8 +68,8 @@ def test_each_kind_says_whether_its_placebo_is_a_fair_test():
 
 @pytest.mark.parametrize("kind", success.KINDS)
 def test_each_kind_has_a_report_snapshot(kind):
-    from src.engine.api import narrative
-    snap = narrative.success_snapshot("art", kind)
+    from src.engine.api import success_narrative
+    snap = success_narrative.success_snapshot("art", kind)
     assert snap.kind == kind and snap.leader and snap.critics_rewarded_this_year
     assert snap.control_placebo_is_a_fair_test == success.current().kinds[kind].placebo_fair
     s = success.current()
@@ -108,8 +113,8 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
 
 
 def _verdicts(kind):
-    from src.engine.api import narrative
-    return " ".join(narrative.success_snapshot("art", kind).verdicts)
+    from src.engine.api import success_narrative
+    return " ".join(success_narrative.success_snapshot("art", kind).verdicts)
 
 
 def test_verdicts_are_fixed_by_rule_so_a_report_cannot_soften_them():
@@ -147,8 +152,8 @@ def test_each_feature_says_which_trend_list_or_medium_it_counts():
 
 
 def _subject(kind):
-    from src.engine.api import narrative
-    return narrative.success_snapshot("art", kind).image_subject
+    from src.engine.api import success_narrative
+    return success_narrative.success_snapshot("art", kind).image_subject
 
 
 def test_the_image_subject_is_chosen_by_rule():
@@ -167,8 +172,27 @@ def test_the_image_subject_is_chosen_by_rule():
     assert approve.distinctive_words and approve.what_critics_said
 
 
-def test_nothing_is_illustrated_where_the_gain_is_too_small_to_claim():
-    assert _subject("market") is None
+def test_nothing_is_illustrated_where_the_gain_is_too_small_to_claim_and_nothing_describes_it(monkeypatch):
+    from src.engine.api import success_narrative
+    snap = _snapshot()
+    snap["kinds"]["market"]["gain"] = 2.4
+    snap["at_the_top"] = {}
+    monkeypatch.setattr(success_narrative, "current_success", lambda key: success.load(snap))
+    assert success_narrative.success_snapshot("art", "market").image_subject is None
+
+
+def test_where_nothing_predicts_the_market_its_prompt_describes_the_artists_at_the_top():
+    """ART-PLAN §12.9: the theme naming the most artists in the latest table,
+    ties to claims about them; the medium on the most of their articles."""
+    from src.engine.runtime.trends import current_trends
+    s, t, m = success.current(), current_trends("art"), _subject("market")
+    top = s.at_the_top["market"]
+    best = max((k for k in top.themes if k in t.trends), key=lambda k: top.themes[k])
+    assert m.theme == t.trends[best].name and m.describes_instead
+    assert m.medium == max(top.media, key=top.media.get)
+    r = _reasons("market")
+    assert "describes" in r and "not what leads to it" in r and f"{top.artists}" in r and f"{top.table_year}" in r
+    assert not _subject("museum").describes_instead
 
 
 def test_code_finishes_the_image_prompt_so_the_writer_cannot_change_its_label_or_setting():

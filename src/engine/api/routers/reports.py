@@ -8,7 +8,7 @@ from fastapi import APIRouter, HTTPException, Request
 
 from ...runtime.settings import Settings
 from .. import context
-from .. import narrative
+from .. import narrative, success_narrative
 from .. import report as _report
 from ..dto import (
     DomainReportOut,
@@ -102,7 +102,7 @@ async def trend_report_refresh(domain: str, name: str) -> Any:
 
 def _success(domain: str, kind: str) -> dict:
     try:
-        return narrative.success_snapshot(domain, kind).model_dump()
+        return success_narrative.success_snapshot(domain, kind).model_dump()
     except LookupError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 

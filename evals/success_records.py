@@ -95,6 +95,27 @@ def market_records(people: Mapping, ranks: Mapping[str, Mapping[int, int]], cove
     return out
 
 
+def at_the_top(ranks: Mapping[str, Mapping[int, int]], table_year: int,
+               claims: Iterable[tuple[str, str]], media: Iterable[tuple[str, str]]) -> dict:
+    """What the press said in a year about the artists in TABLE_YEAR's Top 500
+    (ART-PLAN §12.9): each theme's (artists named, claims about them) from
+    (artist, trend) CLAIMS, and articles per medium tag from (artist, medium)
+    MEDIA."""
+    top = {a for a, r in ranks.items() if table_year in r}
+    named: dict = defaultdict(set)
+    counted: dict = defaultdict(int)
+    for a, trend in claims:
+        if a in top:
+            named[trend].add(a)
+            counted[trend] += 1
+    tags: dict = defaultdict(int)
+    for a, m in media:
+        if a in top:
+            tags[m] += 1
+    return {"table_year": table_year, "artists": len(top),
+            "themes": {t: [len(named[t]), counted[t]] for t in named}, "media": dict(tags)}
+
+
 # ── Reading the sources (glue) ────────────────────────────────────────────────
 
 def _births(museums: Mapping) -> dict[str, int]:
@@ -106,12 +127,12 @@ def _births(museums: Mapping) -> dict[str, int]:
     return born
 
 
-def _media(names: set[str]) -> dict[str, dict[str, dict[int, int]]]:
-    """Artist -> medium -> year -> articles naming the artist with that tag."""
-    out: dict = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+def _media_articles(names: set[str]):
+    """(artist, medium, calendar year, year to September) for each article
+    naming the artist with that medium tag."""
     for paper in ("guardian", "nyt"):
         for path in sorted(Path(TEXTS, paper).glob("*.jsonl")):
-            year = int(path.stem[:4])
+            y, m = map(int, path.stem.split("-"))
             for line in path.read_text().splitlines():
                 tags = json.loads(line).get("tags", [])
                 media = {MEDIA[(paper, v if paper == "nyt" else k)] for k, v in tags
@@ -121,40 +142,51 @@ def _media(names: set[str]) -> dict[str, dict[str, dict[int, int]]]:
                 named = {nyt_person(v) for k, v in tags if paper == "nyt" and k.lower() == "persons"} | \
                         {normalise(v) for k, v in tags if paper == "guardian" and k.startswith("artanddesign/")}
                 for n in named & names:
-                    for m in media:
-                        out[n][m][year] += 1
+                    for md in media:
+                        yield n, md, y, y + (m >= 10)
+
+
+def _media(names: set[str]) -> dict[str, dict[str, dict[int, int]]]:
+    """Artist -> medium -> year -> articles naming the artist with that tag."""
+    out: dict = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+    for n, m, year, _ in _media_articles(names):
+        out[n][m][year] += 1
     return out
 
 
-def _trend_claims(names: set[str]) -> dict[str, dict[str, dict[int, int]]]:
-    """Artist -> list feature -> year -> claims about the artist in a trend
-    on that list that year (years to September, as the lists)."""
+def _claims(names: set[str]):
+    """(artist, trend, calendar year, year to September) for each claim about
+    one of NAMES that was grouped into a trend."""
     trend_of = {}
     for line in (TEXTS / "trends" / "claims.jsonl").read_text().splitlines():
         r = json.loads(line)
         if r["start"] is not None:
             trend_of[(r["paper"], r["article"], r["i"])] = r["trend"]
+    for path in sorted((TEXTS / "grounded").glob("*/*.jsonl")):
+        paper, month = path.parent.name, path.stem
+        y, m = map(int, month.split("-"))
+        for line in path.read_text().splitlines():
+            row = json.loads(line)
+            for i, a in enumerate(row["assertions"]):
+                t = trend_of.get((paper, row["id"], i))
+                if t is None:
+                    continue
+                artist = linked(a["about"], names)
+                if artist is not None:
+                    yield artist, t, y, y + (m >= 10)
+
+
+def _trend_claims(names: set[str]) -> dict[str, dict[str, dict[int, int]]]:
+    """Artist -> list feature -> year -> claims about the artist in a trend
+    on that list that year (years to September, as the lists)."""
     status = {}
     for line in (TEXTS / "trends" / "status.jsonl").read_text().splitlines():
         r = json.loads(line)
         status[(r["trend"], r["year"])] = [LISTS[k] for k in LISTS if r[k]]
     out: dict = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
-    for path in sorted((TEXTS / "grounded").glob("*/*.jsonl")):
-        paper, month = path.parent.name, path.stem
-        y, m = map(int, month.split("-"))
-        year_to_sep, year = y + (m >= 10), y
-        for line in path.read_text().splitlines():
-            row = json.loads(line)
-            for i, a in enumerate(row["assertions"]):
-                t = trend_of.get((paper, row["id"], i))
-                lists = status.get((t, year_to_sep), []) if t is not None else []
-                if not lists:
-                    continue
-                artist = linked(a["about"], names)
-                if artist is None:
-                    continue
-                for f in lists:
-                    out[artist][f][year] += 1
+    for artist, t, year, year_to_sep in _claims(names):
+        for f in status.get((t, year_to_sep), []):
+            out[artist][f][year] += 1
     return out
 
 
@@ -176,6 +208,18 @@ def _ranks(people: Mapping, births: Mapping[str, int]) -> tuple[dict, set[int]]:
             if born is None or births.get(name) in (None, born):
                 ranks[name][year] = min(ranks[name].get(year, 999), int(r["rank"]))
     return ranks, covered
+
+
+def market_top(year: int) -> dict:
+    """at_the_top for the latest Top 500 table, from the claims and medium-tagged
+    articles of YEAR (to September, as the trend lists). Reads the sources."""
+    from .artist_records import artists
+    people = artists()
+    names = set(people)
+    museums = json.loads((DATA / "artists" / "museums.json").read_text())
+    ranks, covered = _ranks(people, _births(museums))
+    return at_the_top(ranks, max(covered), ((a, str(t)) for a, t, _, ys in _claims(names) if ys == year),
+                      ((a, m) for a, m, _, ys in _media_articles(names) if ys == year))
 
 
 def build() -> dict[str, tuple[str, str, list[dict]]]:

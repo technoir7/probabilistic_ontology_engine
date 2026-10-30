@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 from typing import Mapping, Optional
 
-from ...engine.model.success import Rewarded, Success, SuccessKind
+from ...engine.model.success import AtTheTop, Rewarded, Success, SuccessKind
 from .cases import MEANINGS
 
 DATA = Path(__file__).parent / "success_data" / "success.json"
@@ -31,14 +31,21 @@ def _kind(key: str, k: Mapping) -> SuccessKind:
                        tuple((a, o, w) for a, o, w in k["most_raised"]), tuple((y, g) for y, g in k["years"]))
 
 
+def _at_the_top(t: Mapping) -> AtTheTop:
+    return AtTheTop(t["table_year"], t["artists"], {k: (a, c) for k, (a, c) in t["themes"].items()}, dict(t["media"]))
+
+
 def load(snapshot: Mapping) -> Success:
     if set(snapshot["kinds"]) != set(KINDS):
         raise ValueError(f"kinds {sorted(snapshot['kinds'])}, expected {sorted(KINDS)}")
+    if not set(snapshot["at_the_top"]) <= set(KINDS):
+        raise ValueError(f"at_the_top names kinds outside {sorted(KINDS)}: {sorted(snapshot['at_the_top'])}")
     return Success(snapshot["year"], snapshot["forecast_for"],
                    {key: _kind(key, k) for key, k in snapshot["kinds"].items()},
                    tuple(Rewarded(r["kind"], r["name"], r["approvals"], r["disapprovals"],
                                   tuple(r["approved"]), tuple(r["disapproved"])) for r in snapshot["rewarded"]),
-                   {f: MEANINGS[f] for f in POOL}, LISTS, MEDIA)
+                   {f: MEANINGS[f] for f in POOL}, LISTS, MEDIA,
+                   {k: _at_the_top(t) for k, t in snapshot["at_the_top"].items()})
 
 
 def current() -> Optional[Success]:
