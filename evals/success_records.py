@@ -140,22 +140,32 @@ def at_the_top(ranks: Mapping[str, Mapping[int, int]], table_year: int,
             "said": {t: [text for _, text in sorted(said[t], reverse=True)[:SAID]] for t in said}}
 
 
-def theme_lives(claims: Iterable[tuple[str, str, str, str, bool]]) -> dict[str, list[list[str]]]:
-    """Trend key -> its LIVES most recent (who, when, claim) among the
-    (trend, who, when, claim, about a life) CLAIMS read as about a life."""
-    by: dict = defaultdict(list)
-    for t, who, when, text, life in claims:
-        if life:
-            by[t].append((when, who, text))
-    return {t: [[who, when, text] for when, who, text in sorted(v, reverse=True)[:LIVES]] for t, v in by.items()}
+def chosen_lives(claims: Iterable[tuple[str, str, str, str, str]], records: Mapping[str, float],
+                 names: Mapping[str, str]) -> list[list[str]]:
+    """The claims the imagined artist's life is assembled from (ART-PLAN
+    15.7): of (block, who, when, claim, what it is about) CLAIMS read as
+    about a life, those in blocks with a RECORD above 0, best block first
+    and most recent first within one; at most 2 about the same subject and
+    LIVES in all. Each as [who, when, claim, the block's name]."""
+    ranked = sorted(((records[b], when, who, text, b, about) for b, who, when, text, about in claims
+                     if records.get(b, 0.0) > 0), reverse=True)
+    out, per = [], defaultdict(int)
+    for _, when, who, text, b, about in ranked:
+        if per[about] < 2:
+            per[about] += 1
+            out.append([who, when, text, names.get(b, b)])
+        if len(out) == LIVES:
+            break
+    return out
 
 
 # ── Reading the sources (glue) ────────────────────────────────────────────────
 
-def year_claims(year: int, names: set[str]):
-    """(trend, who, published, "about: asserts", about a life, artist named
-    or None) for each claim grouped into a trend in YEAR (to September),
-    with its life-or-work reading (ART-PLAN §15.2)."""
+def year_life_claims(year: int, names: set[str]):
+    """(block, who, published, "about: asserts", subject) for each claim
+    grouped into a trend in YEAR (to September) and read as about a life
+    (ART-PLAN 15.7); the subject is the artist named, else what the claim is
+    about."""
     window = {f"{year - 1}-{m:02d}" for m in (10, 11, 12)} | {f"{year}-{m:02d}" for m in range(1, 10)}
     trend_of = {}
     for line in (TEXTS / "trends" / "claims.jsonl").read_text().splitlines():
@@ -176,13 +186,9 @@ def year_claims(year: int, names: set[str]):
                     if t is None:
                         continue
                     read = life[row["id"]][i]
-                    yield (t, a["who"], row.get("published", month), f"{a['about']}: {a['asserts']}",
-                           read is not None and read[1] == "yes", linked(a["about"], names))
-
-
-def year_lives(year: int) -> dict[str, list[list[str]]]:
-    """theme_lives for every theme in YEAR. Reads the claims."""
-    return theme_lives((t, who, when, text, life) for t, who, when, text, life, _ in year_claims(year, set()))
+                    if read is not None and read[1] == "yes":
+                        yield (t, a["who"], row.get("published", month), f"{a['about']}: {a['asserts']}",
+                               linked(a["about"], names) or a["about"].lower())
 
 
 def _births(museums: Mapping) -> dict[str, int]:
@@ -242,15 +248,36 @@ def _claims(names: set[str]):
                 artist = linked(a["about"], names)
                 if artist is not None:
                     yield (artist, t, y, y + (m >= 10), f"{a['about']}: {a['asserts']}",
-                           f"{row.get('published', month)} {paper} {row['id']}")
+                           f"{row.get('published', month)} {paper} {row['id']}", (paper, row["id"], i))
 
 
 def theme_claims(names: set[str]) -> dict[tuple[str, int], dict[str, int]]:
     """(artist, year) -> theme -> claims about the artist in it that year,
     every theme a claim was grouped into (ART-PLAN §14). Reads the claims."""
     out: dict = defaultdict(lambda: defaultdict(int))
-    for artist, t, year, _, _, _ in _claims(names):
+    for artist, t, year, _, _, _, _ in _claims(names):
         out[(artist, year)][str(t)] += 1
+    return {k: dict(v) for k, v in out.items()}
+
+
+def life_keys() -> set[tuple[str, str, int]]:
+    """(paper, article, claim number) of every claim read as about a life
+    (ART-PLAN §15.2). Reads the life-or-work reading."""
+    out = set()
+    for path in (TEXTS / "life").glob("*/*.jsonl"):
+        for line in path.read_text().splitlines():
+            row = json.loads(line)
+            out |= {(path.parent.name, row["id"], i) for i, r in enumerate(row["life"]) if r and r[1] == "yes"}
+    return out
+
+
+def life_theme_claims(names: set[str], lives: set[tuple[str, str, int]]) -> dict[tuple[str, int], dict[str, int]]:
+    """theme_claims counting only the claims read as about a life: each
+    artist-year's claims in each life block (ART-PLAN 15.7)."""
+    out: dict = defaultdict(lambda: defaultdict(int))
+    for artist, t, year, _, _, _, claim in _claims(names):
+        if claim in lives:
+            out[(artist, year)][str(t)] += 1
     return {k: dict(v) for k, v in out.items()}
 
 
@@ -262,7 +289,7 @@ def _trend_claims(names: set[str]) -> dict[str, dict[str, dict[int, int]]]:
         r = json.loads(line)
         status[(r["trend"], r["year"])] = [LISTS[k] for k in LISTS if r[k]]
     out: dict = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
-    for artist, t, year, year_to_sep, _, _ in _claims(names):
+    for artist, t, year, year_to_sep, _, _, _ in _claims(names):
         for f in status.get((t, year_to_sep), []):
             out[artist][f][year] += 1
     return out
@@ -296,13 +323,9 @@ def market_top(year: int) -> dict:
     names = set(people)
     museums = json.loads((DATA / "artists" / "museums.json").read_text())
     ranks, covered = _ranks(people, _births(museums))
-    top = {a for a, r in ranks.items() if max(covered) in r}
-    out = at_the_top(ranks, max(covered),
-                     ((a, str(t), text, when) for a, t, _, ys, text, when in _claims(names) if ys == year),
-                     ((a, m) for a, m, _, ys in _media_articles(names) if ys == year))
-    out["lives"] = theme_lives((t, who, when, text, life) for t, who, when, text, life, a in year_claims(year, names)
-                               if a in top)
-    return out
+    return at_the_top(ranks, max(covered),
+                      ((a, str(t), text, when) for a, t, _, ys, text, when, _ in _claims(names) if ys == year),
+                      ((a, m) for a, m, _, ys in _media_articles(names) if ys == year))
 
 
 def build() -> dict[str, tuple[str, str, list[dict]]]:

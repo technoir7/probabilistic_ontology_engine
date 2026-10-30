@@ -32,17 +32,17 @@ def _kind(key: str, k: Mapping) -> SuccessKind:
                        tuple((a, o, w) for a, o, w in k["most_raised"]), tuple((y, g) for y, g in k["years"]))
 
 
-def _lives(by_theme: Mapping) -> dict[str, tuple[LifeClaim, ...]]:
-    return {k: tuple(LifeClaim(who, when, claim) for who, when, claim in claims) for k, claims in by_theme.items()}
+def _lives(by_kind: Mapping) -> dict[str, tuple[LifeClaim, ...]]:
+    return {k: tuple(LifeClaim(*c) for c in claims) for k, claims in by_kind.items()}
 
 
 def _at_the_top(t: Mapping) -> AtTheTop:
     return AtTheTop(t["table_year"], t["artists"], {k: (a, c) for k, (a, c) in t["themes"].items()}, dict(t["media"]),
-                    {k: tuple(said) for k, said in t["said"].items()}, _lives(t.get("lives", {})))
+                    {k: tuple(said) for k, said in t["said"].items()})
 
 
-def _theme_test(t: Mapping) -> ThemeTest:
-    unknown = set(t["leader"]) - set(POOL) - {"good_theme", "poor_theme"}
+def _theme_test(t: Mapping, new: tuple[str, str] = ("good_theme", "poor_theme")) -> ThemeTest:
+    unknown = set(t["leader"]) - set(POOL) - set(new)
     if unknown:
         raise ValueError(f"theme test leader names unknown features: {sorted(unknown)}")
     return ThemeTest(tuple(t["leader"]), t["leader_since"], t["gain"], t["gain_without"],
@@ -56,6 +56,9 @@ def load(snapshot: Mapping) -> Success:
         raise ValueError(f"kinds {sorted(snapshot['kinds'])}, expected {sorted(KINDS)} and any of {sorted(APART)}")
     if not set(snapshot.get("themes", {})) <= set(KINDS):
         raise ValueError(f"themes names kinds outside {sorted(KINDS)}: {sorted(snapshot['themes'])}")
+    for part in ("lives", "life_tests"):
+        if not set(snapshot.get(part, {})) <= set(snapshot["kinds"]):
+            raise ValueError(f"{part} names kinds outside the snapshot's: {sorted(snapshot[part])}")
     if not set(snapshot["at_the_top"]) <= set(KINDS):
         raise ValueError(f"at_the_top names kinds outside {sorted(KINDS)}: {sorted(snapshot['at_the_top'])}")
     return Success(snapshot["year"], snapshot["forecast_for"],
@@ -66,7 +69,8 @@ def load(snapshot: Mapping) -> Success:
                    {k: _at_the_top(t) for k, t in snapshot["at_the_top"].items()},
                    tuple(k for k in APART if k in snapshot["kinds"]),
                    {k: _theme_test(t) for k, t in snapshot.get("themes", {}).items()},
-                   _lives(snapshot.get("lives", {})))
+                   _lives(snapshot.get("lives", {})),
+                   {k: _theme_test(t, ("good_life", "poor_life")) for k, t in snapshot.get("life_tests", {}).items()})
 
 
 def current() -> Optional[Success]:

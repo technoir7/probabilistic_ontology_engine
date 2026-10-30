@@ -34,6 +34,8 @@ MEANINGS = {
     # Which themes help (ART-PLAN §14): records learned from earlier years only.
     "good_theme": "claims about the artist in themes with a good record so far",
     "poor_theme": "claims about the artist in themes with a poor record so far",
+    "good_life": "claims about the artist's life in life blocks with a good record so far",
+    "poor_life": "claims about the artist's life in life blocks with a poor record so far",
     "painting": "Guardian articles on the artist tagged painting that year",
     "photography": "articles on the artist tagged photography that year",
     "sculpture": "articles on the artist tagged sculpture that year",

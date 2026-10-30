@@ -45,3 +45,10 @@ def test_each_artist_year_counts_claims_in_good_and_poor_record_themes():
     assert c2_2003["features"] == {"good_theme": 1, "poor_theme": 0}
     c0_2001 = next(r for r in rows if r["case"] == "c0" and r["year"] == 2001)
     assert c0_2001["features"] == {"good_theme": 0, "poor_theme": 0}       # no record yet
+
+
+def test_the_two_features_can_be_named_for_life_blocks():
+    """ART-PLAN 15.7: the same record, counting claims about a life."""
+    rows = with_theme_features(_rows(), CLAIMS, track_records(_rows(), CLAIMS), names=("good_life", "poor_life"))
+    c0_2002 = next(r for r in rows if r["case"] == "c0" and r["year"] == 2002)
+    assert c0_2002["features"] == {"good_life": 1, "poor_life": 1}

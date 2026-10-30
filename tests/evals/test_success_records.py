@@ -88,11 +88,17 @@ def test_an_unknown_band_is_not_a_band():
     assert rows[-1]["year"] == 2017 and rows[-1]["own"][0] == 5       # the open year without a table
 
 
-def test_theme_lives_keep_each_themes_most_recent_claims_read_as_about_a_life():
-    """ART-PLAN 15.1 after the reading: the claims the imagined artist's life may draw on."""
-    from evals.success_records import LIVES, theme_lives
-    claims = [("7", "W", f"2026-01-{i:02d}", f"claim {i}", True) for i in range(1, LIVES + 3)]
-    claims += [("9", "V", "2026-02-01", "x: y", True), ("9", "V", "2026-03-01", "x: about a work", False)]
-    got = theme_lives(claims)
-    assert got["7"][0] == ["W", f"2026-01-{LIVES + 2:02d}", f"claim {LIVES + 2}"] and len(got["7"]) == LIVES
-    assert got["9"] == [["V", "2026-02-01", "x: y"]]
+def test_the_imagined_artist_takes_the_best_blocks_first_two_claims_a_subject_and_eight_in_all():
+    """ART-PLAN 15.7: life blocks with a record above 0, best first, most
+    recent first within a block; at most 2 per subject, LIVES in all."""
+    from evals.success_records import LIVES, chosen_lives
+    records = {"1": 0.5, "2": 0.9, "3": -0.2}
+    claims = [("1", "W", "2026-03-01", "a: one", "a"), ("2", "V", "2026-01-01", "b: two", "b"),
+              ("2", "V", "2026-02-01", "b: three", "b"), ("2", "V", "2026-03-01", "b: four", "b"),
+              ("3", "U", "2026-04-01", "c: poor block", "c"), ("4", "U", "2026-04-01", "d: no record", "d")]
+    names = {"1": "first block", "2": "second block"}
+    got = chosen_lives(claims, records, names)
+    assert got == [["V", "2026-03-01", "b: four", "second block"], ["V", "2026-02-01", "b: three", "second block"],
+                   ["W", "2026-03-01", "a: one", "first block"]]
+    many = [("2", "V", f"2026-01-{i:02d}", f"x{i}: y", f"x{i}") for i in range(1, LIVES + 5)]
+    assert len(chosen_lives(many, records, names)) == LIVES

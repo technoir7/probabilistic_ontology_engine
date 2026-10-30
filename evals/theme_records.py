@@ -41,15 +41,17 @@ def track_records(rows: list[dict], claims: Mapping[tuple[str, int], Mapping[str
 
 
 def with_theme_features(rows: list[dict], claims: Mapping[tuple[str, int], Mapping[str, int]],
-                        records: Mapping[int, Mapping[str, float]]) -> list[dict]:
-    """Each artist-year with two more features, graded none / one / several:
-    claims about the artist in themes whose record that year is above 0, and
-    below 0."""
+                        records: Mapping[int, Mapping[str, float]],
+                        names: tuple[str, str] = ("good_theme", "poor_theme")) -> list[dict]:
+    """Each artist-year with two more features NAMES, graded none / one /
+    several: claims about the artist in themes whose record that year is
+    above 0, and below 0. CLAIMS may be only some claims, such as those
+    about a life (ART-PLAN 15.7)."""
     out = []
     for r in rows:
         rec = records.get(r["year"], {})
         mine = claims.get((r["case"], r["year"]), {})
         good = sum(n for t, n in mine.items() if rec.get(t, 0.0) > 0)
         poor = sum(n for t, n in mine.items() if rec.get(t, 0.0) < 0)
-        out.append(dict(r, features=dict(r["features"], good_theme=level(good), poor_theme=level(poor))))
+        out.append(dict(r, features=dict(r["features"], **{names[0]: level(good), names[1]: level(poor)})))
     return out

@@ -115,9 +115,11 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
     voice = success_narrative.WALL_TEXT_VOICES["museum"]
     assert f"{report.wall_text_label(voice)}\n\n*At Work*, photography, 2026\n\nThe artist photographs work." in body["report"]
     assert f"{report.STATEMENT_LABEL}\n\nI photograph work." in body["report"]
-    lives = [c.model_dump() for c in success_narrative.success_snapshot("art", "museum").image_subject.life_claims]
-    assert body["report"].endswith(f"{report.LIFE_LABEL}\n\nThe artist worked [1].\n\n{report.life_trail(lives)}"
-                                   if lives else f"{report.LIFE_HEADING}\n\n{report.NO_LIVES}")
+    subject = success_narrative.success_snapshot("art", "museum").image_subject
+    lives, finding = [c.model_dump() for c in subject.life_claims], subject.life_finding
+    assert body["report"].endswith(
+        f"{report.LIFE_LABEL}\n\n{finding}\n\nThe artist worked [1].\n\n{report.life_trail(lives)}"
+        if lives else f"{report.LIFE_HEADING}\n\n{finding} {report.NO_LIVES}")
     assert report.REASONS_HEADING in body["report"]
 
 
@@ -208,8 +210,11 @@ def test_where_nothing_predicts_the_market_its_prompt_describes_the_artists_at_t
     assert not _subject("museum").describes_instead
 
 
-LIVES = [{"n": 1, "who": "A Critic", "when": "2026-02-01", "claim": "X's early career: she faced discrimination"},
-         {"n": 2, "who": "B Critic", "when": "2026-03-01", "claim": "Y: was discovered only after her death"}]
+LIVES = [{"n": 1, "who": "A Critic", "when": "2026-02-01", "claim": "X's early career: she faced discrimination",
+          "block": "early careers"},
+         {"n": 2, "who": "B Critic", "when": "2026-03-01", "claim": "Y: was discovered only after her death",
+          "block": "late discovery"}]
+FINDING = "Life stories add nothing here."
 LIFE = "The artist met discrimination early [1]. The work was found only after the artist's death. [2]"
 WALL = ("\n\n## Wall text\n\n*River Hours*, painting, 2027\n\nThe artist paints a river."
         "\n\n## Artist statement\n\nI paint the river.\n\n## The imagined artist\n\n" + LIFE + "\n")
@@ -219,14 +224,15 @@ VOICE = "the label of a museum that has just acquired it"
 def test_code_finishes_the_image_prompt_so_the_writer_cannot_change_its_label_or_setting():
     from src.engine.api import report
     text = report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA large painting of a river.\n" + WALL,
-                                        ["Why the river.", "Why paint."], VOICE, LIVES)
+                                        ["Why the river.", "Why paint."], VOICE, LIVES, FINDING)
     assert text == ("## In short\nA.\n\n" + report.REASONS_HEADING + "\n\nWhy the river.\n\nWhy paint.\n\n"
                     + report.IMAGE_HEADING + "\n\n" + report.IMAGE_LABEL + "\n\n"
                     "A large painting of a river. " + report.IMAGE_SETTING + "\n\n"
                     + report.WALL_HEADING + "\n\n" + report.wall_text_label(VOICE) + "\n\n"
                     "*River Hours*, painting, 2027\n\nThe artist paints a river.\n\n"
                     + report.STATEMENT_HEADING + "\n\n" + report.STATEMENT_LABEL + "\n\nI paint the river.\n\n"
-                    + report.LIFE_HEADING + "\n\n" + report.LIFE_LABEL + "\n\n" + LIFE + "\n\n" + report.life_trail(LIVES))
+                    + report.LIFE_HEADING + "\n\n" + report.LIFE_LABEL + "\n\n" + FINDING + "\n\n" + LIFE + "\n\n"
+                    + report.life_trail(LIVES))
 
 
 def test_the_wall_text_label_names_the_voice_and_says_it_is_fiction():
@@ -248,8 +254,8 @@ def test_the_imagined_artist_label_says_the_life_is_fiction_from_real_lives():
 def test_the_claims_a_life_is_built_from_are_listed_under_it():
     from src.engine.api import report
     trail = report.life_trail(LIVES)
-    assert "[1] A Critic (2026-02-01): X's early career: she faced discrimination" in trail
-    assert "[2] B Critic (2026-03-01): Y: was discovered only after her death" in trail
+    assert '[1] A Critic (2026-02-01), in "early careers": X\'s early career: she faced discrimination' in trail
+    assert '[2] B Critic (2026-03-01), in "late discovery": Y: was discovered only after her death' in trail
 
 
 @pytest.mark.parametrize("life", ["The artist met discrimination early [1]. The work was found later.",
@@ -259,20 +265,20 @@ def test_a_sentence_of_the_life_without_a_claim_behind_it_refuses_the_report(lif
     from src.engine.api import report
     text = WALL.replace(LIFE, life)
     with pytest.raises(ValueError):
-        report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA river." + text, ["Why."], VOICE, LIVES)
+        report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA river." + text, ["Why."], VOICE, LIVES, FINDING)
 
 
 def test_where_no_claim_is_about_a_life_code_says_so_whatever_the_writer_wrote():
     from src.engine.api import report
     for life in ("\n\n## The imagined artist\n\nThe artist began late.", ""):
         text = "## In short\nA.\n\n## Image prompt\n\nA river." + WALL.split("\n\n## The imagined artist")[0] + life
-        assert report.finish_success_report(text, ["Why."], VOICE, []).endswith(
-            report.LIFE_HEADING + "\n\n" + report.NO_LIVES)
+        assert report.finish_success_report(text, ["Why."], VOICE, [], FINDING).endswith(
+            report.LIFE_HEADING + "\n\n" + FINDING + " " + report.NO_LIVES)
 
 
 def test_words_the_writer_adds_to_the_image_prompt_heading_are_not_part_of_the_prompt():
     from src.engine.api import report
-    text = report.finish_success_report("## In short\nA.\n\n## Image prompt: a vision\nA river." + WALL, ["Why."], VOICE, LIVES)
+    text = report.finish_success_report("## In short\nA.\n\n## Image prompt: a vision\nA river." + WALL, ["Why."], VOICE, LIVES, FINDING)
     assert ("\n\nA river. " + report.IMAGE_SETTING + "\n\n" + report.WALL_HEADING) in text and "vision" not in text
 
 
@@ -289,13 +295,13 @@ def test_words_the_writer_adds_to_the_image_prompt_heading_are_not_part_of_the_p
 def test_an_image_prompt_wall_text_or_statement_wanted_but_not_written_is_an_error(written):
     from src.engine.api import report
     with pytest.raises(ValueError):
-        report.finish_success_report(written, ["Why."], VOICE, LIVES)
+        report.finish_success_report(written, ["Why."], VOICE, LIVES, FINDING)
 
 
 def test_where_nothing_is_illustrated_code_says_so_whatever_the_writer_wrote():
     from src.engine.api import report
     for written in ("## In short\nA.", "## In short\nA.\n\n## Image prompt\nA bird." + WALL):
-        assert report.finish_success_report(written, None, None, []) == (
+        assert report.finish_success_report(written, None, None, [], "") == (
             "## In short\nA.\n\n" + report.IMAGE_HEADING + "\n\n" + report.NOTHING_TO_ILLUSTRATE)
 
 
@@ -309,18 +315,37 @@ def test_who_speaks_in_the_wall_text_is_fixed_by_kind(kind, words):
         assert subject.wall_text_voice == success_narrative.WALL_TEXT_VOICES[kind]
 
 
-def test_the_life_claims_are_the_image_themes_numbered_in_order(monkeypatch):
-    from src.engine.runtime.trends import current_trends
+def _life_test(leader, gain, without, placebo, dealt):
+    return {"leader": leader, "leader_since": 2010, "gain": gain, "gain_without": without,
+            "effects": {"good_life": {"1": 0.5}}, "dealt": {"good_life": dealt, "poor_life": [gain] * 3},
+            "placebo": placebo, "year": 2025, "best": [["late discovery", 0.4]], "worst": []}
+
+
+def test_each_kind_gets_its_own_life_claims_numbered_in_order(monkeypatch):
+    """ART-PLAN 15.7: the imagined artist's claims are chosen per kind."""
     snap = _snapshot()
-    snap["lives"] = {k: [["W", "2026-01-01", f"{k}: life"]] for k in current_trends("art").trends}
-    key = next(iter(current_trends("art").trends))
-    snap["at_the_top"]["market"].update(themes={key: [12, 30]}, said={key: ["a: x"]},
-                                        lives={key: [["V", "2026-02-01", "a's career: began late"]]})
+    snap["lives"] = {"museum": [["W", "2026-01-01", "a: began late", "late discovery"]],
+                     "press": [["V", "2026-02-01", "b: rose fast", "early fame"]]}
     monkeypatch.setattr(success_narrative, "current_success", lambda key: success.load(snap))
-    museum, market = (success_narrative.success_snapshot("art", k).image_subject for k in ("museum", "market"))
-    shown = next(k for k, t in current_trends("art").trends.items() if t.name == museum.theme)
-    assert [c.model_dump() for c in museum.life_claims] == [{"n": 1, "who": "W", "when": "2026-01-01", "claim": f"{shown}: life"}]
-    assert [c.claim for c in market.life_claims] == ["a's career: began late"]     # about those at the top only
+    museum, press = (success_narrative.success_snapshot("art", k).image_subject for k in ("museum", "press"))
+    assert [c.model_dump() for c in museum.life_claims] == [
+        {"n": 1, "who": "W", "when": "2026-01-01", "claim": "a: began late", "block": "late discovery"}]
+    assert [c.claim for c in press.life_claims] == ["b: rose fast"]
+
+
+@pytest.mark.parametrize("test, says", [
+    (None, "has not been tested"),
+    (_life_test(["nyt"], 120.0, 120.0, 40.0, [120.0] * 3), "add nothing"),
+    (_life_test(["nyt", "good_life"], 135.0, 120.0, 140.0, [120.0] * 3), "come with this kind of success"),
+    (_life_test(["nyt", "good_life"], 135.0, 120.0, 40.0, [120.0] * 3), "predict this kind of success"),
+    (_life_test(["nyt", "good_life"], 125.0, 120.0, 40.0, [120.0] * 3), "add nothing"),     # 5 over: too little
+])
+def test_what_the_life_test_found_is_said_by_rule(monkeypatch, test, says):
+    snap = _snapshot()
+    if test:
+        snap["life_tests"] = {"museum": test}
+    monkeypatch.setattr(success_narrative, "current_success", lambda key: success.load(snap))
+    assert says in success_narrative.success_snapshot("art", "museum").image_subject.life_finding
 
 
 def _reasons(kind):

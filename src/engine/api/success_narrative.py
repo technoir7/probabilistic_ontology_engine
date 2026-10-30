@@ -168,7 +168,8 @@ def _image_subject(s, domain: str, kind: str) -> Optional[NarrativeImageSubjectO
         medium=medium, medium_from_the_leading_features=feature is not None,
         reasons=[_theme_reason(k, t, push, theme, tied), _medium_reason(s, k, feature, approved),
                  _details("what critics said in it")],
-        describes_instead=False, wall_text_voice=WALL_TEXT_VOICES[kind], life_claims=_numbered(s.lives.get(theme.key, ())))
+        describes_instead=False, wall_text_voice=WALL_TEXT_VOICES[kind], life_claims=_numbered(s.lives.get(kind, ())),
+        life_finding=_life_finding(s, kind))
 
 
 def _trends_now(s, domain: str) -> TrendLists:
@@ -212,11 +213,35 @@ def _described_subject(s, k, t: TrendLists, top, voice: str) -> Optional[Narrati
         theme=theme.name, theme_is_on_this_years_lists=[n for n in t.lists if theme.key in t.lists[n]],
         distinctive_words=list(theme.words), what_critics_said=list(top.said.get(themes[0], ())),
         medium=medium, medium_from_the_leading_features=False, reasons=reasons, describes_instead=True,
-        wall_text_voice=voice, life_claims=_numbered(top.lives.get(themes[0], ())))
+        wall_text_voice=voice, life_claims=_numbered(s.lives.get(k.key, ())), life_finding=_life_finding(s, k.key))
 
 
 def _numbered(lives) -> list[NarrativeLifeClaimOut]:
-    return [NarrativeLifeClaimOut(n=n, who=c.who, when=c.when, claim=c.claim) for n, c in enumerate(lives, 1)]
+    return [NarrativeLifeClaimOut(n=n, who=c.who, when=c.when, claim=c.claim, block=c.block)
+            for n, c in enumerate(lives, 1)]
+
+
+_BLOCKS = "Life stories from the life blocks with the best record for this kind"
+
+
+def _life_finding(s, kind: str) -> str:
+    """What the life-block test (ART-PLAN 15.7) found for KIND, by the
+    verdict rules, said before the imagined artist's life."""
+    t = s.life_tests.get(kind)
+    if t is None:
+        return "Whether a life story helps this kind of success has not been tested."
+    over = t.gain - t.gain_without
+    deals = t.dealt.get("good_life")
+    adds = t.gain - sum(deals) / len(deals) if deals else 0.0
+    if "good_life" not in t.leader or over < SMALL_NATS or adds <= 1.0:
+        return (f"{_BLOCKS} add nothing beyond what already predicts this kind of success, so the life below shows "
+                "what those blocks hold, not what helps.")
+    if s.kinds[kind].placebo_fair and t.placebo >= t.gain:
+        return (f"{_BLOCKS} come with this kind of success rather than before it: next year's predict it as well "
+                "or better.")
+    strength = "by an overwhelming margin" if over >= LARGE_NATS else "clearly but modestly"
+    return (f"{_BLOCKS} predict this kind of success beyond what already leads, {strength}."
+            + ("" if s.kinds[kind].placebo_fair else " The year-after control is no test here."))
 
 
 def _details(said: str) -> str:

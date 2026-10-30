@@ -11,9 +11,9 @@ from pathlib import Path
 
 from src.domains.art_prestige_regime_v1 import success
 
-from .artist_records import display_names
+from .artist_records import artists, display_names
 from .replay17 import DATA
-from .success_records import YEARS, market_top, year_lives
+from .success_records import TEXTS, YEARS, chosen_lives, market_top, year_life_claims
 
 ROWS = 15
 
@@ -77,8 +77,13 @@ def main() -> None:
             "rewarded": rewarded["rewarded"],
             # Nothing predicts the market, so its image prompt describes who is at the top (ART-PLAN §12.9).
             "at_the_top": {"market": market_top(rewarded["year"])}}
-    # The claims each theme's imagined artist's life may draw on (ART-PLAN 15.1 after the reading).
-    snap["lives"] = year_lives(rewarded["year"])
+    # Life blocks (ART-PLAN 15.7), from evals/lives_run.py: each kind's test, and the claims its imagined
+    # artist's life is assembled from, in the blocks with the best records for that kind.
+    lives = {k: json.loads((run_dir / f"lives_{k}.json").read_text()) for k in runs}
+    snap["life_tests"] = {k: theme_test(r, snap["kinds"][k]["gain"]) for k, r in lives.items()}
+    named = {t: n["name"] for t, n in json.loads((TEXTS / "trends" / "names.json").read_text()).items()}
+    claims = list(year_life_claims(rewarded["year"], set(artists())))
+    snap["lives"] = {k: chosen_lives(claims, r["records"]["now"], named) for k, r in lives.items()}
     # Which themes help (ART-PLAN §14), from evals/themes_run.py.
     snap["themes"] = {k: theme_test(json.loads((run_dir / f"themes_{k}.json").read_text()), snap["kinds"][k]["gain"])
                       for k in success.KINDS}

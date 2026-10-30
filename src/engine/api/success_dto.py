@@ -87,11 +87,12 @@ class NarrativeOtherKindOut(BaseModel):
 
 
 class NarrativeLifeClaimOut(BaseModel):
-    """A claim read as about an artist's life, numbered for the imagined artist's life to cite (ART-PLAN 15.1)."""
+    """A claim read as about an artist's life, numbered for the imagined artist's life to cite (ART-PLAN 15.7)."""
     n: int
     who: str
     when: str
     claim: str
+    block: str                        # the life block it is in
 
 
 class NarrativeImageSubjectOut(BaseModel):
@@ -106,6 +107,7 @@ class NarrativeImageSubjectOut(BaseModel):
     describes_instead: bool                  # True: nothing predicts this kind, so it shows those who have it now
     wall_text_voice: str                     # who speaks in the wall text, fixed by kind (ART-PLAN §12.11)
     life_claims: list[NarrativeLifeClaimOut]  # the only claims the imagined artist's life may draw on; empty: none
+    life_finding: str                        # what the life-block test found for this kind, by rule (ART-PLAN 15.7)
 
 
 class NarrativeThemeKindOut(BaseModel):

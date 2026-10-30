@@ -65,10 +65,10 @@ STATEMENT_HEADING = "## Artist statement"
 STATEMENT_LABEL = ("*A fictional artist statement for the imagined work above, by its imagined artist (ART-PLAN §12.12). "
                    "Its ideas are the critics' claims in this theme; it is not the words of any real artist.*")
 LIFE_HEADING = "## The imagined artist"
-LIFE_LABEL = ("*A fictional life for the imagined artist, kept apart from the work (ART-PLAN §15.1), built from what "
-              "critics in this theme said about real artists' lives. It is not the life of anyone. Each sentence names "
-              "the claims it comes from, listed below.*")
-NO_LIVES = "Critics' claims in this theme this year say nothing about artists' lives."
+LIFE_LABEL = ("*A fictional life for the imagined artist, kept apart from the work (ART-PLAN 15.7), assembled from "
+              "what critics said about real artists' lives in the life blocks with the best record for this kind of "
+              "success. It is not the life of anyone. Each sentence names the claims it comes from, listed below.*")
+NO_LIVES = "No life block has a good record for this kind of success, so there is no life."
 _CITED = re.compile(r"\[(\d+(?:\s*,\s*\d+)*)\]")
 _SENTENCE_END = re.compile(r"(?<=[.!?\]])\s+(?=[A-Z\"'‘“])")
 
@@ -76,7 +76,7 @@ _SENTENCE_END = re.compile(r"(?<=[.!?\]])\s+(?=[A-Z\"'‘“])")
 def life_trail(lives: list[dict]) -> str:
     """The claims an imagined life is built from, as a critic made each."""
     return "*Built from these claims critics made about real artists:*\n\n" + "\n".join(
-        f"- [{c['n']}] {c['who']} ({c['when']}): {c['claim']}" for c in lives)
+        f"- [{c['n']}] {c['who']} ({c['when']}), in \"{c['block']}\": {c['claim']}" for c in lives)
 
 
 def _traced(life: str, lives: list[dict]) -> str:
@@ -94,13 +94,14 @@ def wall_text_label(voice: str) -> str:
             "are the critics' claims in this theme; nothing in it is a fact about any real work or artist.*")
 
 
-def finish_success_report(text: str, reasons: Optional[list[str]], voice: Optional[str], lives: list[dict]) -> str:
+def finish_success_report(text: str, reasons: Optional[list[str]], voice: Optional[str], lives: list[dict],
+                          finding: str) -> str:
     """Replace the writer's image prompt section with the finished one: the
     rule's REASONS, then the label, the writer's description and the
     setting; then the writer's wall text (in VOICE) and artist statement,
     each under its label; then the imagined artist's life, every sentence
-    citing one of LIVES, with the claims cited listed under it, or NO_LIVES
-    where there are none. REASONS None: nothing to illustrate, so none of
+    citing one of LIVES, after the life-block test's FINDING, with the
+    claims cited listed under it, or NO_LIVES where there are none. REASONS None: nothing to illustrate, so none of
     them. ValueError when an illustration is wanted and the writer left a
     part out, or wrote a sentence of the life that cites no claim given."""
     body, _, written = text.partition(f"\n{IMAGE_HEADING}")
@@ -118,7 +119,8 @@ def finish_success_report(text: str, reasons: Optional[list[str]], voice: Option
         if not part:
             raise ValueError(f"the report has no {name}")
     why = "\n\n".join(reasons)
-    life_section = (f"{LIFE_LABEL}\n\n{_traced(life, lives)}\n\n{life_trail(lives)}" if lives else NO_LIVES)
+    life_section = (f"{LIFE_LABEL}\n\n{finding}\n\n{_traced(life, lives)}\n\n{life_trail(lives)}" if lives
+                    else f"{finding} {NO_LIVES}")
     return (f"{body}\n\n{REASONS_HEADING}\n\n{why}\n\n{IMAGE_HEADING}\n\n{IMAGE_LABEL}\n\n"
             f"{description} {IMAGE_SETTING}\n\n{WALL_HEADING}\n\n{wall_text_label(voice)}\n\n{wall}\n\n"
             f"{STATEMENT_HEADING}\n\n{STATEMENT_LABEL}\n\n{statement}\n\n{LIFE_HEADING}\n\n{life_section}")
