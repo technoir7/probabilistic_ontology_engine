@@ -242,9 +242,9 @@ def _generate_report_sync(snapshot: dict, api_key: str, model: str, strict: bool
         # 1500 or even 4096 tokens thought until none were left and wrote
         # nothing. Writing a report from data needs no thinking; off, a report
         # costs well under a cent, and the cap bounds the worst case (the
-        # report asks for under 350 words, about 500 tokens; art's, with
-        # trends, up to 750, about 1,100).
-        max_tokens=2000,
+        # report asks for under 350 words, about 500 tokens; a success
+        # report, up to 900 words and an image prompt, past 2,000).
+        max_tokens=3000,
         reasoning_effort="none",
         messages=[
             {"role": "system", "content": system},
@@ -252,6 +252,8 @@ def _generate_report_sync(snapshot: dict, api_key: str, model: str, strict: bool
         ],
     )
     choice = response.choices[0]
+    if choice.message.content and choice.finish_reason == "length":
+        raise ValueError("the report was cut off at the token cap (finish_reason: length)")
     if not choice.message.content:
         details = getattr(response.usage, "completion_tokens_details", None)
         thought = getattr(details, "reasoning_tokens", None)

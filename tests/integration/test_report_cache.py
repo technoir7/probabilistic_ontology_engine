@@ -488,8 +488,17 @@ def test_the_model_is_asked_not_to_think_and_to_write_briefly():
     seen: dict = {}
     with patch("openai.OpenAI", new=_fake_openai("## BOTTOM LINE\n\nok", seen=seen)):
         assert _generate_report_sync({"x": 1}, "k", "m").startswith("## BOTTOM LINE")
-    # Art's report with trends runs to about 1,100 tokens; the cap bounds the cost.
-    assert seen["reasoning_effort"] == "none" and seen["max_tokens"] <= 2000
+    # A success report with its image prompt runs past 2,000 tokens; the cap bounds the cost.
+    assert seen["reasoning_effort"] == "none" and seen["max_tokens"] <= 3000
+
+
+def test_a_reply_cut_off_at_the_cap_is_an_error_not_a_report():
+    """A success report cut off before its image prompt was refused only as
+    "no image prompt description", hiding why."""
+    from src.engine.api.report import _generate_report_sync
+    with patch("openai.OpenAI", new=_fake_openai("## In short\n\nThe work most", finish_reason="length")):
+        with pytest.raises(ValueError, match="cut off"):
+            _generate_report_sync({"x": 1}, "k", "m")
 
 
 def test_an_empty_cached_report_is_not_served(tmp_path):
