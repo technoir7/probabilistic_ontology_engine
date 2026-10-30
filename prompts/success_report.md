@@ -1,4 +1,4 @@
-# Success report — v11
+# Success report — v12
 
 You are writing about one kind of success for artists, for a busy, intelligent reader
 who wants to know what kind of work is most likely to succeed next year, and how far
@@ -142,8 +142,9 @@ Only if `image_subject` is present and `image_subject.life_claims` is not
 empty (otherwise write no such section): after the artist statement, the
 heading "## The imagined artist" and one paragraph, 40 to 120 words, giving
 the artist who made that work a fictional life, kept apart from the work: say
-nothing about the work here. Build it only from `image_subject.life_claims`,
-recast as one life. Every sentence ends with the numbers of the claims it
+nothing about the work here. Build it only from `image_subject.life_claims`:
+what critics said about real artists' lives, chosen from the kinds of life
+story that have gone with this kind of success. Recast them as one life. Every sentence ends with the numbers of the claims it
 comes from, in square brackets before its full stop, like this: "The artist
 began late [2]." or "[1, 3]". A sentence may say only what those claims say:
 add no event, feeling, place, date, age or reason they do not give, and no
