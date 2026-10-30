@@ -15,6 +15,7 @@ from .cases import MEANINGS
 
 DATA = Path(__file__).parent / "success_data" / "success.json"
 KINDS = ("approve", "press", "museum", "market")
+APART = ("movers",)            # its own panel and report (ART-PLAN §13)
 POOL = ("new_trend", "growing_trend", "fading_trend", "argued_trend", "painting", "photography", "sculpture", "nyt")
 LISTS = {"new_trend": "new", "growing_trend": "growing", "fading_trend": "fading", "argued_trend": "argued"}
 MEDIA = {"painting": "painting", "photography": "photography", "sculpture": "sculpture"}
@@ -37,8 +38,8 @@ def _at_the_top(t: Mapping) -> AtTheTop:
 
 
 def load(snapshot: Mapping) -> Success:
-    if set(snapshot["kinds"]) != set(KINDS):
-        raise ValueError(f"kinds {sorted(snapshot['kinds'])}, expected {sorted(KINDS)}")
+    if not set(KINDS) <= set(snapshot["kinds"]) <= set(KINDS) | set(APART):
+        raise ValueError(f"kinds {sorted(snapshot['kinds'])}, expected {sorted(KINDS)} and any of {sorted(APART)}")
     if not set(snapshot["at_the_top"]) <= set(KINDS):
         raise ValueError(f"at_the_top names kinds outside {sorted(KINDS)}: {sorted(snapshot['at_the_top'])}")
     return Success(snapshot["year"], snapshot["forecast_for"],
@@ -46,7 +47,8 @@ def load(snapshot: Mapping) -> Success:
                    tuple(Rewarded(r["kind"], r["name"], r["approvals"], r["disapprovals"],
                                   tuple(r["approved"]), tuple(r["disapproved"])) for r in snapshot["rewarded"]),
                    {f: MEANINGS[f] for f in POOL}, LISTS, MEDIA,
-                   {k: _at_the_top(t) for k, t in snapshot["at_the_top"].items()})
+                   {k: _at_the_top(t) for k, t in snapshot["at_the_top"].items()},
+                   tuple(k for k in APART if k in snapshot["kinds"]))
 
 
 def current() -> Optional[Success]:

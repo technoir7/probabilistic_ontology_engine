@@ -44,16 +44,18 @@ def kind(key: str, title: str, outcome: str, placebo_fair: bool, run: dict, labe
 TITLES = {"approve": ("Critics approve", "critics' approvals of the artist next year", False),
           "press": ("More press", "articles naming the artist next year, in either paper", False),
           "museum": ("Museum buys", "works acquired by Chicago or Cleveland next year", True),
-          "market": ("Market", "the artist's place in Artprice's Top 500 by auction turnover next year", True)}
+          "market": ("Market", "the artist's place in Artprice's Top 500 by auction turnover next year", True),
+          "movers": ("Market movers", "moves up the bands of Artprice's Top 500 next year (bands: not listed, "
+                     "251–500, 101–250, 26–100, 1–25)", True)}
 
 
 def main() -> None:
     run_dir, rewarded = Path(sys.argv[1]), json.loads(Path(sys.argv[2]).read_text())
-    runs = {k: json.loads((run_dir / f"{k}.json").read_text()) for k in success.KINDS}
+    runs = {k: json.loads((run_dir / f"{k}.json").read_text()) for k in success.KINDS + success.APART}
     museums = json.loads((DATA / "artists" / "museums.json").read_text())
     labels = display_names(museums, {a for r in runs.values() for a, _, _ in r["real"]["most_raised"]})
     snap = {"year": rewarded["year"], "forecast_for": YEARS[-1] + 1,
-            "kinds": {k: kind(k, *TITLES[k], runs[k], labels) for k in success.KINDS},
+            "kinds": {k: kind(k, *TITLES[k], runs[k], labels) for k in runs},
             "rewarded": rewarded["rewarded"],
             # Nothing predicts the market, so its image prompt describes who is at the top (ART-PLAN §12.9).
             "at_the_top": {"market": market_top(rewarded["year"])}}

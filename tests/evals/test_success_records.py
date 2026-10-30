@@ -56,3 +56,33 @@ def test_at_the_top_keeps_only_the_most_recent_claims_of_a_theme():
     claims = [("a", "7", f"claim {i}", f"2026-01-{i:02d}") for i in range(1, SAID + 3)]
     assert at_the_top({"a": {2025: 1}}, 2025, claims, [])["said"]["7"][0] == f"claim {SAID + 2}"
     assert len(at_the_top({"a": {2025: 1}}, 2025, claims, [])["said"]["7"]) == SAID
+
+
+def test_market_bands_run_from_not_listed_to_the_top_25():
+    from evals.success_records import market_band
+    assert [market_band(r) for r in (None, 500, 251, 250, 101, 100, 26, 25, 1)] == [0, 1, 1, 2, 2, 3, 3, 4, 4]
+
+
+def test_a_mover_case_is_next_years_move_between_bands_with_the_market_cases_gaps():
+    """ART-PLAN §13 deviation 1: not up (down or the same band), up one band,
+    up two or more; outcome 0 is what the case engine reads as none."""
+    from evals.success_records import movers_records
+    ranks = {"a": {2016: 300, 2017: 90, 2018: 95, 2020: 400}}
+    rows = movers_records({"a": {}}, ranks, covered={2016, 2017, 2018, 2020, 2021}, years=range(2016, 2022), pool=POOL)
+    by_year = {r["year"]: r for r in rows}
+    assert set(by_year) == {2017, 2020, 2021}                     # as market_records
+    assert by_year[2017]["own"] == [3, 1] and by_year[2017]["outcome"] == 0     # 26–100 both years: not up
+    assert by_year[2020]["own"] == [1, 3] and by_year[2020]["outcome"] == 0     # 251–500, then not listed: not up
+    assert by_year[2021]["outcome"] is None
+    rows = movers_records({"b": {}}, {"b": {2017: 400, 2018: 20}}, covered={2016, 2017, 2018}, years=range(2016, 2019),
+                          pool=POOL)
+    assert {r["year"]: r["outcome"] for r in rows}[2017] == 2                    # 251–500 to 1–25: up three
+    rows = movers_records({"c": {}}, {"c": {2017: 120, 2018: 90}}, covered={2016, 2017, 2018}, years=range(2016, 2019),
+                          pool=POOL)
+    assert {r["year"]: r["outcome"] for r in rows}[2017] == 1                    # 101–250 to 26–100: up one
+
+
+def test_an_unknown_band_is_not_a_band():
+    from evals.success_records import movers_records
+    rows = movers_records({"a": {}}, {"a": {2016: 30}}, covered={2016}, years=range(2016, 2018), pool=POOL)
+    assert rows[-1]["year"] == 2017 and rows[-1]["own"][0] == 5       # the open year without a table

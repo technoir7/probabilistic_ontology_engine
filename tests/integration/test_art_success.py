@@ -22,7 +22,7 @@ def _kind(leader):
 
 def _snapshot():
     return {"year": 2026, "forecast_for": 2026,
-            "kinds": {k: _kind(["nyt"]) for k in success.KINDS},
+            "kinds": {k: dict(_kind(["nyt"]), title=k.title()) for k in success.KINDS},
             "rewarded": [{"kind": "medium", "name": "photography", "approvals": 10, "disapprovals": 2,
                           "approved": ["a: good"], "disapproved": ["b: bad"]}],
             "at_the_top": {"market": {"table_year": 2025, "artists": 300, "themes": {"7": [12, 30]},
@@ -56,7 +56,7 @@ def test_the_domain_ships_its_success_snapshot_and_serves_it():
     with TestClient(api_app.app) as client:
         body = client.get("/v1/success", params={"domain": "art"}).json()
         assert client.get("/v1/success", params={"domain": "mr"}).json() == {"domain": "mr", "success": None}
-    assert set(body["success"]["kinds"]) == set(success.KINDS)
+    assert set(body["success"]["kinds"]) == set(success.KINDS + success.APART)
 
 
 def test_each_kind_says_whether_its_placebo_is_a_fair_test():
@@ -64,7 +64,7 @@ def test_each_kind_says_whether_its_placebo_is_a_fair_test():
     press, so for those two the year-after features are not a fair control."""
     s = success.current()
     assert {k: v.placebo_fair for k, v in s.kinds.items()} == {
-        "approve": False, "press": False, "museum": True, "market": True}
+        "approve": False, "press": False, "museum": True, "market": True, "movers": True}
 
 
 @pytest.mark.parametrize("kind", success.KINDS)
@@ -75,7 +75,7 @@ def test_each_kind_has_a_report_snapshot(kind):
     assert snap.control_placebo_is_a_fair_test == success.current().kinds[kind].placebo_fair
     s = success.current()
     k = s.kinds[kind]
-    others = {v.title for kk, v in s.kinds.items() if kk != kind}
+    others = {v.title for kk, v in s.kinds.items() if kk != kind and kk not in s.apart}
     assert set(snap.other_kinds) == others
     for title, o in snap.other_kinds.items():
         theirs = next(v for v in s.kinds.values() if v.title == title)
@@ -263,3 +263,24 @@ def test_each_push_comes_with_its_odds_worked_out_so_the_writer_does_no_arithmet
     import math
     for e in success_narrative.success_snapshot("art", "market").leader_effects:
         assert e.times_the_odds_of_an_artist_with_the_same_past_and_none == round(math.exp(e.push), 1)
+
+
+def test_a_kind_kept_apart_is_compared_with_the_four_but_never_counted_among_them(monkeypatch):
+    """ART-PLAN §13: market movers has its own panel and report."""
+    snap = _snapshot()
+    snap["kinds"]["movers"] = dict(_kind(["nyt"]), title="Market movers")
+    snap["kinds"]["movers"]["effects"] = {"nyt": {"1": -0.5, "2": -0.6}}      # hurts movers
+    monkeypatch.setattr(success_narrative, "current_success", lambda key: success.load(snap))
+    approve = success_narrative.success_snapshot("art", "approve")
+    assert "Market movers" not in approve.other_kinds
+    assert "leads for all four kinds; it helps in all four." in " ".join(approve.verdicts)
+    movers = success_narrative.success_snapshot("art", "movers")
+    assert set(movers.other_kinds) == {k.title() for k in success.KINDS}
+    assert "leads for every kind of success too; it helps in all of them." in " ".join(movers.verdicts)
+
+
+def test_only_the_kinds_kept_apart_may_join_the_four():
+    snap = _snapshot()
+    snap["kinds"]["fame"] = snap["kinds"]["market"]
+    with pytest.raises(ValueError):
+        success.load(snap)

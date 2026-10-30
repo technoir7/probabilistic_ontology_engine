@@ -53,7 +53,7 @@ def success_snapshot(domain: str, kind: str) -> NarrativeSuccessOut:
         control_placebo_is_a_fair_test=k.placebo_fair,
         artists_the_leader_favours=[NarrativeCaseForecastOut(case=a, own_past_chance=round(o, 3), with_leader_chance=round(w, 3))
                                     for a, o, w in k.most_raised[:SUCCESS_ROWS]],
-        other_kinds={o.title: _other_kind(o, s.meanings) for kk, o in s.kinds.items() if kk != kind},
+        other_kinds={o.title: _other_kind(o, s.meanings) for o in _others(s, kind)},
         critics_rewarded_this_year=[RewardedOut(kind=r.kind, name=r.name, approvals=r.approvals, disapprovals=r.disapprovals,
                                                 approved=list(r.approved), disapproved=list(r.disapproved)) for r in s.rewarded],
         image_subject=_image_subject(s, key, kind),
@@ -248,12 +248,16 @@ def _verdicts(s, kind: str) -> list[str]:
                        "so no control has tested it yet; its push is a fit to past years, not a tested forecast.")
         else:
             out.append(f"{m.get(f, f)} adds nothing: dealt at random, the engine does as well or better.")
-    others = [o for kk, o in s.kinds.items() if kk != kind]
+    others = _others(s, kind)
     for f in k.leader:
         name = m.get(f, f)
         leads = [o for o in others if f in o.leader]
-        if len(leads) == len(others):
-            hurts = [o.title.lower() for o in s.kinds.values() if _push(o, f) < 0]
+        if len(leads) == len(others) and kind in s.apart:
+            hurts = [o.title.lower() for o in others if _push(o, f) < 0]
+            out.append(f"{name} leads for every kind of success too; "
+                       + (f"it helps, except that it hurts for {', '.join(hurts)}." if hurts else "it helps in all of them."))
+        elif len(leads) == len(others):
+            hurts = [o.title.lower() for o in [k, *others] if _push(o, f) < 0]
             out.append(f"{name} leads for all four kinds; "
                        + (f"it helps, except that it hurts for {', '.join(hurts)}." if hurts else "it helps in all four."))
         elif leads:
@@ -263,6 +267,12 @@ def _verdicts(s, kind: str) -> list[str]:
         else:
             out.append(f"{name} leads for no other kind.")
     return out
+
+
+def _others(s, kind: str) -> list:
+    """The kinds KIND is compared with: the main kinds besides itself, never a
+    kind kept apart."""
+    return [o for kk, o in s.kinds.items() if kk != kind and kk not in s.apart]
 
 
 def _other_kind(o, meanings) -> NarrativeOtherKindOut:

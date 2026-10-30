@@ -58,3 +58,4 @@ class Success:
     lists: Mapping[str, str]                # feature -> the trend list (TrendLists.lists) whose claims it counts
     media: Mapping[str, str]                # feature -> the medium (as Rewarded.name) whose articles it counts
     at_the_top: Mapping[str, AtTheTop]      # kind -> what the press said about those who have it now
+    apart: tuple[str, ...] = ()             # kinds shown on their own: compared with the rest, never counted among them

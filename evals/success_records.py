@@ -40,7 +40,8 @@ LISTS = {name: f for f, name in FEATURE_LISTS.items()}
 MEDIA = {("guardian", "artanddesign/painting"): "painting", ("guardian", "artanddesign/photography"): "photography",
          ("guardian", "artanddesign/sculpture"): "sculpture", ("nyt", "Photography"): "photography",
          ("nyt", "Sculpture"): "sculpture"}
-UNKNOWN = 3                    # the open year without a table
+UNKNOWN = 3                    # the open year without a table (market_level's grades run 0–2)
+UNKNOWN_BAND = 5               # the same, for market_band's 0–4
 SAID = 8                       # claims kept per theme about the artists at the top, most recent first
 
 
@@ -71,6 +72,11 @@ def market_level(rank: Optional[int]) -> int:
     return 0 if rank is None else 2 if rank <= 100 else 1
 
 
+def market_band(rank: Optional[int]) -> int:
+    """Not listed, 251–500, 101–250, 26–100, 1–25 (ART-PLAN §13)."""
+    return 0 if rank is None else 1 if rank > 250 else 2 if rank > 100 else 3 if rank > 25 else 4
+
+
 def market_records(people: Mapping, ranks: Mapping[str, Mapping[int, int]], covered: set[int],
                    years: Iterable[int], pool: tuple[str, ...]) -> list[dict]:
     """As count_records, with an artist's Top 500 place for outcome and own
@@ -78,21 +84,34 @@ def market_records(people: Mapping, ranks: Mapping[str, Mapping[int, int]], cove
     earlier year all have a table (ART-PLAN §12 deviations 2 and 3): with an
     own past unknown, press coverage would stand in for it. In the open year
     a missing place is graded UNKNOWN."""
+    return _ranked_cases(people, ranks, covered, years, pool, market_level, UNKNOWN, lambda now, then: then)
+
+
+def movers_records(people: Mapping, ranks: Mapping[str, Mapping[int, int]], covered: set[int],
+                   years: Iterable[int], pool: tuple[str, ...]) -> list[dict]:
+    """As market_records with finer bands (market_band), the outcome next
+    year's move up: none (down or the same band), one band, two or more
+    (ART-PLAN §13 deviation 1)."""
+    return _ranked_cases(people, ranks, covered, years, pool, market_band, UNKNOWN_BAND,
+                         lambda now, then: min(max(then - now, 0), 2))
+
+
+def _ranked_cases(people, ranks, covered, years, pool, grade, unknown, move) -> list[dict]:
     years = sorted(years)
     out = []
     for name, s in people.items():
         r = ranks.get(name, {})
 
         def at(y):
-            return market_level(r.get(y)) if y in covered else UNKNOWN
+            return grade(r.get(y)) if y in covered else unknown
         for state in years:
             last = state == years[-1]
-            seen = [market_level(r.get(y)) for y in covered if y < state]
+            seen = [grade(r.get(y)) for y in covered if y < state]
             if not last and (state not in covered or state + 1 not in covered or not seen):
                 continue
-            out.append({"year": state, "own": [at(state), max(seen) if seen else UNKNOWN],
+            out.append({"year": state, "own": [at(state), max(seen) if seen else unknown],
                         "features": _features(s, state, pool),
-                        "outcome": None if last else market_level(r.get(state + 1)), "case": name})
+                        "outcome": None if last else move(grade(r.get(state)), grade(r.get(state + 1))), "case": name})
     return out
 
 
@@ -246,6 +265,8 @@ def build() -> dict[str, tuple[str, str, list[dict]]]:
         "press": ("More press", "articles naming the artist next year", count_records(people, ("nyt", "guardian"), YEARS, POOL)),
         "museum": ("Museum buys", "Chicago and Cleveland acquisitions next year", count_records(people, ("museum",), YEARS, POOL)),
         "market": ("Market", "place in Artprice's Top 500 next year", market_records(people, ranks, covered, YEARS, POOL)),
+        "movers": ("Market movers", "moves up the bands of Artprice's Top 500 next year (ART-PLAN §13)",
+                   movers_records(people, ranks, covered, YEARS, POOL)),
     }
 
 
