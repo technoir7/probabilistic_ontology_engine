@@ -25,6 +25,8 @@ PROMPT_PATH = Path(__file__).resolve().parents[3] / "prompts" / "snapshot_report
 TREND_PROMPT_PATH = PROMPT_PATH.parent / "trend_report.md"
 # One kind of success's report (D31): what predicts an artist's success next year.
 SUCCESS_PROMPT_PATH = PROMPT_PATH.parent / "success_report.md"
+# Which themes help (ART-PLAN §14): a theme's record against each kind of success.
+THEMES_PROMPT_PATH = PROMPT_PATH.parent / "themes_report.md"
 
 # Fireworks constants matching POE-A defaults.
 _FIREWORKS_BASE_URL = "https://api.fireworks.ai/inference/v1"
@@ -41,6 +43,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 PROMPT_VERSION = "4"
 TREND_PROMPT_VERSION = "1"   # bump when prompts/trend_report.md changes
 SUCCESS_PROMPT_VERSION = "6"   # bump when prompts/success_report.md changes
+THEMES_PROMPT_VERSION = "1"    # bump when prompts/themes_report.md changes
 
 
 # ── A success report's image prompt (abductive_engine ART-PLAN §12.8) ─────────

@@ -2309,6 +2309,13 @@
        "title": "Rewarded",
        "type": "array"
       },
+      "themes": {
+       "additionalProperties": {
+        "$ref": "#/components/schemas/ThemeTestOut"
+       },
+       "title": "Themes",
+       "type": "object"
+      },
       "year": {
        "title": "Year",
        "type": "integer"
@@ -2318,9 +2325,114 @@
       "year",
       "forecast_for",
       "kinds",
-      "rewarded"
+      "rewarded",
+      "themes"
      ],
      "title": "SuccessSnapshotOut",
+     "type": "object"
+    },
+    "ThemeTestOut": {
+     "description": "A theme's track record tested on top of one kind's leader (ART-PLAN \u00a714).",
+     "properties": {
+      "best": {
+       "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "number"
+         }
+        ],
+        "type": "array"
+       },
+       "title": "Best",
+       "type": "array"
+      },
+      "dealt": {
+       "additionalProperties": {
+        "items": {
+         "type": "number"
+        },
+        "type": "array"
+       },
+       "title": "Dealt",
+       "type": "object"
+      },
+      "effects": {
+       "additionalProperties": {
+        "type": "number"
+       },
+       "title": "Effects",
+       "type": "object"
+      },
+      "gain": {
+       "title": "Gain",
+       "type": "number"
+      },
+      "gain_without": {
+       "title": "Gain Without",
+       "type": "number"
+      },
+      "leader": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Leader",
+       "type": "array"
+      },
+      "leader_since": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Leader Since"
+      },
+      "placebo": {
+       "title": "Placebo",
+       "type": "number"
+      },
+      "worst": {
+       "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "number"
+         }
+        ],
+        "type": "array"
+       },
+       "title": "Worst",
+       "type": "array"
+      },
+      "year": {
+       "title": "Year",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "leader",
+      "leader_since",
+      "gain",
+      "gain_without",
+      "effects",
+      "dealt",
+      "placebo",
+      "year",
+      "best",
+      "worst"
+     ],
+     "title": "ThemeTestOut",
      "type": "object"
     },
     "TrendListsOut": {
@@ -3528,6 +3640,84 @@
       }
      },
      "summary": "Success"
+    }
+   },
+   "/v1/success/{domain}/themes/report": {
+    "get": {
+     "operationId": "themes_report_read_v1_success__domain__themes_report_get",
+     "parameters": [
+      {
+       "in": "path",
+       "name": "domain",
+       "required": true,
+       "schema": {
+        "title": "Domain",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "title": "Response Themes Report Read V1 Success  Domain  Themes Report Get"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Themes Report Read"
+    }
+   },
+   "/v1/success/{domain}/themes/report/refresh": {
+    "post": {
+     "operationId": "themes_report_refresh_v1_success__domain__themes_report_refresh_post",
+     "parameters": [
+      {
+       "in": "path",
+       "name": "domain",
+       "required": true,
+       "schema": {
+        "title": "Domain",
+        "type": "string"
+       }
+      }
+     ],
+     "responses": {
+      "200": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "title": "Response Themes Report Refresh V1 Success  Domain  Themes Report Refresh Post"
+         }
+        }
+       },
+       "description": "Successful Response"
+      },
+      "422": {
+       "content": {
+        "application/json": {
+         "schema": {
+          "$ref": "#/components/schemas/HTTPValidationError"
+         }
+        }
+       },
+       "description": "Validation Error"
+      }
+     },
+     "summary": "Themes Report Refresh"
     }
    },
    "/v1/success/{domain}/{kind}/report": {

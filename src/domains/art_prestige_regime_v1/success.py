@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 from typing import Mapping, Optional
 
-from ...engine.model.success import AtTheTop, Rewarded, Success, SuccessKind
+from ...engine.model.success import AtTheTop, Rewarded, Success, SuccessKind, ThemeTest
 from .cases import MEANINGS
 
 DATA = Path(__file__).parent / "success_data" / "success.json"
@@ -37,9 +37,21 @@ def _at_the_top(t: Mapping) -> AtTheTop:
                     {k: tuple(said) for k, said in t["said"].items()})
 
 
+def _theme_test(t: Mapping) -> ThemeTest:
+    unknown = set(t["leader"]) - set(POOL) - {"good_theme", "poor_theme"}
+    if unknown:
+        raise ValueError(f"theme test leader names unknown features: {sorted(unknown)}")
+    return ThemeTest(tuple(t["leader"]), t["leader_since"], t["gain"], t["gain_without"],
+                     {(f, int(v)): e for f, by in t["effects"].items() for v, e in by.items()},
+                     {f: tuple(g) for f, g in t["dealt"].items()}, t["placebo"], t["year"],
+                     tuple((n, r) for n, r in t["best"]), tuple((n, r) for n, r in t["worst"]))
+
+
 def load(snapshot: Mapping) -> Success:
     if not set(KINDS) <= set(snapshot["kinds"]) <= set(KINDS) | set(APART):
         raise ValueError(f"kinds {sorted(snapshot['kinds'])}, expected {sorted(KINDS)} and any of {sorted(APART)}")
+    if not set(snapshot.get("themes", {})) <= set(KINDS):
+        raise ValueError(f"themes names kinds outside {sorted(KINDS)}: {sorted(snapshot['themes'])}")
     if not set(snapshot["at_the_top"]) <= set(KINDS):
         raise ValueError(f"at_the_top names kinds outside {sorted(KINDS)}: {sorted(snapshot['at_the_top'])}")
     return Success(snapshot["year"], snapshot["forecast_for"],
@@ -48,7 +60,8 @@ def load(snapshot: Mapping) -> Success:
                                   tuple(r["approved"]), tuple(r["disapproved"])) for r in snapshot["rewarded"]),
                    {f: MEANINGS[f] for f in POOL}, LISTS, MEDIA,
                    {k: _at_the_top(t) for k, t in snapshot["at_the_top"].items()},
-                   tuple(k for k in APART if k in snapshot["kinds"]))
+                   tuple(k for k in APART if k in snapshot["kinds"]),
+                   {k: _theme_test(t) for k, t in snapshot.get("themes", {}).items()})
 
 
 def current() -> Optional[Success]:

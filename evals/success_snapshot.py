@@ -49,6 +49,24 @@ TITLES = {"approve": ("Critics approve", "critics' approvals of the artist next 
                      "251–500, 101–250, 26–100, 1–25)", True)}
 
 
+def theme_test(run: dict, gain_without: float) -> dict:
+    """One kind's theme test (ART-PLAN §14) from evals/themes_run.py's output."""
+    real, controls = run["real"], run["controls"]
+    effects: dict = {}
+    for k, e in real["effects"].items():
+        f, v = k.split("=")
+        effects.setdefault(f, {})[v] = round(e, 3)
+    dealt: dict = {}
+    for name, c in controls.items():
+        if name.startswith("dealt "):
+            dealt.setdefault(name.split()[1], []).append(round(c["gain"], 1))
+    return {"leader": real["leader"], "leader_since": real["shifts"][-1][0] + 1 if real["shifts"] else None,
+            "gain": round(real["gain"], 1), "gain_without": gain_without, "effects": effects, "dealt": dealt,
+            "placebo": round(next(c["gain"] for n, c in controls.items() if n.startswith("placebo")), 1),
+            "year": run["records"]["year"], "best": [[n, r] for _, n, r in run["records"]["best"]],
+            "worst": [[n, r] for _, n, r in run["records"]["worst"]]}
+
+
 def main() -> None:
     run_dir, rewarded = Path(sys.argv[1]), json.loads(Path(sys.argv[2]).read_text())
     runs = {k: json.loads((run_dir / f"{k}.json").read_text()) for k in success.KINDS + success.APART}
@@ -59,6 +77,9 @@ def main() -> None:
             "rewarded": rewarded["rewarded"],
             # Nothing predicts the market, so its image prompt describes who is at the top (ART-PLAN §12.9).
             "at_the_top": {"market": market_top(rewarded["year"])}}
+    # Which themes help (ART-PLAN §14), from evals/themes_run.py.
+    snap["themes"] = {k: theme_test(json.loads((run_dir / f"themes_{k}.json").read_text()), snap["kinds"][k]["gain"])
+                      for k in success.KINDS}
     success.load(snap)          # refuse a snapshot that does not hang together
     success.DATA.parent.mkdir(exist_ok=True)
     success.DATA.write_text(json.dumps(snap, separators=(",", ":"), ensure_ascii=False))

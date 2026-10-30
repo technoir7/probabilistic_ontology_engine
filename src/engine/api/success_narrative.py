@@ -10,14 +10,16 @@ from ..model.trends import TrendLists
 from ..runtime.success import current_success
 from ..runtime.trends import current_trends
 from . import context
-from .dto import (
-    NarrativeCaseForecastOut,
+from .dto import NarrativeCaseForecastOut
+from .success_dto import (
     NarrativeImageSubjectOut,
     NarrativeOtherKindOut,
     NarrativeSuccessAddsOut,
     NarrativeSuccessEffectOut,
     NarrativeSuccessMechanismOut,
     NarrativeSuccessOut,
+    NarrativeThemeKindOut,
+    NarrativeThemesOut,
     RewardedOut,
 )
 
@@ -59,6 +61,69 @@ def success_snapshot(domain: str, kind: str) -> NarrativeSuccessOut:
         image_subject=_image_subject(s, key, kind),
         note=(f"artists are those Chicago or Cleveland ever acquired; years run {min(y for y, _ in k.years) if k.years else '?'} "
               f"to {max(y for y, _ in k.years) if k.years else '?'}; what critics rewarded is the year to September {s.year}"))
+
+
+THEME_FEATURES = ("good_theme", "poor_theme")
+
+
+def themes_snapshot(domain: str) -> NarrativeThemesOut:
+    """Which themes help (ART-PLAN §14), for its report. LookupError for a
+    domain without theme tests."""
+    key = domain.lower()
+    s = current_success(key) if key in context.DOMAIN_MAP else None
+    if s is None or not s.themes:
+        raise LookupError(f"no theme tests for domain '{domain}'")
+
+    def words(features) -> str:
+        return " + ".join(s.meanings.get(f, f) for f in features) or "each artist's own past alone"
+    kinds = []
+    for k, t in s.themes.items():
+        kinds.append(NarrativeThemeKindOut(
+            kind=k, title=s.kinds[k].title, verdicts=_theme_verdicts(t, s.kinds[k]), leader=words(t.leader),
+            leader_effects=[NarrativeSuccessEffectOut(
+                feature=f"{_AMOUNT.get(v, v)}: {s.meanings.get(f, f)}", push=round(e, 2),
+                times_the_odds_of_an_artist_with_the_same_past_and_none=round(math.exp(e), 1))
+                for (f, v), e in sorted(t.effects.items(), key=lambda kv: -abs(kv[1]))],
+            best_records_this_year=[n for n, _ in t.best], worst_records_this_year=[n for n, _ in t.worst]))
+    year = next(iter(s.themes.values())).year
+    return NarrativeThemesOut(
+        domain=key, kinds=kinds,
+        how_records_are_made=(
+            "For each kind of success and each year, every theme critics write in gets a track record from the years "
+            "before only: among artists written about in that theme, how many had that success the next year, against "
+            "how many would have among all artists with the same amount of it so far, shrunk toward nothing when the "
+            "theme has few cases. Each artist-year then counts its claims in themes with a good record and in themes "
+            "with a poor one, and these two are tested on top of what already predicts that kind of success."),
+        note=f"records shown are those for {year}, from the years before; only named themes are shown")
+
+
+def _theme_verdicts(t, kind) -> list[str]:
+    """What the themes report must say for one kind, decided by rule."""
+    title = kind.title.lower()
+    out = []
+    if any(f in t.leader for f in THEME_FEATURES):
+        over = t.gain - t.gain_without
+        strength = ("too little to claim anything" if over < SMALL_NATS else "by an overwhelming margin"
+                    if over >= LARGE_NATS else "clearly but modestly")
+        out.append(f"For {title}, a theme's record joins what leads, and beats that kind's own leader {strength}.")
+        for f in THEME_FEATURES:
+            deals = t.dealt.get(f)
+            if f in t.leader and deals and t.gain - sum(deals) / len(deals) <= 1.0:
+                out.append(f"For {title}, {f.replace('_', '-')} claims add nothing: dealt at random, the engine does "
+                           "as well or better.")
+    else:
+        out.append(f"For {title}, a theme's record adds nothing: it does not join what leads, and dealt at random "
+                   "it changes nothing.")
+    if not kind.placebo_fair:
+        out.append(f"For {title}, the year-after control is no test here: next year's features count part of next "
+                   "year's success.")
+    elif t.placebo >= t.gain:
+        out.append(f"For {title}, next year's features predict as well or better, so the coverage comes with this "
+                   "success rather than before it.")
+    else:
+        out.append(f"For {title}, this year's features predict better than next year's, so the coverage comes before "
+                   "this success.")
+    return out
 
 
 def _image_subject(s, domain: str, kind: str) -> Optional[NarrativeImageSubjectOut]:

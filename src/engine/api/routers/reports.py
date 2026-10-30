@@ -95,6 +95,30 @@ async def trend_report_refresh(domain: str, name: str) -> Any:
                           _report.TREND_PROMPT_VERSION, _report.TREND_PROMPT_PATH)
 
 
+# ── Which themes help (ART-PLAN §14) ──────────────────────────────────────────
+#
+# Registered before the per-kind routes below, which would read "themes" as a kind.
+
+def _themes(domain: str) -> dict:
+    try:
+        return success_narrative.themes_snapshot(domain).model_dump()
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@router.get("/v1/success/{domain}/themes/report")
+async def themes_report_read(domain: str) -> Any:
+    snap = _themes(domain)
+    return _read(f"{snap['domain']}-themes", snap["domain"], _report.THEMES_PROMPT_VERSION)
+
+
+@router.post("/v1/success/{domain}/themes/report/refresh")
+async def themes_report_refresh(domain: str) -> Any:
+    snap = _themes(domain)
+    return await _refresh(f"{snap['domain']}-themes", snap["domain"], snap,
+                          _report.THEMES_PROMPT_VERSION, _report.THEMES_PROMPT_PATH)
+
+
 # ── One kind of success's report (D31) ────────────────────────────────────────
 #
 # GET  /v1/success/{domain}/{kind}/report          — cached only

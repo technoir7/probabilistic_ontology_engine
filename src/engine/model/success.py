@@ -6,7 +6,7 @@ the controls it faced and what critics rewarded this year.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Mapping, Optional
 
 
@@ -49,6 +49,24 @@ class AtTheTop:
 
 
 @dataclass(frozen=True)
+class ThemeTest:
+    """A theme's track record for one kind of success, tested on top of that
+    kind's leader (ART-PLAN §14): features good_theme and poor_theme count
+    claims in themes whose record, learned from earlier years, is above or
+    below 0."""
+    leader: tuple[str, ...]                 # with the records in the pool
+    leader_since: Optional[int]
+    gain: float
+    gain_without: float                     # the kind's own leader, without the records
+    effects: Mapping[tuple[str, int], float]
+    dealt: Mapping[str, tuple[float, ...]]  # gain with each record feature dealt at random
+    placebo: float
+    year: int                               # the year the records shown are for
+    best: tuple[tuple[str, float], ...]     # named themes with the best records, record
+    worst: tuple[tuple[str, float], ...]
+
+
+@dataclass(frozen=True)
 class Success:
     year: int                               # the year described (years to September)
     forecast_for: int                       # the year the kinds of success are forecast for
@@ -59,3 +77,4 @@ class Success:
     media: Mapping[str, str]                # feature -> the medium (as Rewarded.name) whose articles it counts
     at_the_top: Mapping[str, AtTheTop]      # kind -> what the press said about those who have it now
     apart: tuple[str, ...] = ()             # kinds shown on their own: compared with the rest, never counted among them
+    themes: Mapping[str, ThemeTest] = field(default_factory=dict)   # kind -> its theme test
