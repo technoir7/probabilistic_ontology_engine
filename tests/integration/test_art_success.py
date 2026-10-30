@@ -10,6 +10,7 @@ from fastapi.testclient import TestClient
 
 from src.domains.art_prestige_regime_v1 import success
 from src.engine.api import app as api_app
+from src.engine.api import success_narrative
 
 
 def _kind(leader):
@@ -254,3 +255,11 @@ def test_the_reasons_for_the_medium_say_whether_it_was_tested_and_what_it_adds()
 
 def test_the_reasons_say_the_details_and_setting_are_not_findings():
     assert "not findings" in _reasons("museum") and "the same for every prompt" in _reasons("museum")
+
+
+def test_each_push_comes_with_its_odds_worked_out_so_the_writer_does_no_arithmetic():
+    """The v5 reports turned a push of 0.63 into "two and a half times" the
+    odds, and read two pushes against none as one against the other."""
+    import math
+    for e in success_narrative.success_snapshot("art", "market").leader_effects:
+        assert e.times_the_odds_of_an_artist_with_the_same_past_and_none == round(math.exp(e.push), 1)

@@ -1,4 +1,4 @@
-# Success report — v5
+# Success report — v6
 
 You are writing about one kind of success for artists, for a busy, intelligent reader
 who wants to know what kind of work is most likely to succeed next year, and how far
@@ -18,8 +18,13 @@ coverage), and `success_means` says what counts as success the year after. Each 
 of features was judged on how well it predicted next year's success beyond the
 artist's own past, every year using only the years before (gains in nats). The
 `leader` is the set that predicts best now; `leader_effects` says which way each of
-its features pushes (`push` above 0 helps, below 0 hurts; 0.7 roughly doubles the
-odds). Every push holds the artist's own past fixed, and the own past is this year's
+its features pushes (`push` above 0 helps, below 0 hurts). How much a feature
+changes the odds is given, worked out, as
+`times_the_odds_of_an_artist_with_the_same_past_and_none`: quote only those
+figures, never work one out yourself, and never set one level against another
+as a ratio (each is against an artist with none of that feature, so say
+"several claims raise the odds about 2.7 times, one about 2.4 times", not
+"several double the odds of one"). Every push holds the artist's own past fixed, and the own past is this year's
 and earlier amounts of the same kind of success: so a negative push means that of two
 artists with the same record so far, the one with this feature does worse next year.
 Two controls. First, each leading feature dealt out at random among the year's

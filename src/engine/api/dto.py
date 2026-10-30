@@ -536,6 +536,7 @@ class NarrativeSuccessMechanismOut(BaseModel):
 class NarrativeSuccessEffectOut(BaseModel):
     feature: str                      # in words, with its level ("one" or "several")
     push: float                       # change in the log-odds of any success next year: + helps, - hurts
+    times_the_odds_of_an_artist_with_the_same_past_and_none: float   # exp(push), so the report does no arithmetic
 
 
 class NarrativeSuccessAddsOut(BaseModel):

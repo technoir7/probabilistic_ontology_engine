@@ -3,6 +3,7 @@ the verdicts fixed by rule, and the image prompt's subject with its reasons
 (abductive_engine ART-PLAN §§12.8–12.9)."""
 from __future__ import annotations
 
+import math
 from typing import Optional
 
 from ..model.trends import TrendLists
@@ -42,7 +43,8 @@ def success_snapshot(domain: str, kind: str) -> NarrativeSuccessOut:
         scored_years=len(k.years), verdicts=_verdicts(s, kind),
         best_rival_sets=[NarrativeSuccessMechanismOut(mechanisms=words(m.split("+")), gain_nats=round(g, 1))
                          for m, g in k.mechanisms[:SUCCESS_ROWS]],
-        leader_effects=[NarrativeSuccessEffectOut(feature=f"{_AMOUNT.get(v, v)}: {s.meanings.get(f, f)}", push=round(e, 2))
+        leader_effects=[NarrativeSuccessEffectOut(feature=f"{_AMOUNT.get(v, v)}: {s.meanings.get(f, f)}", push=round(e, 2),
+                                                  times_the_odds_of_an_artist_with_the_same_past_and_none=round(math.exp(e), 1))
                         for (f, v), e in sorted(k.effects.items(), key=lambda kv: -abs(kv[1]))],
         each_leading_feature_adds=sorted(
             (NarrativeSuccessAddsOut(feature=s.meanings.get(f, f), nats=round(k.gain - sum(g) / len(g), 1))
