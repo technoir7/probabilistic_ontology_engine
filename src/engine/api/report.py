@@ -42,7 +42,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 
 PROMPT_VERSION = "4"
 TREND_PROMPT_VERSION = "1"   # bump when prompts/trend_report.md changes
-SUCCESS_PROMPT_VERSION = "8"   # bump when prompts/success_report.md changes
+SUCCESS_PROMPT_VERSION = "9"   # bump when prompts/success_report.md changes
 THEMES_PROMPT_VERSION = "2"    # bump when prompts/themes_report.md changes
 
 
@@ -60,6 +60,9 @@ NOTHING_TO_ILLUSTRATE = ("Nothing in the coverage reliably predicts this kind of
 
 
 WALL_HEADING = "## Wall text"
+STATEMENT_HEADING = "## Artist statement"
+STATEMENT_LABEL = ("*A fictional artist statement for the imagined work above, by its imagined artist (ART-PLAN §12.12). "
+                   "Its ideas are the critics' claims in this theme; it is not the words of any real artist.*")
 
 
 def wall_text_label(voice: str) -> str:
@@ -70,24 +73,25 @@ def wall_text_label(voice: str) -> str:
 def finish_success_report(text: str, reasons: Optional[list[str]], voice: Optional[str]) -> str:
     """Replace the writer's image prompt section with the finished one: the
     rule's REASONS, then the label, the writer's description and the
-    setting; then the writer's wall text under its label, in VOICE.
-    REASONS None: nothing to illustrate, so no wall text either. ValueError
-    when an illustration is wanted and the writer gave no description or no
-    wall text."""
+    setting; then the writer's wall text, in VOICE, and artist statement,
+    each under its label. REASONS None: nothing to illustrate, so neither
+    text either. ValueError when an illustration is wanted and the writer
+    left out any of the three."""
     body, _, written = text.partition(f"\n{IMAGE_HEADING}")
     body = body.rstrip()
     if reasons is None:
         return f"{body}\n\n{IMAGE_HEADING}\n\n{NOTHING_TO_ILLUSTRATE}"
-    image, _, wall = written.partition(f"\n{WALL_HEADING}")
+    image, _, rest = written.partition(f"\n{WALL_HEADING}")
+    wall, _, statement = rest.partition(f"\n{STATEMENT_HEADING}")
     description = " ".join(_section(image).split())
-    if not description:
-        raise ValueError("the report has no image prompt description")
-    wall = _section(wall).strip()
-    if not wall:
-        raise ValueError("the report has no wall text")
+    wall, statement = _section(wall).strip(), _section(statement).strip()
+    for part, name in ((description, "image prompt description"), (wall, "wall text"), (statement, "artist statement")):
+        if not part:
+            raise ValueError(f"the report has no {name}")
     why = "\n\n".join(reasons)
     return (f"{body}\n\n{REASONS_HEADING}\n\n{why}\n\n{IMAGE_HEADING}\n\n{IMAGE_LABEL}\n\n"
-            f"{description} {IMAGE_SETTING}\n\n{WALL_HEADING}\n\n{wall_text_label(voice)}\n\n{wall}")
+            f"{description} {IMAGE_SETTING}\n\n{WALL_HEADING}\n\n{wall_text_label(voice)}\n\n{wall}\n\n"
+            f"{STATEMENT_HEADING}\n\n{STATEMENT_LABEL}\n\n{statement}")
 
 
 def _section(written: str) -> str:

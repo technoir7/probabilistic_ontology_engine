@@ -101,7 +101,8 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
     async def fake(snapshot, *, prompt_path, **_):
         seen["prompt"], seen["kind"] = prompt_path, snapshot["kind"]
         return ("## In short\nBeing written about helps.\n\n## Image prompt\nA photograph of a woman at work."
-                "\n\n## Wall text\n*At Work*, photography, 2026\n\nThe artist photographs work.")
+                "\n\n## Wall text\n*At Work*, photography, 2026\n\nThe artist photographs work."
+                "\n\n## Artist statement\nI photograph work.")
     monkeypatch.setattr(report, "generate_report", fake)
     monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
@@ -112,7 +113,8 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
     assert seen == {"prompt": report.SUCCESS_PROMPT_PATH, "kind": "museum"} and "Being written about" in body["report"]
     assert f"A photograph of a woman at work. {report.IMAGE_SETTING}" in body["report"]     # finished by code
     voice = success_narrative.WALL_TEXT_VOICES["museum"]
-    assert body["report"].endswith(f"{report.wall_text_label(voice)}\n\n*At Work*, photography, 2026\n\nThe artist photographs work.")
+    assert f"{report.wall_text_label(voice)}\n\n*At Work*, photography, 2026\n\nThe artist photographs work." in body["report"]
+    assert body["report"].endswith(f"{report.STATEMENT_LABEL}\n\nI photograph work.")
     assert report.REASONS_HEADING in body["report"]
 
 
@@ -203,7 +205,8 @@ def test_where_nothing_predicts_the_market_its_prompt_describes_the_artists_at_t
     assert not _subject("museum").describes_instead
 
 
-WALL = "\n\n## Wall text\n\n*River Hours*, painting, 2027\n\nThe artist paints a river.\n"
+WALL = ("\n\n## Wall text\n\n*River Hours*, painting, 2027\n\nThe artist paints a river."
+        "\n\n## Artist statement\n\nI paint the river.\n")
 VOICE = "the label of a museum that has just acquired it"
 
 
@@ -215,13 +218,19 @@ def test_code_finishes_the_image_prompt_so_the_writer_cannot_change_its_label_or
                     + report.IMAGE_HEADING + "\n\n" + report.IMAGE_LABEL + "\n\n"
                     "A large painting of a river. " + report.IMAGE_SETTING + "\n\n"
                     + report.WALL_HEADING + "\n\n" + report.wall_text_label(VOICE) + "\n\n"
-                    "*River Hours*, painting, 2027\n\nThe artist paints a river.")
+                    "*River Hours*, painting, 2027\n\nThe artist paints a river.\n\n"
+                    + report.STATEMENT_HEADING + "\n\n" + report.STATEMENT_LABEL + "\n\nI paint the river.")
 
 
 def test_the_wall_text_label_names_the_voice_and_says_it_is_fiction():
     from src.engine.api import report
     label = report.wall_text_label(VOICE)
     assert VOICE in label and "fictional" in label and "not" in label
+
+
+def test_the_artist_statement_label_says_it_is_fiction():
+    from src.engine.api import report
+    assert "fictional" in report.STATEMENT_LABEL and "imagined artist" in report.STATEMENT_LABEL
 
 
 def test_words_the_writer_adds_to_the_image_prompt_heading_are_not_part_of_the_prompt():
@@ -235,8 +244,10 @@ def test_words_the_writer_adds_to_the_image_prompt_heading_are_not_part_of_the_p
     "## In short\nA.\n\n## Image prompt\n\n" + WALL,
     "## In short\nA.\n\n## Image prompt\n\nA river.",
     "## In short\nA.\n\n## Image prompt\n\nA river.\n\n## Wall text\n\n",
+    "## In short\nA.\n\n## Image prompt\n\nA river.\n\n## Wall text\n\n*R*, painting, 2027\n\nA river.",
+    "## In short\nA.\n\n## Image prompt\n\nA river.\n\n## Wall text\n\n*R*, painting, 2027\n\n## Artist statement\n\n",
 ])
-def test_an_image_prompt_or_wall_text_wanted_but_not_written_is_an_error(written):
+def test_an_image_prompt_wall_text_or_statement_wanted_but_not_written_is_an_error(written):
     from src.engine.api import report
     with pytest.raises(ValueError):
         report.finish_success_report(written, ["Why."], VOICE)

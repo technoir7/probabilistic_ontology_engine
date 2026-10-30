@@ -1,4 +1,4 @@
-# Success report — v8
+# Success report — v9
 
 You are writing about one kind of success for artists, for a busy, intelligent reader
 who wants to know what kind of work is most likely to succeed next year, and how far
@@ -122,6 +122,20 @@ about artists' lives or careers, they become what the work is about, not facts
 about its maker. Never name a real person, work, place or institution or quote
 anyone; never say the work was praised, bought or sold; never use the word
 "successful". No label or note: one is added after you.
+
+## Artist statement
+Only if `image_subject` is present: after the wall text, the heading
+"## Artist statement" and one paragraph, 60 to 120 words, by the artist who
+made that same work, in the first person ("I"). It may say what the work is
+about and what it tries to do, but its ideas come only from the theme's
+distinctive words and what critics said in it, and the work as your image
+prompt describes it. It says nothing about the artist's life: no career,
+earlier work, training, origin, name or gender, and nothing the artist felt
+or did outside making this work. Where critics' claims are about artists'
+lives or careers, they become what the work is about. No title line. Never
+name a real person, work, place or institution or quote anyone; never say the
+work was praised, bought or sold; never use the word "successful". No label
+or note: one is added after you.
 
 ## How to write
 
