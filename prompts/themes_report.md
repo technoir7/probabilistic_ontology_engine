@@ -1,4 +1,4 @@
-# Themes report — v1
+# Themes report — v2
 
 You are writing about which themes in art criticism help an artist succeed, for a
 busy, intelligent reader. Write the way a good critic writes to a colleague:
@@ -17,7 +17,8 @@ record for each kind, from earlier years only. For each kind, `leader` is what
 predicts that kind best once the records are allowed in; `leader_effects` give how
 much each feature changes the odds, worked out as
 `times_the_odds_of_an_artist_with_the_same_past_and_none`: quote only those figures,
-never work one out yourself, and never set one level against another as a ratio.
+never work one out yourself, never set one level against another as a ratio, and
+never rank or compare two figures ("above", "stronger than"): give each as it is.
 `best_records_this_year` and `worst_records_this_year` are the named themes with the
 best and worst records now.
 
