@@ -13,7 +13,7 @@ from src.domains.art_prestige_regime_v1 import success
 
 from .artist_records import display_names
 from .replay17 import DATA
-from .success_records import YEARS, market_top
+from .success_records import YEARS, market_top, year_lives
 
 ROWS = 15
 
@@ -77,6 +77,8 @@ def main() -> None:
             "rewarded": rewarded["rewarded"],
             # Nothing predicts the market, so its image prompt describes who is at the top (ART-PLAN §12.9).
             "at_the_top": {"market": market_top(rewarded["year"])}}
+    # The claims each theme's imagined artist's life may draw on (ART-PLAN 15.1 after the reading).
+    snap["lives"] = year_lives(rewarded["year"])
     # Which themes help (ART-PLAN §14), from evals/themes_run.py.
     snap["themes"] = {k: theme_test(json.loads((run_dir / f"themes_{k}.json").read_text()), snap["kinds"][k]["gain"])
                       for k in success.KINDS}

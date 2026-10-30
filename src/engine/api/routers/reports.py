@@ -145,9 +145,9 @@ async def success_report_refresh(domain: str, kind: str) -> Any:
                           finish=lambda text: _report.finish_success_report(text, *_illustration(snap["image_subject"])))
 
 
-def _illustration(subject: Optional[dict]) -> tuple[Optional[list[str]], Optional[str]]:
-    """The image prompt's reasons and the wall text's voice; both None where nothing is illustrated."""
-    return (subject["reasons"], subject["wall_text_voice"]) if subject else (None, None)
+def _illustration(subject: Optional[dict]) -> tuple[Optional[list[str]], Optional[str], list[dict]]:
+    """The image prompt's reasons, the wall text's voice and the life claims; none where nothing is illustrated."""
+    return (subject["reasons"], subject["wall_text_voice"], subject["life_claims"]) if subject else (None, None, [])
 
 
 # ── Shared by every kind of report ────────────────────────────────────────────

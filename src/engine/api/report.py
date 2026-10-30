@@ -13,6 +13,7 @@ import asyncio
 import hashlib
 import json
 import logging
+import re
 from pathlib import Path
 from typing import Optional
 
@@ -42,7 +43,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 
 PROMPT_VERSION = "4"
 TREND_PROMPT_VERSION = "1"   # bump when prompts/trend_report.md changes
-SUCCESS_PROMPT_VERSION = "10"   # bump when prompts/success_report.md changes
+SUCCESS_PROMPT_VERSION = "11"   # bump when prompts/success_report.md changes
 THEMES_PROMPT_VERSION = "2"    # bump when prompts/themes_report.md changes
 
 
@@ -65,7 +66,27 @@ STATEMENT_LABEL = ("*A fictional artist statement for the imagined work above, b
                    "Its ideas are the critics' claims in this theme; it is not the words of any real artist.*")
 LIFE_HEADING = "## The imagined artist"
 LIFE_LABEL = ("*A fictional life for the imagined artist, kept apart from the work (ART-PLAN §15.1), built from what "
-              "critics in this theme said about real artists' lives. It is not the life of anyone.*")
+              "critics in this theme said about real artists' lives. It is not the life of anyone. Each sentence names "
+              "the claims it comes from, listed below.*")
+NO_LIVES = "Critics' claims in this theme this year say nothing about artists' lives."
+_CITED = re.compile(r"\[(\d+(?:\s*,\s*\d+)*)\]")
+_SENTENCE_END = re.compile(r"(?<=[.!?\]])\s+(?=[A-Z\"'‘“])")
+
+
+def life_trail(lives: list[dict]) -> str:
+    """The claims an imagined life is built from, as a critic made each."""
+    return "*Built from these claims critics made about real artists:*\n\n" + "\n".join(
+        f"- [{c['n']}] {c['who']} ({c['when']}): {c['claim']}" for c in lives)
+
+
+def _traced(life: str, lives: list[dict]) -> str:
+    """LIFE, if every sentence cites claims in LIVES; ValueError otherwise."""
+    known = {c["n"] for c in lives}
+    for sentence in _SENTENCE_END.split(life):
+        cited = [int(n) for group in _CITED.findall(sentence) for n in group.split(",")]
+        if not cited or not set(cited) <= known:
+            raise ValueError(f"a sentence of the imagined life cites no claim it was given: {sentence[:120]!r}")
+    return life
 
 
 def wall_text_label(voice: str) -> str:
@@ -73,13 +94,15 @@ def wall_text_label(voice: str) -> str:
             "are the critics' claims in this theme; nothing in it is a fact about any real work or artist.*")
 
 
-def finish_success_report(text: str, reasons: Optional[list[str]], voice: Optional[str]) -> str:
+def finish_success_report(text: str, reasons: Optional[list[str]], voice: Optional[str], lives: list[dict]) -> str:
     """Replace the writer's image prompt section with the finished one: the
     rule's REASONS, then the label, the writer's description and the
-    setting; then the writer's wall text (in VOICE), artist statement and
-    imagined artist's life, each under its label. REASONS None: nothing to
-    illustrate, so none of them. ValueError when an illustration is wanted
-    and the writer left any of them out."""
+    setting; then the writer's wall text (in VOICE) and artist statement,
+    each under its label; then the imagined artist's life, every sentence
+    citing one of LIVES, with the claims cited listed under it, or NO_LIVES
+    where there are none. REASONS None: nothing to illustrate, so none of
+    them. ValueError when an illustration is wanted and the writer left a
+    part out, or wrote a sentence of the life that cites no claim given."""
     body, _, written = text.partition(f"\n{IMAGE_HEADING}")
     body = body.rstrip()
     if reasons is None:
@@ -88,15 +111,17 @@ def finish_success_report(text: str, reasons: Optional[list[str]], voice: Option
     wall, _, rest = rest.partition(f"\n{STATEMENT_HEADING}")
     statement, _, life = rest.partition(f"\n{LIFE_HEADING}")
     description = " ".join(_section(image).split())
-    wall, statement, life = (_section(x).strip() for x in (wall, statement, life))
-    for part, name in ((description, "image prompt description"), (wall, "wall text"),
-                       (statement, "artist statement"), (life, "imagined artist's life")):
+    wall, statement = _section(wall).strip(), _section(statement).strip()
+    life = " ".join(_section(life).split())
+    for part, name in ((description, "image prompt description"), (wall, "wall text"), (statement, "artist statement"),
+                       (life or not lives, "imagined artist's life")):
         if not part:
             raise ValueError(f"the report has no {name}")
     why = "\n\n".join(reasons)
+    life_section = (f"{LIFE_LABEL}\n\n{_traced(life, lives)}\n\n{life_trail(lives)}" if lives else NO_LIVES)
     return (f"{body}\n\n{REASONS_HEADING}\n\n{why}\n\n{IMAGE_HEADING}\n\n{IMAGE_LABEL}\n\n"
             f"{description} {IMAGE_SETTING}\n\n{WALL_HEADING}\n\n{wall_text_label(voice)}\n\n{wall}\n\n"
-            f"{STATEMENT_HEADING}\n\n{STATEMENT_LABEL}\n\n{statement}\n\n{LIFE_HEADING}\n\n{LIFE_LABEL}\n\n{life}")
+            f"{STATEMENT_HEADING}\n\n{STATEMENT_LABEL}\n\n{statement}\n\n{LIFE_HEADING}\n\n{life_section}")
 
 
 def _section(written: str) -> str:

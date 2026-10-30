@@ -86,6 +86,14 @@ class NarrativeOtherKindOut(BaseModel):
     hurts: list[str]
 
 
+class NarrativeLifeClaimOut(BaseModel):
+    """A claim read as about an artist's life, numbered for the imagined artist's life to cite (ART-PLAN 15.1)."""
+    n: int
+    who: str
+    when: str
+    claim: str
+
+
 class NarrativeImageSubjectOut(BaseModel):
     """What the report's image prompt shows, chosen by rule (narrative._image_subject)."""
     theme: str
@@ -97,6 +105,7 @@ class NarrativeImageSubjectOut(BaseModel):
     reasons: list[str]                       # the rule's reasons, in words; the report prints them before the prompt
     describes_instead: bool                  # True: nothing predicts this kind, so it shows those who have it now
     wall_text_voice: str                     # who speaks in the wall text, fixed by kind (ART-PLAN §12.11)
+    life_claims: list[NarrativeLifeClaimOut]  # the only claims the imagined artist's life may draw on; empty: none
 
 
 class NarrativeThemeKindOut(BaseModel):

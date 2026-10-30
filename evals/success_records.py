@@ -43,6 +43,7 @@ MEDIA = {("guardian", "artanddesign/painting"): "painting", ("guardian", "artand
 UNKNOWN = 3                    # the open year without a table (market_level's grades run 0–2)
 UNKNOWN_BAND = 5               # the same, for market_band's 0–4
 SAID = 8                       # claims kept per theme about the artists at the top, most recent first
+LIVES = 8                      # claims read as about a life kept per theme, most recent first (ART-PLAN 15.1)
 
 
 def _features(s: Mapping, year: int, pool: tuple[str, ...]) -> dict:
@@ -139,7 +140,50 @@ def at_the_top(ranks: Mapping[str, Mapping[int, int]], table_year: int,
             "said": {t: [text for _, text in sorted(said[t], reverse=True)[:SAID]] for t in said}}
 
 
+def theme_lives(claims: Iterable[tuple[str, str, str, str, bool]]) -> dict[str, list[list[str]]]:
+    """Trend key -> its LIVES most recent (who, when, claim) among the
+    (trend, who, when, claim, about a life) CLAIMS read as about a life."""
+    by: dict = defaultdict(list)
+    for t, who, when, text, life in claims:
+        if life:
+            by[t].append((when, who, text))
+    return {t: [[who, when, text] for when, who, text in sorted(v, reverse=True)[:LIVES]] for t, v in by.items()}
+
+
 # ── Reading the sources (glue) ────────────────────────────────────────────────
+
+def year_claims(year: int, names: set[str]):
+    """(trend, who, published, "about: asserts", about a life, artist named
+    or None) for each claim grouped into a trend in YEAR (to September),
+    with its life-or-work reading (ART-PLAN §15.2)."""
+    window = {f"{year - 1}-{m:02d}" for m in (10, 11, 12)} | {f"{year}-{m:02d}" for m in range(1, 10)}
+    trend_of = {}
+    for line in (TEXTS / "trends" / "claims.jsonl").read_text().splitlines():
+        r = json.loads(line)
+        if r["start"] is not None and r["month"] in window:
+            trend_of[(r["paper"], r["article"], r["i"])] = str(r["trend"])
+    for paper in ("guardian", "nyt"):
+        for month in sorted(window):
+            path = TEXTS / "grounded" / paper / f"{month}.jsonl"
+            if not path.exists():
+                continue
+            life = {json.loads(x)["id"]: json.loads(x)["life"]
+                    for x in (TEXTS / "life" / paper / f"{month}.jsonl").read_text().splitlines()}
+            for line in path.read_text().splitlines():
+                row = json.loads(line)
+                for i, a in enumerate(row["assertions"]):
+                    t = trend_of.get((paper, row["id"], i))
+                    if t is None:
+                        continue
+                    read = life[row["id"]][i]
+                    yield (t, a["who"], row.get("published", month), f"{a['about']}: {a['asserts']}",
+                           read is not None and read[1] == "yes", linked(a["about"], names))
+
+
+def year_lives(year: int) -> dict[str, list[list[str]]]:
+    """theme_lives for every theme in YEAR. Reads the claims."""
+    return theme_lives((t, who, when, text, life) for t, who, when, text, life, _ in year_claims(year, set()))
+
 
 def _births(museums: Mapping) -> dict[str, int]:
     born = {normalise(t): b for t, b in museums["aic"]["agents"].values() if t and b}
@@ -252,9 +296,13 @@ def market_top(year: int) -> dict:
     names = set(people)
     museums = json.loads((DATA / "artists" / "museums.json").read_text())
     ranks, covered = _ranks(people, _births(museums))
-    return at_the_top(ranks, max(covered),
-                      ((a, str(t), text, when) for a, t, _, ys, text, when in _claims(names) if ys == year),
-                      ((a, m) for a, m, _, ys in _media_articles(names) if ys == year))
+    top = {a for a, r in ranks.items() if max(covered) in r}
+    out = at_the_top(ranks, max(covered),
+                     ((a, str(t), text, when) for a, t, _, ys, text, when in _claims(names) if ys == year),
+                     ((a, m) for a, m, _, ys in _media_articles(names) if ys == year))
+    out["lives"] = theme_lives((t, who, when, text, life) for t, who, when, text, life, a in year_claims(year, names)
+                               if a in top)
+    return out
 
 
 def build() -> dict[str, tuple[str, str, list[dict]]]:

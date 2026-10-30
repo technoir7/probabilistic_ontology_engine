@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 from typing import Mapping, Optional
 
-from ...engine.model.success import AtTheTop, Rewarded, Success, SuccessKind, ThemeTest
+from ...engine.model.success import AtTheTop, LifeClaim, Rewarded, Success, SuccessKind, ThemeTest
 from .cases import MEANINGS
 
 DATA = Path(__file__).parent / "success_data" / "success.json"
@@ -32,9 +32,13 @@ def _kind(key: str, k: Mapping) -> SuccessKind:
                        tuple((a, o, w) for a, o, w in k["most_raised"]), tuple((y, g) for y, g in k["years"]))
 
 
+def _lives(by_theme: Mapping) -> dict[str, tuple[LifeClaim, ...]]:
+    return {k: tuple(LifeClaim(who, when, claim) for who, when, claim in claims) for k, claims in by_theme.items()}
+
+
 def _at_the_top(t: Mapping) -> AtTheTop:
     return AtTheTop(t["table_year"], t["artists"], {k: (a, c) for k, (a, c) in t["themes"].items()}, dict(t["media"]),
-                    {k: tuple(said) for k, said in t["said"].items()})
+                    {k: tuple(said) for k, said in t["said"].items()}, _lives(t.get("lives", {})))
 
 
 def _theme_test(t: Mapping) -> ThemeTest:
@@ -61,7 +65,8 @@ def load(snapshot: Mapping) -> Success:
                    {f: MEANINGS[f] for f in POOL}, LISTS, MEDIA,
                    {k: _at_the_top(t) for k, t in snapshot["at_the_top"].items()},
                    tuple(k for k in APART if k in snapshot["kinds"]),
-                   {k: _theme_test(t) for k, t in snapshot.get("themes", {}).items()})
+                   {k: _theme_test(t) for k, t in snapshot.get("themes", {}).items()},
+                   _lives(snapshot.get("lives", {})))
 
 
 def current() -> Optional[Success]:

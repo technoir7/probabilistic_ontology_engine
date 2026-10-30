@@ -38,6 +38,15 @@ class Rewarded:
 
 
 @dataclass(frozen=True)
+class LifeClaim:
+    """A claim read as being about an artist's life (ART-PLAN §15.2), for the
+    imagined artist's life (15.1)."""
+    who: str
+    when: str               # the date it was published
+    claim: str              # "about: asserts"
+
+
+@dataclass(frozen=True)
 class AtTheTop:
     """What the press said this year about the artists who have one kind of
     success now (ART-PLAN §12.9): description, for a kind nothing predicts."""
@@ -46,6 +55,7 @@ class AtTheTop:
     themes: Mapping[str, tuple[int, int]]   # trend key -> (artists named, claims about them)
     media: Mapping[str, int]                # medium -> articles naming them with that tag
     said: Mapping[str, tuple[str, ...]]     # trend key -> the most recent claims about them in it
+    lives: Mapping[str, tuple[LifeClaim, ...]] = field(default_factory=dict)   # as said, read as about a life
 
 
 @dataclass(frozen=True)
@@ -78,3 +88,4 @@ class Success:
     at_the_top: Mapping[str, AtTheTop]      # kind -> what the press said about those who have it now
     apart: tuple[str, ...] = ()             # kinds shown on their own: compared with the rest, never counted among them
     themes: Mapping[str, ThemeTest] = field(default_factory=dict)   # kind -> its theme test
+    lives: Mapping[str, tuple[LifeClaim, ...]] = field(default_factory=dict)   # trend key -> its latest life claims

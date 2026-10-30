@@ -13,6 +13,7 @@ from . import context
 from .dto import NarrativeCaseForecastOut
 from .success_dto import (
     NarrativeImageSubjectOut,
+    NarrativeLifeClaimOut,
     NarrativeOtherKindOut,
     NarrativeSuccessAddsOut,
     NarrativeSuccessEffectOut,
@@ -167,7 +168,7 @@ def _image_subject(s, domain: str, kind: str) -> Optional[NarrativeImageSubjectO
         medium=medium, medium_from_the_leading_features=feature is not None,
         reasons=[_theme_reason(k, t, push, theme, tied), _medium_reason(s, k, feature, approved),
                  _details("what critics said in it")],
-        describes_instead=False, wall_text_voice=WALL_TEXT_VOICES[kind])
+        describes_instead=False, wall_text_voice=WALL_TEXT_VOICES[kind], life_claims=_numbered(s.lives.get(theme.key, ())))
 
 
 def _trends_now(s, domain: str) -> TrendLists:
@@ -211,7 +212,11 @@ def _described_subject(s, k, t: TrendLists, top, voice: str) -> Optional[Narrati
         theme=theme.name, theme_is_on_this_years_lists=[n for n in t.lists if theme.key in t.lists[n]],
         distinctive_words=list(theme.words), what_critics_said=list(top.said.get(themes[0], ())),
         medium=medium, medium_from_the_leading_features=False, reasons=reasons, describes_instead=True,
-        wall_text_voice=voice)
+        wall_text_voice=voice, life_claims=_numbered(top.lives.get(themes[0], ())))
+
+
+def _numbered(lives) -> list[NarrativeLifeClaimOut]:
+    return [NarrativeLifeClaimOut(n=n, who=c.who, when=c.when, claim=c.claim) for n, c in enumerate(lives, 1)]
 
 
 def _details(said: str) -> str:

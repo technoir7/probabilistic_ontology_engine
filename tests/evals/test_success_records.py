@@ -86,3 +86,13 @@ def test_an_unknown_band_is_not_a_band():
     from evals.success_records import movers_records
     rows = movers_records({"a": {}}, {"a": {2016: 30}}, covered={2016}, years=range(2016, 2018), pool=POOL)
     assert rows[-1]["year"] == 2017 and rows[-1]["own"][0] == 5       # the open year without a table
+
+
+def test_theme_lives_keep_each_themes_most_recent_claims_read_as_about_a_life():
+    """ART-PLAN 15.1 after the reading: the claims the imagined artist's life may draw on."""
+    from evals.success_records import LIVES, theme_lives
+    claims = [("7", "W", f"2026-01-{i:02d}", f"claim {i}", True) for i in range(1, LIVES + 3)]
+    claims += [("9", "V", "2026-02-01", "x: y", True), ("9", "V", "2026-03-01", "x: about a work", False)]
+    got = theme_lives(claims)
+    assert got["7"][0] == ["W", f"2026-01-{LIVES + 2:02d}", f"claim {LIVES + 2}"] and len(got["7"]) == LIVES
+    assert got["9"] == [["V", "2026-02-01", "x: y"]]

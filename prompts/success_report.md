@@ -1,4 +1,4 @@
-# Success report — v10
+# Success report — v11
 
 You are writing about one kind of success for artists, for a busy, intelligent reader
 who wants to know what kind of work is most likely to succeed next year, and how far
@@ -138,17 +138,19 @@ work was praised, bought or sold; never use the word "successful". No label
 or note: one is added after you.
 
 ## The imagined artist
-Only if `image_subject` is present: after the artist statement, the heading
-"## The imagined artist" and one paragraph, 60 to 120 words, giving the artist
-who made that work a fictional life, kept apart from the work: say nothing
-about the work here. Build it only from what the critics' claims in this
-theme (what critics said in it) say about artists' lives, careers,
-circumstances or character, recast as one life. Third person, always "the
-artist", never "he", "she" or "they". No name, no real person, place or
-institution, no dates or ages the claims do not give, never "successful". If
-those claims say nothing about any artist's life, write only: "What critics
-said in this theme says nothing about artists' lives." No label or note: one
-is added after you.
+Only if `image_subject` is present and `image_subject.life_claims` is not
+empty (otherwise write no such section): after the artist statement, the
+heading "## The imagined artist" and one paragraph, 40 to 120 words, giving
+the artist who made that work a fictional life, kept apart from the work: say
+nothing about the work here. Build it only from `image_subject.life_claims`,
+recast as one life. Every sentence ends with the numbers of the claims it
+comes from, in square brackets before its full stop, like this: "The artist
+began late [2]." or "[1, 3]". A sentence may say only what those claims say:
+add no event, feeling, place, date, age or reason they do not give, and no
+sentence that joins them with anything of your own. Use as few or as many of
+the claims as make sense together. Third person, always "the artist", never
+"he", "she" or "they"; no names, never "successful". No label, note or list
+of claims: those are added after you.
 
 ## How to write
 
