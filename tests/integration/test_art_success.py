@@ -104,6 +104,7 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
         assert client.get("/v1/success/art/museum/report").json()["found"] is True
     assert seen == {"prompt": report.SUCCESS_PROMPT_PATH, "kind": "museum"} and "Being written about" in body["report"]
     assert body["report"].endswith(f"A photograph of a woman at work. {report.IMAGE_SETTING}")    # finished by code
+    assert report.REASONS_HEADING in body["report"]
 
 
 def _verdicts(kind):
@@ -172,27 +173,56 @@ def test_nothing_is_illustrated_where_the_gain_is_too_small_to_claim():
 
 def test_code_finishes_the_image_prompt_so_the_writer_cannot_change_its_label_or_setting():
     from src.engine.api import report
-    text = report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA large painting of a river.\n", True)
-    assert text == ("## In short\nA.\n\n" + report.IMAGE_HEADING + "\n\n" + report.IMAGE_LABEL + "\n\n"
+    text = report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA large painting of a river.\n",
+                                        ["Why the river.", "Why paint."])
+    assert text == ("## In short\nA.\n\n" + report.REASONS_HEADING + "\n\nWhy the river.\n\nWhy paint.\n\n"
+                    + report.IMAGE_HEADING + "\n\n" + report.IMAGE_LABEL + "\n\n"
                     "A large painting of a river. " + report.IMAGE_SETTING)
 
 
 def test_words_the_writer_adds_to_the_image_prompt_heading_are_not_part_of_the_prompt():
     from src.engine.api import report
-    text = report.finish_success_report("## In short\nA.\n\n## Image prompt: a vision\nA river.", True)
+    text = report.finish_success_report("## In short\nA.\n\n## Image prompt: a vision\nA river.", ["Why."])
     assert text.endswith(report.IMAGE_LABEL + "\n\nA river. " + report.IMAGE_SETTING) and "vision" not in text
 
 
 def test_an_image_prompt_wanted_but_not_written_is_an_error():
     from src.engine.api import report
     with pytest.raises(ValueError):
-        report.finish_success_report("## In short\nA.", True)
+        report.finish_success_report("## In short\nA.", ["Why."])
     with pytest.raises(ValueError):
-        report.finish_success_report("## In short\nA.\n\n## Image prompt\n\n", True)
+        report.finish_success_report("## In short\nA.\n\n## Image prompt\n\n", ["Why."])
 
 
 def test_where_nothing_is_illustrated_code_says_so_whatever_the_writer_wrote():
     from src.engine.api import report
     for written in ("## In short\nA.", "## In short\nA.\n\n## Image prompt\nA bird."):
-        assert report.finish_success_report(written, False) == (
+        assert report.finish_success_report(written, None) == (
             "## In short\nA.\n\n" + report.IMAGE_HEADING + "\n\n" + report.NOTHING_TO_ILLUSTRATE)
+
+
+def _reasons(kind):
+    return " ".join(_subject(kind).reasons)
+
+
+def test_the_reasons_for_the_theme_say_the_lists_the_tie_and_what_came_next():
+    r = _reasons("approve")
+    assert "indigenous and subcontinental art" in r and "growing" in r and "argued over" in r
+    assert "11 for, none against" in r and "biennale political controversies (none for, 16 against)" in r
+    assert "not this theme in particular" in r
+    assert "count against" in _reasons("press") and "new" in _reasons("press")     # press's new list pushes down
+    assert "count against" not in r
+
+
+def test_the_reasons_for_the_medium_say_whether_it_was_tested_and_what_it_adds():
+    assert "adds almost nothing" in _reasons("approve")                 # painting adds about 2
+    assert "adds nothing" in _reasons("museum")                         # photography, dealt, scored better
+    press = _reasons("press")
+    assert "not a tested finding" in press and "788 for, 138 against" in press
+    # only the tagged media were tested; the media critics judged that never could be are named from the data
+    for m in ("ceramics", "drawing", "installation", "video"):
+        assert m in press
+
+
+def test_the_reasons_say_the_details_and_setting_are_not_findings():
+    assert "not findings" in _reasons("museum") and "the same for every prompt" in _reasons("museum")

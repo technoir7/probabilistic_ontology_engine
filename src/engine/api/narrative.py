@@ -137,7 +137,8 @@ def _image_subject(s, domain: str, kind: str) -> Optional[NarrativeImageSubjectO
     leader's trend lists push up most (one claim's push, so a list that
     pushes down counts against), ties to this year's net approvals, then
     writers; the leader's medium that pushes up most, else this year's most
-    approved medium. None where the gain is too small to claim."""
+    approved medium. With the rule's reasons, in words. None where the gain
+    is too small to claim."""
     k = s.kinds[kind]
     if k.gain < SMALL_NATS:
         return None
@@ -150,17 +151,78 @@ def _image_subject(s, domain: str, kind: str) -> Optional[NarrativeImageSubjectO
     def rank(x):
         on = sum(p for name, p in push.items() if x.key in t.lists[name])
         return (on, x.verdicts[0] - x.verdicts[1], x.writers[now])
-    theme = max(t.trends.values(), key=rank)
-    media = [(k.effects.get((f, 1), 0.0), s.media[f]) for f in k.leader if f in s.media]
-    media = [m for p, m in sorted(media, reverse=True) if p > 0]
-    if media:
-        medium = media[0]
-    else:
-        medium = max((r for r in s.rewarded if r.kind == "medium"), key=lambda r: r.approvals - r.disapprovals).name
+    ranked = sorted(t.trends.values(), key=rank, reverse=True)
+    theme = ranked[0]
+    tied = [x for x in ranked if rank(x)[0] == rank(theme)[0]]
+    media = sorted(((k.effects.get((f, 1), 0.0), f) for f in k.leader if f in s.media), reverse=True)
+    feature = next((f for p, f in media if p > 0), None)
+    approved = max((r for r in s.rewarded if r.kind == "medium"), key=lambda r: r.approvals - r.disapprovals)
+    medium = s.media[feature] if feature else approved.name
     return NarrativeImageSubjectOut(
         theme=theme.name, theme_is_on_this_years_lists=[n for n in t.lists if theme.key in t.lists[n]],
         distinctive_words=list(theme.words), what_critics_said=list(theme.sample),
-        medium=medium, medium_from_the_leading_features=bool(media))
+        medium=medium, medium_from_the_leading_features=feature is not None,
+        reasons=[_theme_reason(k, t, push, theme, tied), _medium_reason(s, k, feature, approved),
+                 "The details of the work below are a reading of the theme's words and of what critics said in it, "
+                 "not findings. The setting at the end is the same for every prompt, so that the image model has as "
+                 "little as possible left to choose."])
+
+
+_LIST_WORDS = {"argued": "argued over"}
+
+
+def _listing(words: list[str], last: str = "and") -> str:
+    return words[0] if len(words) == 1 else f"{', '.join(words[:-1])} {last} {words[-1]}"
+
+
+def _for_against(approvals: int, disapprovals: int) -> str:
+    return f"{approvals or 'none'} for, {disapprovals or 'none'} against"
+
+
+def _theme_reason(k, t: TrendLists, push: dict, theme, tied: list) -> str:
+    up = [n for n, p in push.items() if p > 0]
+    down = [n for n, p in push.items() if p < 0]
+    if not up:
+        return (f"The subject is {theme.name}, the theme with the best balance of critics' approval this year "
+                f"({_for_against(*theme.verdicts)}). No trend list that helps is among the features that predict "
+                "this, so the theme describes the year; it is not a tested finding.")
+    on = [_LIST_WORDS.get(n, n) for n in up if theme.key in t.lists[n]]
+    both = len(on) == len(up) > 1
+    out = [f"The subject is {theme.name}. The findings say that when claims about an artist sit in a theme that is "
+           f"{_listing([_LIST_WORDS.get(n, n) for n in up], 'or')} this year, the artist tends to get more {k.outcome}. "
+           f"This theme is {'both' if both else _listing(on) if on else 'neither'}."]
+    if down:
+        out.append(f"Claims in a {_listing([_LIST_WORDS.get(n, n) for n in down], 'or')} theme count against the "
+                   "artist here, so themes on that list score lower.")
+    if len(tied) > 1:
+        out.append(f"On that, {len(tied)} themes did equally well, this one included; it had the best balance of critics' approval "
+                   f"this year ({_for_against(*theme.verdicts)}), and next came {tied[1].name} "
+                   f"({_for_against(*tied[1].verdicts)}).")
+    else:
+        out.append("No other theme scored as well on that.")
+    out.append("The findings test being in such a theme, not this theme in particular: it is this year's example.")
+    return " ".join(out)
+
+
+def _medium_reason(s, k, feature: Optional[str], approved) -> str:
+    if feature:
+        deals = k.dealt.get(feature)
+        adds = k.gain - sum(deals) / len(deals) if deals else None
+        out = f"The medium is {s.media[feature]} because one of the features that predict this is {s.meanings[feature]}."
+        if adds is not None and adds < SMALL_NATS:
+            out += (f" But shuffled at random among the artists, that feature "
+                    f"{'adds nothing' if adds <= 1.0 else 'adds almost nothing'} to the prediction, so the medium is the "
+                    "least certain part of the prompt.")
+    else:
+        out = (f"None of the features that predict this is a medium, so the medium is {approved.name}, the one critics "
+               f"approved of most this year ({_for_against(approved.approvals, approved.disapprovals)}): a description "
+               "of the year, not a tested finding.")
+    tested = list(s.media.values())
+    untested = sorted(r.name for r in s.rewarded if r.kind == "medium" and r.name not in tested)
+    out += f" Only {_listing(tested)} were tested as features, because they are the only media the papers tag"
+    out += (f"; {_listing(untested)}, which critics also judged this year, never had the chance to show up."
+             if untested else ".")
+    return out
 
 
 # Gains are totals over every artist and scored year; below SMALL the leader

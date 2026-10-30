@@ -118,7 +118,8 @@ async def success_report_refresh(domain: str, kind: str) -> Any:
     snap = _success(domain, kind)
     return await _refresh(f"{snap['domain']}-success-{kind}", snap["domain"], snap,
                           _report.SUCCESS_PROMPT_VERSION, _report.SUCCESS_PROMPT_PATH,
-                          finish=lambda text: _report.finish_success_report(text, snap["image_subject"] is not None))
+                          finish=lambda text: _report.finish_success_report(
+                              text, snap["image_subject"]["reasons"] if snap["image_subject"] else None))
 
 
 # ── Shared by every kind of report ────────────────────────────────────────────

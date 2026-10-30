@@ -558,6 +558,7 @@ class NarrativeImageSubjectOut(BaseModel):
     what_critics_said: list[str]
     medium: str
     medium_from_the_leading_features: bool   # False: this year's most approved medium, not a tested feature
+    reasons: list[str]                       # the rule's reasons, in words; the report prints them before the prompt
 
 
 class NarrativeSuccessOut(BaseModel):

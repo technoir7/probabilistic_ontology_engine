@@ -47,6 +47,7 @@ SUCCESS_PROMPT_VERSION = "5"   # bump when prompts/success_report.md changes
 # The writer writes only the description; the label and the setting are fixed
 # here so that neither it nor an image model fills what the data does not say.
 
+REASONS_HEADING = "## How the image prompt was made"
 IMAGE_HEADING = "## Image prompt"
 IMAGE_LABEL = ('*An illustration of what a "successful" work looks like by this measure, built from the '
                'findings above. It is not a real work, and nothing guarantees success.*')
@@ -55,18 +56,22 @@ NOTHING_TO_ILLUSTRATE = ("Nothing in the coverage reliably predicts this kind of
                          "illustration of it.")
 
 
-def finish_success_report(text: str, illustrated: bool) -> str:
-    """Replace the writer's image prompt section with the finished one. ValueError
-    when an illustration is wanted and the writer gave no description."""
+def finish_success_report(text: str, reasons: Optional[list[str]]) -> str:
+    """Replace the writer's image prompt section with the finished one: the
+    rule's REASONS, then the label, the writer's description and the setting.
+    REASONS None: nothing to illustrate. ValueError when an illustration is
+    wanted and the writer gave no description."""
     body, _, written = text.partition(f"\n{IMAGE_HEADING}")
     body = body.rstrip()
-    if not illustrated:
+    if reasons is None:
         return f"{body}\n\n{IMAGE_HEADING}\n\n{NOTHING_TO_ILLUSTRATE}"
     section = written.partition("\n")[2]          # past the heading line, whatever the writer put on it
     description = " ".join(section.split("\n## ")[0].split())
     if not description:
         raise ValueError("the report has no image prompt description")
-    return f"{body}\n\n{IMAGE_HEADING}\n\n{IMAGE_LABEL}\n\n{description} {IMAGE_SETTING}"
+    why = "\n\n".join(reasons)
+    return (f"{body}\n\n{REASONS_HEADING}\n\n{why}\n\n{IMAGE_HEADING}\n\n{IMAGE_LABEL}\n\n"
+            f"{description} {IMAGE_SETTING}")
 
 
 # ── Hashing ──────────────────────────────────────────────────────────────────
