@@ -1,4 +1,4 @@
-# Success report — v9
+# Success report — v10
 
 You are writing about one kind of success for artists, for a busy, intelligent reader
 who wants to know what kind of work is most likely to succeed next year, and how far
@@ -136,6 +136,19 @@ lives or careers, they become what the work is about. No title line. Never
 name a real person, work, place or institution or quote anyone; never say the
 work was praised, bought or sold; never use the word "successful". No label
 or note: one is added after you.
+
+## The imagined artist
+Only if `image_subject` is present: after the artist statement, the heading
+"## The imagined artist" and one paragraph, 60 to 120 words, giving the artist
+who made that work a fictional life, kept apart from the work: say nothing
+about the work here. Build it only from what the critics' claims in this
+theme (what critics said in it) say about artists' lives, careers,
+circumstances or character, recast as one life. Third person, always "the
+artist", never "he", "she" or "they". No name, no real person, place or
+institution, no dates or ages the claims do not give, never "successful". If
+those claims say nothing about any artist's life, write only: "What critics
+said in this theme says nothing about artists' lives." No label or note: one
+is added after you.
 
 ## How to write
 

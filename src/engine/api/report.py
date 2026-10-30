@@ -42,7 +42,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 
 PROMPT_VERSION = "4"
 TREND_PROMPT_VERSION = "1"   # bump when prompts/trend_report.md changes
-SUCCESS_PROMPT_VERSION = "9"   # bump when prompts/success_report.md changes
+SUCCESS_PROMPT_VERSION = "10"   # bump when prompts/success_report.md changes
 THEMES_PROMPT_VERSION = "2"    # bump when prompts/themes_report.md changes
 
 
@@ -63,6 +63,9 @@ WALL_HEADING = "## Wall text"
 STATEMENT_HEADING = "## Artist statement"
 STATEMENT_LABEL = ("*A fictional artist statement for the imagined work above, by its imagined artist (ART-PLAN §12.12). "
                    "Its ideas are the critics' claims in this theme; it is not the words of any real artist.*")
+LIFE_HEADING = "## The imagined artist"
+LIFE_LABEL = ("*A fictional life for the imagined artist, kept apart from the work (ART-PLAN §15.1), built from what "
+              "critics in this theme said about real artists' lives. It is not the life of anyone.*")
 
 
 def wall_text_label(voice: str) -> str:
@@ -73,25 +76,27 @@ def wall_text_label(voice: str) -> str:
 def finish_success_report(text: str, reasons: Optional[list[str]], voice: Optional[str]) -> str:
     """Replace the writer's image prompt section with the finished one: the
     rule's REASONS, then the label, the writer's description and the
-    setting; then the writer's wall text, in VOICE, and artist statement,
-    each under its label. REASONS None: nothing to illustrate, so neither
-    text either. ValueError when an illustration is wanted and the writer
-    left out any of the three."""
+    setting; then the writer's wall text (in VOICE), artist statement and
+    imagined artist's life, each under its label. REASONS None: nothing to
+    illustrate, so none of them. ValueError when an illustration is wanted
+    and the writer left any of them out."""
     body, _, written = text.partition(f"\n{IMAGE_HEADING}")
     body = body.rstrip()
     if reasons is None:
         return f"{body}\n\n{IMAGE_HEADING}\n\n{NOTHING_TO_ILLUSTRATE}"
     image, _, rest = written.partition(f"\n{WALL_HEADING}")
-    wall, _, statement = rest.partition(f"\n{STATEMENT_HEADING}")
+    wall, _, rest = rest.partition(f"\n{STATEMENT_HEADING}")
+    statement, _, life = rest.partition(f"\n{LIFE_HEADING}")
     description = " ".join(_section(image).split())
-    wall, statement = _section(wall).strip(), _section(statement).strip()
-    for part, name in ((description, "image prompt description"), (wall, "wall text"), (statement, "artist statement")):
+    wall, statement, life = (_section(x).strip() for x in (wall, statement, life))
+    for part, name in ((description, "image prompt description"), (wall, "wall text"),
+                       (statement, "artist statement"), (life, "imagined artist's life")):
         if not part:
             raise ValueError(f"the report has no {name}")
     why = "\n\n".join(reasons)
     return (f"{body}\n\n{REASONS_HEADING}\n\n{why}\n\n{IMAGE_HEADING}\n\n{IMAGE_LABEL}\n\n"
             f"{description} {IMAGE_SETTING}\n\n{WALL_HEADING}\n\n{wall_text_label(voice)}\n\n{wall}\n\n"
-            f"{STATEMENT_HEADING}\n\n{STATEMENT_LABEL}\n\n{statement}")
+            f"{STATEMENT_HEADING}\n\n{STATEMENT_LABEL}\n\n{statement}\n\n{LIFE_HEADING}\n\n{LIFE_LABEL}\n\n{life}")
 
 
 def _section(written: str) -> str:
