@@ -13,6 +13,7 @@ import sys
 from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
+from typing import Optional
 
 from src.domains.art_prestige_regime_v1 import cases
 from src.engine.services.cases import case_report
@@ -48,8 +49,8 @@ def placebo(rows: list[dict]) -> list[dict]:
 
 
 def _judge(job):
-    key, title, outcome, rows = job
-    report = case_report(cases.load(cases.dump(key, title, outcome, POOL, rows, {})))
+    key, title, outcome, rows, pool = job
+    report = case_report(cases.load(cases.dump(key, title, outcome, pool, rows, {})))
     return {"leader": list(report.leader), "shifts": [(s.year, list(s.to)) for s in report.shifts],
             "gain": report.gain, "forecast_year": report.forecast_year,
             "mechanisms": [("+".join(m.features), m.gain) for m in report.mechanisms],
@@ -58,30 +59,38 @@ def _judge(job):
             "most_raised": [(f.case, 1 - f.own_past[0], 1 - f.with_leader[0]) for f in report.most_raised]}
 
 
+def judge_all(sets: dict, pools: dict, deal: Optional[dict] = None) -> tuple[dict, dict]:
+    """Each case set judged with its POOLS[k] of features, then its controls:
+    each of DEAL[k]'s features dealt at random (by default the leader's, or
+    the best single feature if own past leads), DEALS times, and the placebo."""
+    with ProcessPoolExecutor(WORKERS) as ex:
+        real = dict(zip(sets, ex.map(_judge, [(k, t, o, rows, pools[k]) for k, (t, o, rows) in sets.items()])))
+        for k, r in real.items():
+            print(f"{k:8} leader {'+'.join(r['leader']) or 'own past'}, gain {r['gain']:+.1f}", flush=True)
+        jobs, names = [], []
+        for k, (t, o, rows) in sets.items():
+            single = max((m for m in real[k]["mechanisms"] if "+" not in m[0]), key=lambda m: m[1])[0]
+            for f in (deal or {}).get(k) or real[k]["leader"] or [single]:
+                for seed in range(DEALS):
+                    jobs.append((k, t, o, dealt(rows, f, seed), pools[k]))
+                    names.append((k, f"dealt {f} #{seed}"))
+            jobs.append((k, t, o, placebo(rows), pools[k]))
+            names.append((k, "placebo: features from the year after"))
+        controls: dict = defaultdict(dict)
+        for (k, name), r in zip(names, ex.map(_judge, jobs)):
+            controls[k][name] = {"leader": r["leader"], "gain": r["gain"],
+                                 "best": r["mechanisms"][0] if r["mechanisms"] else None}
+            print(f"{k:8} {name}: leader {'+'.join(r['leader']) or 'own past'}, gain {r['gain']:+.1f}", flush=True)
+    return real, dict(controls)
+
+
 def main() -> None:
     out_dir = Path(sys.argv[1])
     out_dir.mkdir(parents=True, exist_ok=True)
     sets = build()
     if sys.argv[2:]:
         sets = {k: sets[k] for k in sys.argv[2:]}
-    with ProcessPoolExecutor(WORKERS) as pool:
-        real = dict(zip(sets, pool.map(_judge, [(k, t, o, rows) for k, (t, o, rows) in sets.items()])))
-        for k, r in real.items():
-            print(f"{k:8} leader {'+'.join(r['leader']) or 'own past'}, gain {r['gain']:+.1f}", flush=True)
-        jobs, names = [], []
-        for k, (t, o, rows) in sets.items():
-            single = max((m for m in real[k]["mechanisms"] if "+" not in m[0]), key=lambda m: m[1])[0]
-            for f in real[k]["leader"] or [single]:
-                for seed in range(DEALS):
-                    jobs.append((k, t, o, dealt(rows, f, seed)))
-                    names.append((k, f"dealt {f} #{seed}"))
-            jobs.append((k, t, o, placebo(rows)))
-            names.append((k, "placebo: features from the year after"))
-        controls = defaultdict(dict)
-        for (k, name), r in zip(names, pool.map(_judge, jobs)):
-            controls[k][name] = {"leader": r["leader"], "gain": r["gain"],
-                                 "best": r["mechanisms"][0] if r["mechanisms"] else None}
-            print(f"{k:8} {name}: leader {'+'.join(r['leader']) or 'own past'}, gain {r['gain']:+.1f}", flush=True)
+    real, controls = judge_all(sets, {k: POOL for k in sets})
     for k in sets:
         (out_dir / f"{k}.json").write_text(json.dumps({"real": real[k], "controls": controls[k]}, indent=1))
     print(f"-> {out_dir}")

@@ -31,6 +31,9 @@ MEANINGS = {
     "growing_trend": "claims about the artist in a growing trend that year",
     "fading_trend": "claims about the artist in a fading trend that year",
     "argued_trend": "claims about the artist in an argued-over trend that year",
+    # Which themes help (ART-PLAN §14): records learned from earlier years only.
+    "good_theme": "claims about the artist in themes with a good record so far",
+    "poor_theme": "claims about the artist in themes with a poor record so far",
     "painting": "Guardian articles on the artist tagged painting that year",
     "photography": "articles on the artist tagged photography that year",
     "sculpture": "articles on the artist tagged sculpture that year",

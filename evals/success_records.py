@@ -201,6 +201,15 @@ def _claims(names: set[str]):
                            f"{row.get('published', month)} {paper} {row['id']}")
 
 
+def theme_claims(names: set[str]) -> dict[tuple[str, int], dict[str, int]]:
+    """(artist, year) -> theme -> claims about the artist in it that year,
+    every theme a claim was grouped into (ART-PLAN §14). Reads the claims."""
+    out: dict = defaultdict(lambda: defaultdict(int))
+    for artist, t, year, _, _, _ in _claims(names):
+        out[(artist, year)][str(t)] += 1
+    return {k: dict(v) for k, v in out.items()}
+
+
 def _trend_claims(names: set[str]) -> dict[str, dict[str, dict[int, int]]]:
     """Artist -> list feature -> year -> claims about the artist in a trend
     on that list that year (years to September, as the lists)."""
