@@ -466,3 +466,22 @@ def test_an_answer_out_of_the_form_twice_refuses_the_report():
 def test_the_check_reads_from_its_own_fixed_instructions():
     from src.engine.api import report
     assert report.LIFE_CHECK_PATH.exists() and "1 y" in report.LIFE_CHECK_PATH.read_text()
+
+
+@pytest.mark.parametrize("test, verdict", [
+    (_life_test(["nyt"], 120.0, 120.0, 40.0, [120.0] * 3), "nothing"),
+    (_life_test(["nyt", "good_life"], 135.0, 120.0, 140.0, [120.0] * 3), "with"),
+    (_life_test(["nyt", "good_life"], 135.0, 120.0, 40.0, [120.0] * 3), "predicts"),
+    (_life_test(["nyt", "good_life"], 135.0, 120.0, 40.0, [135.0] * 3), "nothing"),   # in the leader, adds nothing dealt
+])
+def test_the_lives_panel_is_sent_the_engines_verdict_not_left_to_judge(monkeypatch, test, verdict):
+    """ART-PLAN 15.4 as built: the same rule as the report's finding."""
+    from src.engine.api.routers import success as success_router
+    snap = _snapshot()
+    snap["life_tests"] = {"museum": test}
+    monkeypatch.setattr(success_router, "current_success", lambda key: success.load(snap))
+    with TestClient(api_app.app) as client:
+        served = client.get("/v1/success", params={"domain": "art"}).json()["success"]
+    assert served["lives"]["museum"]["verdict"] == verdict
+    assert served["lives"]["museum"]["best"] == [["late discovery", 0.4]]
+    assert set(served["lives"]) == {"museum"}

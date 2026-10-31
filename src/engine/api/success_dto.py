@@ -50,12 +50,18 @@ class ThemeTestOut(BaseModel):
     worst: list[tuple[str, float]]
 
 
+class LifeTestOut(ThemeTestOut):
+    """Life blocks' records tested on top of one kind's leader (ART-PLAN 15.7), with the engine's verdict."""
+    verdict: str                      # untested, nothing, with or predicts (success_narrative.life_verdict)
+
+
 class SuccessSnapshotOut(BaseModel):
     year: int
     forecast_for: int
     kinds: dict[str, SuccessKindOut]
     rewarded: list[RewardedOut]
     themes: dict[str, ThemeTestOut]   # kind -> its theme test
+    lives: dict[str, LifeTestOut]     # kind -> its life-block test
 
 
 class SuccessOut(BaseModel):

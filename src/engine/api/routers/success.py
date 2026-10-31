@@ -6,7 +6,8 @@ from fastapi import APIRouter, HTTPException, Query
 
 from ...runtime.success import current_success
 from .. import context
-from ..success_dto import RewardedOut, SuccessKindOut, SuccessOut, SuccessSnapshotOut, ThemeTestOut
+from ..success_dto import LifeTestOut, RewardedOut, SuccessKindOut, SuccessOut, SuccessSnapshotOut, ThemeTestOut
+from ..success_narrative import life_verdict
 
 router = APIRouter()
 
@@ -29,7 +30,11 @@ async def success(domain: str = Query(...)) -> SuccessOut:
             years=list(v.years)) for k, v in s.kinds.items()},
         rewarded=[RewardedOut(kind=r.kind, name=r.name, approvals=r.approvals, disapprovals=r.disapprovals,
                               approved=list(r.approved), disapproved=list(r.disapproved)) for r in s.rewarded],
-        themes={k: ThemeTestOut(
-            leader=list(t.leader), leader_since=t.leader_since, gain=t.gain, gain_without=t.gain_without,
-            effects={f"{f}={lv}": e for (f, lv), e in t.effects.items()}, dealt={f: list(g) for f, g in t.dealt.items()},
-            placebo=t.placebo, year=t.year, best=list(t.best), worst=list(t.worst)) for k, t in s.themes.items()}))
+        themes={k: ThemeTestOut(**_theme_test(t)) for k, t in s.themes.items()},
+        lives={k: LifeTestOut(**_theme_test(t), verdict=life_verdict(s, k)) for k, t in s.life_tests.items()}))
+
+
+def _theme_test(t) -> dict:
+    return dict(leader=list(t.leader), leader_since=t.leader_since, gain=t.gain, gain_without=t.gain_without,
+                effects={f"{f}={lv}": e for (f, lv), e in t.effects.items()}, dealt={f: list(g) for f, g in t.dealt.items()},
+                placebo=t.placebo, year=t.year, best=list(t.best), worst=list(t.worst))

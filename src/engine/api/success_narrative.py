@@ -224,22 +224,37 @@ def _numbered(lives) -> list[NarrativeLifeClaimOut]:
 _BLOCKS = "Life stories from the life blocks with the best record for this kind"
 
 
-def _life_finding(s, kind: str) -> str:
+def life_verdict(s, kind: str) -> str:
     """What the life-block test (ART-PLAN 15.7) found for KIND, by the
-    verdict rules, said before the imagined artist's life."""
+    verdict rules: untested; nothing (good-record blocks not in the leader,
+    under SMALL_NATS beyond the kind's own leader, or no loss when dealt out
+    at random); with (next year's predict as well, where that control is
+    fair); predicts."""
     t = s.life_tests.get(kind)
     if t is None:
-        return "Whether a life story helps this kind of success has not been tested."
-    over = t.gain - t.gain_without
+        return "untested"
     deals = t.dealt.get("good_life")
     adds = t.gain - sum(deals) / len(deals) if deals else 0.0
-    if "good_life" not in t.leader or over < SMALL_NATS or adds <= 1.0:
+    if "good_life" not in t.leader or t.gain - t.gain_without < SMALL_NATS or adds <= 1.0:
+        return "nothing"
+    if s.kinds[kind].placebo_fair and t.placebo >= t.gain:
+        return "with"
+    return "predicts"
+
+
+def _life_finding(s, kind: str) -> str:
+    """The life-block test's verdict for KIND, said before the imagined artist's life."""
+    verdict = life_verdict(s, kind)
+    if verdict == "untested":
+        return "Whether a life story helps this kind of success has not been tested."
+    if verdict == "nothing":
         return (f"{_BLOCKS} add nothing beyond what already predicts this kind of success, so the life below shows "
                 "what those blocks hold, not what helps.")
-    if s.kinds[kind].placebo_fair and t.placebo >= t.gain:
+    if verdict == "with":
         return (f"{_BLOCKS} come with this kind of success rather than before it: next year's predict it as well "
                 "or better.")
-    strength = "by an overwhelming margin" if over >= LARGE_NATS else "clearly but modestly"
+    t = s.life_tests[kind]
+    strength = "by an overwhelming margin" if t.gain - t.gain_without >= LARGE_NATS else "clearly but modestly"
     return (f"{_BLOCKS} predict this kind of success beyond what already leads, {strength}."
             + ("" if s.kinds[kind].placebo_fair else " The year-after control is no test here."))
 

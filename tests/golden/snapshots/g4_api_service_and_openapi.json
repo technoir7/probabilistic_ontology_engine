@@ -1028,6 +1028,115 @@
      "title": "LearningPipelineStatusOut",
      "type": "object"
     },
+    "LifeTestOut": {
+     "description": "Life blocks' records tested on top of one kind's leader (ART-PLAN 15.7), with the engine's verdict.",
+     "properties": {
+      "best": {
+       "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "number"
+         }
+        ],
+        "type": "array"
+       },
+       "title": "Best",
+       "type": "array"
+      },
+      "dealt": {
+       "additionalProperties": {
+        "items": {
+         "type": "number"
+        },
+        "type": "array"
+       },
+       "title": "Dealt",
+       "type": "object"
+      },
+      "effects": {
+       "additionalProperties": {
+        "type": "number"
+       },
+       "title": "Effects",
+       "type": "object"
+      },
+      "gain": {
+       "title": "Gain",
+       "type": "number"
+      },
+      "gain_without": {
+       "title": "Gain Without",
+       "type": "number"
+      },
+      "leader": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Leader",
+       "type": "array"
+      },
+      "leader_since": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Leader Since"
+      },
+      "placebo": {
+       "title": "Placebo",
+       "type": "number"
+      },
+      "verdict": {
+       "title": "Verdict",
+       "type": "string"
+      },
+      "worst": {
+       "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "number"
+         }
+        ],
+        "type": "array"
+       },
+       "title": "Worst",
+       "type": "array"
+      },
+      "year": {
+       "title": "Year",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "leader",
+      "leader_since",
+      "gain",
+      "gain_without",
+      "effects",
+      "dealt",
+      "placebo",
+      "year",
+      "best",
+      "worst",
+      "verdict"
+     ],
+     "title": "LifeTestOut",
+     "type": "object"
+    },
     "LineageEventOut": {
      "properties": {
       "description": {
@@ -2302,6 +2411,13 @@
        "title": "Kinds",
        "type": "object"
       },
+      "lives": {
+       "additionalProperties": {
+        "$ref": "#/components/schemas/LifeTestOut"
+       },
+       "title": "Lives",
+       "type": "object"
+      },
       "rewarded": {
        "items": {
         "$ref": "#/components/schemas/RewardedOut"
@@ -2326,7 +2442,8 @@
       "forecast_for",
       "kinds",
       "rewarded",
-      "themes"
+      "themes",
+      "lives"
      ],
      "title": "SuccessSnapshotOut",
      "type": "object"
