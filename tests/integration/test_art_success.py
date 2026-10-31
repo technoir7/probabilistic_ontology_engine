@@ -443,7 +443,7 @@ def test_code_drops_each_sentence_the_reader_finds_says_more_than_its_claims_and
     text = _life(LIFE, lambda request: "1 n\n2 y")
     life = text.split(FINDING + "\n\n")[1]
     assert life.startswith("The artist was discovered only after death. [2]")
-    assert "faced discrimination" not in life.split("*Built from")[0]
+    assert "faced discrimination" not in life.split("\n\n*")[0]           # kept text only; the cut is listed below
     assert "1 of 2 sentences" in life
     assert report.life_trail(LIVES) in text                       # the claims given are still listed
 
@@ -451,7 +451,11 @@ def test_code_drops_each_sentence_the_reader_finds_says_more_than_its_claims_and
 def test_where_every_sentence_is_dropped_code_says_there_is_no_life():
     from src.engine.api import report
     text = _life(LIFE, lambda request: "1 n\n2 n")
-    assert text.endswith(report.LIFE_HEADING + "\n\n" + FINDING + " " + report.UNGROUNDED)
+    life = text.split(report.LIFE_HEADING + "\n\n")[1]
+    assert life.startswith(FINDING + " " + report.UNGROUNDED)
+    # what was cut, and why, is still shown (ART-PLAN 15.14 after the first run)
+    assert "~~The artist faced discrimination [1].~~" in life and "~~The artist was discovered only after death. [2]~~" in life
+    assert life.endswith(report.life_trail(LIVES))
 
 
 @pytest.mark.parametrize("answer", ["1 y", "1 y\n2 maybe", "y\ny", "1 y\n2 y\n3 y", "2 y\n1 y", ""])
@@ -582,7 +586,8 @@ def test_a_pronoun_is_used_only_where_a_cited_claim_states_it():
             LIFE, "They paint rivers, and their health is failing [2, 4]. She paints rivers [4]."),
         ["Why."], VOICE, stated, FINDING, [KEEP])
     life = text.split(FINDING + "\n\n")[1]
-    assert life.startswith("They paint rivers, and their health is failing [2, 4].") and "She paints" not in life
+    assert life.startswith("They paint rivers, and their health is failing [2, 4].")
+    assert "She paints" not in life.split("\n\n*")[0]
 
 
 @pytest.mark.parametrize("sentence, kept", [
@@ -603,3 +608,17 @@ def test_the_imagined_artist_is_they_by_default(sentence, kept):
     """ART-PLAN 15.14, third amendment."""
     life = _aged(sentence + " The artist became a queer icon [3].")
     assert life.startswith(sentence) is kept
+
+
+def test_each_cut_sentence_is_shown_struck_with_why():
+    """ART-PLAN 15.14 after the first run: the engine's judging is open to check."""
+    life = _aged("The artist became a queer icon at the age of 94 [1, 3]. The artist is 94 years old [1]. "
+                 "The artist became a queer icon [3].", [lambda r: "1 n\n2 y"])
+    assert life.startswith("The artist became a queer icon [3].")
+    assert "~~The artist became a queer icon at the age of 94 [1, 3].~~ (words its claims lack: age)" in life
+    assert "~~The artist is 94 years old [1].~~ (the readers found it says more than its claims)" in life
+
+
+@pytest.mark.parametrize("sentence", ["Blake becomes a queer icon [3].", "The artist has become a queer icon [3]."])
+def test_an_irregular_change_of_tense_is_the_same_word(sentence):
+    assert _aged(sentence.replace("Blake", "The artist")).startswith(sentence.replace("Blake", "The artist"))

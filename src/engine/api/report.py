@@ -43,7 +43,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 
 PROMPT_VERSION = "4"
 TREND_PROMPT_VERSION = "1"   # bump when prompts/trend_report.md changes
-SUCCESS_PROMPT_VERSION = "16"   # bump when prompts/success_report.md, life_check.md or its model changes
+SUCCESS_PROMPT_VERSION = "17"   # bump when prompts/success_report.md, life_check.md, its model or the life's checks change
 THEMES_PROMPT_VERSION = "2"    # bump when prompts/themes_report.md changes
 
 
@@ -131,12 +131,29 @@ it its this that these those who whose whom which not no artist artists""".split
 _WORD = re.compile(r"[a-z0-9]+(?:['’][a-z]+)?")
 
 
-def _stem(word: str) -> str:
-    """A word less a plural or regular tense ending, so tense may change."""
-    for end in ("ing", "ed", "es", "s"):
+# Common irregular verbs, each form counted as the same word, so a change of tense is not a new word.
+_IRREGULAR = {form: lemma for lemma, forms in {
+    "become": "became", "begin": "began begun", "take": "took taken", "make": "made", "give": "gave given",
+    "find": "found", "come": "came", "go": "went gone", "see": "saw seen", "know": "knew known",
+    "grow": "grew grown", "win": "won", "write": "wrote written", "leave": "left", "draw": "drew drawn",
+    "get": "got gotten", "hold": "held", "keep": "kept", "meet": "met", "run": "ran", "sell": "sold",
+    "show": "shown", "teach": "taught", "think": "thought", "buy": "bought", "bring": "brought", "build": "built",
+    "feel": "felt", "lose": "lost", "say": "said", "tell": "told", "stand": "stood", "fall": "fell fallen",
+    "rise": "rose risen", "choose": "chose chosen", "speak": "spoke spoken", "break": "broke broken",
+    "spend": "spent", "send": "sent", "lead": "led", "fight": "fought", "shoot": "shot", "sit": "sat",
+    "hang": "hung", "forget": "forgot forgotten", "hide": "hid hidden", "wear": "wore worn"}.items()
+    for form in forms.split()}
+
+
+def _forms(word: str) -> set[str]:
+    """The word and the bases it may have by a plural or tense ending, with
+    irregular verbs to one form, so tense and number may change."""
+    word = _IRREGULAR.get(word, word)
+    out = {word}
+    for end, back in (("ing", ""), ("ing", "e"), ("ed", ""), ("ed", "e"), ("es", ""), ("s", "")):
         if len(word) > len(end) + 2 and word.endswith(end):
-            return word[:-len(end)]
-    return word
+            out.add(word[:-len(end)] + back)
+    return out
 
 
 def _words(text: str) -> list[str]:
@@ -160,40 +177,50 @@ def _stated(claim: str) -> set[str]:
     return found
 
 
-def _in_their_words(sentence: str, claims: list[str]) -> bool:
-    """Whether every word of SENTENCE is one that asserts nothing or one of
-    CLAIMS', and every pronoun for a person "they" or one a claim states."""
-    theirs = {_stem(w) for c in claims for w in _words(c) if w not in _PRONOUNS}
+def _lacking(sentence: str, claims: list[str]) -> list[str]:
+    """The words of SENTENCE that are neither ones that assert nothing nor
+    CLAIMS', and the pronouns for a person that are neither "they" nor
+    ones a claim states; none: the sentence is in its claims' words."""
+    theirs = set().union(*(_forms(w) for c in claims for w in _words(c) if w not in _PRONOUNS))
     stated = _PRONOUN_SETS["they"].union(*(_stated(c) for c in claims))
-    return all(w in stated if w in _PRONOUNS else w in _JOINING or _stem(w) in theirs for w in _words(sentence))
+    return list(dict.fromkeys(w for w in _words(sentence)
+                              if not (w in stated if w in _PRONOUNS else w in _JOINING or _forms(w) & theirs)))
 
 
-def _grounded(life: str, lives: list[dict], readers: Sequence[Callable[[str], str]]) -> tuple[list[str], int, int, int]:
+def _grounded(life: str, lives: list[dict],
+              readers: Sequence[Callable[[str], str]]) -> tuple[list[str], list[tuple[str, str]], int]:
     """The sentences of LIFE in the words of the claims they cite (ART-PLAN
     15.14) that every one of READERS, given each beside its claims, finds
-    say nothing more (15.9, 15.13); how many were written, cut for their
-    words, and cut by the readers."""
+    say nothing more (15.9, 15.13); each sentence cut, with why; and how
+    many were written."""
     sentences = _sentences(life, lives)
     claims = {c["n"]: c["claim"] for c in lives}
-    worded = [(text, cited) for text, cited in sentences if _in_their_words(text, [claims[n] for n in cited])]
-    if not worded:
-        return [], len(sentences), len(sentences), 0
-    request = life_check_request(worded, lives)
-    kept = [all(found) for found in zip(*(_verdicts_of(read, request, len(worded)) for read in readers))]
-    out = [text for (text, _), keep in zip(worded, kept) if keep]
-    return out, len(sentences), len(sentences) - len(worded), len(worded) - len(out)
+    lacking = [(text, cited, _lacking(text, [claims[n] for n in cited])) for text, cited in sentences]
+    cut = [(text, f"words its claims lack: {', '.join(words)}") for text, _, words in lacking if words]
+    worded = [(text, cited) for text, cited, words in lacking if not words]
+    kept: list[str] = []
+    if worded:
+        request = life_check_request(worded, lives)
+        found = [all(f) for f in zip(*(_verdicts_of(read, request, len(worded)) for read in readers))]
+        kept = [text for (text, _), keep in zip(worded, found) if keep]
+        cut += [(text, "the readers found it says more than its claims") for (text, _), keep in zip(worded, found)
+                if not keep]
+    order = {text: i for i, (text, _) in enumerate(sentences)}
+    return kept, sorted(cut, key=lambda c: order[c[0]]), len(sentences)
+
+
+def _cut_list(cut: list[tuple[str, str]]) -> str:
+    return "*Cut by the checks:*\n\n" + "\n".join(f"- ~~{text}~~ ({why})" for text, why in cut)
 
 
 def _life_section(life: str, lives: list[dict], finding: str, readers: Sequence[Callable[[str], str]]) -> str:
     if not lives:
         return f"{finding} {NO_LIVES}"
-    kept, written, by_words, by_readers = _grounded(life, lives, readers)
+    kept, cut, written = _grounded(life, lives, readers)
     if not kept:
-        return f"{finding} {UNGROUNDED}"
-    why = ([f"{by_words} for words the claims they cite do not have"] if by_words else []) + (
-        [f"{by_readers} because the readers found them saying more than those claims"] if by_readers else [])
-    note = (f"\n\n*{written - len(kept)} of {written} sentences written for this life were dropped: "
-            f"{'; '.join(why)}.*") if why else ""
+        return f"{finding} {UNGROUNDED}\n\n{_cut_list(cut)}\n\n{life_trail(lives)}"
+    note = (f"\n\n*{len(cut)} of {written} sentences written for this life were dropped.*\n\n{_cut_list(cut)}"
+            if cut else "")
     return f"{LIFE_LABEL}\n\n{finding}\n\n{' '.join(kept)}{note}\n\n{life_trail(lives)}"
 
 
