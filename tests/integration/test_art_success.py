@@ -102,7 +102,7 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
         seen["prompt"], seen["kind"] = prompt_path, snapshot["kind"]
         return ("## In short\nBeing written about helps.\n\n## Image prompt\nA photograph of a woman at work."
                 "\n\n## Wall text\n*At Work*, photography, 2026\n\nThe artist photographs work."
-                "\n\n## Artist statement\nI photograph work.\n\n## The imagined artist\nThe artist worked [1].")
+                "\n\n## Artist statement\nI photograph work.\n\n## The imagined artist\nThe artist [1].")
     monkeypatch.setattr(report, "generate_report", fake)
 
     def check(request, *, api_key, model):
@@ -125,7 +125,7 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
     subject = success_narrative.success_snapshot("art", "museum").image_subject
     lives, finding = [c.model_dump() for c in subject.life_claims], subject.life_finding
     assert body["report"].endswith(
-        f"{report.LIFE_LABEL}\n\n{finding}\n\nThe artist worked [1].\n\n{report.life_trail(lives)}"
+        f"{report.LIFE_LABEL}\n\n{finding}\n\nThe artist [1].\n\n{report.life_trail(lives)}"
         if lives else f"{report.LIFE_HEADING}\n\n{finding} {report.NO_LIVES}")
     assert seen.get("check_key") == ("test-key" if lives else None)      # the check reads on the server's key
     # ART-PLAN 15.10: read by a second model, so no model reads its own writing
@@ -227,7 +227,7 @@ LIVES = [{"n": 1, "who": "A Critic", "when": "2026-02-01", "claim": "X's early c
          {"n": 2, "who": "B Critic", "when": "2026-03-01", "claim": "Y: was discovered only after her death",
           "block": "late discovery"}]
 FINDING = "Life stories add nothing here."
-LIFE = "The artist met discrimination early [1]. The work was found only after the artist's death. [2]"
+LIFE = "The artist faced discrimination [1]. The artist was discovered only after death. [2]"
 WALL = ("\n\n## Wall text\n\n*River Hours*, painting, 2027\n\nThe artist paints a river."
         "\n\n## Artist statement\n\nI paint the river.\n\n## The imagined artist\n\n" + LIFE + "\n")
 VOICE = "the label of a museum that has just acquired it"
@@ -433,7 +433,7 @@ def test_the_reader_sees_each_sentence_beside_only_the_claims_it_cites():
     _life(LIFE, lambda request: seen.append(request) or "1 y\n2 y")
     request = seen[0]
     one, two = request.split("\nSentence 1:")[1].split("\nSentence 2:")
-    assert "met discrimination early [1]." in one and "she faced discrimination" in one
+    assert "faced discrimination [1]." in one and "she faced discrimination" in one
     assert "discovered only after her death" not in one
     assert "discovered only after her death" in two and "she faced discrimination" not in two
 
@@ -442,8 +442,8 @@ def test_code_drops_each_sentence_the_reader_finds_says_more_than_its_claims_and
     from src.engine.api import report
     text = _life(LIFE, lambda request: "1 n\n2 y")
     life = text.split(FINDING + "\n\n")[1]
-    assert life.startswith("The work was found only after the artist's death. [2]")
-    assert "met discrimination" not in life.split("*Built from")[0]
+    assert life.startswith("The artist was discovered only after death. [2]")
+    assert "faced discrimination" not in life.split("*Built from")[0]
     assert "1 of 2 sentences" in life
     assert report.life_trail(LIVES) in text                       # the claims given are still listed
 
@@ -530,4 +530,76 @@ def test_a_sentence_is_kept_only_if_both_readers_find_it_says_no_more_than_its_c
     text = report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA river." + WALL, ["Why."], VOICE, LIVES,
                                         FINDING, [lambda r: "1 y\n2 y", lambda r: "1 n\n2 y"])
     life = text.split(FINDING + "\n\n")[1]
-    assert life.startswith("The work was found only after") and "1 of 2 sentences" in life
+    assert life.startswith("The artist was discovered only after") and "1 of 2 sentences" in life
+
+
+AGED = [{"n": 1, "who": "A", "when": "2025-11-20", "claim": "Bridget Riley: she is 94 years old", "block": "ageing"},
+        {"n": 2, "who": "B", "when": "2025-08-07", "claim": "Athena Tacha: her health is failing", "block": "identity"},
+        {"n": 3, "who": "C", "when": "2025-06-06", "claim": "William Blake: has detailed how Blake became a queer icon",
+         "block": "queer art"}]
+
+
+def _aged(life, readers=(KEEP,)):
+    from src.engine.api import report
+    text = report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA river." + WALL.replace(LIFE, life),
+                                        ["Why."], VOICE, AGED, FINDING, list(readers))
+    return text.split(FINDING + "\n\n")[1].split("*Built from")[0]
+
+
+@pytest.mark.parametrize("sentence", [
+    "The artist became a queer icon at the age of 94 when their health was failing [1, 2, 3].",   # the user's example
+    "The artist became a queer icon when the health was failing [2, 3].",          # a join in time the claims lack
+    "The artist, whose health is failing, became a queer icon because of it [2, 3].",
+    "The artist is 94 years old and his health is failing [1, 2].",               # a pronoun no claim cited has
+    "The artist is 94 years old and her health is failing [1, 2].",               # the critic's assumption, not stated
+    "The artist is 95 years old [1].",
+])
+def test_a_sentence_with_a_word_its_claims_lack_is_cut_by_code_before_any_reader(sentence):
+    """ART-PLAN 15.14: the engine judges the words; readers see only what passes."""
+    seen = []
+    life = _aged(sentence + " The artist became a queer icon [3].", [lambda r: seen.append(r) or "1 y"])
+    assert life.startswith("The artist became a queer icon [3].")
+    assert "1 of 2 sentences" in life and "words" in life
+    assert seen and "Sentence 2" not in seen[0]                      # the reader saw only the sentence that passed
+
+
+@pytest.mark.parametrize("sentence", [
+    "The artist, 94 years old and whose health is failing, became a queer icon [1, 2, 3].",
+    "The artist was 94 years old, and the artist's health was failing [1, 2].",
+    "The artist became queer icons [3].",
+])
+def test_claims_in_their_own_words_joined_by_words_that_assert_nothing_pass_the_word_rule(sentence):
+    assert _aged(sentence).startswith(sentence)
+
+
+def test_a_pronoun_is_used_only_where_a_cited_claim_states_it():
+    """ART-PLAN 15.14 as amended: the artist's stated pronouns, else "the artist"."""
+    from src.engine.api import report
+    stated = AGED + [{"n": 4, "who": "D", "when": "2025-05-01", "block": "queer art",
+                      "claim": "Alex Doe: uses they/them pronouns and paints rivers"}]
+    text = report.finish_success_report(
+        "## In short\nA.\n\n## Image prompt\n\nA river." + WALL.replace(
+            LIFE, "They paint rivers, and their health is failing [2, 4]. She paints rivers [4]."),
+        ["Why."], VOICE, stated, FINDING, [KEEP])
+    life = text.split(FINDING + "\n\n")[1]
+    assert life.startswith("They paint rivers, and their health is failing [2, 4].") and "She paints" not in life
+
+
+@pytest.mark.parametrize("sentence, kept", [
+    ("They are 94 years old, and their health is failing [1, 2].", True),     # they/them by default
+    ("She is 94 years old [1].", False),                                      # the critic's "she", not stated
+])
+def test_the_imagined_artist_is_they_by_default(sentence, kept):
+    """ART-PLAN 15.14, third amendment."""
+    life = _aged(sentence + " The artist became a queer icon [3].")
+    assert life.startswith(sentence) is kept
+
+
+@pytest.mark.parametrize("sentence, kept", [
+    ("They are 94 years old, and their health is failing [1, 2].", True),     # they/them by default
+    ("She is 94 years old [1].", False),                                      # the critic's "she", not stated
+])
+def test_the_imagined_artist_is_they_by_default(sentence, kept):
+    """ART-PLAN 15.14, third amendment."""
+    life = _aged(sentence + " The artist became a queer icon [3].")
+    assert life.startswith(sentence) is kept

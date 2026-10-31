@@ -1,4 +1,4 @@
-# Success report — v15
+# Success report — v16
 
 You are writing about one kind of success for artists, for a busy, intelligent reader
 who wants to know what kind of work is most likely to succeed next year, and how far
@@ -140,20 +140,27 @@ or note: one is added after you.
 ## The imagined artist
 Only if `image_subject` is present and `image_subject.life_claims` is not
 empty (otherwise write no such section): after the artist statement, the
-heading "## The imagined artist" and one paragraph, 40 to 120 words, giving
-the artist who made that work a fictional life, kept apart from the work: say
-nothing about the work here. Build it only from `image_subject.life_claims`:
+heading "## The imagined artist" and one paragraph giving the artist who
+made that work a fictional life, kept apart from the work: say nothing
+about the work here. It is built only from `image_subject.life_claims`,
 what critics said about the lives of real artists who had this kind of
-success, in the kinds of life story told most about them. Recast them as one life. Every sentence ends with the numbers of the claims it
-comes from, in square brackets before its full stop, like this: "The artist
-began late [2]." or "[1, 3]". A sentence may say only what those claims say:
-add no event, feeling, place, date, age or reason they do not give, and no
-sentence that joins them with anything of your own. Use as few or as many of
-the claims as make sense together. Third person, always "the artist", never
-"he", "she" or "they"; no names, never "successful". Each sentence will be
-read against the claims it cites, and any sentence that says more than they do
-will be cut, so keep each one to what its claims say. No label, note or list
-of claims: those are added after you.
+success, and it keeps the critics' own words. You may do only this:
+put "the artist" or "they" where the claim names or means the person it is
+about; change the tense and the verb's number to fit; drop the name of the
+claim's subject and its colon; and join up to three claims in one sentence
+with "and", commas, or an aside, as in "The artist, 94 years old and
+whose health is failing, became a queer icon [1, 2, 3]." Use no other word
+of your own: no word for when, why, after, before, because, but, later or
+how old, unless a claim you are using has it. The artist is "they",
+"them", "their": not "he" or "she", even where the claim says so, unless
+the claim states the person's pronouns (such as "she/her"). Other people
+named in a claim keep their names as the claim has them. Every sentence
+ends with the numbers of the claims it uses, in square brackets before its
+full stop. Use the claims that sit well together, at least three if you
+can, and order them so the life reads well. Never "successful". Code will
+cut any sentence with a word its claims do not have, and two readers will
+cut any that says more than its claims. No label, note or list of claims:
+those are added after you.
 
 ## How to write
 

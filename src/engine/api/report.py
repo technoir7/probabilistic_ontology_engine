@@ -43,7 +43,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 
 PROMPT_VERSION = "4"
 TREND_PROMPT_VERSION = "1"   # bump when prompts/trend_report.md changes
-SUCCESS_PROMPT_VERSION = "15"   # bump when prompts/success_report.md, life_check.md or its model changes
+SUCCESS_PROMPT_VERSION = "16"   # bump when prompts/success_report.md, life_check.md or its model changes
 THEMES_PROMPT_VERSION = "2"    # bump when prompts/themes_report.md changes
 
 
@@ -67,8 +67,9 @@ STATEMENT_LABEL = ("*A fictional artist statement for the imagined work above, b
 LIFE_HEADING = "## The imagined artist"
 LIFE_LABEL = ("*A fictional life for the imagined artist, kept apart from the work (ART-PLAN 15.12), assembled from "
               "what critics said about the lives of real artists who had this kind of success. It is not the life of "
-              "anyone. Each sentence names the claims it comes from, listed below, and was read against them by two "
-              "models; a sentence either found saying more was cut (ART-PLAN 15.13).*")
+              "anyone, and is they/them unless a claim states other pronouns. Each sentence keeps the critics' words and "
+              "names the claims it comes from, listed below; code cut any with a word those claims lack, and two models "
+              "read the rest against them (ART-PLAN 15.14).*")
 NO_LIVES = "No life block has a good record for this kind of success, so there is no life."
 UNGROUNDED = "No sentence written for the life said only what its claims say, so there is no life."
 LIFE_CHECK_PATH = PROMPT_PATH.parent / "life_check.md"
@@ -122,25 +123,77 @@ def _verdicts_of(read: Callable[[str], str], request: str, count: int) -> list[b
         return _verdicts(read(request), count)
 
 
-def _grounded(life: str, lives: list[dict], readers: Sequence[Callable[[str], str]]) -> tuple[list[str], int]:
-    """The sentences of LIFE that every one of READERS, given each beside
-    its claims, finds say nothing more than they do (ART-PLAN 15.9, 15.13),
-    and how many there were."""
+# Words that assert nothing, so a life may use them to join claims in their own words (ART-PLAN 15.14). No word
+# of time, cause or contrast is here: such a word may stand only where a claim it cites has it.
+_JOINING = frozenset("""a an the and or nor of in on at to for with by from as into about
+is was are were be been being am has had have having do does did
+it its this that these those who whose whom which not no artist artists""".split())
+_WORD = re.compile(r"[a-z0-9]+(?:['’][a-z]+)?")
+
+
+def _stem(word: str) -> str:
+    """A word less a plural or regular tense ending, so tense may change."""
+    for end in ("ing", "ed", "es", "s"):
+        if len(word) > len(end) + 2 and word.endswith(end):
+            return word[:-len(end)]
+    return word
+
+
+def _words(text: str) -> list[str]:
+    return [re.sub(r"['’]s$", "", w) for w in _WORD.findall(_CITED.sub("", text).lower())]
+
+
+# The imagined artist is "they" by default, the most neutral; "she" or "he" only where a claim states the person's
+# pronouns ("she/her"), never from a critic's own "she" or "he", the critic's assumption (ART-PLAN 15.14 as amended).
+_PRONOUN_SETS = {"he": {"he", "him", "his", "himself"}, "she": {"she", "her", "hers", "herself"},
+                 "they": {"they", "them", "their", "theirs", "themselves", "themself"}}
+_PRONOUNS = frozenset().union(*_PRONOUN_SETS.values())
+_STATED = re.compile(r"\b(he|she|they)\s*/\s*(he|him|his|she|her|hers|they|them|their)\b")
+
+
+def _stated(claim: str) -> set[str]:
+    """The pronouns CLAIM states for a person, as whole sets."""
+    found = set()
+    for pair in _STATED.findall(claim.lower()):
+        for word in pair:
+            found |= next((ws for ws in _PRONOUN_SETS.values() if word in ws), set())
+    return found
+
+
+def _in_their_words(sentence: str, claims: list[str]) -> bool:
+    """Whether every word of SENTENCE is one that asserts nothing or one of
+    CLAIMS', and every pronoun for a person "they" or one a claim states."""
+    theirs = {_stem(w) for c in claims for w in _words(c) if w not in _PRONOUNS}
+    stated = _PRONOUN_SETS["they"].union(*(_stated(c) for c in claims))
+    return all(w in stated if w in _PRONOUNS else w in _JOINING or _stem(w) in theirs for w in _words(sentence))
+
+
+def _grounded(life: str, lives: list[dict], readers: Sequence[Callable[[str], str]]) -> tuple[list[str], int, int, int]:
+    """The sentences of LIFE in the words of the claims they cite (ART-PLAN
+    15.14) that every one of READERS, given each beside its claims, finds
+    say nothing more (15.9, 15.13); how many were written, cut for their
+    words, and cut by the readers."""
     sentences = _sentences(life, lives)
-    request = life_check_request(sentences, lives)
-    kept = [all(found) for found in zip(*(_verdicts_of(read, request, len(sentences)) for read in readers))]
-    return [text for (text, _), keep in zip(sentences, kept) if keep], len(sentences)
+    claims = {c["n"]: c["claim"] for c in lives}
+    worded = [(text, cited) for text, cited in sentences if _in_their_words(text, [claims[n] for n in cited])]
+    if not worded:
+        return [], len(sentences), len(sentences), 0
+    request = life_check_request(worded, lives)
+    kept = [all(found) for found in zip(*(_verdicts_of(read, request, len(worded)) for read in readers))]
+    out = [text for (text, _), keep in zip(worded, kept) if keep]
+    return out, len(sentences), len(sentences) - len(worded), len(worded) - len(out)
 
 
 def _life_section(life: str, lives: list[dict], finding: str, readers: Sequence[Callable[[str], str]]) -> str:
     if not lives:
         return f"{finding} {NO_LIVES}"
-    kept, written = _grounded(life, lives, readers)
+    kept, written, by_words, by_readers = _grounded(life, lives, readers)
     if not kept:
         return f"{finding} {UNGROUNDED}"
-    dropped = written - len(kept)
-    note = (f"\n\n*{dropped} of {written} sentences written for this life were dropped: read against the claims "
-            "they cite, they said more than those claims do.*") if dropped else ""
+    why = ([f"{by_words} for words the claims they cite do not have"] if by_words else []) + (
+        [f"{by_readers} because the readers found them saying more than those claims"] if by_readers else [])
+    note = (f"\n\n*{written - len(kept)} of {written} sentences written for this life were dropped: "
+            f"{'; '.join(why)}.*") if why else ""
     return f"{LIFE_LABEL}\n\n{finding}\n\n{' '.join(kept)}{note}\n\n{life_trail(lives)}"
 
 
