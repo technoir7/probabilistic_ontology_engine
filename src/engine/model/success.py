@@ -93,3 +93,5 @@ class Success:
     life_years: Mapping[str, int] = field(default_factory=dict)  # kind -> the year whose championed the life is told of (15.12)
     # kind -> (blocks told most, told least) about that year's championed, with their scores (15.4 revised)
     life_told: Mapping[str, tuple[tuple[tuple[str, float], ...], tuple[tuple[str, float], ...]]] = field(default_factory=dict)
+    # kind -> its life's graph: (source, target, P(target | source), times the usual) (15.16)
+    life_graph: Mapping[str, tuple[tuple[str, str, float, float], ...]] = field(default_factory=dict)

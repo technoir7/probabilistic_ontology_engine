@@ -56,6 +56,7 @@ class LifeTestOut(ThemeTestOut):
     told_year: Optional[int] = None   # the year whose championed artists the told lists describe (15.12)
     told_most: list[tuple[str, float]] = []    # blocks told most about them, beyond their share; score
     told_least: list[tuple[str, float]] = []
+    edges: list[tuple[str, str, float, float]] = []   # the imagined life's graph: source, target, share, times (15.16)
 
 
 class SuccessSnapshotOut(BaseModel):
@@ -104,6 +105,14 @@ class NarrativeLifeClaimOut(BaseModel):
     block: str                        # the life block it is in
 
 
+class NarrativeLifeEdgeOut(BaseModel):
+    """An edge of the imagined artist's graph of life stories (ART-PLAN 15.16)."""
+    source: str
+    target: str
+    share: float                      # P(target told | source told), same artist and year
+    times: float                      # that over target's share of all lives
+
+
 class NarrativeImageSubjectOut(BaseModel):
     """What the report's image prompt shows, chosen by rule (narrative._image_subject)."""
     theme: str
@@ -117,6 +126,7 @@ class NarrativeImageSubjectOut(BaseModel):
     wall_text_voice: str                     # who speaks in the wall text, fixed by kind (ART-PLAN §12.11)
     life_claims: list[NarrativeLifeClaimOut]  # the only claims the imagined artist's life may draw on; empty: none
     life_finding: str                        # what the life-block test found for this kind, by rule (ART-PLAN 15.7)
+    life_edges: list[NarrativeLifeEdgeOut] = []   # how the blocks of the life go together (ART-PLAN 15.16)
 
 
 class NarrativeThemeKindOut(BaseModel):

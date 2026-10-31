@@ -223,7 +223,22 @@ class EmptyLife(Exception):
         self.report = report
 
 
-def _life_section(life: str, lives: list[dict], finding: str, readers: Sequence[Callable[[str], str]]) -> str:
+def life_graph(edges: Sequence[dict]) -> str:
+    """How the life stories of an imagined life go together (ART-PLAN 15.16),
+    as code says it: one line a pair, since "times the usual" is the same both
+    ways and the shares are not."""
+    share = {(e["source"], e["target"]): e for e in edges}
+    pairs = [e for e in edges if e["source"] < e["target"] or (e["target"], e["source"]) not in share]
+    def back(e):
+        other = share.get((e["target"], e["source"]))
+        return f", {other['share']:.0%} the other way" if other else ""
+    return "*How these life stories go together, in the lives of real artists:*\n\n" + "\n".join(
+        f"- \"{e['source']}\" and \"{e['target']}\": told together {e['times']:g} times the usual; "
+        f"{e['share']:.0%} of artists told the first are told the second{back(e)}" for e in pairs)
+
+
+def _life_section(life: str, lives: list[dict], finding: str, readers: Sequence[Callable[[str], str]],
+                  edges: Sequence[dict] = ()) -> str:
     if not lives:
         return f"{finding} {NO_LIVES}"
     kept, cut, written = _grounded(life, lives, readers)
@@ -231,7 +246,8 @@ def _life_section(life: str, lives: list[dict], finding: str, readers: Sequence[
         return f"{finding} {UNGROUNDED}\n\n{_cut_list(cut)}\n\n{life_trail(lives)}"
     note = (f"\n\n*{len(cut)} of {written} sentences written for this life were dropped.*\n\n{_cut_list(cut)}"
             if cut else "")
-    return f"{LIFE_LABEL}\n\n{finding}\n\n{' '.join(kept)}{note}\n\n{life_trail(lives)}"
+    graph = f"\n\n{life_graph(edges)}" if edges else ""
+    return f"{LIFE_LABEL}\n\n{finding}\n\n{' '.join(kept)}{note}{graph}\n\n{life_trail(lives)}"
 
 
 def wall_text_label(voice: str) -> str:
@@ -240,7 +256,7 @@ def wall_text_label(voice: str) -> str:
 
 
 def finish_success_report(text: str, reasons: Optional[list[str]], voice: Optional[str], lives: list[dict],
-                          finding: str, readers: Sequence[Callable[[str], str]]) -> str:
+                          finding: str, readers: Sequence[Callable[[str], str]], *, edges: Sequence[dict] = ()) -> str:
     """Replace the writer's image prompt section with the finished one: the
     rule's REASONS, then the label, the writer's description and the
     setting; then the writer's wall text (in VOICE) and artist statement,
@@ -268,7 +284,7 @@ def finish_success_report(text: str, reasons: Optional[list[str]], voice: Option
         if not part:
             raise ValueError(f"the report has no {name}")
     why = "\n\n".join(reasons)
-    life_section = _life_section(life, lives, finding, readers)
+    life_section = _life_section(life, lives, finding, readers, edges)
     empty = bool(lives) and UNGROUNDED in life_section
     finished = (f"{body}\n\n{REASONS_HEADING}\n\n{why}\n\n{IMAGE_HEADING}\n\n{IMAGE_LABEL}\n\n"
                 f"{description} {IMAGE_SETTING}\n\n{WALL_HEADING}\n\n{wall_text_label(voice)}\n\n{wall}\n\n"

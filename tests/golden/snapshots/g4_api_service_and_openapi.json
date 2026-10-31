@@ -1058,6 +1058,30 @@
        "title": "Dealt",
        "type": "object"
       },
+      "edges": {
+       "default": [],
+       "items": {
+        "maxItems": 4,
+        "minItems": 4,
+        "prefixItems": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "string"
+         },
+         {
+          "type": "number"
+         },
+         {
+          "type": "number"
+         }
+        ],
+        "type": "array"
+       },
+       "title": "Edges",
+       "type": "array"
+      },
       "effects": {
        "additionalProperties": {
         "type": "number"

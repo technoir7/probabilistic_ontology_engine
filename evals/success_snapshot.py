@@ -89,11 +89,16 @@ def main() -> None:
     everyone = set(artists())
     claims = {y: list(year_life_claims(calendar_months(y), everyone))
               for y in {r["championed"]["year"] for r in lives.values()}}
-    snap["lives"], snap["life_years"], snap["life_told"] = {}, {}, {}
+    snap["lives"], snap["life_years"], snap["life_told"], snap["life_graph"] = {}, {}, {}, {}
+    graph = {(a, b): (p, t, sc) for a, b, p, t, sc in json.loads((run_dir / "life_graph.json").read_text())}
     for k, r in lives.items():
         c = r["championed"]
         theirs = set(c["artists"])
         snap["lives"][k] = chosen_lives([x for x in claims[c["year"]] if x[4] in theirs], c["scores"], named)
+        # 15.16: how the blocks the life's claims came from go together in real lives; it describes, not chooses
+        used = list(dict.fromkeys(b for b in c["scores"] if named.get(b) in {x[3] for x in snap["lives"][k]}))
+        snap["life_graph"][k] = [[named[a], named[b], graph[(a, b)][0], round(graph[(a, b)][1], 1)]
+                                 for a in used for b in used if (a, b) in graph]
         snap["life_years"][k] = c["year"]
         ranked = sorted(((named[t], v) for t, v in c["scores"].items()), key=lambda nv: nv[1])
         snap["life_told"][k] = {"most": [[n, v] for n, v in ranked[::-1][:TOLD] if v > 0],

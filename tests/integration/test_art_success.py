@@ -124,8 +124,10 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
     assert f"{report.STATEMENT_LABEL}\n\nI photograph work." in body["report"]
     subject = success_narrative.success_snapshot("art", "museum").image_subject
     lives, finding = [c.model_dump() for c in subject.life_claims], subject.life_finding
+    edges = [e.model_dump() for e in subject.life_edges]
+    graph = f"\n\n{report.life_graph(edges)}" if edges else ""
     assert body["report"].endswith(
-        f"{report.LIFE_LABEL}\n\n{finding}\n\nThe artist [1].\n\n{report.life_trail(lives)}"
+        f"{report.LIFE_LABEL}\n\n{finding}\n\nThe artist [1].{graph}\n\n{report.life_trail(lives)}"
         if lives else f"{report.LIFE_HEADING}\n\n{finding} {report.NO_LIVES}")
     assert seen.get("check_key") == ("test-key" if lives else None)      # the check reads on the server's key
     # ART-PLAN 15.10: read by a second model, so no model reads its own writing
@@ -663,3 +665,36 @@ def test_the_lives_panel_is_sent_the_blocks_told_most_and_least_about_the_champi
     snap["life_told"] = {"elsewhere": {"most": [], "least": []}}
     with pytest.raises(ValueError):
         success.load(snap)
+
+
+def test_each_life_carries_its_graph_to_the_report_and_the_panel(monkeypatch):
+    """ART-PLAN 15.16: the edges between the blocks a life was walked through."""
+    from src.engine.api.routers import success as success_router
+    snap = _snapshot()
+    snap["lives"] = {"museum": [["W", "2025-03-01", "a: began late", "late discovery"]]}
+    snap["life_tests"] = {"museum": _life_test(["nyt"], 120.0, 120.0, 40.0, [120.0] * 3)}
+    snap["life_graph"] = {"museum": [["late discovery", "early fame", 0.25, 3.5]]}
+    for target in (success_narrative, success_router):
+        monkeypatch.setattr(target, "current_success", lambda key: success.load(snap))
+    subject = success_narrative.success_snapshot("art", "museum").image_subject
+    assert [e.model_dump() for e in subject.life_edges] == [
+        {"source": "late discovery", "target": "early fame", "share": 0.25, "times": 3.5}]
+    with TestClient(api_app.app) as client:
+        museum = client.get("/v1/success", params={"domain": "art"}).json()["success"]["lives"]["museum"]
+    assert museum["edges"] == [["late discovery", "early fame", 0.25, 3.5]]
+    snap["life_graph"] = {"elsewhere": []}
+    with pytest.raises(ValueError):
+        success.load(snap)
+
+
+def test_code_lists_how_the_life_stories_go_together_under_the_life():
+    from src.engine.api import report
+    edges = [{"source": "early careers", "target": "late discovery", "share": 0.25, "times": 3.5},
+             {"source": "late discovery", "target": "early careers", "share": 0.1, "times": 3.5}]
+    text = report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA river." + WALL, ["Why."], VOICE, LIVES,
+                                        FINDING, [KEEP], edges=edges)
+    # one line a pair: "times the usual" is the same both ways; the shares are not
+    assert ('- "early careers" and "late discovery": told together 3.5 times the usual; 25% of artists told the '
+            'first are told the second, 10% the other way' in text)
+    assert text.count("told together") == 1
+    assert text.index("How these life stories go together") < text.index("*Built from")

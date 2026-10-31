@@ -149,7 +149,9 @@ async def success_report_refresh(domain: str, kind: str) -> Any:
                for model in (_report.LIFE_CHECK_MODEL, settings.fireworks_model)]
     return await _refresh(f"{snap['domain']}-success-{kind}", snap["domain"], snap,
                           _report.SUCCESS_PROMPT_VERSION, _report.SUCCESS_PROMPT_PATH,
-                          finish=lambda text: _report.finish_success_report(text, *_illustration(snap["image_subject"]), readers),
+                          finish=lambda text: _report.finish_success_report(
+                              text, *_illustration(snap["image_subject"]), readers,
+                              edges=(snap["image_subject"] or {}).get("life_edges", [])),
                           writes=3)
 
 

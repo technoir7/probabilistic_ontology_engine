@@ -56,7 +56,7 @@ def load(snapshot: Mapping) -> Success:
         raise ValueError(f"kinds {sorted(snapshot['kinds'])}, expected {sorted(KINDS)} and any of {sorted(APART)}")
     if not set(snapshot.get("themes", {})) <= set(KINDS):
         raise ValueError(f"themes names kinds outside {sorted(KINDS)}: {sorted(snapshot['themes'])}")
-    for part in ("lives", "life_tests", "life_years", "life_told"):
+    for part in ("lives", "life_tests", "life_years", "life_told", "life_graph"):
         if not set(snapshot.get(part, {})) <= set(snapshot["kinds"]):
             raise ValueError(f"{part} names kinds outside the snapshot's: {sorted(snapshot[part])}")
     if not set(snapshot["at_the_top"]) <= set(KINDS):
@@ -73,7 +73,8 @@ def load(snapshot: Mapping) -> Success:
                    {k: _theme_test(t, ("good_life", "poor_life")) for k, t in snapshot.get("life_tests", {}).items()},
                    dict(snapshot.get("life_years", {})),
                    {k: (tuple((n, r) for n, r in t["most"]), tuple((n, r) for n, r in t["least"]))
-                    for k, t in snapshot.get("life_told", {}).items()})
+                    for k, t in snapshot.get("life_told", {}).items()},
+                   {k: tuple((a, b, p, t) for a, b, p, t in es) for k, es in snapshot.get("life_graph", {}).items()})
 
 
 def current() -> Optional[Success]:
