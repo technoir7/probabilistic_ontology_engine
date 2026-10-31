@@ -214,6 +214,10 @@ async def _refresh(cache_key: str, domain: str, snapshot_dict: dict, version: st
             except _report.EmptyLife as empty:      # ART-PLAN 15.15: the writer may try again
                 logger.info("No sentence of the life survived for %s (write %d of %d)", cache_key, attempt, writes)
                 report_text = empty.report
+            except _report.MissingPart as missing:  # the writer left a part out; it may write again
+                logger.info("%s for %s (write %d of %d)", missing, cache_key, attempt, writes)
+                if attempt == writes:
+                    raise
     except Exception as exc:
         logger.error("Fireworks generation failed for %s: %s", cache_key, exc, exc_info=True)
         return stale_or(HTTPException(status_code=502, detail=f"Report generation failed: {exc}"))

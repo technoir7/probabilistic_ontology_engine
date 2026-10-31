@@ -213,6 +213,10 @@ def _cut_list(cut: list[tuple[str, str]]) -> str:
     return "*Cut by the checks:*\n\n" + "\n".join(f"- ~~{text}~~ ({why})" for text, why in cut)
 
 
+class MissingPart(ValueError):
+    """The writer left out a part of the report; it may be asked again."""
+
+
 class EmptyLife(Exception):
     """No sentence of the imagined life survived the checks (ART-PLAN
     15.15): the writer may be asked again. REPORT is the finished report as
@@ -233,7 +237,7 @@ def life_graph(edges: Sequence[dict]) -> str:
         other = share.get((e["target"], e["source"]))
         return f", {other['share']:.0%} the other way" if other else ""
     return "*How these life stories go together, in the lives of real artists:*\n\n" + "\n".join(
-        f"- \"{e['source']}\" and \"{e['target']}\": told together {e['times']:g} times the usual; "
+        f"- \"{e['source']}\" and \"{e['target']}\": told together {e['times']:.1f} times the usual; "
         f"{e['share']:.0%} of artists told the first are told the second{back(e)}" for e in pairs)
 
 
@@ -282,7 +286,7 @@ def finish_success_report(text: str, reasons: Optional[list[str]], voice: Option
     for part, name in ((description, "image prompt description"), (wall, "wall text"), (statement, "artist statement"),
                        (life or not lives, "imagined artist's life")):
         if not part:
-            raise ValueError(f"the report has no {name}")
+            raise MissingPart(f"the report has no {name}")
     why = "\n\n".join(reasons)
     life_section = _life_section(life, lives, finding, readers, edges)
     empty = bool(lives) and UNGROUNDED in life_section

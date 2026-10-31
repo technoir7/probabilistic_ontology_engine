@@ -698,3 +698,21 @@ def test_code_lists_how_the_life_stories_go_together_under_the_life():
             'first are told the second, 10% the other way' in text)
     assert text.count("told together") == 1
     assert text.index("How these life stories go together") < text.index("*Built from")
+
+
+def test_a_report_missing_a_part_has_the_writer_write_again(monkeypatch, tmp_path):
+    """Seen live: market's writer left out a part on most writes; it may write again, as for an empty life."""
+    from src.engine.api import report
+    whole = ("## In short\nA.\n\n## Image prompt\nA photograph.\n\n## Wall text\n*W*, photography, 2026\n\nA."
+             "\n\n## Artist statement\nI.\n\n## The imagined artist\nThe artist [1].")
+    writes = [whole.replace("\n\n## Artist statement\nI.", ""), whole]
+
+    async def fake(snapshot, **_):
+        return writes.pop(0)
+    monkeypatch.setattr(report, "generate_report", fake)
+    monkeypatch.setattr(report, "fetch_life_check", lambda request, **_: "1 y")
+    monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
+    monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
+    with TestClient(api_app.app) as client:
+        body = client.post("/v1/success/art/museum/report/refresh").json()
+    assert body["regenerated"] is True and not writes and "I." in body["report"]
