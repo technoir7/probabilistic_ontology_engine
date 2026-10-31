@@ -243,13 +243,22 @@ def life_verdict(s, kind: str) -> str:
 
 
 def _life_finding(s, kind: str) -> str:
-    """The life-block test's verdict for KIND, said before the imagined artist's life."""
+    """The life-block test's verdict for KIND, then where the life comes
+    from (ART-PLAN 15.12), said before the imagined artist's life."""
+    year = s.life_years.get(kind)
+    source = ("" if year is None else
+              f" The life below is built from the life stories told more about the artists who had this success in "
+              f"{year} than about other artists written about that year: what was said about the championed, not a "
+              "cause of success.")
+    return _verdict_said(s, kind) + source
+
+
+def _verdict_said(s, kind: str) -> str:
     verdict = life_verdict(s, kind)
     if verdict == "untested":
         return "Whether a life story helps this kind of success has not been tested."
     if verdict == "nothing":
-        return (f"{_BLOCKS} add nothing beyond what already predicts this kind of success, so the life below shows "
-                "what those blocks hold, not what helps.")
+        return f"{_BLOCKS} add nothing to forecasting this kind of success beyond what already predicts it."
     if verdict == "with":
         return (f"{_BLOCKS} come with this kind of success rather than before it: next year's predict it as well "
                 "or better.")

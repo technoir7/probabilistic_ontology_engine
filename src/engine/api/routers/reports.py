@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from functools import partial
 from typing import Any, Callable, Optional
 
 from fastapi import APIRouter, HTTPException, Request
@@ -143,11 +144,12 @@ async def success_report_refresh(domain: str, kind: str) -> Any:
     snap = _success(domain, kind)
     settings = Settings.from_env()
 
-    def read(request: str) -> str:
-        return _report.fetch_life_check(request, api_key=settings.fireworks_api_key, model=_report.LIFE_CHECK_MODEL)
+    # Two readers of another maker each (ART-PLAN 15.13): the writer's model and GLM-5.3.
+    readers = [partial(_report.fetch_life_check, api_key=settings.fireworks_api_key, model=model)
+               for model in (_report.LIFE_CHECK_MODEL, settings.fireworks_model)]
     return await _refresh(f"{snap['domain']}-success-{kind}", snap["domain"], snap,
                           _report.SUCCESS_PROMPT_VERSION, _report.SUCCESS_PROMPT_PATH,
-                          finish=lambda text: _report.finish_success_report(text, *_illustration(snap["image_subject"]), read))
+                          finish=lambda text: _report.finish_success_report(text, *_illustration(snap["image_subject"]), readers))
 
 
 def _illustration(subject: Optional[dict]) -> tuple[Optional[list[str]], Optional[str], list[dict], str]:

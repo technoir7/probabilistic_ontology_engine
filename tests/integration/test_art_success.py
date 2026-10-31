@@ -106,7 +106,8 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
     monkeypatch.setattr(report, "generate_report", fake)
 
     def check(request, *, api_key, model):
-        seen["check_key"], seen["check_model"] = api_key, model
+        seen["check_key"] = api_key
+        seen.setdefault("check_models", []).append(model)
         return "1 y"
     monkeypatch.setattr(report, "fetch_life_check", check)
     monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
@@ -127,7 +128,8 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
         if lives else f"{report.LIFE_HEADING}\n\n{finding} {report.NO_LIVES}")
     assert seen.get("check_key") == ("test-key" if lives else None)      # the check reads on the server's key
     # ART-PLAN 15.10: read by a second model, so no model reads its own writing
-    assert seen.get("check_model") == (report.LIFE_CHECK_MODEL if lives else None)
+    # ART-PLAN 15.13: and by the writer's own model as well
+    assert sorted(seen.get("check_models", [])) == (sorted([report.LIFE_CHECK_MODEL, report._DEFAULT_MODEL]) if lives else [])
     assert report.LIFE_CHECK_MODEL != report._DEFAULT_MODEL
     assert report.REASONS_HEADING in body["report"]
 
@@ -238,7 +240,7 @@ def KEEP(request):
 def test_code_finishes_the_image_prompt_so_the_writer_cannot_change_its_label_or_setting():
     from src.engine.api import report
     text = report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA large painting of a river.\n" + WALL,
-                                        ["Why the river.", "Why paint."], VOICE, LIVES, FINDING, KEEP)
+                                        ["Why the river.", "Why paint."], VOICE, LIVES, FINDING, [KEEP])
     assert text == ("## In short\nA.\n\n" + report.REASONS_HEADING + "\n\nWhy the river.\n\nWhy paint.\n\n"
                     + report.IMAGE_HEADING + "\n\n" + report.IMAGE_LABEL + "\n\n"
                     "A large painting of a river. " + report.IMAGE_SETTING + "\n\n"
@@ -262,7 +264,7 @@ def test_the_artist_statement_label_says_it_is_fiction():
 
 def test_the_imagined_artist_label_says_the_life_is_fiction_from_real_lives():
     from src.engine.api import report
-    assert "fictional life" in report.LIFE_LABEL and "real artists' lives" in report.LIFE_LABEL
+    assert "fictional life" in report.LIFE_LABEL and "lives of real artists who had this kind of success" in report.LIFE_LABEL
 
 
 def test_the_claims_a_life_is_built_from_are_listed_under_it():
@@ -279,20 +281,20 @@ def test_a_sentence_of_the_life_without_a_claim_behind_it_refuses_the_report(lif
     from src.engine.api import report
     text = WALL.replace(LIFE, life)
     with pytest.raises(ValueError):
-        report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA river." + text, ["Why."], VOICE, LIVES, FINDING, KEEP)
+        report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA river." + text, ["Why."], VOICE, LIVES, FINDING, [KEEP])
 
 
 def test_where_no_claim_is_about_a_life_code_says_so_whatever_the_writer_wrote():
     from src.engine.api import report
     for life in ("\n\n## The imagined artist\n\nThe artist began late.", ""):
         text = "## In short\nA.\n\n## Image prompt\n\nA river." + WALL.split("\n\n## The imagined artist")[0] + life
-        assert report.finish_success_report(text, ["Why."], VOICE, [], FINDING, KEEP).endswith(
+        assert report.finish_success_report(text, ["Why."], VOICE, [], FINDING, [KEEP]).endswith(
             report.LIFE_HEADING + "\n\n" + FINDING + " " + report.NO_LIVES)
 
 
 def test_words_the_writer_adds_to_the_image_prompt_heading_are_not_part_of_the_prompt():
     from src.engine.api import report
-    text = report.finish_success_report("## In short\nA.\n\n## Image prompt: a vision\nA river." + WALL, ["Why."], VOICE, LIVES, FINDING, KEEP)
+    text = report.finish_success_report("## In short\nA.\n\n## Image prompt: a vision\nA river." + WALL, ["Why."], VOICE, LIVES, FINDING, [KEEP])
     assert ("\n\nA river. " + report.IMAGE_SETTING + "\n\n" + report.WALL_HEADING) in text and "vision" not in text
 
 
@@ -309,13 +311,13 @@ def test_words_the_writer_adds_to_the_image_prompt_heading_are_not_part_of_the_p
 def test_an_image_prompt_wall_text_or_statement_wanted_but_not_written_is_an_error(written):
     from src.engine.api import report
     with pytest.raises(ValueError):
-        report.finish_success_report(written, ["Why."], VOICE, LIVES, FINDING, KEEP)
+        report.finish_success_report(written, ["Why."], VOICE, LIVES, FINDING, [KEEP])
 
 
 def test_where_nothing_is_illustrated_code_says_so_whatever_the_writer_wrote():
     from src.engine.api import report
     for written in ("## In short\nA.", "## In short\nA.\n\n## Image prompt\nA bird." + WALL):
-        assert report.finish_success_report(written, None, None, [], "", KEEP) == (
+        assert report.finish_success_report(written, None, None, [], "", [KEEP]) == (
             "## In short\nA.\n\n" + report.IMAGE_HEADING + "\n\n" + report.NOTHING_TO_ILLUSTRATE)
 
 
@@ -421,7 +423,7 @@ def test_only_the_kinds_kept_apart_may_join_the_four():
 def _life(life, read):
     from src.engine.api import report
     return report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA river." + WALL.replace(LIFE, life),
-                                        ["Why."], VOICE, LIVES, FINDING, read)
+                                        ["Why."], VOICE, LIVES, FINDING, [read])
 
 
 def test_the_reader_sees_each_sentence_beside_only_the_claims_it_cites():
@@ -506,3 +508,25 @@ def test_the_life_check_lets_its_model_think_and_leaves_room_to_answer(monkeypat
     assert report.fetch_life_check("Sentence 1: x", api_key="k", model=report.LIFE_CHECK_MODEL) == "1 y"
     assert sent["model"] == report.LIFE_CHECK_MODEL and sent.get("reasoning_effort") != "none"
     assert sent["max_tokens"] >= 2000
+
+
+def test_the_finding_says_the_life_is_what_was_said_about_the_championed(monkeypatch):
+    """ART-PLAN 15.12: the life is description of who had the success, not a cause."""
+    snap = _snapshot()
+    snap["lives"] = {"museum": [["W", "2025-03-01", "a: began late", "late discovery"]]}
+    snap["life_years"] = {"museum": 2025}
+    monkeypatch.setattr(success_narrative, "current_success", lambda key: success.load(snap))
+    finding = success_narrative.success_snapshot("art", "museum").image_subject.life_finding
+    assert "artists who had this success in 2025" in finding and "not a cause" in finding
+    snap["life_years"] = {"elsewhere": 2025}
+    with pytest.raises(ValueError):
+        success.load(snap)
+
+
+def test_a_sentence_is_kept_only_if_both_readers_find_it_says_no_more_than_its_claims():
+    """ART-PLAN 15.13."""
+    from src.engine.api import report
+    text = report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA river." + WALL, ["Why."], VOICE, LIVES,
+                                        FINDING, [lambda r: "1 y\n2 y", lambda r: "1 n\n2 y"])
+    life = text.split(FINDING + "\n\n")[1]
+    assert life.startswith("The work was found only after") and "1 of 2 sentences" in life

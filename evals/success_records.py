@@ -163,12 +163,15 @@ def chosen_lives(claims: Iterable[tuple[str, str, str, str, Optional[str]]], rec
 
 # ── Reading the sources (glue) ────────────────────────────────────────────────
 
-def year_life_claims(year: int, names: set[str]):
+def calendar_months(year: int) -> set[str]:
+    return {f"{year}-{m:02d}" for m in range(1, 13)}
+
+
+def year_life_claims(window: set[str], names: set[str]):
     """(block, who, published, "about: asserts", subject) for each claim
-    grouped into a trend in YEAR (to September) and read as about a life
+    grouped into a trend in the months of WINDOW and read as about a life
     (ART-PLAN 15.7); the subject is the collected artist named, else None
     (15.8)."""
-    window = {f"{year - 1}-{m:02d}" for m in (10, 11, 12)} | {f"{year}-{m:02d}" for m in range(1, 10)}
     trend_of = {}
     for line in (TEXTS / "trends" / "claims.jsonl").read_text().splitlines():
         r = json.loads(line)

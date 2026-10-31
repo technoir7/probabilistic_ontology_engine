@@ -2,7 +2,9 @@
 only the claims read as about a life (§15.2), for every kind of success,
 movers included. Each kind's pool is its §12 leader and the two life-block
 features; controls as §12, dealing the two. Writes lives_KIND.json per kind
-with this year's records of every named block.
+with this year's records of every named block, and (15.12) who was
+championed in the latest year with known success and every named block's
+score for being told about the championed, that year and every year.
 
     uv run python -m evals.lives_run OUT_DIR [KIND ...]"""
 from __future__ import annotations
@@ -13,6 +15,7 @@ from pathlib import Path
 
 from src.domains.art_prestige_regime_v1 import success
 
+from .champions import champion_scores, championed, latest
 from .success_records import TEXTS, build, life_keys, life_theme_claims
 from .success_run import judge_all
 from .theme_records import track_records, with_theme_features
@@ -43,8 +46,15 @@ def main() -> None:
         ranked = sorted(now.items(), key=lambda tr: tr[1])
         shown = {"year": year, "best": [[t, named[t]["name"], r] for t, r in ranked[::-1][:SHOWN] if r > 0],
                  "worst": [[t, named[t]["name"], r] for t, r in ranked[:SHOWN] if r < 0], "now": now}
+        champs = championed(sets[k][2])
+        scores = {y: {t: round(v, 4) for t, v in sc.items() if t in named}
+                  for y, sc in champion_scores(champs, claims).items()}
+        last = latest(sets[k][2])
+        champions = {"year": last, "artists": sorted(champs.get(last, ())), "scores": scores.get(last, {}),
+                     "by_year": {str(y): sc for y, sc in sorted(scores.items())}}
         (out_dir / f"lives_{k}.json").write_text(json.dumps(
-            {"pool": list(leaders[k]) + list(NEW), "real": real[k], "controls": controls[k], "records": shown}, indent=1))
+            {"pool": list(leaders[k]) + list(NEW), "real": real[k], "controls": controls[k], "records": shown,
+             "championed": champions}, indent=1))
     print(f"-> {out_dir}")
 
 

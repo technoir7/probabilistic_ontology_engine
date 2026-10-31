@@ -90,3 +90,4 @@ class Success:
     themes: Mapping[str, ThemeTest] = field(default_factory=dict)   # kind -> its theme test
     lives: Mapping[str, tuple[LifeClaim, ...]] = field(default_factory=dict)   # kind -> its imagined artist's claims
     life_tests: Mapping[str, ThemeTest] = field(default_factory=dict)       # kind -> its life-block test (15.7)
+    life_years: Mapping[str, int] = field(default_factory=dict)  # kind -> the year whose championed the life is told of (15.12)

@@ -15,7 +15,7 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Callable, Optional, Sequence
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +43,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 
 PROMPT_VERSION = "4"
 TREND_PROMPT_VERSION = "1"   # bump when prompts/trend_report.md changes
-SUCCESS_PROMPT_VERSION = "14"   # bump when prompts/success_report.md, life_check.md or its model changes
+SUCCESS_PROMPT_VERSION = "15"   # bump when prompts/success_report.md, life_check.md or its model changes
 THEMES_PROMPT_VERSION = "2"    # bump when prompts/themes_report.md changes
 
 
@@ -65,10 +65,10 @@ STATEMENT_HEADING = "## Artist statement"
 STATEMENT_LABEL = ("*A fictional artist statement for the imagined work above, by its imagined artist (ART-PLAN §12.12). "
                    "Its ideas are the critics' claims in this theme; it is not the words of any real artist.*")
 LIFE_HEADING = "## The imagined artist"
-LIFE_LABEL = ("*A fictional life for the imagined artist, kept apart from the work (ART-PLAN 15.7), assembled from "
-              "what critics said about real artists' lives in the life blocks with the best record for this kind of "
-              "success. It is not the life of anyone. Each sentence names the claims it comes from, listed below, and "
-              "was read against them (ART-PLAN 15.9).*")
+LIFE_LABEL = ("*A fictional life for the imagined artist, kept apart from the work (ART-PLAN 15.12), assembled from "
+              "what critics said about the lives of real artists who had this kind of success. It is not the life of "
+              "anyone. Each sentence names the claims it comes from, listed below, and was read against them by two "
+              "models; a sentence either found saying more was cut (ART-PLAN 15.13).*")
 NO_LIVES = "No life block has a good record for this kind of success, so there is no life."
 UNGROUNDED = "No sentence written for the life said only what its claims say, so there is no life."
 LIFE_CHECK_PATH = PROMPT_PATH.parent / "life_check.md"
@@ -80,7 +80,7 @@ _SENTENCE_END = re.compile(r"(?<=[.!?\]])\s+(?=[A-Z\"'‘“])")
 
 def life_trail(lives: list[dict]) -> str:
     """The claims an imagined life is built from, as a critic made each."""
-    return "*Built from these claims critics made about real artists:*\n\n" + "\n".join(
+    return "*Built from these claims critics made about real artists who had this success:*\n\n" + "\n".join(
         f"- [{c['n']}] {c['who']} ({c['when']}), in \"{c['block']}\": {c['claim']}" for c in lives)
 
 
@@ -114,23 +114,28 @@ def _verdicts(answer: str, count: int) -> list[bool]:
     return [parts[1] == "y" for parts in lines]
 
 
-def _grounded(life: str, lives: list[dict], read: Callable[[str], str]) -> tuple[list[str], int]:
-    """The sentences of LIFE that READ, given each beside its claims, finds
-    say nothing more than they do (ART-PLAN 15.9), and how many there were.
-    An answer out of the form is asked once more, then refused."""
+def _verdicts_of(read: Callable[[str], str], request: str, count: int) -> list[bool]:
+    """READ's answer; one out of the form is asked once more, then refused."""
+    try:
+        return _verdicts(read(request), count)
+    except ValueError:
+        return _verdicts(read(request), count)
+
+
+def _grounded(life: str, lives: list[dict], readers: Sequence[Callable[[str], str]]) -> tuple[list[str], int]:
+    """The sentences of LIFE that every one of READERS, given each beside
+    its claims, finds say nothing more than they do (ART-PLAN 15.9, 15.13),
+    and how many there were."""
     sentences = _sentences(life, lives)
     request = life_check_request(sentences, lives)
-    try:
-        kept = _verdicts(read(request), len(sentences))
-    except ValueError:
-        kept = _verdicts(read(request), len(sentences))
+    kept = [all(found) for found in zip(*(_verdicts_of(read, request, len(sentences)) for read in readers))]
     return [text for (text, _), keep in zip(sentences, kept) if keep], len(sentences)
 
 
-def _life_section(life: str, lives: list[dict], finding: str, read: Callable[[str], str]) -> str:
+def _life_section(life: str, lives: list[dict], finding: str, readers: Sequence[Callable[[str], str]]) -> str:
     if not lives:
         return f"{finding} {NO_LIVES}"
-    kept, written = _grounded(life, lives, read)
+    kept, written = _grounded(life, lives, readers)
     if not kept:
         return f"{finding} {UNGROUNDED}"
     dropped = written - len(kept)
@@ -145,17 +150,17 @@ def wall_text_label(voice: str) -> str:
 
 
 def finish_success_report(text: str, reasons: Optional[list[str]], voice: Optional[str], lives: list[dict],
-                          finding: str, read: Callable[[str], str]) -> str:
+                          finding: str, readers: Sequence[Callable[[str], str]]) -> str:
     """Replace the writer's image prompt section with the finished one: the
     rule's REASONS, then the label, the writer's description and the
     setting; then the writer's wall text (in VOICE) and artist statement,
     each under its label; then the imagined artist's life, every sentence
-    citing one of LIVES and kept only if READ finds it says no more than
-    they do, after the life-block test's FINDING, with the claims listed
+    citing one of LIVES and kept only if every one of READERS finds it
+    says no more than they do, after the life-block test's FINDING, with the claims listed
     under it, or NO_LIVES where there are none. REASONS None: nothing to
     illustrate, so none of them. ValueError when an illustration is wanted
     and the writer left a part out, or wrote a sentence of the life that
-    cites no claim given, or READ twice answers out of its form."""
+    cites no claim given, or a reader twice answers out of its form."""
     body, _, written = text.partition(f"\n{IMAGE_HEADING}")
     body = body.rstrip()
     if reasons is None:
@@ -171,7 +176,7 @@ def finish_success_report(text: str, reasons: Optional[list[str]], voice: Option
         if not part:
             raise ValueError(f"the report has no {name}")
     why = "\n\n".join(reasons)
-    life_section = _life_section(life, lives, finding, read)
+    life_section = _life_section(life, lives, finding, readers)
     return (f"{body}\n\n{REASONS_HEADING}\n\n{why}\n\n{IMAGE_HEADING}\n\n{IMAGE_LABEL}\n\n"
             f"{description} {IMAGE_SETTING}\n\n{WALL_HEADING}\n\n{wall_text_label(voice)}\n\n{wall}\n\n"
             f"{STATEMENT_HEADING}\n\n{STATEMENT_LABEL}\n\n{statement}\n\n{LIFE_HEADING}\n\n{life_section}")
