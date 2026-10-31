@@ -15,7 +15,8 @@ import unicodedata
 from dataclasses import dataclass, field
 from typing import Mapping, Optional
 
-_NOT_PEOPLE = re.compile(r"\b(unknown|anonymous|unidentified|workshop|school|period|dynasty|culture|attributed|style)\b")
+_NOT_PEOPLE = re.compile(r"\b(unknown|anonymous|unidentified|workshop|school|period|dynasty|culture|attributed|style|"
+                         r"follower|circle|manner)\b")
 
 
 @dataclass(frozen=True)
@@ -37,10 +38,27 @@ def cma_person(description: str) -> Optional[Person]:
     for what is not one named person."""
     name, _, rest = description.partition("(")
     name = name.strip().rstrip(",")
-    if not name or _NOT_PEOPLE.search(name.lower()) or len(normalise(name).split()) < 2:
+    if not _a_person_by_name(name):
         return None
     born = re.search(r"\b(1\d{3}|20\d{2})\b", rest)
     return Person(normalise(name), int(born.group(1)) if born else None)
+
+
+_NOT_ARTISTS = {"Culture", "Corporate Body", "Organization", "School", "Unknown", "Fund", "Gallery", "Collection"}
+
+
+def _a_person_by_name(name: str) -> bool:
+    return bool(name) and not _NOT_PEOPLE.search(name.lower()) and len(normalise(name).split()) >= 2
+
+
+def chicago_people(museums: Mapping) -> dict[str, tuple[str, Optional[int]]]:
+    """Chicago's makers who are artists (ART-PLAN §16): not of a type it
+    gives non-artists (a culture, a company, a school, ...), and a person
+    by the same name rule as Cleveland's. Untyped makers count, by the name
+    rule: most are recent acquisitions not yet typed. id -> (title, birth
+    year)."""
+    return {i: (title, born) for i, (title, born, kind) in museums["aic"]["agents"].items()
+            if kind not in _NOT_ARTISTS and _a_person_by_name(title)}
 
 
 def nyt_person(value: str) -> str:
@@ -113,8 +131,8 @@ def fetch_museums(first: int = 1995, last: int = 2025) -> dict:
     agents: dict[str, list] = {}
     for k in range(0, len(ids), 100):
         chunk = ",".join(ids[k:k + 100])
-        for a in _json(f"https://api.artic.edu/api/v1/agents?ids={chunk}&fields=id,title,birth_date&limit=100")["data"]:
-            agents[str(a["id"])] = [a.get("title") or "", a.get("birth_date")]
+        for a in _json(f"https://api.artic.edu/api/v1/agents?ids={chunk}&fields=id,title,birth_date,agent_type_title&limit=100")["data"]:
+            agents[str(a["id"])] = [a.get("title") or "", a.get("birth_date"), a.get("agent_type_title")]
     cma_years: dict[str, dict[str, int]] = {}
     creators: dict[str, str] = {}
     skip, total = 0, None
@@ -134,12 +152,36 @@ def fetch_museums(first: int = 1995, last: int = 2025) -> dict:
     return {"aic": {"agents": agents, "years": aic_years}, "cma": {"creators": creators, "years": cma_years}}
 
 
+def fetch_chicago_types(ids: list[str]) -> dict[str, Optional[str]]:
+    """Chicago's type of each maker (Individual, Culture, Corporate Body,
+    ...), 100 a call (ART-PLAN §16)."""
+    out: dict[str, Optional[str]] = {}
+    for k in range(0, len(ids), 100):
+        chunk = ",".join(ids[k:k + 100])
+        for a in _json(f"https://api.artic.edu/api/v1/agents?ids={chunk}&fields=id,agent_type_title&limit=100")["data"]:
+            out[str(a["id"])] = a.get("agent_type_title")
+    return out
+
+
 if __name__ == "__main__":
+    # python -m evals.art_artists            fetch both museums (about 15 minutes)
+    # python -m evals.art_artists types      add Chicago's maker types to the saved makers only
     import json
+    import sys
     from pathlib import Path
     out = Path(__file__).parent / "data" / "artists" / "museums.json"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(fetch_museums(), sort_keys=True))
+    if sys.argv[1:] == ["types"]:
+        museums = json.loads(out.read_text())
+        agents = museums["aic"]["agents"]
+        types = fetch_chicago_types(sorted(agents, key=int))
+        missing = sorted(set(agents) - set(types), key=int)
+        # A maker Chicago no longer lists has no type, so it is not an Individual and does not count.
+        print(f"no type for {len(missing)} makers Chicago no longer lists: {[agents[i][0] for i in missing]}")
+        museums["aic"]["agents"] = {i: [title, born, types.get(i)] for i, (title, born, *_) in agents.items()}
+        out.write_text(json.dumps(museums, sort_keys=True))
+    else:
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(fetch_museums(), sort_keys=True))
     print("wrote", out)
 
 
@@ -173,10 +215,11 @@ def panel(museums: Mapping, press: Mapping) -> dict[str, dict[str, dict[int, int
     "museum" is both museums' works together."""
     people: dict[str, list[Person]] = {"aic": [], "cma": []}
     rows: list[tuple[str, str, int, int]] = []      # (source, name, year, works)
+    chicago = chicago_people(museums)
     for year, by_id in museums["aic"]["years"].items():
         for i, works in by_id.items():
-            if i in museums["aic"]["agents"]:
-                title, born = museums["aic"]["agents"][i]
+            if i in chicago:
+                title, born = chicago[i]
                 people["aic"].append(Person(normalise(title), born))
                 rows.append(("aic", normalise(title), int(year), works))
     for year, by_id in museums["cma"]["years"].items():

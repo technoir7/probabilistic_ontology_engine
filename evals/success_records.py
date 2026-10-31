@@ -29,7 +29,7 @@ from src.domains.art_prestige_regime_v1 import cases
 from src.domains.art_prestige_regime_v1.success import LISTS as FEATURE_LISTS, POOL
 from src.engine.model.cases import doubling
 
-from .art_artists import cma_person, normalise, nyt_person
+from .art_artists import chicago_people, cma_person, normalise, nyt_person
 from .artist_years import level
 from .artprice import REPORTS, key
 from .reception import linked
@@ -194,7 +194,7 @@ def year_life_claims(year: int, names: set[str]):
 
 
 def _births(museums: Mapping) -> dict[str, int]:
-    born = {normalise(t): b for t, b in museums["aic"]["agents"].values() if t and b}
+    born = {normalise(t): b for t, b in chicago_people(museums).values() if b}
     for d in museums["cma"].get("creators", {}).values() if isinstance(museums["cma"].get("creators"), dict) else []:
         p = cma_person(d)
         if p and p.born:

@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 from typing import Iterable, Mapping
 
-from .art_artists import normalise, panel, press_names
+from .art_artists import chicago_people, normalise, panel, press_names
 from .artist_years import level
 from src.domains.art_prestige_regime_v1 import cases
 from src.engine.model.cases import doubling
@@ -48,7 +48,7 @@ def artists() -> dict:
 def display_names(museums: Mapping, names: set[str]) -> dict[str, str]:
     """Chicago's spelling of each name where it has one; Cleveland's
     descriptions are not names, so the rest are title-cased."""
-    chicago = {normalise(t): t for t, _ in museums["aic"]["agents"].values() if t}
+    chicago = {normalise(t): t for t, _ in chicago_people(museums).values()}
     return {n: chicago.get(n, n.title()) for n in names}
 
 

@@ -54,7 +54,7 @@ def test_a_guardian_tag_is_an_artist_only_if_a_person_elsewhere():
 
 def test_the_panel_holds_each_acquired_artist_by_year_and_drops_two_people_with_one_name():
     from evals.art_artists import panel
-    museums = {"aic": {"agents": {"1": ["Yayoi Kusama", 1929], "2": ["John Smith", 1900]},
+    museums = {"aic": {"agents": {"1": ["Yayoi Kusama", 1929, "Individual"], "2": ["John Smith", 1900, "Individual"]},
                        "years": {"2005": {"1": 3, "2": 1}}},
                "cma": {"creators": {"9": "Yayoi Kusama (Japanese, 1929-)", "8": "John Smith (American, 1950-)"},
                        "years": {"2006": {"9": 1, "8": 2}}}}
@@ -64,3 +64,23 @@ def test_the_panel_holds_each_acquired_artist_by_year_and_drops_two_people_with_
     k = got["yayoi kusama"]
     assert k["aic"] == {2005: 3} and k["cma"] == {2006: 1} and k["museum"] == {2005: 3, 2006: 1}
     assert k["nyt"] == {2004: 2}
+
+
+def test_only_makers_who_are_people_count_as_artists():
+    """ART-PLAN §16: Chicago's own maker types, then one name rule for both museums."""
+    from evals.art_artists import chicago_people, panel
+    agents = {"1": ["Yayoi Kusama", 1929, "Individual"], "2": ["Ancient Egyptian", None, "Culture"],
+              "3": ["American Chinaware Corporation", None, "Corporate Body"],
+              "4": ["Workshop of Titian", None, "Individual"], "5": ["Follower of Jan Massys", None, "Individual"],
+              "6": ["Circle of Jacopo Sansovino", None, "Individual"], "7": ["Manner of Rembrandt van Rijn", None, "Individual"],
+              "10": ["Guerrilla Girls", None, "Artist Collaborative"], "11": ["Jane and Louise Wilson", None, "Couple"],
+              "12": ["Reggie Burrows Hodges", None, None], "13": ["Quechua", None, None], "14": ["French School", None, "School"]}
+    museums = {"aic": {"agents": agents, "years": {"2005": {i: 1 for i in agents}}},
+               "cma": {"creators": {"9": "Circle of Rembrandt van Rijn (Dutch)", "8": "Mary Cassatt (American, 1844-1926)"},
+                       "years": {"2006": {"9": 1, "8": 1}}}}
+    # untyped makers are mostly recent acquisitions not yet typed, so they count, by the name rule
+    assert chicago_people(museums) == {"1": ("Yayoi Kusama", 1929), "10": ("Guerrilla Girls", None),
+                                       "11": ("Jane and Louise Wilson", None), "12": ("Reggie Burrows Hodges", None)}
+    assert set(panel(museums, {"nyt": {}, "guardian": {}})) == {
+        "yayoi kusama", "mary cassatt", "guerrilla girls", "jane and louise wilson", "reggie burrows hodges"}
+    assert cma_person("Follower of Jan Massys (Flemish)") is None

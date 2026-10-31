@@ -25,5 +25,5 @@ def test_the_last_year_is_open_its_outcome_still_to_come():
 
 def test_an_artist_is_shown_by_the_name_chicago_gives_them():
     from evals.artist_records import display_names
-    museums = {"aic": {"agents": {"1": ["André Cadere", 1934], "2": ["", None]}}}
+    museums = {"aic": {"agents": {"1": ["André Cadere", 1934, "Individual"], "2": ["", None, "Individual"]}}}
     assert display_names(museums, {"andre cadere", "jo smith"}) == {"andre cadere": "André Cadere", "jo smith": "Jo Smith"}
