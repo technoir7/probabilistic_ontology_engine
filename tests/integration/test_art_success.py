@@ -102,13 +102,13 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
         seen["prompt"], seen["kind"] = prompt_path, snapshot["kind"]
         return ("## In short\nBeing written about helps.\n\n## Image prompt\nA photograph of a woman at work."
                 "\n\n## Wall text\n*At Work*, photography, 2026\n\nThe artist photographs work."
-                "\n\n## Artist statement\nI photograph work.\n\n## The imagined artist\nThe artist [1].")
+                "\n\n## Artist statement\nI photograph work.\n\n## The imagined artist\nThe artist [1]. The artist [2]. The artist [3].")
     monkeypatch.setattr(report, "generate_report", fake)
 
     def check(request, *, api_key, model):
         seen["check_key"] = api_key
         seen.setdefault("check_models", []).append(model)
-        return "1 y"
+        return "1 y\n2 y\n3 y"
     monkeypatch.setattr(report, "fetch_life_check", check)
     monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
     monkeypatch.setenv("FIREWORKS_REPORT_MODEL", "test-writer")
@@ -127,7 +127,7 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
     edges = [e.model_dump() for e in subject.life_edges]
     graph = f"\n\n{report.life_graph(edges)}" if edges else ""
     assert body["report"].endswith(
-        f"{report.LIFE_LABEL}\n\n{finding}\n\nThe artist [1].{graph}\n\n{report.life_trail(lives)}"
+        f"{report.LIFE_LABEL}\n\n{finding}\n\nThe artist [1]. The artist [2]. The artist [3].{graph}\n\n{report.life_trail(lives)}"
         if lives else f"{report.LIFE_HEADING}\n\n{finding} {report.NO_LIVES}")
     assert seen.get("check_key") == ("test-key" if lives else None)      # the check reads on the server's key
     # ART-PLAN 15.10: read by a second model, so no model reads its own writing
@@ -452,13 +452,26 @@ def test_code_drops_each_sentence_the_reader_finds_says_more_than_its_claims_and
 
 def test_where_every_sentence_is_dropped_code_says_there_is_no_life():
     from src.engine.api import report
-    with pytest.raises(report.EmptyLife) as empty:              # ART-PLAN 15.15: the writer is asked again
+    with pytest.raises(report.ShortLife) as empty:              # ART-PLAN 15.15: the writer is asked again
         _life(LIFE, lambda request: "1 n\n2 n")
+    assert empty.value.kept == 0
     life = empty.value.report.split(report.LIFE_HEADING + "\n\n")[1]
     assert life.startswith(FINDING + " " + report.UNGROUNDED)
     # what was cut, and why, is still shown (ART-PLAN 15.14 after the first run)
     assert "~~The artist faced discrimination [1].~~" in life and "~~The artist was discovered only after death. [2]~~" in life
     assert life.endswith(report.life_trail(LIVES))
+
+
+def test_a_life_with_fewer_sentences_than_asked_is_short():
+    """ART-PLAN 15.17: short is fewer kept than min(LEAST, claims given)."""
+    from src.engine.api import report
+    finish = lambda read, least: report.finish_success_report(
+        "## In short\nA.\n\n## Image prompt\n\nA river." + WALL, ["Why."], VOICE, LIVES, FINDING, [read], least=least)
+    with pytest.raises(report.ShortLife) as short:
+        finish(lambda request: "1 n\n2 y", 3)
+    assert short.value.kept == 1 and "The artist was discovered only after death. [2]" in short.value.report
+    assert "faced discrimination [1]." in finish(lambda request: "1 y\n2 y", 3)     # two claims: two is enough
+    assert "1 of 2 sentences" in finish(lambda request: "1 n\n2 y", 1)               # one is enough by default
 
 
 @pytest.mark.parametrize("answer", ["1 y", "1 y\n2 maybe", "y\ny", "1 y\n2 y\n3 y", "2 y\n1 y", ""])
@@ -627,27 +640,33 @@ def test_an_irregular_change_of_tense_is_the_same_word(sentence):
     assert _aged(sentence.replace("Blake", "The artist")).startswith(sentence.replace("Blake", "The artist"))
 
 
-@pytest.mark.parametrize("verdicts, writes, has_life", [(["1 n", "1 y"], 2, True), (["1 n"] * 3, 3, False)])
-def test_an_empty_life_has_the_writer_write_again_up_to_three_times(monkeypatch, tmp_path, verdicts, writes, has_life):
-    """ART-PLAN 15.15: the checks stay; the writer gets more chances."""
+@pytest.mark.parametrize("verdicts, writes, served", [
+    (["1 y\n2 y\n3 y"], 1, 1),                                   # three kept: no more writes
+    (["1 y\n2 n\n3 n", "1 y\n2 y\n3 y"], 2, 2),                 # short, then whole
+    (["1 y\n2 n\n3 n", "1 y\n2 y\n3 n", "1 n\n2 n\n3 n"], 3, 2),  # all short: the most kept
+    (["1 y\n2 n\n3 n", "1 n\n2 y\n3 n", "1 n\n2 n\n3 n"], 3, 1),  # a tie: the earliest
+])
+def test_a_short_life_has_the_writer_write_again_and_the_fullest_is_kept(monkeypatch, tmp_path, verdicts, writes,
+                                                                         served):
+    """ART-PLAN 15.15, 15.17: the checks stay; the writer gets more chances."""
     from src.engine.api import report
+    if len(success_narrative.success_snapshot("art", "museum").image_subject.life_claims) < 3:
+        pytest.skip("the shipped snapshot gives museum fewer than three life claims")
     calls = []
 
     async def fake(snapshot, **_):
         calls.append(1)
-        return ("## In short\nA.\n\n## Image prompt\nA photograph.\n\n## Wall text\n*W*, photography, 2026\n\nA."
-                "\n\n## Artist statement\nI.\n\n## The imagined artist\nThe artist [1].")
-    answers = list(verdicts)
+        return (f"## In short\nWrite {len(calls)}.\n\n## Image prompt\nA photograph.\n\n## Wall text\n"
+                "*W*, photography, 2026\n\nA.\n\n## Artist statement\nI.\n\n## The imagined artist\n"
+                "The artist [1]. The artist [2]. The artist [3].")
     monkeypatch.setattr(report, "generate_report", fake)
-    monkeypatch.setattr(report, "fetch_life_check", lambda request, **_: answers[len(calls) - 1])
+    monkeypatch.setattr(report, "fetch_life_check", lambda request, **_: verdicts[len(calls) - 1])
     monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
     with TestClient(api_app.app) as client:
         body = client.post("/v1/success/art/museum/report/refresh").json()
-    if not success_narrative.success_snapshot("art", "museum").image_subject.life_claims:
-        pytest.skip("the shipped snapshot gives museum no life")
     assert len(calls) == writes and body["regenerated"] is True
-    assert (report.UNGROUNDED not in body["report"]) is has_life
+    assert f"Write {served}." in body["report"]
 
 
 def test_the_lives_panel_is_sent_the_blocks_told_most_and_least_about_the_championed(monkeypatch):
@@ -704,13 +723,13 @@ def test_a_report_missing_a_part_has_the_writer_write_again(monkeypatch, tmp_pat
     """Seen live: market's writer left out a part on most writes; it may write again, as for an empty life."""
     from src.engine.api import report
     whole = ("## In short\nA.\n\n## Image prompt\nA photograph.\n\n## Wall text\n*W*, photography, 2026\n\nA."
-             "\n\n## Artist statement\nI.\n\n## The imagined artist\nThe artist [1].")
+             "\n\n## Artist statement\nI.\n\n## The imagined artist\nThe artist [1]. The artist [2]. The artist [3].")
     writes = [whole.replace("\n\n## Artist statement\nI.", ""), whole]
 
     async def fake(snapshot, **_):
         return writes.pop(0)
     monkeypatch.setattr(report, "generate_report", fake)
-    monkeypatch.setattr(report, "fetch_life_check", lambda request, **_: "1 y")
+    monkeypatch.setattr(report, "fetch_life_check", lambda request, **_: "1 y\n2 y\n3 y")
     monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
     with TestClient(api_app.app) as client:

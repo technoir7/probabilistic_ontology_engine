@@ -139,6 +139,10 @@ async def success_report_read(domain: str, kind: str) -> Any:
     return _read(f"{snap['domain']}-success-{kind}", snap["domain"], _report.SUCCESS_PROMPT_VERSION)
 
 
+# A life keeping fewer sentences than this has the writer write again (ART-PLAN 15.17).
+LIFE_SENTENCES = 3
+
+
 @router.post("/v1/success/{domain}/{kind}/report/refresh")
 async def success_report_refresh(domain: str, kind: str) -> Any:
     snap = _success(domain, kind)
@@ -151,7 +155,7 @@ async def success_report_refresh(domain: str, kind: str) -> Any:
                           _report.SUCCESS_PROMPT_VERSION, _report.SUCCESS_PROMPT_PATH,
                           finish=lambda text: _report.finish_success_report(
                               text, *_illustration(snap["image_subject"]), readers,
-                              edges=(snap["image_subject"] or {}).get("life_edges", [])),
+                              edges=(snap["image_subject"] or {}).get("life_edges", []), least=LIFE_SENTENCES),
                           writes=3)
 
 
@@ -202,6 +206,7 @@ async def _refresh(cache_key: str, domain: str, snapshot_dict: dict, version: st
         return stale_or(HTTPException(
             status_code=503, detail="FIREWORKS_API_KEY not configured. Set it to enable report generation."))
 
+    fullest: Optional[_report.ShortLife] = None
     try:
         for attempt in range(1, writes + 1):
             report_text = await _report.generate_report(
@@ -211,9 +216,11 @@ async def _refresh(cache_key: str, domain: str, snapshot_dict: dict, version: st
                 # A finish may call the model again (the life check), so off the event loop.
                 report_text = await asyncio.to_thread(finish, report_text)
                 break
-            except _report.EmptyLife as empty:      # ART-PLAN 15.15: the writer may try again
-                logger.info("No sentence of the life survived for %s (write %d of %d)", cache_key, attempt, writes)
-                report_text = empty.report
+            except _report.ShortLife as short:      # ART-PLAN 15.15, 15.17: the writer may try again
+                logger.info("%s for %s (write %d of %d)", short, cache_key, attempt, writes)
+                if fullest is None or short.kept > fullest.kept:
+                    fullest = short
+                report_text = fullest.report
             except _report.MissingPart as missing:  # the writer left a part out; it may write again
                 logger.info("%s for %s (write %d of %d)", missing, cache_key, attempt, writes)
                 if attempt == writes:

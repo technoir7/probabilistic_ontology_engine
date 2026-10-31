@@ -43,7 +43,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 
 PROMPT_VERSION = "4"
 TREND_PROMPT_VERSION = "1"   # bump when prompts/trend_report.md changes
-SUCCESS_PROMPT_VERSION = "20"   # bump when prompts/success_report.md, life_check.md, its model or the life's checks change
+SUCCESS_PROMPT_VERSION = "21"   # bump when prompts/success_report.md, life_check.md, its model or the life's checks change
 THEMES_PROMPT_VERSION = "2"    # bump when prompts/themes_report.md changes
 
 
@@ -217,14 +217,16 @@ class MissingPart(ValueError):
     """The writer left out a part of the report; it may be asked again."""
 
 
-class EmptyLife(Exception):
-    """No sentence of the imagined life survived the checks (ART-PLAN
-    15.15): the writer may be asked again. REPORT is the finished report as
-    it stands, saying there is no life, with what was cut."""
+class ShortLife(Exception):
+    """Fewer sentences of the imagined life survived the checks than asked
+    (ART-PLAN 15.15, 15.17): the writer may be asked again. REPORT is the
+    finished report as it stands, with what was cut; KEPT, how many
+    sentences survived."""
 
-    def __init__(self, report: str):
-        super().__init__("no sentence of the imagined life survived the checks")
+    def __init__(self, report: str, kept: int):
+        super().__init__(f"{kept} sentences of the imagined life survived the checks")
         self.report = report
+        self.kept = kept
 
 
 def life_graph(edges: Sequence[dict]) -> str:
@@ -242,16 +244,17 @@ def life_graph(edges: Sequence[dict]) -> str:
 
 
 def _life_section(life: str, lives: list[dict], finding: str, readers: Sequence[Callable[[str], str]],
-                  edges: Sequence[dict] = ()) -> str:
+                  edges: Sequence[dict] = ()) -> tuple[str, int]:
+    """The life's section, and how many of its sentences were kept."""
     if not lives:
-        return f"{finding} {NO_LIVES}"
+        return f"{finding} {NO_LIVES}", 0
     kept, cut, written = _grounded(life, lives, readers)
     if not kept:
-        return f"{finding} {UNGROUNDED}\n\n{_cut_list(cut)}\n\n{life_trail(lives)}"
+        return f"{finding} {UNGROUNDED}\n\n{_cut_list(cut)}\n\n{life_trail(lives)}", 0
     note = (f"\n\n*{len(cut)} of {written} sentences written for this life were dropped.*\n\n{_cut_list(cut)}"
             if cut else "")
     graph = f"\n\n{life_graph(edges)}" if edges else ""
-    return f"{LIFE_LABEL}\n\n{finding}\n\n{' '.join(kept)}{note}{graph}\n\n{life_trail(lives)}"
+    return f"{LIFE_LABEL}\n\n{finding}\n\n{' '.join(kept)}{note}{graph}\n\n{life_trail(lives)}", len(kept)
 
 
 def wall_text_label(voice: str) -> str:
@@ -260,7 +263,8 @@ def wall_text_label(voice: str) -> str:
 
 
 def finish_success_report(text: str, reasons: Optional[list[str]], voice: Optional[str], lives: list[dict],
-                          finding: str, readers: Sequence[Callable[[str], str]], *, edges: Sequence[dict] = ()) -> str:
+                          finding: str, readers: Sequence[Callable[[str], str]], *, edges: Sequence[dict] = (),
+                          least: int = 1) -> str:
     """Replace the writer's image prompt section with the finished one: the
     rule's REASONS, then the label, the writer's description and the
     setting; then the writer's wall text (in VOICE) and artist statement,
@@ -271,8 +275,8 @@ def finish_success_report(text: str, reasons: Optional[list[str]], voice: Option
     illustrate, so none of them. ValueError when an illustration is wanted
     and the writer left a part out, or wrote a sentence of the life that
     cites no claim given, or a reader twice answers out of its form;
-    EmptyLife, with the finished report, when no sentence of the life
-    survives."""
+    ShortLife, with the finished report, when fewer sentences of the life
+    survive than LEAST, or than the claims given where there are fewer."""
     body, _, written = text.partition(f"\n{IMAGE_HEADING}")
     body = body.rstrip()
     if reasons is None:
@@ -288,13 +292,12 @@ def finish_success_report(text: str, reasons: Optional[list[str]], voice: Option
         if not part:
             raise MissingPart(f"the report has no {name}")
     why = "\n\n".join(reasons)
-    life_section = _life_section(life, lives, finding, readers, edges)
-    empty = bool(lives) and UNGROUNDED in life_section
+    life_section, kept = _life_section(life, lives, finding, readers, edges)
     finished = (f"{body}\n\n{REASONS_HEADING}\n\n{why}\n\n{IMAGE_HEADING}\n\n{IMAGE_LABEL}\n\n"
                 f"{description} {IMAGE_SETTING}\n\n{WALL_HEADING}\n\n{wall_text_label(voice)}\n\n{wall}\n\n"
                 f"{STATEMENT_HEADING}\n\n{STATEMENT_LABEL}\n\n{statement}\n\n{LIFE_HEADING}\n\n{life_section}")
-    if empty:
-        raise EmptyLife(finished)
+    if lives and kept < min(least, len(lives)):
+        raise ShortLife(finished, kept)
     return finished
 
 
