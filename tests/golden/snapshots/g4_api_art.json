@@ -1660,68 +1660,69 @@
      "belief_changes": [
       "from 2003: NYT coverage that year",
       "from 2009: NYT coverage that year + critics' approval that year",
+      "from 2014: NYT coverage that year + Guardian coverage that year + critics' approval that year",
       "from 2016: NYT coverage that year + Guardian coverage that year + critics' approval that year + contested that year (both praised and condemned)",
-      "from 2023: NYT coverage that year + critics' approval that year"
+      "from 2024: NYT coverage that year + critics' approval that year"
      ],
      "forecast_for": 2026,
-     "gain_nats_over_own_past": 223.6,
+     "gain_nats_over_own_past": 220.2,
      "leader": "NYT coverage that year + critics' approval that year",
-     "leader_since": 2023,
+     "leader_since": 2024,
      "mechanisms": [
       {
-       "gain_nats": 241.5,
-       "mechanism": "NYT coverage that year + critics' approval that year"
-      },
-      {
-       "gain_nats": 241.4,
+       "gain_nats": 239.2,
        "mechanism": "NYT coverage that year + critics' approval that year + contested that year (both praised and condemned)"
       },
       {
-       "gain_nats": 237.5,
+       "gain_nats": 239.0,
+       "mechanism": "NYT coverage that year + critics' approval that year"
+      },
+      {
+       "gain_nats": 235.8,
        "mechanism": "NYT coverage that year + Guardian coverage that year + critics' approval that year + contested that year (both praised and condemned)"
       },
       {
-       "gain_nats": 237.0,
+       "gain_nats": 235.0,
        "mechanism": "NYT coverage that year + Guardian coverage that year + critics' approval that year"
       },
       {
-       "gain_nats": 220.0,
+       "gain_nats": 221.0,
        "mechanism": "NYT coverage that year + Guardian coverage that year"
       },
       {
-       "gain_nats": 217.8,
+       "gain_nats": 218.2,
        "mechanism": "NYT coverage that year"
       },
       {
-       "gain_nats": 216.0,
+       "gain_nats": 217.1,
        "mechanism": "NYT coverage that year + Guardian coverage that year + contested that year (both praised and condemned)"
       },
       {
-       "gain_nats": 213.8,
+       "gain_nats": 214.1,
        "mechanism": "NYT coverage that year + contested that year (both praised and condemned)"
       },
       {
-       "gain_nats": 141.1,
+       "gain_nats": 139.2,
        "mechanism": "Guardian coverage that year + critics' approval that year"
       },
       {
-       "gain_nats": 141.0,
+       "gain_nats": 139.2,
        "mechanism": "Guardian coverage that year + critics' approval that year + contested that year (both praised and condemned)"
       },
       {
-       "gain_nats": 139.2,
+       "gain_nats": 136.7,
        "mechanism": "critics' approval that year"
       },
       {
-       "gain_nats": 138.2,
+       "gain_nats": 135.8,
        "mechanism": "critics' approval that year + contested that year (both praised and condemned)"
       },
       {
-       "gain_nats": 47.1,
+       "gain_nats": 48.5,
        "mechanism": "Guardian coverage that year + contested that year (both praised and condemned)"
       },
       {
-       "gain_nats": 43.6,
+       "gain_nats": 45.2,
        "mechanism": "Guardian coverage that year"
       },
       {
@@ -1731,29 +1732,29 @@
      ],
      "most_raised": [
       {
-       "case": "Gilbert & George",
-       "own_past_chance": 0.227,
-       "with_leader_chance": 0.3
-      },
-      {
        "case": "Christopher Wool",
-       "own_past_chance": 0.233,
-       "with_leader_chance": 0.302
+       "own_past_chance": 0.229,
+       "with_leader_chance": 0.292
       },
       {
        "case": "Giovanni Battista Tiepolo",
-       "own_past_chance": 0.168,
-       "with_leader_chance": 0.211
+       "own_past_chance": 0.174,
+       "with_leader_chance": 0.214
+      },
+      {
+       "case": "Bridget Riley",
+       "own_past_chance": 0.16,
+       "with_leader_chance": 0.194
       },
       {
        "case": "Takashi Murakami",
        "own_past_chance": 0.113,
-       "with_leader_chance": 0.148
+       "with_leader_chance": 0.144
       },
       {
-       "case": "Bridget Riley",
-       "own_past_chance": 0.153,
-       "with_leader_chance": 0.187
+       "case": "John Baldessari",
+       "own_past_chance": 0.121,
+       "with_leader_chance": 0.15
       }
      ],
      "outcome": "Chicago and Cleveland acquisitions next year",

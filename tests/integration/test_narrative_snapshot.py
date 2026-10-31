@@ -379,7 +379,7 @@ def test_ns_13_a_domain_judged_by_cases_hands_the_report_its_mechanisms(client):
     sets = {s["title"]: s for s in body["case_mechanisms"]}
     assert set(sets) == {"Artists", "Concepts", "Trends"}
     artists = sets["Artists"]
-    assert artists["leader"] == "NYT coverage that year + critics' approval that year" and artists["leader_since"] == 2023
+    assert artists["leader"] == "NYT coverage that year + critics' approval that year" and artists["leader_since"] == 2024
     assert "NYT coverage that year" in artists["mechanisms"][0]["mechanism"] and artists["mechanisms"][0]["gain_nats"] > 100
     assert artists["forecast_for"] == 2026 and len(artists["most_raised"]) == 5
     assert any("judged by cases" in h for h in body["interpretation_hints"])

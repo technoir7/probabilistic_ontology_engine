@@ -111,6 +111,7 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
         return "1 y"
     monkeypatch.setattr(report, "fetch_life_check", check)
     monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
+    monkeypatch.setenv("FIREWORKS_REPORT_MODEL", "test-writer")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
     with TestClient(api_app.app) as client:
         assert client.get("/v1/success/art/museum/report").json()["found"] is False
@@ -129,7 +130,7 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
     assert seen.get("check_key") == ("test-key" if lives else None)      # the check reads on the server's key
     # ART-PLAN 15.10: read by a second model, so no model reads its own writing
     # ART-PLAN 15.13: and by the writer's own model as well
-    assert sorted(seen.get("check_models", [])) == (sorted([report.LIFE_CHECK_MODEL, report._DEFAULT_MODEL]) if lives else [])
+    assert sorted(seen.get("check_models", [])) == (sorted([report.LIFE_CHECK_MODEL, "test-writer"]) if lives else [])
     assert report.LIFE_CHECK_MODEL != report._DEFAULT_MODEL
     assert report.REASONS_HEADING in body["report"]
 

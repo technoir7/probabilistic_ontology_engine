@@ -28,7 +28,8 @@ def test_verdicts_say_by_rule_where_a_themes_record_helps():
     assert "joins what leads" in _verdicts("museum") and "clearly but modestly" in _verdicts("museum")
     assert "comes before" in _verdicts("museum")                      # placebo 233 below 243
     assert "adds nothing" in _verdicts("press") and "no test here" in _verdicts("press")
-    assert "adds nothing" in _verdicts("market")
+    # since §16 (makers who are artists) market's record joins the leader, by too little to claim anything
+    assert "too little to claim anything" in _verdicts("market")
 
 
 def test_the_theme_report_has_its_own_route_and_prompt(monkeypatch, tmp_path):
