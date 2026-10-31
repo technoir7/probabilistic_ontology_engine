@@ -1095,6 +1095,53 @@
        "title": "Placebo",
        "type": "number"
       },
+      "told_least": {
+       "default": [],
+       "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "number"
+         }
+        ],
+        "type": "array"
+       },
+       "title": "Told Least",
+       "type": "array"
+      },
+      "told_most": {
+       "default": [],
+       "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "number"
+         }
+        ],
+        "type": "array"
+       },
+       "title": "Told Most",
+       "type": "array"
+      },
+      "told_year": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Told Year"
+      },
       "verdict": {
        "title": "Verdict",
        "type": "string"

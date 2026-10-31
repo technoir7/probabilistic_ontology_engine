@@ -646,3 +646,20 @@ def test_an_empty_life_has_the_writer_write_again_up_to_three_times(monkeypatch,
         pytest.skip("the shipped snapshot gives museum no life")
     assert len(calls) == writes and body["regenerated"] is True
     assert (report.UNGROUNDED not in body["report"]) is has_life
+
+
+def test_the_lives_panel_is_sent_the_blocks_told_most_and_least_about_the_championed(monkeypatch):
+    """ART-PLAN 15.4 revised for 15.12."""
+    from src.engine.api.routers import success as success_router
+    snap = _snapshot()
+    snap["life_tests"] = {"museum": _life_test(["nyt"], 120.0, 120.0, 40.0, [120.0] * 3)}
+    snap["life_years"] = {"museum": 2025}
+    snap["life_told"] = {"museum": {"most": [["female artists and identity", 0.4]], "least": [["music", -0.2]]}}
+    monkeypatch.setattr(success_router, "current_success", lambda key: success.load(snap))
+    with TestClient(api_app.app) as client:
+        museum = client.get("/v1/success", params={"domain": "art"}).json()["success"]["lives"]["museum"]
+    assert museum["told_year"] == 2025
+    assert museum["told_most"] == [["female artists and identity", 0.4]] and museum["told_least"] == [["music", -0.2]]
+    snap["life_told"] = {"elsewhere": {"most": [], "least": []}}
+    with pytest.raises(ValueError):
+        success.load(snap)

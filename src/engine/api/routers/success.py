@@ -31,7 +31,9 @@ async def success(domain: str = Query(...)) -> SuccessOut:
         rewarded=[RewardedOut(kind=r.kind, name=r.name, approvals=r.approvals, disapprovals=r.disapprovals,
                               approved=list(r.approved), disapproved=list(r.disapproved)) for r in s.rewarded],
         themes={k: ThemeTestOut(**_theme_test(t)) for k, t in s.themes.items()},
-        lives={k: LifeTestOut(**_theme_test(t), verdict=life_verdict(s, k)) for k, t in s.life_tests.items()}))
+        lives={k: LifeTestOut(**_theme_test(t), verdict=life_verdict(s, k), told_year=s.life_years.get(k),
+                              told_most=list(s.life_told.get(k, ((), ()))[0]),
+                              told_least=list(s.life_told.get(k, ((), ()))[1])) for k, t in s.life_tests.items()}))
 
 
 def _theme_test(t) -> dict:

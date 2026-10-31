@@ -67,6 +67,9 @@ def theme_test(run: dict, gain_without: float) -> dict:
             "worst": [[n, r] for _, n, r in run["records"]["worst"]]}
 
 
+TOLD = 6          # blocks the lives panel shows at each end (ART-PLAN 15.4 revised)
+
+
 def main() -> None:
     run_dir, rewarded = Path(sys.argv[1]), json.loads(Path(sys.argv[2]).read_text())
     runs = {k: json.loads((run_dir / f"{k}.json").read_text()) for k in success.KINDS + success.APART}
@@ -86,12 +89,15 @@ def main() -> None:
     everyone = set(artists())
     claims = {y: list(year_life_claims(calendar_months(y), everyone))
               for y in {r["championed"]["year"] for r in lives.values()}}
-    snap["lives"], snap["life_years"] = {}, {}
+    snap["lives"], snap["life_years"], snap["life_told"] = {}, {}, {}
     for k, r in lives.items():
         c = r["championed"]
         theirs = set(c["artists"])
         snap["lives"][k] = chosen_lives([x for x in claims[c["year"]] if x[4] in theirs], c["scores"], named)
         snap["life_years"][k] = c["year"]
+        ranked = sorted(((named[t], v) for t, v in c["scores"].items()), key=lambda nv: nv[1])
+        snap["life_told"][k] = {"most": [[n, v] for n, v in ranked[::-1][:TOLD] if v > 0],
+                                "least": [[n, v] for n, v in ranked[:TOLD] if v < 0]}
     # Which themes help (ART-PLAN §14), from evals/themes_run.py.
     snap["themes"] = {k: theme_test(json.loads((run_dir / f"themes_{k}.json").read_text()), snap["kinds"][k]["gain"])
                       for k in success.KINDS}

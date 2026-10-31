@@ -53,6 +53,9 @@ class ThemeTestOut(BaseModel):
 class LifeTestOut(ThemeTestOut):
     """Life blocks' records tested on top of one kind's leader (ART-PLAN 15.7), with the engine's verdict."""
     verdict: str                      # untested, nothing, with or predicts (success_narrative.life_verdict)
+    told_year: Optional[int] = None   # the year whose championed artists the told lists describe (15.12)
+    told_most: list[tuple[str, float]] = []    # blocks told most about them, beyond their share; score
+    told_least: list[tuple[str, float]] = []
 
 
 class SuccessSnapshotOut(BaseModel):
