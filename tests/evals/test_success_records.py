@@ -100,5 +100,21 @@ def test_the_imagined_artist_takes_the_best_blocks_first_two_claims_a_subject_an
     got = chosen_lives(claims, records, names)
     assert got == [["V", "2026-03-01", "b: four", "second block"], ["V", "2026-02-01", "b: three", "second block"],
                    ["W", "2026-03-01", "a: one", "first block"]]
-    many = [("2", "V", f"2026-01-{i:02d}", f"x{i}: y", f"x{i}") for i in range(1, LIVES + 5)]
-    assert len(chosen_lives(many, records, names)) == LIVES
+    many = [(str(b), "V", f"2026-01-{i:02d}", f"x{b}{i}: y", f"x{b}{i}") for b in range(1, LIVES) for i in range(1, 3)]
+    assert len(chosen_lives(many, {str(b): 1.0 for b in range(1, LIVES)}, names)) == LIVES
+
+
+def test_the_imagined_artist_takes_two_claims_a_block_so_the_life_spans_blocks():
+    """ART-PLAN 15.8: at most 2 claims from any one block."""
+    from evals.success_records import chosen_lives
+    claims = [("1", "V", f"2026-0{i}-01", f"x{i}: y", f"x{i}") for i in range(1, 5)] + [("2", "W", "2026-01-01", "z: y", "z")]
+    got = chosen_lives(claims, {"1": 0.9, "2": 0.1}, {})
+    assert [c[2] for c in got] == ["x4: y", "x3: y", "z: y"]
+
+
+def test_the_imagined_artist_takes_only_claims_about_a_collected_artist():
+    """ART-PLAN 15.8: a claim whose subject is no artist the museums
+    collected (None) is left out, as it is from the blocks' records."""
+    from evals.success_records import chosen_lives
+    claims = [("1", "V", "2026-02-01", "a collector: y", None), ("1", "V", "2026-01-01", "an artist: y", "an artist")]
+    assert [c[2] for c in chosen_lives(claims, {"1": 0.9}, {})] == ["an artist: y"]

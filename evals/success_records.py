@@ -43,7 +43,7 @@ MEDIA = {("guardian", "artanddesign/painting"): "painting", ("guardian", "artand
 UNKNOWN = 3                    # the open year without a table (market_level's grades run 0–2)
 UNKNOWN_BAND = 5               # the same, for market_band's 0–4
 SAID = 8                       # claims kept per theme about the artists at the top, most recent first
-LIVES = 8                      # claims read as about a life kept per theme, most recent first (ART-PLAN 15.1)
+LIVES = 8                      # claims the imagined artist's life is assembled from (ART-PLAN 15.7)
 
 
 def _features(s: Mapping, year: int, pool: tuple[str, ...]) -> dict:
@@ -140,19 +140,21 @@ def at_the_top(ranks: Mapping[str, Mapping[int, int]], table_year: int,
             "said": {t: [text for _, text in sorted(said[t], reverse=True)[:SAID]] for t in said}}
 
 
-def chosen_lives(claims: Iterable[tuple[str, str, str, str, str]], records: Mapping[str, float],
+def chosen_lives(claims: Iterable[tuple[str, str, str, str, Optional[str]]], records: Mapping[str, float],
                  names: Mapping[str, str]) -> list[list[str]]:
     """The claims the imagined artist's life is assembled from (ART-PLAN
-    15.7): of (block, who, when, claim, what it is about) CLAIMS read as
-    about a life, those in blocks with a RECORD above 0, best block first
-    and most recent first within one; at most 2 about the same subject and
-    LIVES in all. Each as [who, when, claim, the block's name]."""
+    15.7, 15.8): of (block, who, when, claim, artist it is about or None)
+    CLAIMS read as about a life, those about an artist in blocks with a
+    RECORD above 0, best block first and most recent first within one; at
+    most 2 from one block, 2 about one artist, LIVES in all. Each as [who,
+    when, claim, the block's name]."""
     ranked = sorted(((records[b], when, who, text, b, about) for b, who, when, text, about in claims
-                     if records.get(b, 0.0) > 0), reverse=True)
-    out, per = [], defaultdict(int)
+                     if about is not None and records.get(b, 0.0) > 0), reverse=True)
+    out, per_artist, per_block = [], defaultdict(int), defaultdict(int)
     for _, when, who, text, b, about in ranked:
-        if per[about] < 2:
-            per[about] += 1
+        if per_artist[about] < 2 and per_block[b] < 2:
+            per_artist[about] += 1
+            per_block[b] += 1
             out.append([who, when, text, names.get(b, b)])
         if len(out) == LIVES:
             break
@@ -164,8 +166,8 @@ def chosen_lives(claims: Iterable[tuple[str, str, str, str, str]], records: Mapp
 def year_life_claims(year: int, names: set[str]):
     """(block, who, published, "about: asserts", subject) for each claim
     grouped into a trend in YEAR (to September) and read as about a life
-    (ART-PLAN 15.7); the subject is the artist named, else what the claim is
-    about."""
+    (ART-PLAN 15.7); the subject is the collected artist named, else None
+    (15.8)."""
     window = {f"{year - 1}-{m:02d}" for m in (10, 11, 12)} | {f"{year}-{m:02d}" for m in range(1, 10)}
     trend_of = {}
     for line in (TEXTS / "trends" / "claims.jsonl").read_text().splitlines():
@@ -188,7 +190,7 @@ def year_life_claims(year: int, names: set[str]):
                     read = life[row["id"]][i]
                     if read is not None and read[1] == "yes":
                         yield (t, a["who"], row.get("published", month), f"{a['about']}: {a['asserts']}",
-                               linked(a["about"], names) or a["about"].lower())
+                               linked(a["about"], names))
 
 
 def _births(museums: Mapping) -> dict[str, int]:
