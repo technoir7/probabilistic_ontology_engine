@@ -373,13 +373,15 @@ def _generate_report_sync(snapshot: dict, api_key: str, model: str, strict: bool
 
 
 def fetch_life_check(request: str, api_key: str, model: str) -> str:
-    """The life check's answer to REQUEST: one Fireworks call, thinking off
-    as for the reports, a few tokens out (ART-PLAN 15.9, 15.10)."""
+    """The life check's answer to REQUEST: one Fireworks call (ART-PLAN
+    15.9, 15.10). GLM-5.3 always thinks and refuses reasoning_effort
+    "none", so it thinks a little, from a budget that leaves room for the
+    answer of a line a sentence."""
     from openai import OpenAI
 
-    client = OpenAI(base_url=_FIREWORKS_BASE_URL, api_key=api_key, timeout=60.0)
+    client = OpenAI(base_url=_FIREWORKS_BASE_URL, api_key=api_key, timeout=120.0)
     response = client.chat.completions.create(
-        model=model, max_tokens=200, temperature=0, reasoning_effort="none",
+        model=model, max_tokens=4000, temperature=0, reasoning_effort="low",
         messages=[{"role": "system", "content": "You check sentences against their sources and answer only in the form asked."},
                   {"role": "user", "content": request}])
     answer = response.choices[0].message.content

@@ -485,3 +485,24 @@ def test_the_lives_panel_is_sent_the_engines_verdict_not_left_to_judge(monkeypat
     assert served["lives"]["museum"]["verdict"] == verdict
     assert served["lives"]["museum"]["best"] == [["late discovery", 0.4]]
     assert set(served["lives"]) == {"museum"}
+
+
+def test_the_life_check_lets_its_model_think_and_leaves_room_to_answer(monkeypatch):
+    """GLM-5.3 thinks always and refuses reasoning_effort "none" (seen live, 2026-10-31)."""
+    import openai
+    from src.engine.api import report
+    sent = {}
+
+    class Fake:
+        def __init__(self, **_):
+            self.chat = self
+            self.completions = self
+
+        def create(self, **kwargs):
+            sent.update(kwargs)
+            message = type("M", (), {"content": "1 y"})
+            return type("R", (), {"choices": [type("C", (), {"message": message, "finish_reason": "stop"})]})
+    monkeypatch.setattr(openai, "OpenAI", Fake)
+    assert report.fetch_life_check("Sentence 1: x", api_key="k", model=report.LIFE_CHECK_MODEL) == "1 y"
+    assert sent["model"] == report.LIFE_CHECK_MODEL and sent.get("reasoning_effort") != "none"
+    assert sent["max_tokens"] >= 2000
