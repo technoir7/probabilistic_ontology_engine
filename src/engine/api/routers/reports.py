@@ -144,7 +144,7 @@ async def success_report_refresh(domain: str, kind: str) -> Any:
     settings = Settings.from_env()
 
     def read(request: str) -> str:
-        return _report.fetch_life_check(request, api_key=settings.fireworks_api_key, model=settings.fireworks_model)
+        return _report.fetch_life_check(request, api_key=settings.fireworks_api_key, model=_report.LIFE_CHECK_MODEL)
     return await _refresh(f"{snap['domain']}-success-{kind}", snap["domain"], snap,
                           _report.SUCCESS_PROMPT_VERSION, _report.SUCCESS_PROMPT_PATH,
                           finish=lambda text: _report.finish_success_report(text, *_illustration(snap["image_subject"]), read))

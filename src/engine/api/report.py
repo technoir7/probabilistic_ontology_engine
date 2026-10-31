@@ -43,7 +43,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 
 PROMPT_VERSION = "4"
 TREND_PROMPT_VERSION = "1"   # bump when prompts/trend_report.md changes
-SUCCESS_PROMPT_VERSION = "13"   # bump when prompts/success_report.md or life_check.md changes
+SUCCESS_PROMPT_VERSION = "14"   # bump when prompts/success_report.md, life_check.md or its model changes
 THEMES_PROMPT_VERSION = "2"    # bump when prompts/themes_report.md changes
 
 
@@ -72,6 +72,8 @@ LIFE_LABEL = ("*A fictional life for the imagined artist, kept apart from the wo
 NO_LIVES = "No life block has a good record for this kind of success, so there is no life."
 UNGROUNDED = "No sentence written for the life said only what its claims say, so there is no life."
 LIFE_CHECK_PATH = PROMPT_PATH.parent / "life_check.md"
+# Another maker's model than the writer's, so no model reads its own writing (ART-PLAN 15.10).
+LIFE_CHECK_MODEL = "accounts/fireworks/models/glm-5p3-flash"
 _CITED = re.compile(r"\[(\d+(?:\s*,\s*\d+)*)\]")
 _SENTENCE_END = re.compile(r"(?<=[.!?\]])\s+(?=[A-Z\"'‘“])")
 
@@ -372,7 +374,7 @@ def _generate_report_sync(snapshot: dict, api_key: str, model: str, strict: bool
 
 def fetch_life_check(request: str, api_key: str, model: str) -> str:
     """The life check's answer to REQUEST: one Fireworks call, thinking off
-    as for the reports, a few tokens out (ART-PLAN 15.9)."""
+    as for the reports, a few tokens out (ART-PLAN 15.9, 15.10)."""
     from openai import OpenAI
 
     client = OpenAI(base_url=_FIREWORKS_BASE_URL, api_key=api_key, timeout=60.0)

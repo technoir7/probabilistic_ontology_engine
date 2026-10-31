@@ -106,7 +106,7 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
     monkeypatch.setattr(report, "generate_report", fake)
 
     def check(request, *, api_key, model):
-        seen["check_key"] = api_key
+        seen["check_key"], seen["check_model"] = api_key, model
         return "1 y"
     monkeypatch.setattr(report, "fetch_life_check", check)
     monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
@@ -126,6 +126,9 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
         f"{report.LIFE_LABEL}\n\n{finding}\n\nThe artist worked [1].\n\n{report.life_trail(lives)}"
         if lives else f"{report.LIFE_HEADING}\n\n{finding} {report.NO_LIVES}")
     assert seen.get("check_key") == ("test-key" if lives else None)      # the check reads on the server's key
+    # ART-PLAN 15.10: read by a second model, so no model reads its own writing
+    assert seen.get("check_model") == (report.LIFE_CHECK_MODEL if lives else None)
+    assert report.LIFE_CHECK_MODEL != report._DEFAULT_MODEL
     assert report.REASONS_HEADING in body["report"]
 
 
