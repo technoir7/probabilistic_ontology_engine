@@ -1,4 +1,4 @@
-# Life check — v3
+# Life check — v4
 
 Each sentence below was written from the claims listed under it, which critics
 made about real artists. The claims are about different real people; the
@@ -11,9 +11,13 @@ are allowed: "the artist" or "they", "them", "their" in place of a person's name
 or pronoun; a different tense; and joining claims with "and", commas or an
 aside, which says only that each part is true of the imagined artist.
 
-n: the sentence says anything its claims do not: an event, feeling, place,
-date, age, number, reason, judgement or quality they do not give; or it makes
-what a claim says more general, more certain or more widely held.
+Small differences of wording that keep the meaning ("a camera" for "the
+camera", a changed word order, a dropped detail) are y.
+
+n: only if the sentence adds something its claims do not give (an event,
+feeling, place, date, age, number, reason, judgement or quality); changes or
+reverses what a claim says; or makes a claim more certain or more general than
+the critic did (as "is" for "might be").
 
 Answer with one line for each sentence, in order: its number, a space, and the
 letter. Write nothing else. For three sentences:

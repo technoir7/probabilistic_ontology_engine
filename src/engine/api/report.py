@@ -43,7 +43,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 
 PROMPT_VERSION = "4"
 TREND_PROMPT_VERSION = "1"   # bump when prompts/trend_report.md changes
-SUCCESS_PROMPT_VERSION = "18"   # bump when prompts/success_report.md, life_check.md, its model or the life's checks change
+SUCCESS_PROMPT_VERSION = "19"   # bump when prompts/success_report.md, life_check.md, its model or the life's checks change
 THEMES_PROMPT_VERSION = "2"    # bump when prompts/themes_report.md changes
 
 
@@ -213,6 +213,16 @@ def _cut_list(cut: list[tuple[str, str]]) -> str:
     return "*Cut by the checks:*\n\n" + "\n".join(f"- ~~{text}~~ ({why})" for text, why in cut)
 
 
+class EmptyLife(Exception):
+    """No sentence of the imagined life survived the checks (ART-PLAN
+    15.15): the writer may be asked again. REPORT is the finished report as
+    it stands, saying there is no life, with what was cut."""
+
+    def __init__(self, report: str):
+        super().__init__("no sentence of the imagined life survived the checks")
+        self.report = report
+
+
 def _life_section(life: str, lives: list[dict], finding: str, readers: Sequence[Callable[[str], str]]) -> str:
     if not lives:
         return f"{finding} {NO_LIVES}"
@@ -240,7 +250,9 @@ def finish_success_report(text: str, reasons: Optional[list[str]], voice: Option
     under it, or NO_LIVES where there are none. REASONS None: nothing to
     illustrate, so none of them. ValueError when an illustration is wanted
     and the writer left a part out, or wrote a sentence of the life that
-    cites no claim given, or a reader twice answers out of its form."""
+    cites no claim given, or a reader twice answers out of its form;
+    EmptyLife, with the finished report, when no sentence of the life
+    survives."""
     body, _, written = text.partition(f"\n{IMAGE_HEADING}")
     body = body.rstrip()
     if reasons is None:
@@ -257,9 +269,13 @@ def finish_success_report(text: str, reasons: Optional[list[str]], voice: Option
             raise ValueError(f"the report has no {name}")
     why = "\n\n".join(reasons)
     life_section = _life_section(life, lives, finding, readers)
-    return (f"{body}\n\n{REASONS_HEADING}\n\n{why}\n\n{IMAGE_HEADING}\n\n{IMAGE_LABEL}\n\n"
-            f"{description} {IMAGE_SETTING}\n\n{WALL_HEADING}\n\n{wall_text_label(voice)}\n\n{wall}\n\n"
-            f"{STATEMENT_HEADING}\n\n{STATEMENT_LABEL}\n\n{statement}\n\n{LIFE_HEADING}\n\n{life_section}")
+    empty = bool(lives) and UNGROUNDED in life_section
+    finished = (f"{body}\n\n{REASONS_HEADING}\n\n{why}\n\n{IMAGE_HEADING}\n\n{IMAGE_LABEL}\n\n"
+                f"{description} {IMAGE_SETTING}\n\n{WALL_HEADING}\n\n{wall_text_label(voice)}\n\n{wall}\n\n"
+                f"{STATEMENT_HEADING}\n\n{STATEMENT_LABEL}\n\n{statement}\n\n{LIFE_HEADING}\n\n{life_section}")
+    if empty:
+        raise EmptyLife(finished)
+    return finished
 
 
 def _section(written: str) -> str:

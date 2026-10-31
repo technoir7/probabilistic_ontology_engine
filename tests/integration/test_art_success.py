@@ -450,8 +450,9 @@ def test_code_drops_each_sentence_the_reader_finds_says_more_than_its_claims_and
 
 def test_where_every_sentence_is_dropped_code_says_there_is_no_life():
     from src.engine.api import report
-    text = _life(LIFE, lambda request: "1 n\n2 n")
-    life = text.split(report.LIFE_HEADING + "\n\n")[1]
+    with pytest.raises(report.EmptyLife) as empty:              # ART-PLAN 15.15: the writer is asked again
+        _life(LIFE, lambda request: "1 n\n2 n")
+    life = empty.value.report.split(report.LIFE_HEADING + "\n\n")[1]
     assert life.startswith(FINDING + " " + report.UNGROUNDED)
     # what was cut, and why, is still shown (ART-PLAN 15.14 after the first run)
     assert "~~The artist faced discrimination [1].~~" in life and "~~The artist was discovered only after death. [2]~~" in life
@@ -622,3 +623,26 @@ def test_each_cut_sentence_is_shown_struck_with_why():
 @pytest.mark.parametrize("sentence", ["Blake becomes a queer icon [3].", "The artist has become a queer icon [3]."])
 def test_an_irregular_change_of_tense_is_the_same_word(sentence):
     assert _aged(sentence.replace("Blake", "The artist")).startswith(sentence.replace("Blake", "The artist"))
+
+
+@pytest.mark.parametrize("verdicts, writes, has_life", [(["1 n", "1 y"], 2, True), (["1 n"] * 3, 3, False)])
+def test_an_empty_life_has_the_writer_write_again_up_to_three_times(monkeypatch, tmp_path, verdicts, writes, has_life):
+    """ART-PLAN 15.15: the checks stay; the writer gets more chances."""
+    from src.engine.api import report
+    calls = []
+
+    async def fake(snapshot, **_):
+        calls.append(1)
+        return ("## In short\nA.\n\n## Image prompt\nA photograph.\n\n## Wall text\n*W*, photography, 2026\n\nA."
+                "\n\n## Artist statement\nI.\n\n## The imagined artist\nThe artist [1].")
+    answers = list(verdicts)
+    monkeypatch.setattr(report, "generate_report", fake)
+    monkeypatch.setattr(report, "fetch_life_check", lambda request, **_: answers[len(calls) - 1])
+    monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
+    monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
+    with TestClient(api_app.app) as client:
+        body = client.post("/v1/success/art/museum/report/refresh").json()
+    if not success_narrative.success_snapshot("art", "museum").image_subject.life_claims:
+        pytest.skip("the shipped snapshot gives museum no life")
+    assert len(calls) == writes and body["regenerated"] is True
+    assert (report.UNGROUNDED not in body["report"]) is has_life

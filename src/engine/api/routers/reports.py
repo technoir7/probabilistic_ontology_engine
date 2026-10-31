@@ -149,7 +149,8 @@ async def success_report_refresh(domain: str, kind: str) -> Any:
                for model in (_report.LIFE_CHECK_MODEL, settings.fireworks_model)]
     return await _refresh(f"{snap['domain']}-success-{kind}", snap["domain"], snap,
                           _report.SUCCESS_PROMPT_VERSION, _report.SUCCESS_PROMPT_PATH,
-                          finish=lambda text: _report.finish_success_report(text, *_illustration(snap["image_subject"]), readers))
+                          finish=lambda text: _report.finish_success_report(text, *_illustration(snap["image_subject"]), readers),
+                          writes=3)
 
 
 def _illustration(subject: Optional[dict]) -> tuple[Optional[list[str]], Optional[str], list[dict], str]:
@@ -173,7 +174,7 @@ def _read(cache_key: str, domain: str, version: str) -> Any:
 
 
 async def _refresh(cache_key: str, domain: str, snapshot_dict: dict, version: str, prompt_path,
-                   finish: Callable[[str], str] = lambda text: text) -> Any:
+                   finish: Callable[[str], str] = lambda text: text, writes: int = 1) -> Any:
     h = _report.snapshot_hash(snapshot_dict)
     data_dir = Settings.from_env().data_dir
     exact_path = _report.cache_path(data_dir, cache_key, h, version)
@@ -200,11 +201,17 @@ async def _refresh(cache_key: str, domain: str, snapshot_dict: dict, version: st
             status_code=503, detail="FIREWORKS_API_KEY not configured. Set it to enable report generation."))
 
     try:
-        report_text = await _report.generate_report(
-            snapshot=snapshot_dict, api_key=api_key, model=settings.fireworks_model, timeout=90.0,
-            prompt_path=prompt_path)
-        # A finish may call the model again (the life check), so off the event loop.
-        report_text = await asyncio.to_thread(finish, report_text)
+        for attempt in range(1, writes + 1):
+            report_text = await _report.generate_report(
+                snapshot=snapshot_dict, api_key=api_key, model=settings.fireworks_model, timeout=90.0,
+                prompt_path=prompt_path)
+            try:
+                # A finish may call the model again (the life check), so off the event loop.
+                report_text = await asyncio.to_thread(finish, report_text)
+                break
+            except _report.EmptyLife as empty:      # ART-PLAN 15.15: the writer may try again
+                logger.info("No sentence of the life survived for %s (write %d of %d)", cache_key, attempt, writes)
+                report_text = empty.report
     except Exception as exc:
         logger.error("Fireworks generation failed for %s: %s", cache_key, exc, exc_info=True)
         return stale_or(HTTPException(status_code=502, detail=f"Report generation failed: {exc}"))
