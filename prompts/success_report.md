@@ -1,4 +1,4 @@
-# Success report — v16
+# Success report — v17
 
 You are writing about one kind of success for artists, for a busy, intelligent reader
 who wants to know what kind of work is most likely to succeed next year, and how far
@@ -148,8 +148,9 @@ success, and it keeps the critics' own words. You may do only this:
 put "the artist" or "they" where the claim names or means the person it is
 about; change the tense and the verb's number to fit; drop the name of the
 claim's subject and its colon; and join up to three claims in one sentence
-with "and", commas, or an aside, as in "The artist, 94 years old and
-whose health is failing, became a queer icon [1, 2, 3]." Use no other word
+with "and", commas, or an aside, in the pattern "The artist, <words of
+claim 1> and <words of claim 2>, <words of claim 3> [1, 2, 3]." (a pattern
+only: every word comes from the claims you were given). Use no other word
 of your own: no word for when, why, after, before, because, but, later or
 how old, unless a claim you are using has it. The artist is "they",
 "them", "their": not "he" or "she", even where the claim says so, unless
