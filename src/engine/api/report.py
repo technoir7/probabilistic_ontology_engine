@@ -386,7 +386,7 @@ def fetch_life_check(request: str, api_key: str, model: str) -> str:
 
     client = OpenAI(base_url=_FIREWORKS_BASE_URL, api_key=api_key, timeout=120.0)
     response = client.chat.completions.create(
-        model=model, max_tokens=4000, temperature=0, reasoning_effort="low",
+        model=model, max_tokens=16000, temperature=0, reasoning_effort="low",
         messages=[{"role": "system", "content": "You check sentences against their sources and answer only in the form asked."},
                   {"role": "user", "content": request}])
     answer = response.choices[0].message.content

@@ -508,7 +508,7 @@ def test_the_life_check_lets_its_model_think_and_leaves_room_to_answer(monkeypat
     monkeypatch.setattr(openai, "OpenAI", Fake)
     assert report.fetch_life_check("Sentence 1: x", api_key="k", model=report.LIFE_CHECK_MODEL) == "1 y"
     assert sent["model"] == report.LIFE_CHECK_MODEL and sent.get("reasoning_effort") != "none"
-    assert sent["max_tokens"] >= 2000
+    assert sent["max_tokens"] >= 16000            # seen live: 4,000 ran out while thinking
 
 
 def test_the_finding_says_the_life_is_what_was_said_about_the_championed(monkeypatch):
