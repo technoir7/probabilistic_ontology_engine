@@ -1,4 +1,4 @@
-# Success report — v12
+# Success report — v13
 
 You are writing about one kind of success for artists, for a busy, intelligent reader
 who wants to know what kind of work is most likely to succeed next year, and how far
@@ -150,7 +150,9 @@ began late [2]." or "[1, 3]". A sentence may say only what those claims say:
 add no event, feeling, place, date, age or reason they do not give, and no
 sentence that joins them with anything of your own. Use as few or as many of
 the claims as make sense together. Third person, always "the artist", never
-"he", "she" or "they"; no names, never "successful". No label, note or list
+"he", "she" or "they"; no names, never "successful". Each sentence will be
+read against the claims it cites, and any sentence that says more than they do
+will be cut, so keep each one to what its claims say. No label, note or list
 of claims: those are added after you.
 
 ## How to write

@@ -15,7 +15,7 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import Optional
+from typing import Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +43,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 
 PROMPT_VERSION = "4"
 TREND_PROMPT_VERSION = "1"   # bump when prompts/trend_report.md changes
-SUCCESS_PROMPT_VERSION = "12"   # bump when prompts/success_report.md changes
+SUCCESS_PROMPT_VERSION = "13"   # bump when prompts/success_report.md or life_check.md changes
 THEMES_PROMPT_VERSION = "2"    # bump when prompts/themes_report.md changes
 
 
@@ -67,8 +67,11 @@ STATEMENT_LABEL = ("*A fictional artist statement for the imagined work above, b
 LIFE_HEADING = "## The imagined artist"
 LIFE_LABEL = ("*A fictional life for the imagined artist, kept apart from the work (ART-PLAN 15.7), assembled from "
               "what critics said about real artists' lives in the life blocks with the best record for this kind of "
-              "success. It is not the life of anyone. Each sentence names the claims it comes from, listed below.*")
+              "success. It is not the life of anyone. Each sentence names the claims it comes from, listed below, and "
+              "was read against them (ART-PLAN 15.9).*")
 NO_LIVES = "No life block has a good record for this kind of success, so there is no life."
+UNGROUNDED = "No sentence written for the life said only what its claims say, so there is no life."
+LIFE_CHECK_PATH = PROMPT_PATH.parent / "life_check.md"
 _CITED = re.compile(r"\[(\d+(?:\s*,\s*\d+)*)\]")
 _SENTENCE_END = re.compile(r"(?<=[.!?\]])\s+(?=[A-Z\"'‘“])")
 
@@ -79,14 +82,59 @@ def life_trail(lives: list[dict]) -> str:
         f"- [{c['n']}] {c['who']} ({c['when']}), in \"{c['block']}\": {c['claim']}" for c in lives)
 
 
-def _traced(life: str, lives: list[dict]) -> str:
-    """LIFE, if every sentence cites claims in LIVES; ValueError otherwise."""
+def _sentences(life: str, lives: list[dict]) -> list[tuple[str, list[int]]]:
+    """LIFE's sentences, each with the claims in LIVES it cites; ValueError
+    if one cites none, or one it was not given."""
     known = {c["n"] for c in lives}
+    out = []
     for sentence in _SENTENCE_END.split(life):
         cited = [int(n) for group in _CITED.findall(sentence) for n in group.split(",")]
         if not cited or not set(cited) <= known:
             raise ValueError(f"a sentence of the imagined life cites no claim it was given: {sentence[:120]!r}")
-    return life
+        out.append((sentence, cited))
+    return out
+
+
+def life_check_request(sentences: list[tuple[str, list[int]]], lives: list[dict]) -> str:
+    """The fixed instructions, then each sentence beside only the claims it cites."""
+    claims = {c["n"]: c["claim"] for c in lives}
+    shown = "\n\n".join(f"Sentence {i}: {text}\nIts claims:\n" + "\n".join(f"[{n}] {claims[n]}" for n in dict.fromkeys(cited))
+                         for i, (text, cited) in enumerate(sentences, 1))
+    return f"{LIFE_CHECK_PATH.read_text(encoding='utf-8')}\n\n{shown}\n"
+
+
+def _verdicts(answer: str, count: int) -> list[bool]:
+    """One y or n per sentence, numbered in order; ValueError otherwise."""
+    lines = [line.split() for line in answer.strip().splitlines() if line.strip()]
+    if len(lines) != count or any(parts != [str(i), parts[-1]] or parts[-1] not in ("y", "n")
+                                  for i, parts in enumerate(lines, 1)):
+        raise ValueError(f"the life check answered out of its form: {answer[:120]!r}")
+    return [parts[1] == "y" for parts in lines]
+
+
+def _grounded(life: str, lives: list[dict], read: Callable[[str], str]) -> tuple[list[str], int]:
+    """The sentences of LIFE that READ, given each beside its claims, finds
+    say nothing more than they do (ART-PLAN 15.9), and how many there were.
+    An answer out of the form is asked once more, then refused."""
+    sentences = _sentences(life, lives)
+    request = life_check_request(sentences, lives)
+    try:
+        kept = _verdicts(read(request), len(sentences))
+    except ValueError:
+        kept = _verdicts(read(request), len(sentences))
+    return [text for (text, _), keep in zip(sentences, kept) if keep], len(sentences)
+
+
+def _life_section(life: str, lives: list[dict], finding: str, read: Callable[[str], str]) -> str:
+    if not lives:
+        return f"{finding} {NO_LIVES}"
+    kept, written = _grounded(life, lives, read)
+    if not kept:
+        return f"{finding} {UNGROUNDED}"
+    dropped = written - len(kept)
+    note = (f"\n\n*{dropped} of {written} sentences written for this life were dropped: read against the claims "
+            "they cite, they said more than those claims do.*") if dropped else ""
+    return f"{LIFE_LABEL}\n\n{finding}\n\n{' '.join(kept)}{note}\n\n{life_trail(lives)}"
 
 
 def wall_text_label(voice: str) -> str:
@@ -95,15 +143,17 @@ def wall_text_label(voice: str) -> str:
 
 
 def finish_success_report(text: str, reasons: Optional[list[str]], voice: Optional[str], lives: list[dict],
-                          finding: str) -> str:
+                          finding: str, read: Callable[[str], str]) -> str:
     """Replace the writer's image prompt section with the finished one: the
     rule's REASONS, then the label, the writer's description and the
     setting; then the writer's wall text (in VOICE) and artist statement,
     each under its label; then the imagined artist's life, every sentence
-    citing one of LIVES, after the life-block test's FINDING, with the
-    claims cited listed under it, or NO_LIVES where there are none. REASONS None: nothing to illustrate, so none of
-    them. ValueError when an illustration is wanted and the writer left a
-    part out, or wrote a sentence of the life that cites no claim given."""
+    citing one of LIVES and kept only if READ finds it says no more than
+    they do, after the life-block test's FINDING, with the claims listed
+    under it, or NO_LIVES where there are none. REASONS None: nothing to
+    illustrate, so none of them. ValueError when an illustration is wanted
+    and the writer left a part out, or wrote a sentence of the life that
+    cites no claim given, or READ twice answers out of its form."""
     body, _, written = text.partition(f"\n{IMAGE_HEADING}")
     body = body.rstrip()
     if reasons is None:
@@ -119,8 +169,7 @@ def finish_success_report(text: str, reasons: Optional[list[str]], voice: Option
         if not part:
             raise ValueError(f"the report has no {name}")
     why = "\n\n".join(reasons)
-    life_section = (f"{LIFE_LABEL}\n\n{finding}\n\n{_traced(life, lives)}\n\n{life_trail(lives)}" if lives
-                    else f"{finding} {NO_LIVES}")
+    life_section = _life_section(life, lives, finding, read)
     return (f"{body}\n\n{REASONS_HEADING}\n\n{why}\n\n{IMAGE_HEADING}\n\n{IMAGE_LABEL}\n\n"
             f"{description} {IMAGE_SETTING}\n\n{WALL_HEADING}\n\n{wall_text_label(voice)}\n\n{wall}\n\n"
             f"{STATEMENT_HEADING}\n\n{STATEMENT_LABEL}\n\n{statement}\n\n{LIFE_HEADING}\n\n{life_section}")
@@ -319,6 +368,22 @@ def _generate_report_sync(snapshot: dict, api_key: str, model: str, strict: bool
                          f"thinking tokens: {thought}; reasoning text: "
                          f"{len(getattr(choice.message, 'reasoning_content', None) or '')} chars)")
     return choice.message.content
+
+
+def fetch_life_check(request: str, api_key: str, model: str) -> str:
+    """The life check's answer to REQUEST: one Fireworks call, thinking off
+    as for the reports, a few tokens out (ART-PLAN 15.9)."""
+    from openai import OpenAI
+
+    client = OpenAI(base_url=_FIREWORKS_BASE_URL, api_key=api_key, timeout=60.0)
+    response = client.chat.completions.create(
+        model=model, max_tokens=200, temperature=0, reasoning_effort="none",
+        messages=[{"role": "system", "content": "You check sentences against their sources and answer only in the form asked."},
+                  {"role": "user", "content": request}])
+    answer = response.choices[0].message.content
+    if not answer:
+        raise ValueError(f"the life check wrote nothing (finish_reason: {response.choices[0].finish_reason})")
+    return answer
 
 
 async def generate_report(

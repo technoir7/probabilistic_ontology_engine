@@ -1,6 +1,7 @@
 """LLM report read and refresh (hash-gated Fireworks calls)."""
 from __future__ import annotations
 
+import asyncio
 import logging
 from typing import Any, Callable, Optional
 
@@ -140,9 +141,13 @@ async def success_report_read(domain: str, kind: str) -> Any:
 @router.post("/v1/success/{domain}/{kind}/report/refresh")
 async def success_report_refresh(domain: str, kind: str) -> Any:
     snap = _success(domain, kind)
+    settings = Settings.from_env()
+
+    def read(request: str) -> str:
+        return _report.fetch_life_check(request, api_key=settings.fireworks_api_key, model=settings.fireworks_model)
     return await _refresh(f"{snap['domain']}-success-{kind}", snap["domain"], snap,
                           _report.SUCCESS_PROMPT_VERSION, _report.SUCCESS_PROMPT_PATH,
-                          finish=lambda text: _report.finish_success_report(text, *_illustration(snap["image_subject"])))
+                          finish=lambda text: _report.finish_success_report(text, *_illustration(snap["image_subject"]), read))
 
 
 def _illustration(subject: Optional[dict]) -> tuple[Optional[list[str]], Optional[str], list[dict], str]:
@@ -196,7 +201,8 @@ async def _refresh(cache_key: str, domain: str, snapshot_dict: dict, version: st
         report_text = await _report.generate_report(
             snapshot=snapshot_dict, api_key=api_key, model=settings.fireworks_model, timeout=90.0,
             prompt_path=prompt_path)
-        report_text = finish(report_text)
+        # A finish may call the model again (the life check), so off the event loop.
+        report_text = await asyncio.to_thread(finish, report_text)
     except Exception as exc:
         logger.error("Fireworks generation failed for %s: %s", cache_key, exc, exc_info=True)
         return stale_or(HTTPException(status_code=502, detail=f"Report generation failed: {exc}"))

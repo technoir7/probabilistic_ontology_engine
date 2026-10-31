@@ -104,13 +104,18 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
                 "\n\n## Wall text\n*At Work*, photography, 2026\n\nThe artist photographs work."
                 "\n\n## Artist statement\nI photograph work.\n\n## The imagined artist\nThe artist worked [1].")
     monkeypatch.setattr(report, "generate_report", fake)
+
+    def check(request, *, api_key, model):
+        seen["check_key"] = api_key
+        return "1 y"
+    monkeypatch.setattr(report, "fetch_life_check", check)
     monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
     with TestClient(api_app.app) as client:
         assert client.get("/v1/success/art/museum/report").json()["found"] is False
         body = client.post("/v1/success/art/museum/report/refresh").json()
         assert client.get("/v1/success/art/museum/report").json()["found"] is True
-    assert seen == {"prompt": report.SUCCESS_PROMPT_PATH, "kind": "museum"} and "Being written about" in body["report"]
+    assert seen["prompt"] == report.SUCCESS_PROMPT_PATH and seen["kind"] == "museum" and "Being written about" in body["report"]
     assert f"A photograph of a woman at work. {report.IMAGE_SETTING}" in body["report"]     # finished by code
     voice = success_narrative.WALL_TEXT_VOICES["museum"]
     assert f"{report.wall_text_label(voice)}\n\n*At Work*, photography, 2026\n\nThe artist photographs work." in body["report"]
@@ -120,6 +125,7 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
     assert body["report"].endswith(
         f"{report.LIFE_LABEL}\n\n{finding}\n\nThe artist worked [1].\n\n{report.life_trail(lives)}"
         if lives else f"{report.LIFE_HEADING}\n\n{finding} {report.NO_LIVES}")
+    assert seen.get("check_key") == ("test-key" if lives else None)      # the check reads on the server's key
     assert report.REASONS_HEADING in body["report"]
 
 
@@ -221,10 +227,15 @@ WALL = ("\n\n## Wall text\n\n*River Hours*, painting, 2027\n\nThe artist paints 
 VOICE = "the label of a museum that has just acquired it"
 
 
+def KEEP(request):
+    """A reader that finds every sentence says only what its claims say."""
+    return "\n".join(f"{i} y" for i in range(1, request.count("\nSentence ") + 1))
+
+
 def test_code_finishes_the_image_prompt_so_the_writer_cannot_change_its_label_or_setting():
     from src.engine.api import report
     text = report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA large painting of a river.\n" + WALL,
-                                        ["Why the river.", "Why paint."], VOICE, LIVES, FINDING)
+                                        ["Why the river.", "Why paint."], VOICE, LIVES, FINDING, KEEP)
     assert text == ("## In short\nA.\n\n" + report.REASONS_HEADING + "\n\nWhy the river.\n\nWhy paint.\n\n"
                     + report.IMAGE_HEADING + "\n\n" + report.IMAGE_LABEL + "\n\n"
                     "A large painting of a river. " + report.IMAGE_SETTING + "\n\n"
@@ -265,20 +276,20 @@ def test_a_sentence_of_the_life_without_a_claim_behind_it_refuses_the_report(lif
     from src.engine.api import report
     text = WALL.replace(LIFE, life)
     with pytest.raises(ValueError):
-        report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA river." + text, ["Why."], VOICE, LIVES, FINDING)
+        report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA river." + text, ["Why."], VOICE, LIVES, FINDING, KEEP)
 
 
 def test_where_no_claim_is_about_a_life_code_says_so_whatever_the_writer_wrote():
     from src.engine.api import report
     for life in ("\n\n## The imagined artist\n\nThe artist began late.", ""):
         text = "## In short\nA.\n\n## Image prompt\n\nA river." + WALL.split("\n\n## The imagined artist")[0] + life
-        assert report.finish_success_report(text, ["Why."], VOICE, [], FINDING).endswith(
+        assert report.finish_success_report(text, ["Why."], VOICE, [], FINDING, KEEP).endswith(
             report.LIFE_HEADING + "\n\n" + FINDING + " " + report.NO_LIVES)
 
 
 def test_words_the_writer_adds_to_the_image_prompt_heading_are_not_part_of_the_prompt():
     from src.engine.api import report
-    text = report.finish_success_report("## In short\nA.\n\n## Image prompt: a vision\nA river." + WALL, ["Why."], VOICE, LIVES, FINDING)
+    text = report.finish_success_report("## In short\nA.\n\n## Image prompt: a vision\nA river." + WALL, ["Why."], VOICE, LIVES, FINDING, KEEP)
     assert ("\n\nA river. " + report.IMAGE_SETTING + "\n\n" + report.WALL_HEADING) in text and "vision" not in text
 
 
@@ -295,13 +306,13 @@ def test_words_the_writer_adds_to_the_image_prompt_heading_are_not_part_of_the_p
 def test_an_image_prompt_wall_text_or_statement_wanted_but_not_written_is_an_error(written):
     from src.engine.api import report
     with pytest.raises(ValueError):
-        report.finish_success_report(written, ["Why."], VOICE, LIVES, FINDING)
+        report.finish_success_report(written, ["Why."], VOICE, LIVES, FINDING, KEEP)
 
 
 def test_where_nothing_is_illustrated_code_says_so_whatever_the_writer_wrote():
     from src.engine.api import report
     for written in ("## In short\nA.", "## In short\nA.\n\n## Image prompt\nA bird." + WALL):
-        assert report.finish_success_report(written, None, None, [], "") == (
+        assert report.finish_success_report(written, None, None, [], "", KEEP) == (
             "## In short\nA.\n\n" + report.IMAGE_HEADING + "\n\n" + report.NOTHING_TO_ILLUSTRATE)
 
 
@@ -402,3 +413,53 @@ def test_only_the_kinds_kept_apart_may_join_the_four():
     snap["kinds"]["fame"] = snap["kinds"]["market"]
     with pytest.raises(ValueError):
         success.load(snap)
+
+
+def _life(life, read):
+    from src.engine.api import report
+    return report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA river." + WALL.replace(LIFE, life),
+                                        ["Why."], VOICE, LIVES, FINDING, read)
+
+
+def test_the_reader_sees_each_sentence_beside_only_the_claims_it_cites():
+    """ART-PLAN 15.9: the reading is of each sentence against its own claims."""
+    seen = []
+    _life(LIFE, lambda request: seen.append(request) or "1 y\n2 y")
+    request = seen[0]
+    one, two = request.split("\nSentence 1:")[1].split("\nSentence 2:")
+    assert "met discrimination early [1]." in one and "she faced discrimination" in one
+    assert "discovered only after her death" not in one
+    assert "discovered only after her death" in two and "she faced discrimination" not in two
+
+
+def test_code_drops_each_sentence_the_reader_finds_says_more_than_its_claims_and_says_so():
+    from src.engine.api import report
+    text = _life(LIFE, lambda request: "1 n\n2 y")
+    life = text.split(FINDING + "\n\n")[1]
+    assert life.startswith("The work was found only after the artist's death. [2]")
+    assert "met discrimination" not in life.split("*Built from")[0]
+    assert "1 of 2 sentences" in life
+    assert report.life_trail(LIVES) in text                       # the claims given are still listed
+
+
+def test_where_every_sentence_is_dropped_code_says_there_is_no_life():
+    from src.engine.api import report
+    text = _life(LIFE, lambda request: "1 n\n2 n")
+    assert text.endswith(report.LIFE_HEADING + "\n\n" + FINDING + " " + report.UNGROUNDED)
+
+
+@pytest.mark.parametrize("answer", ["1 y", "1 y\n2 maybe", "y\ny", "1 y\n2 y\n3 y", "2 y\n1 y", ""])
+def test_an_answer_out_of_the_form_is_refused_and_asked_once_more(answer):
+    answers = [answer, "1 y\n2 n"]
+    text = _life(LIFE, lambda request: answers.pop(0))
+    assert not answers and "1 of 2 sentences" in text
+
+
+def test_an_answer_out_of_the_form_twice_refuses_the_report():
+    with pytest.raises(ValueError):
+        _life(LIFE, lambda request: "1 y")
+
+
+def test_the_check_reads_from_its_own_fixed_instructions():
+    from src.engine.api import report
+    assert report.LIFE_CHECK_PATH.exists() and "1 y" in report.LIFE_CHECK_PATH.read_text()
