@@ -110,6 +110,8 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
         seen.setdefault("check_models", []).append(model)
         return "1 y\n2 y\n3 y"
     monkeypatch.setattr(report, "fetch_life_check", check)
+    monkeypatch.setattr(report, "fetch_life_mend", lambda request, *, api_key, model: seen.update(mend_model=model)
+                        or SAME(request))
     monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
     monkeypatch.setenv("FIREWORKS_REPORT_MODEL", "test-writer")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
@@ -134,6 +136,7 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
     # ART-PLAN 15.13: and by the writer's own model as well
     assert sorted(seen.get("check_models", [])) == (sorted([report.LIFE_CHECK_MODEL, "test-writer"]) if lives else [])
     assert report.LIFE_CHECK_MODEL != report._DEFAULT_MODEL
+    assert seen.get("mend_model") == ("test-writer" if lives else None)     # ART-PLAN 15.18: the writer's model mends
     assert report.REASONS_HEADING in body["report"]
 
 
@@ -233,6 +236,11 @@ LIFE = "The artist faced discrimination [1]. The artist was discovered only afte
 WALL = ("\n\n## Wall text\n\n*River Hours*, painting, 2027\n\nThe artist paints a river."
         "\n\n## Artist statement\n\nI paint the river.\n\n## The imagined artist\n\n" + LIFE + "\n")
 VOICE = "the label of a museum that has just acquired it"
+
+
+def SAME(request, **_):
+    """A mend that finds every sentence whole (ART-PLAN 15.18)."""
+    return "\n".join(f"{i} same" for i in range(1, request.count("\nSentence ") + 1))
 
 
 def KEEP(request):
@@ -635,6 +643,64 @@ def test_each_cut_sentence_is_shown_struck_with_why():
     assert "~~The artist is 94 years old [1].~~ (the readers found it says more than its claims)" in life
 
 
+def _mend(life, answer, readers=(KEEP,)):
+    """The life section after the writer's model mends LIFE's sentences with ANSWER (ART-PLAN 15.18)."""
+    from src.engine.api import report
+    seen = []
+    text = report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA river." + WALL.replace(LIFE, life),
+                                        ["Why."], VOICE, AGED, FINDING, list(readers),
+                                        mend=lambda request: seen.append(request) or answer)
+    return text.split(FINDING + "\n\n")[1].split("*Built from")[0], seen
+
+
+FRAGMENT = "The artist, whose health is failing [2]."
+MENDED = "The artist, whose health is failing, became a queer icon [2, 3]."
+
+
+def test_a_fragment_is_mended_by_joining_a_claim_no_sentence_uses():
+    """ART-PLAN 15.18: a fragment is not cut; it is mended and checked again."""
+    life, seen = _mend(FRAGMENT, f"1 {MENDED}")
+    assert life.startswith(MENDED)
+    assert f"*Mended into whole sentences, then checked again; each was:*\n\n- {FRAGMENT}" in life
+    # the writer's model sees each sentence beside its claims, and the claims no sentence uses
+    request = seen[0]
+    assert "Sentence 1: " + FRAGMENT in request and "her health is failing" in request
+    assert request.split("Claims no sentence uses:")[1].count("[") == 2      # [1] and [3]
+
+
+def test_a_whole_sentence_is_left_as_written():
+    life, seen = _mend("The artist became a queer icon [3].", "1 same")
+    assert life.startswith("The artist became a queer icon [3].") and "Mended" not in life and len(seen) == 1
+
+
+@pytest.mark.parametrize("life, answer", [
+    (FRAGMENT, "1 The artist, whose health is failing, became a queer icon in old age [2, 3]."),  # words its claims lack
+    (FRAGMENT, "1 The artist's health is failing [2]. The artist became a queer icon [3]."),    # two sentences
+    (FRAGMENT, "1 The artist, whose health is failing, is a queer icon."),                       # cites nothing
+    (FRAGMENT + " The artist became a queer icon [3].",
+     f"1 {MENDED}\n2 same"),                                                                     # a claim used twice
+])
+def test_a_mend_that_fails_a_check_leaves_the_fragment_as_written(life, answer):
+    mended, _ = _mend(life, answer)
+    assert mended.startswith(FRAGMENT) and "Mended" not in mended
+
+
+def test_a_mend_the_readers_refuse_leaves_the_fragment_as_written():
+    answers = ["1 y", "1 n"]                     # the fragment, then its mend
+    life, _ = _mend(FRAGMENT, f"1 {MENDED}", readers=[lambda request: answers.pop(0)])
+    assert not answers and life.startswith(FRAGMENT) and "Mended" not in life
+
+
+def test_a_mend_out_of_its_form_is_asked_once_more_then_refused():
+    from src.engine.api import report
+    answers = ["same", f"1 {MENDED}"]
+    text = report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA river." + WALL.replace(LIFE, FRAGMENT),
+                                        ["Why."], VOICE, AGED, FINDING, [KEEP], mend=lambda request: answers.pop(0))
+    assert not answers and MENDED in text
+    with pytest.raises(ValueError):
+        _mend(FRAGMENT, "1 same\n2 same")
+
+
 @pytest.mark.parametrize("sentence", ["Blake becomes a queer icon [3].", "The artist has become a queer icon [3]."])
 def test_an_irregular_change_of_tense_is_the_same_word(sentence):
     assert _aged(sentence.replace("Blake", "The artist")).startswith(sentence.replace("Blake", "The artist"))
@@ -661,6 +727,7 @@ def test_a_short_life_has_the_writer_write_again_and_the_fullest_is_kept(monkeyp
                 "The artist [1]. The artist [2]. The artist [3].")
     monkeypatch.setattr(report, "generate_report", fake)
     monkeypatch.setattr(report, "fetch_life_check", lambda request, **_: verdicts[len(calls) - 1])
+    monkeypatch.setattr(report, "fetch_life_mend", SAME)
     monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
     with TestClient(api_app.app) as client:
@@ -730,6 +797,7 @@ def test_a_report_missing_a_part_has_the_writer_write_again(monkeypatch, tmp_pat
         return writes.pop(0)
     monkeypatch.setattr(report, "generate_report", fake)
     monkeypatch.setattr(report, "fetch_life_check", lambda request, **_: "1 y\n2 y\n3 y")
+    monkeypatch.setattr(report, "fetch_life_mend", SAME)
     monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
     with TestClient(api_app.app) as client:

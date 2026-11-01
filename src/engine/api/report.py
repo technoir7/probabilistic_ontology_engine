@@ -17,6 +17,8 @@ import re
 from pathlib import Path
 from typing import Callable, Optional, Sequence
 
+from . import life_words
+
 logger = logging.getLogger(__name__)
 
 # Resolve prompt path relative to this file — works from any cwd.
@@ -43,7 +45,7 @@ _FIREWORKS_MODEL_ENV = "FIREWORKS_REPORT_MODEL"
 
 PROMPT_VERSION = "4"
 TREND_PROMPT_VERSION = "1"   # bump when prompts/trend_report.md changes
-SUCCESS_PROMPT_VERSION = "21"   # bump when prompts/success_report.md, life_check.md, its model or the life's checks change
+SUCCESS_PROMPT_VERSION = "22"   # bump when prompts/success_report.md, life_check.md, life_mend.md, its model or the life's checks change
 THEMES_PROMPT_VERSION = "2"    # bump when prompts/themes_report.md changes
 
 
@@ -73,6 +75,7 @@ LIFE_LABEL = ("*A fictional life for the imagined artist, kept apart from the wo
 NO_LIVES = "No life block has a good record for this kind of success, so there is no life."
 UNGROUNDED = "No sentence written for the life said only what its claims say, so there is no life."
 LIFE_CHECK_PATH = PROMPT_PATH.parent / "life_check.md"
+LIFE_MEND_PATH = PROMPT_PATH.parent / "life_mend.md"
 # Another maker's model than the writer's, so no model reads its own writing (ART-PLAN 15.10).
 LIFE_CHECK_MODEL = "accounts/fireworks/models/glm-5p3-flash"
 _CITED = re.compile(r"\[(\d+(?:\s*,\s*\d+)*)\]")
@@ -98,12 +101,24 @@ def _sentences(life: str, lives: list[dict]) -> list[tuple[str, list[int]]]:
     return out
 
 
+def _beside_claims(sentences: list[tuple[str, list[int]]], lives: list[dict]) -> str:
+    claims = {c["n"]: c["claim"] for c in lives}
+    return "\n\n".join(f"Sentence {i}: {text}\nIts claims:\n" + "\n".join(f"[{n}] {claims[n]}" for n in dict.fromkeys(cited))
+                       for i, (text, cited) in enumerate(sentences, 1))
+
+
 def life_check_request(sentences: list[tuple[str, list[int]]], lives: list[dict]) -> str:
     """The fixed instructions, then each sentence beside only the claims it cites."""
-    claims = {c["n"]: c["claim"] for c in lives}
-    shown = "\n\n".join(f"Sentence {i}: {text}\nIts claims:\n" + "\n".join(f"[{n}] {claims[n]}" for n in dict.fromkeys(cited))
-                         for i, (text, cited) in enumerate(sentences, 1))
-    return f"{LIFE_CHECK_PATH.read_text(encoding='utf-8')}\n\n{shown}\n"
+    return f"{LIFE_CHECK_PATH.read_text(encoding='utf-8')}\n\n{_beside_claims(sentences, lives)}\n"
+
+
+def life_mend_request(sentences: list[tuple[str, list[int]]], lives: list[dict]) -> str:
+    """The fixed instructions, each sentence beside the claims it cites, then
+    the claims no sentence cites, which a mend may join (ART-PLAN 15.18)."""
+    used = {n for _, cited in sentences for n in cited}
+    unused = "\n".join(f"[{c['n']}] {c['claim']}" for c in lives if c["n"] not in used) or "(none)"
+    return (f"{LIFE_MEND_PATH.read_text(encoding='utf-8')}\n\n{_beside_claims(sentences, lives)}\n\n"
+            f"Claims no sentence uses:\n{unused}\n")
 
 
 def _verdicts(answer: str, count: int) -> list[bool]:
@@ -115,98 +130,77 @@ def _verdicts(answer: str, count: int) -> list[bool]:
     return [parts[1] == "y" for parts in lines]
 
 
-def _verdicts_of(read: Callable[[str], str], request: str, count: int) -> list[bool]:
-    """READ's answer; one out of the form is asked once more, then refused."""
+def _mends(answer: str, count: int) -> list[Optional[str]]:
+    """One line per sentence, numbered in order: None for "same", else the
+    mended sentence; ValueError otherwise."""
+    lines = [line.strip().partition(" ") for line in answer.strip().splitlines() if line.strip()]
+    if len(lines) != count or any(n != str(i) or not rest.strip() for i, (n, _, rest) in enumerate(lines, 1)):
+        raise ValueError(f"the life mend answered out of its form: {answer[:120]!r}")
+    return [None if rest.strip().lower() == "same" else rest.strip() for _, _, rest in lines]
+
+
+def _answer_of(ask: Callable[[str], str], request: str, count: int, parse: Callable[[str, int], list]) -> list:
+    """ASK's answer, parsed; one out of the form is asked once more, then refused."""
     try:
-        return _verdicts(read(request), count)
+        return parse(ask(request), count)
     except ValueError:
-        return _verdicts(read(request), count)
+        return parse(ask(request), count)
 
 
-# Words that assert nothing, so a life may use them to join claims in their own words (ART-PLAN 15.14). No word
-# of time, cause or contrast is here: such a word may stand only where a claim it cites has it.
-_JOINING = frozenset("""a an the and or nor of in on at to for with by from as into about
-is was are were be been being am has had have having do does did
-it its this that these those who whose whom which not no artist artists""".split())
-_WORD = re.compile(r"[a-z0-9]+(?:['’][a-z]+)?")
-
-
-# Common irregular verbs, each form counted as the same word, so a change of tense is not a new word.
-_IRREGULAR = {form: lemma for lemma, forms in {
-    "become": "became", "begin": "began begun", "take": "took taken", "make": "made", "give": "gave given",
-    "find": "found", "come": "came", "go": "went gone", "see": "saw seen", "know": "knew known",
-    "grow": "grew grown", "win": "won", "write": "wrote written", "leave": "left", "draw": "drew drawn",
-    "get": "got gotten", "hold": "held", "keep": "kept", "meet": "met", "run": "ran", "sell": "sold",
-    "show": "shown", "teach": "taught", "think": "thought", "buy": "bought", "bring": "brought", "build": "built",
-    "feel": "felt", "lose": "lost", "say": "said", "tell": "told", "stand": "stood", "fall": "fell fallen",
-    "rise": "rose risen", "choose": "chose chosen", "speak": "spoke spoken", "break": "broke broken",
-    "spend": "spent", "send": "sent", "lead": "led", "fight": "fought", "shoot": "shot", "sit": "sat",
-    "hang": "hung", "forget": "forgot forgotten", "hide": "hid hidden", "wear": "wore worn"}.items()
-    for form in forms.split()}
-
-
-def _forms(word: str) -> set[str]:
-    """The word and the bases it may have by a plural or tense ending, with
-    irregular verbs to one form, so tense and number may change."""
-    word = _IRREGULAR.get(word, word)
-    out = {word}
-    for end, back in (("ing", ""), ("ing", "e"), ("ed", ""), ("ed", "e"), ("es", ""), ("s", "")):
-        if len(word) > len(end) + 2 and word.endswith(end):
-            out.add(word[:-len(end)] + back)
-    return out
-
-
-def _words(text: str) -> list[str]:
-    return [re.sub(r"['’]s$", "", w) for w in _WORD.findall(_CITED.sub("", text).lower())]
-
-
-# The imagined artist is "they" by default, the most neutral; "she" or "he" only where a claim states the person's
-# pronouns ("she/her"), never from a critic's own "she" or "he", the critic's assumption (ART-PLAN 15.14 as amended).
-_PRONOUN_SETS = {"he": {"he", "him", "his", "himself"}, "she": {"she", "her", "hers", "herself"},
-                 "they": {"they", "them", "their", "theirs", "themselves", "themself"}}
-_PRONOUNS = frozenset().union(*_PRONOUN_SETS.values())
-_STATED = re.compile(r"\b(he|she|they)\s*/\s*(he|him|his|she|her|hers|they|them|their)\b")
-
-
-def _stated(claim: str) -> set[str]:
-    """The pronouns CLAIM states for a person, as whole sets."""
-    found = set()
-    for pair in _STATED.findall(claim.lower()):
-        for word in pair:
-            found |= next((ws for ws in _PRONOUN_SETS.values() if word in ws), set())
-    return found
-
-
-def _lacking(sentence: str, claims: list[str]) -> list[str]:
-    """The words of SENTENCE that are neither ones that assert nothing nor
-    CLAIMS', and the pronouns for a person that are neither "they" nor
-    ones a claim states; none: the sentence is in its claims' words."""
-    theirs = set().union(*(_forms(w) for c in claims for w in _words(c) if w not in _PRONOUNS))
-    stated = _PRONOUN_SETS["they"].union(*(_stated(c) for c in claims))
-    return list(dict.fromkeys(w for w in _words(sentence)
-                              if not (w in stated if w in _PRONOUNS else w in _JOINING or _forms(w) & theirs)))
+def _read(sentences: list[tuple[str, list[int]]], lives: list[dict], readers: Sequence[Callable[[str], str]]) -> list[bool]:
+    """For each sentence, whether every one of READERS finds it says no more than its claims."""
+    request = life_check_request(sentences, lives)
+    return [all(f) for f in zip(*(_answer_of(read, request, len(sentences), _verdicts) for read in readers))]
 
 
 def _grounded(life: str, lives: list[dict],
-              readers: Sequence[Callable[[str], str]]) -> tuple[list[str], list[tuple[str, str]], int]:
+              readers: Sequence[Callable[[str], str]]) -> tuple[list[tuple[str, list[int]]], list[tuple[str, str]], int]:
     """The sentences of LIFE in the words of the claims they cite (ART-PLAN
     15.14) that every one of READERS, given each beside its claims, finds
     say nothing more (15.9, 15.13); each sentence cut, with why; and how
     many were written."""
     sentences = _sentences(life, lives)
     claims = {c["n"]: c["claim"] for c in lives}
-    lacking = [(text, cited, _lacking(text, [claims[n] for n in cited])) for text, cited in sentences]
+    lacking = [(text, cited, life_words.lacking(text, [claims[n] for n in cited])) for text, cited in sentences]
     cut = [(text, f"words its claims lack: {', '.join(words)}") for text, _, words in lacking if words]
     worded = [(text, cited) for text, cited, words in lacking if not words]
-    kept: list[str] = []
+    kept: list[tuple[str, list[int]]] = []
     if worded:
-        request = life_check_request(worded, lives)
-        found = [all(f) for f in zip(*(_verdicts_of(read, request, len(worded)) for read in readers))]
-        kept = [text for (text, _), keep in zip(worded, found) if keep]
+        found = _read(worded, lives, readers)
+        kept = [sentence for sentence, keep in zip(worded, found) if keep]
         cut += [(text, "the readers found it says more than its claims") for (text, _), keep in zip(worded, found)
                 if not keep]
     order = {text: i for i, (text, _) in enumerate(sentences)}
     return kept, sorted(cut, key=lambda c: order[c[0]]), len(sentences)
+
+
+def _mended(kept: list[tuple[str, list[int]]], lives: list[dict], readers: Sequence[Callable[[str], str]],
+            mend: Callable[[str], str]) -> tuple[list[str], list[str]]:
+    """KEPT's sentences with each mend of MEND's (ART-PLAN 15.18) that is one
+    sentence, cites only its own claims and ones no other sentence uses, is
+    in their words and every one of READERS keeps; and the sentences mended.
+    A mend that fails leaves its sentence as written."""
+    claims = {c["n"]: c["claim"] for c in lives}
+    taken = {n for _, cited in kept for n in cited}
+    tries = []
+    for i, ((_, cited), answer) in enumerate(zip(kept, _answer_of(mend, life_mend_request(kept, lives), len(kept), _mends))):
+        if answer is None:
+            continue
+        try:
+            [(text, now)] = _sentences(answer, lives)
+        except ValueError:                       # no claim cited, or more than one sentence
+            continue
+        if (set(now) - set(cited)) & taken or life_words.lacking(text, [claims[n] for n in now]):
+            continue
+        taken |= set(now)
+        tries.append((i, text, now))
+    texts, mended = [text for text, _ in kept], []
+    found = _read([(text, now) for _, text, now in tries], lives, readers) if tries else []
+    for (i, text, _), keep in zip(tries, found):
+        if keep:
+            mended.append(texts[i])
+            texts[i] = text
+    return texts, mended
 
 
 def _cut_list(cut: list[tuple[str, str]]) -> str:
@@ -244,17 +238,20 @@ def life_graph(edges: Sequence[dict]) -> str:
 
 
 def _life_section(life: str, lives: list[dict], finding: str, readers: Sequence[Callable[[str], str]],
-                  edges: Sequence[dict] = ()) -> tuple[str, int]:
+                  edges: Sequence[dict] = (), mend: Optional[Callable[[str], str]] = None) -> tuple[str, int]:
     """The life's section, and how many of its sentences were kept."""
     if not lives:
         return f"{finding} {NO_LIVES}", 0
     kept, cut, written = _grounded(life, lives, readers)
     if not kept:
         return f"{finding} {UNGROUNDED}\n\n{_cut_list(cut)}\n\n{life_trail(lives)}", 0
+    texts, mended = _mended(kept, lives, readers, mend) if mend else ([text for text, _ in kept], [])
+    were = ("\n\n*Mended into whole sentences, then checked again; each was:*\n\n" + "\n".join(f"- {m}" for m in mended)
+            if mended else "")
     note = (f"\n\n*{len(cut)} of {written} sentences written for this life were dropped.*\n\n{_cut_list(cut)}"
             if cut else "")
     graph = f"\n\n{life_graph(edges)}" if edges else ""
-    return f"{LIFE_LABEL}\n\n{finding}\n\n{' '.join(kept)}{note}{graph}\n\n{life_trail(lives)}", len(kept)
+    return f"{LIFE_LABEL}\n\n{finding}\n\n{' '.join(texts)}{were}{note}{graph}\n\n{life_trail(lives)}", len(texts)
 
 
 def wall_text_label(voice: str) -> str:
@@ -264,7 +261,7 @@ def wall_text_label(voice: str) -> str:
 
 def finish_success_report(text: str, reasons: Optional[list[str]], voice: Optional[str], lives: list[dict],
                           finding: str, readers: Sequence[Callable[[str], str]], *, edges: Sequence[dict] = (),
-                          least: int = 1) -> str:
+                          least: int = 1, mend: Optional[Callable[[str], str]] = None) -> str:
     """Replace the writer's image prompt section with the finished one: the
     rule's REASONS, then the label, the writer's description and the
     setting; then the writer's wall text (in VOICE) and artist statement,
@@ -276,7 +273,9 @@ def finish_success_report(text: str, reasons: Optional[list[str]], voice: Option
     and the writer left a part out, or wrote a sentence of the life that
     cites no claim given, or a reader twice answers out of its form;
     ShortLife, with the finished report, when fewer sentences of the life
-    survive than LEAST, or than the claims given where there are fewer."""
+    survive than LEAST, or than the claims given where there are fewer.
+    MEND, where given, may mend a kept sentence into a whole one (ART-PLAN
+    15.18)."""
     body, _, written = text.partition(f"\n{IMAGE_HEADING}")
     body = body.rstrip()
     if reasons is None:
@@ -292,7 +291,7 @@ def finish_success_report(text: str, reasons: Optional[list[str]], voice: Option
         if not part:
             raise MissingPart(f"the report has no {name}")
     why = "\n\n".join(reasons)
-    life_section, kept = _life_section(life, lives, finding, readers, edges)
+    life_section, kept = _life_section(life, lives, finding, readers, edges, mend)
     finished = (f"{body}\n\n{REASONS_HEADING}\n\n{why}\n\n{IMAGE_HEADING}\n\n{IMAGE_LABEL}\n\n"
                 f"{description} {IMAGE_SETTING}\n\n{WALL_HEADING}\n\n{wall_text_label(voice)}\n\n{wall}\n\n"
                 f"{STATEMENT_HEADING}\n\n{STATEMENT_LABEL}\n\n{statement}\n\n{LIFE_HEADING}\n\n{life_section}")
@@ -496,9 +495,8 @@ def _generate_report_sync(snapshot: dict, api_key: str, model: str, strict: bool
     return choice.message.content
 
 
-def fetch_life_check(request: str, api_key: str, model: str) -> str:
-    """The life check's answer to REQUEST: one Fireworks call (ART-PLAN
-    15.9, 15.10). GLM-5.3 always thinks and refuses reasoning_effort
+def _fetch_life_answer(request: str, api_key: str, model: str, system: str, what: str) -> str:
+    """One Fireworks call. GLM-5.3 always thinks and refuses reasoning_effort
     "none", so it thinks a little, from a budget that leaves room for the
     answer of a line a sentence."""
     from openai import OpenAI
@@ -506,12 +504,24 @@ def fetch_life_check(request: str, api_key: str, model: str) -> str:
     client = OpenAI(base_url=_FIREWORKS_BASE_URL, api_key=api_key, timeout=120.0)
     response = client.chat.completions.create(
         model=model, max_tokens=16000, temperature=0, reasoning_effort="low",
-        messages=[{"role": "system", "content": "You check sentences against their sources and answer only in the form asked."},
-                  {"role": "user", "content": request}])
+        messages=[{"role": "system", "content": system}, {"role": "user", "content": request}])
     answer = response.choices[0].message.content
     if not answer:
-        raise ValueError(f"the life check wrote nothing (finish_reason: {response.choices[0].finish_reason})")
+        raise ValueError(f"the {what} wrote nothing (finish_reason: {response.choices[0].finish_reason})")
     return answer
+
+
+def fetch_life_check(request: str, api_key: str, model: str) -> str:
+    """The life check's answer to REQUEST (ART-PLAN 15.9, 15.10)."""
+    return _fetch_life_answer(request, api_key, model,
+                              "You check sentences against their sources and answer only in the form asked.", "life check")
+
+
+def fetch_life_mend(request: str, api_key: str, model: str) -> str:
+    """The life mend's answer to REQUEST (ART-PLAN 15.18)."""
+    return _fetch_life_answer(request, api_key, model,
+                              "You mend sentences into whole ones from their sources' words and answer only in the "
+                              "form asked.", "life mend")
 
 
 async def generate_report(
