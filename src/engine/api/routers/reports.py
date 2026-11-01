@@ -151,14 +151,14 @@ async def success_report_refresh(domain: str, kind: str) -> Any:
     # Two readers of another maker each (ART-PLAN 15.13): the writer's model and GLM-5.3.
     readers = [partial(_report.fetch_life_check, api_key=settings.fireworks_api_key, model=model)
                for model in (_report.LIFE_CHECK_MODEL, settings.fireworks_model)]
-    # The writer's model mends a fragment into a whole sentence; code and the readers judge the mend (ART-PLAN 15.18).
-    mend = partial(_report.fetch_life_mend, api_key=settings.fireworks_api_key, model=settings.fireworks_model)
+    # The writer's model edits the life to read well; code and the readers judge the edit (ART-PLAN 15.19).
+    edit = partial(_report.fetch_life_edit, api_key=settings.fireworks_api_key, model=settings.fireworks_model)
     return await _refresh(f"{snap['domain']}-success-{kind}", snap["domain"], snap,
                           _report.SUCCESS_PROMPT_VERSION, _report.SUCCESS_PROMPT_PATH,
                           finish=lambda text: _report.finish_success_report(
                               text, *_illustration(snap["image_subject"]), readers,
                               edges=(snap["image_subject"] or {}).get("life_edges", []), least=LIFE_SENTENCES,
-                              mend=mend),
+                              edit=edit),
                           writes=3)
 
 
@@ -224,7 +224,7 @@ async def _refresh(cache_key: str, domain: str, snapshot_dict: dict, version: st
                 if fullest is None or short.kept > fullest.kept:
                     fullest = short
                 report_text = fullest.report
-            except _report.MissingPart as missing:  # the writer left a part out; it may write again
+            except _report.WriteAgain as missing:   # the writer left a part out, or failed its form; it may write again
                 logger.info("%s for %s (write %d of %d)", missing, cache_key, attempt, writes)
                 if attempt == writes:
                     raise

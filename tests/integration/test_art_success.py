@@ -110,7 +110,7 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
         seen.setdefault("check_models", []).append(model)
         return "1 y\n2 y\n3 y"
     monkeypatch.setattr(report, "fetch_life_check", check)
-    monkeypatch.setattr(report, "fetch_life_mend", lambda request, *, api_key, model: seen.update(mend_model=model)
+    monkeypatch.setattr(report, "fetch_life_edit", lambda request, *, api_key, model: seen.update(edit_model=model)
                         or SAME(request))
     monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
     monkeypatch.setenv("FIREWORKS_REPORT_MODEL", "test-writer")
@@ -136,7 +136,7 @@ def test_a_success_report_is_written_from_its_own_prompt(monkeypatch, tmp_path):
     # ART-PLAN 15.13: and by the writer's own model as well
     assert sorted(seen.get("check_models", [])) == (sorted([report.LIFE_CHECK_MODEL, "test-writer"]) if lives else [])
     assert report.LIFE_CHECK_MODEL != report._DEFAULT_MODEL
-    assert seen.get("mend_model") == ("test-writer" if lives else None)     # ART-PLAN 15.18: the writer's model mends
+    assert seen.get("edit_model") == ("test-writer" if lives else None)     # ART-PLAN 15.19: the writer's model edits
     assert report.REASONS_HEADING in body["report"]
 
 
@@ -239,8 +239,8 @@ VOICE = "the label of a museum that has just acquired it"
 
 
 def SAME(request, **_):
-    """A mend that finds every sentence whole (ART-PLAN 15.18)."""
-    return "\n".join(f"{i} same" for i in range(1, request.count("\nSentence ") + 1))
+    """An edit that leaves the life as checked (ART-PLAN 15.19)."""
+    return "same"
 
 
 def KEEP(request):
@@ -482,6 +482,14 @@ def test_a_life_with_fewer_sentences_than_asked_is_short():
     assert "1 of 2 sentences" in finish(lambda request: "1 n\n2 y", 1)               # one is enough by default
 
 
+def test_a_writer_citing_a_claim_not_given_or_a_reader_out_of_form_twice_has_the_writer_write_again():
+    from src.engine.api import report
+    with pytest.raises(report.WriteAgain):
+        _life("The artist faced discrimination [9].", KEEP)
+    with pytest.raises(report.WriteAgain):
+        _life(LIFE, lambda request: "maybe")
+
+
 @pytest.mark.parametrize("answer", ["1 y", "1 y\n2 maybe", "y\ny", "1 y\n2 y\n3 y", "2 y\n1 y", ""])
 def test_an_answer_out_of_the_form_is_refused_and_asked_once_more(answer):
     answers = [answer, "1 y\n2 n"]
@@ -643,62 +651,63 @@ def test_each_cut_sentence_is_shown_struck_with_why():
     assert "~~The artist is 94 years old [1].~~ (the readers found it says more than its claims)" in life
 
 
-def _mend(life, answer, readers=(KEEP,)):
-    """The life section after the writer's model mends LIFE's sentences with ANSWER (ART-PLAN 15.18)."""
+def _edit(life, answer, readers=(KEEP,), least=1):
+    """The life section after the writer's model edits LIFE with ANSWER (ART-PLAN 15.19), and what it was asked."""
     from src.engine.api import report
     seen = []
     text = report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA river." + WALL.replace(LIFE, life),
-                                        ["Why."], VOICE, AGED, FINDING, list(readers),
-                                        mend=lambda request: seen.append(request) or answer)
+                                        ["Why."], VOICE, AGED, FINDING, list(readers), least=least,
+                                        edit=lambda request: seen.append(request) or answer)
     return text.split(FINDING + "\n\n")[1].split("*Built from")[0], seen
 
 
-FRAGMENT = "The artist, whose health is failing [2]."
-MENDED = "The artist, whose health is failing, became a queer icon [2, 3]."
+CHOPPY = "The artist is 94 years old [1]. The artist's health is failing [2]."
+JOINED = "The artist is 94 years old, and their health is failing [1, 2]."
 
 
-def test_a_fragment_is_mended_by_joining_a_claim_no_sentence_uses():
-    """ART-PLAN 15.18: a fragment is not cut; it is mended and checked again."""
-    life, seen = _mend(FRAGMENT, f"1 {MENDED}")
-    assert life.startswith(MENDED)
-    assert f"*Mended into whole sentences, then checked again; each was:*\n\n- {FRAGMENT}" in life
-    # the writer's model sees each sentence beside its claims, and the claims no sentence uses
-    request = seen[0]
-    assert "Sentence 1: " + FRAGMENT in request and "her health is failing" in request
-    assert request.split("Claims no sentence uses:")[1].count("[") == 2      # [1] and [3]
+def test_the_life_is_edited_to_read_well_and_shows_how_it_was_first():
+    """ART-PLAN 15.19: short sentences joined, checked again, the first checked life shown."""
+    life, seen = _edit(CHOPPY, JOINED)
+    assert life.startswith(JOINED + "\n\n")
+    assert f"*Edited to read well, then checked again. The life as first checked:*\n\n{CHOPPY}" in life
+    assert "Sentence 1: The artist is 94 years old [1]." in seen[0] and "she is 94 years old" in seen[0]
+    assert seen[0].split("Claims no sentence uses:")[1].count("[") == 1          # [3]
 
 
-def test_a_whole_sentence_is_left_as_written():
-    life, seen = _mend("The artist became a queer icon [3].", "1 same")
-    assert life.startswith("The artist became a queer icon [3].") and "Mended" not in life and len(seen) == 1
+def test_the_edit_puts_back_the_critics_word_where_a_sentence_was_cut_for_one():
+    cut = "The artist turned into a queer icon [3]."
+    life, seen = _edit(f"The artist is 94 years old [1]. {cut}", "The artist is 94 years old and became a queer icon [1, 3].")
+    assert "Words its claims lack: turned" in seen[0] and cut in seen[0]
+    assert life.startswith("The artist is 94 years old and became a queer icon [1, 3].")
 
 
-@pytest.mark.parametrize("life, answer", [
-    (FRAGMENT, "1 The artist, whose health is failing, became a queer icon in old age [2, 3]."),  # words its claims lack
-    (FRAGMENT, "1 The artist's health is failing [2]. The artist became a queer icon [3]."),    # two sentences
-    (FRAGMENT, "1 The artist, whose health is failing, is a queer icon."),                       # cites nothing
-    (FRAGMENT + " The artist became a queer icon [3].",
-     f"1 {MENDED}\n2 same"),                                                                     # a claim used twice
+def test_an_edit_answered_same_leaves_the_life_as_checked():
+    life, _ = _edit(CHOPPY, "same")
+    assert life.startswith(CHOPPY) and "Edited" not in life
+
+
+@pytest.mark.parametrize("answer", [
+    "The artist is 94 years old [1].",                                        # loses claim 2
+    "The artist is 94 years old, and their weary health is failing [1, 2].",  # a word its claims lack
+    "The artist is 94 years old, and their health is failing.",               # cites nothing
+    "The artist is 94 years old, and their health is failing [1, 9].",        # a claim not given
 ])
-def test_a_mend_that_fails_a_check_leaves_the_fragment_as_written(life, answer):
-    mended, _ = _mend(life, answer)
-    assert mended.startswith(FRAGMENT) and "Mended" not in mended
+def test_an_edit_that_loses_a_claim_or_fails_a_check_leaves_the_life_as_checked(answer):
+    life, _ = _edit(CHOPPY, answer)
+    assert life.startswith(CHOPPY) and "Edited" not in life
 
 
-def test_a_mend_the_readers_refuse_leaves_the_fragment_as_written():
-    answers = ["1 y", "1 n"]                     # the fragment, then its mend
-    life, _ = _mend(FRAGMENT, f"1 {MENDED}", readers=[lambda request: answers.pop(0)])
-    assert not answers and life.startswith(FRAGMENT) and "Mended" not in life
+def test_an_edit_the_readers_refuse_leaves_the_life_as_checked():
+    answers = ["1 y\n2 y", "1 n"]                     # the life, then its edit
+    life, _ = _edit(CHOPPY, JOINED, readers=[lambda request: answers.pop(0)])
+    assert not answers and life.startswith(CHOPPY) and "Edited" not in life
 
 
-def test_a_mend_out_of_its_form_is_asked_once_more_then_refused():
-    from src.engine.api import report
-    answers = ["same", f"1 {MENDED}"]
-    text = report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA river." + WALL.replace(LIFE, FRAGMENT),
-                                        ["Why."], VOICE, AGED, FINDING, [KEEP], mend=lambda request: answers.pop(0))
-    assert not answers and MENDED in text
-    with pytest.raises(ValueError):
-        _mend(FRAGMENT, "1 same\n2 same")
+def test_joining_sentences_never_makes_a_life_short():
+    """ART-PLAN 15.19: 15.17's count is taken before the edit."""
+    life, _ = _edit(CHOPPY + " The artist became a queer icon [3].",
+                    "The artist is 94 years old, and their health is failing, and became a queer icon [1, 2, 3].", least=3)
+    assert life.startswith("The artist is 94 years old, and their health is failing, and became a queer icon")
 
 
 @pytest.mark.parametrize("sentence", ["Blake becomes a queer icon [3].", "The artist has become a queer icon [3]."])
@@ -727,7 +736,7 @@ def test_a_short_life_has_the_writer_write_again_and_the_fullest_is_kept(monkeyp
                 "The artist [1]. The artist [2]. The artist [3].")
     monkeypatch.setattr(report, "generate_report", fake)
     monkeypatch.setattr(report, "fetch_life_check", lambda request, **_: verdicts[len(calls) - 1])
-    monkeypatch.setattr(report, "fetch_life_mend", SAME)
+    monkeypatch.setattr(report, "fetch_life_edit", SAME)
     monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
     with TestClient(api_app.app) as client:
@@ -786,18 +795,19 @@ def test_code_lists_how_the_life_stories_go_together_under_the_life():
     assert text.index("How these life stories go together") < text.index("*Built from")
 
 
-def test_a_report_missing_a_part_has_the_writer_write_again(monkeypatch, tmp_path):
-    """Seen live: market's writer left out a part on most writes; it may write again, as for an empty life."""
+def test_a_report_missing_a_part_or_citing_a_claim_not_given_has_the_writer_write_again(monkeypatch, tmp_path):
+    """Seen live: market's writer left out a part on most writes, press's cited a claim it was not given; it may
+    write again, as for an empty life (ART-PLAN 15.19)."""
     from src.engine.api import report
     whole = ("## In short\nA.\n\n## Image prompt\nA photograph.\n\n## Wall text\n*W*, photography, 2026\n\nA."
              "\n\n## Artist statement\nI.\n\n## The imagined artist\nThe artist [1]. The artist [2]. The artist [3].")
-    writes = [whole.replace("\n\n## Artist statement\nI.", ""), whole]
+    writes = [whole.replace("\n\n## Artist statement\nI.", ""), whole.replace("[3]", "[99]"), whole]
 
     async def fake(snapshot, **_):
         return writes.pop(0)
     monkeypatch.setattr(report, "generate_report", fake)
     monkeypatch.setattr(report, "fetch_life_check", lambda request, **_: "1 y\n2 y\n3 y")
-    monkeypatch.setattr(report, "fetch_life_mend", SAME)
+    monkeypatch.setattr(report, "fetch_life_edit", SAME)
     monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
     monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
     with TestClient(api_app.app) as client:
