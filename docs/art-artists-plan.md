@@ -1,6 +1,8 @@
 # Art by artist: a plan
 
-Status: first draft, 2026-10-26, for review. No code until approved.
+Status: first draft, 2026-10-26, for review. Kept as written. Since built
+another way: art by artist runs in cases mode (REFACTOR_SPEC D29), live at
+`/v1/cases`, and makers who are not people were dropped later (D32).
 
 ## 1. Why
 

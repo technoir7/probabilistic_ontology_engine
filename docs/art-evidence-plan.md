@@ -1,6 +1,8 @@
 # Art evidence: a plan
 
 Status: approved 2026-10-26; section 5 revised after the probe (section 12).
+Built as D28. Its expectations (section 8) were overtaken by replays 15–16
+and cases mode (D29).
 
 ## 1. Why art has no links
 

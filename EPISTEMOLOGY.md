@@ -7,7 +7,7 @@ philosophy of knowledge and science it takes, and where it falls short.
 Related documents:
 - [SPEC.md](SPEC.md) is the architecture.
 - [REFACTOR_SPEC.md](REFACTOR_SPEC.md) §8 records each design decision
-  (D1–D24), several of which were made for the reasons given here.
+  (D1–D32), several of which were made for the reasons given here.
 - [evals/README.md](evals/README.md) reports the replays that tested them.
 - [NEXT.md](NEXT.md) lists what remains open.
 
@@ -312,10 +312,17 @@ Two costs are conceded:
 
 ### Testimony is doubt, and is kept as doubt
 
-Not every input is a measurement. Art's reports are read by a language model,
-which labels each concept true or false with a confidence that the label is
-right. That is testimony, and its confidence is a doubt about a yes/no claim,
-so art's concepts stay yes/no and its readings stay probabilities.
+Not every input is a measurement. Until D28, art's evidence was market
+reports read by a language model, which labelled each concept true or false
+with a confidence that the label was right. That is testimony, and its
+confidence is a doubt about a yes/no claim, so those concepts stayed yes/no
+and their readings stayed probabilities. Art now reads what the press says
+as discourse: a paper's share of art articles on a topic is itself the
+evidence, measured and graded like any signal, not a noisy sample of a
+hidden rate (D28). The claims themselves are read in the abductive engine,
+and what this engine learns from them is counted, not doubted (section 5,
+"Judging across cases"). The account of testimony below stands for any
+domain whose evidence is a reader's verdict.
 
 Classical conditioning assumes evidence is certain: one learns that E, and
 conditions on it. Richard Jeffrey argued that experience often does not make
@@ -506,6 +513,29 @@ parameters it must learn, and charging BIC as well refuted every rival
 within weeks (D22). For a simpler one, such as a trial of the leader's core
 (section 6), the second is the harder test: the fit it gave up by being
 simpler is not evidence against it.
+
+### Judging across cases (art)
+
+Art's monthly totals form no lasting links (D28). Its order shows instead
+in many small histories: an artist, a debate or a trend is a case, and a
+mechanism ("a case argued over this year tends to be taken up next year")
+is judged across every case at once (D29). This is how the humanities have
+long argued, from many particular cases read together rather than one
+series; but the judging is the same as above. Each year is predicted only
+from the years before. Every combination of mechanisms is a rival, and each
+must predict better than each case's own past, graded finely, or any
+feature that grows with an artist's standing passes for a cause. A rival
+leads only when it stands 3 nats ahead, with older years counting for less
+(a five-year half-life), and a combination must beat each of its parts.
+Two controls ask whether a mechanism carries more than chance: each feature
+dealt at random among the year's cases, and the features of the year after,
+which tell whether coverage comes before an outcome or only with it (D31).
+
+The verdicts are fixed by rule before anything is written: under 10 nats is
+too small to claim, 100 or more is overwhelming, and what each control
+shows is stated as given. What is not a forecast is said to be a
+description: this year's trend lists, the market's image, the lives told
+of the artists who succeeded.
 
 ## 6. Rival research programmes
 
@@ -797,6 +827,32 @@ A language model writes the plain-English report of each domain's state,
 from a snapshot of what the engine believes. It may describe and paraphrase.
 It may not change any belief, relation or score, and nothing it writes is
 learned from (SPEC §15). The engine's beliefs come only from evidence.
+Where a report must say how strong a finding is, the verdict is fixed by
+code and the model states it as given; where it must quote odds, code
+works them out.
+
+For art, models do two more things, and neither is to judge.
+
+- **They read.** The claims behind art's cases were read from the press
+  offline by a language model in the abductive engine, in a fixed form,
+  and code refused any answer outside the form and any claim whose names
+  and numbers the article did not contain. Reading is not believing: the
+  claims are what the press said, and the engine judges what follows from
+  them.
+- **They write fiction, and the engine judges it.** Each success report
+  imagines an artist who had that success, with a life drawn from what
+  critics said of the real artists who did (D32). A model writes the life;
+  code and two readers judge it. Every sentence cites the claims it uses. A
+  rule anyone can read cuts a sentence with a word none of its claims has.
+  Two readers, from different makers, each answer yes or no for every
+  sentence: is each part said by its claims? A sentence stays only if both
+  say yes. The readers are models, so their yes is a judgment, not a
+  proof; what keeps it honest is that it is given in a fixed form, on one
+  sentence against its claims, by two makers who must agree, and that every
+  cut is shown with its reason. A life left too short is written again, and
+  an edit to make it read well is checked the same way and kept only if it
+  loses no claim. The imagined artist is labelled fiction: it illustrates
+  what was said, and is not knowledge of anyone.
 
 ## 11. Limits
 
@@ -825,12 +881,12 @@ deliberate cost:
    explanation does not say that the evidence could not decide.
 4. **The razor is partly practical.** BIC ranks explanations partly because
    structures must stay small enough to compute (section 5).
-5. **Testimony is rounded where it should not be.** For art, whose
-   readings are testimony, last week's labels are given to this week's
-   judgments rounded to true or false, and each label's doubt is counted
-   apart from the others' (section 3; NEXT.md problems 2 and 9). Measured
-   signals no longer have this flaw: their levels are observed exactly
-   (D25).
+5. **Testimony would be rounded where it should not be.** No domain now
+   learns from testimony: art's signals are measured counts (D28). But
+   were one to, last period's labels would be given to this period's
+   judgments rounded to true or false, and each label's doubt counted apart
+   from the others' (section 3; NEXT.md problem 9). Measured signals do not
+   have this flaw: their levels are observed exactly (D25).
 6. **Finer concepts cost evidence.** A relation is priced by every cell of
    its table. Five levels, still read as probabilities, left room for only
    two or three relations (replay 8, reverted). Three exact levels (D25)
@@ -863,7 +919,10 @@ deliberate cost:
 |---|---|
 | Concept (signal) | a domain's variable, such as "inflation shock", defined by its author |
 | Level | how far a measured signal lies from the line that names its concept: low, middle or high, observed exactly (D25) |
-| Soft evidence | testimony about a concept (art's reports), recorded as the probability that it applies |
+| Soft evidence | testimony about a concept, recorded as the probability that it applies (art's reports before D28; no domain now) |
+| Case | one of many small histories judged together: an artist, a concept or a trend, each year (art only, D29) |
+| Mechanism | "a case in this state this year tends to this outcome next year", judged across every case at once against each case's own past |
+| Own past | a case's earlier years, graded finely; what every mechanism must predict better than |
 | Relation (edge) | a dependence of one concept on another, with a probability that it exists |
 | Explanation (candidate) | one whole structure: concepts, relations and strengths |
 | Programme (lineage) | a connection between two concepts that the evidence prompted, from the unconnected start or as a rival to the leader, named for its pair ("A–C"), and every explanation descended from it |

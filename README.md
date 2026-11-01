@@ -17,7 +17,7 @@ dashboard ([source](https://github.com/technoir7/epistemic-monitor)).
 ![The Epistemic State Monitor: the macro domain's leading explanation, its belief graph, current regime and paradigm-shift history](docs/dashboard.png)
 
 **What's here.** About 19,000 lines of Python (FastAPI, SQLite, pgmpy) and
-14,000 of tests: 644 tests (18 of them against the live APIs), including 38 golden snapshots that pin the API,
+15,600 of tests: 830 tests (18 of them against the live APIs), including golden snapshots that pin the API,
 domains and engine behaviour, with real network calls blocked. The layering
 below is enforced by import-linter in CI. Eleven domains learn from public
 data on a schedule, deployed on Railway from `main`. Every finding below
@@ -91,7 +91,9 @@ Four rules, each added after a replay showed the engine needed it
 - **Degree is not doubt.** A measured signal is a precise number, so it is
   read as how far it lies from the line that names it: low, middle or high,
   observed exactly (D25). Testimony, what a text asserts, needs reading
-  rather than measuring; it belongs to the abductive engine, not here.
+  rather than measuring; the claims themselves are read by the abductive
+  engine, and art here uses only what that reading counts (see
+  [Art](#art-cases-trends-and-success)).
 - **Know your own confidence.** Each week the engine records whether its
   70% beliefs come true 70% of the time, level by level, judged against
   what the evidence said, and whether its whole population, weighted by
@@ -206,6 +208,73 @@ Eleven domains are live and registered in the API:
 
 Every domain's signals are measured and read as low, middle or high, each with its value last period: eight in most domains, thirteen in art. No domain gives any hypothesis about how its variables connect. Every domain's variables and sources: [docs/domains.md](docs/domains.md).
 
+## Art: cases, trends and success
+
+Art's thirteen monthly totals (each paper's share of art articles by topic,
+market figures, museum buys) form no lasting links (D28), so art also runs in
+**cases mode** (D29). An artist, a concept or a trend is a case, and a
+mechanism ("a case in this state this year tends to this outcome next year")
+is judged across every case at once, each year predicted only from the years
+before, against each case's own past. Every combination of mechanisms is a
+rival; each is a small logistic model fitted on past years only, and the
+leader changes only when a rival stands 3 nats ahead (a combination must also
+beat each of its parts by 3). The claims behind the cases are 561,000 claims
+critics made in the Guardian and the New York Times, read offline by the
+abductive engine; the cases ship as snapshots rebuilt once a year, so the
+server calls no model to judge them.
+
+- **Cases** (`/v1/cases`). Artists: NYT coverage plus critics' approval
+  predicts which artists Chicago and Cleveland acquire next year, +220 nats
+  over own past. Concepts: being argued over, in both papers, and the
+  modality of the claims predict next year's writers. Trends: nothing
+  predicts whether a trend holds or grows.
+- **Trends** (`/v1/trends`, D30). Claims grouped by idea, names removed, and
+  followed year by year; this year's lists of new, growing, fading and argued
+  trends. They describe the present, not a forecast. All five episodes fixed
+  in advance (NFTs, restitution, Black artists and race, AI-made art,
+  graffiti) peak where expected.
+- **Success** (`/v1/success`, D31). What predicts that an artist succeeds
+  next year, for four kinds kept apart (critics approve, more press, a museum
+  buys, a place in Artprice's Top 500), plus **market movers** (a move up the
+  Top 500's bands), compared with them but never counted among them. Eight
+  features of an artist's coverage are judged with two controls: each leading
+  feature dealt at random, and the features of the year after. Being written
+  about in an argued-over trend adds most for three of the four kinds; the
+  medium barely matters. Coverage goes *with* a market place or rise rather
+  than ahead of it.
+- **Which themes help** (D31). Each theme's track record for each kind, from
+  earlier years only, tested on top of what already predicts it. A record
+  helps only for museum buys, where themes of an artist's standing and career
+  lead.
+- **Lives** (D32). Which stories about an artist's life critics told most and
+  least about the artists who had each kind of success. A description, not a
+  cause: life stories add nothing to forecasting any kind.
+
+Verdicts on these results (too small to claim under 10 nats, overwhelming at
+100 or more; what each control shows) are fixed by code, and the written
+reports state them as given.
+
+Each success report ends with an **imagined artist** who had that success: a
+short life, a wall text, an artist statement and an image prompt, built from
+what critics said about the real artists who did. They are labelled as
+fiction. The life is written by a model and judged by the engine (D32):
+
+1. Every sentence cites the claims it uses; a word none of its claims has is
+   cut by code.
+2. Two readers from different model makers each judge whether every part of a
+   sentence is said by its claims; a sentence stays only if both say yes.
+3. A life left with fewer than three sentences is written again, up to three
+   times.
+4. The writer then edits the checked life to read well. The edit is checked
+   the same way and kept only if it still uses every claim the checked life
+   used. The report shows the life as first checked, each cut sentence with
+   its reason, and the trail back to the critics.
+
+Limits: museum-collected artists only, two newspapers (the NYT archive gives
+only lead paragraphs) and two museums; the market is the top 500 only, from
+Artprice's free yearly reports; the features come from a model reading the
+press.
+
 ## Architecture
 
 The engine has three belief levels:
@@ -258,16 +327,27 @@ GET  /v1/ingest/rebuild?domain=cc           # progress, records learned, and any
 GET  /v1/export/narrative-snapshot
 GET  /v1/report/{domain}                     # read cached report (no LLM call)
 POST /v1/report/{domain}/refresh             # regenerate if snapshot changed (Fireworks); no auth (see below)
+GET  /v1/cases                               # case sets: rivals, leader, shifts, forecasts (art only)
+GET  /v1/trends                              # this year's trend lists (art only)
+GET  /v1/success                             # kinds of success, movers, themes, lives (art only)
+GET  /v1/trends/{domain}/{list}/report       # cached report of one trend list
+POST /v1/trends/{domain}/{list}/report/refresh
+GET  /v1/success/{domain}/{kind}/report      # cached report of one kind (approve, press, museum, market, movers)
+POST /v1/success/{domain}/{kind}/report/refresh
+GET  /v1/success/{domain}/themes/report
+POST /v1/success/{domain}/themes/report/refresh
 GET  /v1/debug/entropy
 GET  /v1/debug/evidence-geometry
 GET  /v1/debug/learning
 GET  /v1/debug/structure
 ```
 
-`trigger` and `report/refresh` take no token, because the public dashboard
-calls them (FETCH NOW, report refresh). That is fine for a demo but not for
-a real deployment: anyone can make the server call the upstream APIs on its
-keys, and a refresh calls a paid model whenever the snapshot has changed.
+`trigger` and every `report/refresh` take no token, because the public
+dashboard calls them (FETCH NOW, update report). That is fine for a demo but
+not for a real deployment: anyone can make the server call the upstream APIs
+on its keys, and a refresh calls a paid model whenever the snapshot has
+changed (a success report makes up to three writes, each with its readers and
+an edit). Every GET reads the cache only.
 A week already stored is not learned twice, so repeated triggers cost API
 calls, not correctness. A real deployment would put both behind the admin
 token or a rate limit.
@@ -298,7 +378,8 @@ FRED_API_KEY=...                    # required for MR, AI, SD, CC, ER, LM, CR, G
 EIA_API_KEY=...                     # required for NG
 GUARDIAN_API_KEY=...                # required for art (Guardian Open Platform, free developer key)
 NYT_API_KEY=...                     # required for art (NYT Archive API, free developer key)
-FIREWORKS_API_KEY=...               # required for POST /v1/report/{domain}/refresh
+FIREWORKS_API_KEY=...               # required for every POST .../report/refresh
+FIREWORKS_REPORT_MODEL=...          # the writer; default accounts/fireworks/models/deepseek-v4p1-flash
 EVIDENCE_SCHEDULER_ENABLED=true
 POE_DATA_DIR=/data                  # Railway: persistent volume mount; default "." loses reports on redeploy
 POE_ADMIN_TOKEN=...                 # enables backfill, replace and rebuild; unset = those routes return 503

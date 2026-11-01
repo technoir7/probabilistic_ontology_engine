@@ -27,8 +27,9 @@ itself would say.
 Leading with persistence, it says 0.56 where the evidence says 0.65
 (calibration error 0.047, replay 10). Each judgement conditioned on last
 week's values rounded to true or false. Measured signals are now levels
-observed exactly (D25), so nothing is rounded for them; art's testimony
-still is.
+observed exactly (D25), so nothing is rounded for them, and since D28 no
+domain learns from testimony. Whether the levels cured the middle has not
+yet been measured.
 
 ## 3. Finer evidence costs too much structure
 
@@ -98,8 +99,9 @@ answers the challenge, not the weak dependences above.
 
 ## 9. Testimony is counted label by label
 
-Art's reports are testimony: each label is a doubt about a yes/no claim,
-and art keeps soft evidence for it (EPISTEMOLOGY section 3). But each
+Dormant since D28, when art's evidence became measured counts; it returns
+with any domain whose evidence is a reader's verdict. Testimony is a doubt
+about a yes/no claim, kept as soft evidence (EPISTEMOLOGY section 3). But each
 label's doubt is counted apart from the others', which blurs relations
 between testified concepts toward independence, as it once blurred
 measured ones (on macro, 3 links in 100 weeks where the same weeks as
@@ -122,7 +124,10 @@ same way, as a change to no worldview.
 
 ## Outside the epistemology
 
-Two write routes are open to anyone: `POST /v1/ingest/trigger` and
-`POST /v1/report/{domain}/refresh`, which the public dashboard calls.
-Acceptable for a demo; a real deployment would need the admin token or a
-rate limit on both (see the README's API section).
+The write routes the public dashboard calls are open to anyone:
+`POST /v1/ingest/trigger` and every report refresh (`/v1/report/{domain}`,
+and for art the trend-list, success and themes reports). A refresh calls a
+paid model when the state has changed, and a success report makes up to
+three writes, each with its readers and an edit. Acceptable for a demo; a
+real deployment would need the admin token or a rate limit on all of them
+(see the README's API section).
