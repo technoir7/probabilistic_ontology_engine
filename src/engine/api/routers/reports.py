@@ -227,7 +227,9 @@ async def _refresh(cache_key: str, domain: str, snapshot_dict: dict, version: st
             except _report.WriteAgain as missing:   # the writer left a part out, or failed its form; it may write again
                 logger.info("%s for %s (write %d of %d)", missing, cache_key, attempt, writes)
                 if attempt == writes:
-                    raise
+                    if fullest is None:
+                        raise
+                    report_text = fullest.report    # a short life from an earlier write still stands
     except Exception as exc:
         logger.error("Fireworks generation failed for %s: %s", cache_key, exc, exc_info=True)
         return stale_or(HTTPException(status_code=502, detail=f"Report generation failed: {exc}"))

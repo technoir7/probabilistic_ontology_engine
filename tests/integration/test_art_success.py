@@ -825,3 +825,27 @@ def test_a_report_missing_a_part_or_citing_a_claim_not_given_has_the_writer_writ
     with TestClient(api_app.app) as client:
         body = client.post("/v1/success/art/museum/report/refresh").json()
     assert body["regenerated"] is True and not writes and "I." in body["report"]
+
+
+def test_a_short_life_is_kept_when_the_last_write_breaks_its_form(monkeypatch, tmp_path):
+    """A usable short life is not thrown away because a later write failed its form."""
+    from src.engine.api import report
+    if len(success_narrative.success_snapshot("art", "museum").image_subject.life_claims) < 3:
+        pytest.skip("the shipped snapshot gives museum fewer than three life claims")
+    calls = []
+
+    async def fake(snapshot, **_):
+        calls.append(1)
+        cites = "[1]. The artist [2]. The artist [3]." if len(calls) == 1 else "[99]."
+        return (f"## In short\nWrite {len(calls)}.\n\n## Image prompt\nA photograph.\n\n## Wall text\n"
+                "*W*, photography, 2026\n\nA.\n\n## Artist statement\nI.\n\n## The imagined artist\n"
+                f"The artist {cites}")
+    monkeypatch.setattr(report, "generate_report", fake)
+    monkeypatch.setattr(report, "fetch_life_check", lambda request, **_: "1 y\n2 n\n3 n")
+    monkeypatch.setattr(report, "fetch_life_edit", SAME)
+    monkeypatch.setenv("FIREWORKS_API_KEY", "test-key")
+    monkeypatch.setenv("POE_DATA_DIR", str(tmp_path))
+    with TestClient(api_app.app) as client:
+        body = client.post("/v1/success/art/museum/report/refresh").json()
+    assert len(calls) == 3 and body["regenerated"] is True
+    assert "Write 1." in body["report"]
