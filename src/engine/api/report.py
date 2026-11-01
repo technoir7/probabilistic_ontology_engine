@@ -191,10 +191,10 @@ def _edited(kept: list[tuple[str, list[int]]], worded_out: list[tuple[str, list[
     """EDIT's life (ART-PLAN 15.19) where, after the same checks, its kept
     sentences cite every claim KEPT does; None where EDIT answers "same",
     or its edit loses a claim, or cites none or one not given."""
-    answer = " ".join(edit(life_edit_request(kept, worded_out, lives)).split())
-    if answer.lower().strip(".") == "same":
-        return None
     try:
+        answer = " ".join(edit(life_edit_request(kept, worded_out, lives)).split())
+        if answer.lower().strip(".") == "same":
+            return None
         again, _, _ = _grounded(answer, lives, readers)
     except WriteAgain as failed:                # the edit's own fault: the life as checked stands
         logger.info("Life edit refused: %s", failed)
@@ -508,7 +508,7 @@ def _fetch_life_answer(request: str, api_key: str, model: str, system: str, what
         messages=[{"role": "system", "content": system}, {"role": "user", "content": request}])
     answer = response.choices[0].message.content
     if not answer:
-        raise ValueError(f"the {what} wrote nothing (finish_reason: {response.choices[0].finish_reason})")
+        raise WriteAgain(f"the {what} wrote nothing (finish_reason: {response.choices[0].finish_reason})")
     return answer
 
 

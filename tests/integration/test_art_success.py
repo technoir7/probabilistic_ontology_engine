@@ -703,6 +703,18 @@ def test_an_edit_the_readers_refuse_leaves_the_life_as_checked():
     assert not answers and life.startswith(CHOPPY) and "Edited" not in life
 
 
+def test_an_edit_that_writes_nothing_leaves_the_life_as_checked():
+    """Seen live (movers, 2026-11-01): the edit spent its budget thinking and wrote nothing."""
+    from src.engine.api import report
+    from src.engine.api.report import WriteAgain
+
+    def nothing(request):
+        raise WriteAgain("the life edit wrote nothing (finish_reason: length)")
+    text = report.finish_success_report("## In short\nA.\n\n## Image prompt\n\nA river." + WALL.replace(LIFE, CHOPPY),
+                                        ["Why."], VOICE, AGED, FINDING, [KEEP], edit=nothing)
+    assert CHOPPY in text and "Edited" not in text
+
+
 def test_joining_sentences_never_makes_a_life_short():
     """ART-PLAN 15.19: 15.17's count is taken before the edit."""
     life, _ = _edit(CHOPPY + " The artist became a queer icon [3].",
