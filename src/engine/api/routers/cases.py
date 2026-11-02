@@ -2,6 +2,8 @@
 histories at once; only art has case sets."""
 from __future__ import annotations
 
+import asyncio
+
 from fastapi import APIRouter, HTTPException, Query
 
 from ...runtime.cases import compute_case_reports
@@ -16,7 +18,8 @@ async def cases(domain: str = Query(...)) -> CasesOut:
     key = domain.lower()
     if key not in context.DOMAIN_MAP:
         raise HTTPException(status_code=404, detail=f"Unknown domain '{domain}'")
-    return CasesOut(domain=key, case_sets=[_case_set(r) for r in compute_case_reports(key)])
+    reports = await asyncio.to_thread(compute_case_reports, key)   # slow once a process; keep the loop free
+    return CasesOut(domain=key, case_sets=[_case_set(r) for r in reports])
 
 
 def _forecast(f) -> CaseForecastOut:

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import threading
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
@@ -10,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from ..engine import ProbabilisticOntologyEngine
+from ..runtime.cases import warm_case_reports
 from ..runtime.data_migrations import move_friday_weekly_records_to_sunday
 from ..runtime.log_redaction import configure_logging
 from ..runtime.registry import REGISTRY, DomainRegistration
@@ -66,6 +68,10 @@ async def lifespan(app: FastAPI):
         for task in tasks:
             task.add_done_callback(_log_scheduler_exit)
         app.state.scheduler_tasks = tasks
+        # Art's case reports take over a minute to compute; do it now, not for the first visitor.
+        # Only on the live server: tests and local runs disable the scheduler and skip the cost.
+        app.state.case_warmup = threading.Thread(target=warm_case_reports, name="warm-case-reports", daemon=True)
+        app.state.case_warmup.start()
 
     try:
         yield
