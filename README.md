@@ -1,5 +1,30 @@
 # Probabilistic Ontology Engine
 
+[![CI](https://github.com/technoir7/probabilistic_ontology_engine/actions/workflows/ci.yml/badge.svg)](https://github.com/technoir7/probabilistic_ontology_engine/actions/workflows/ci.yml)
+· **[Live dashboard](https://epistemic-monitor-production.up.railway.app)**
+
+**In short**
+
+- **What:** an engine that forms its own rival explanations from public data,
+  keeps each until the evidence refutes it, and records when it changes its
+  mind. Live on eleven domains, from the macro economy to art criticism.
+- **What was hard:** a hypothesis is formed from the evidence but judged only
+  on evidence that arrives after it, so it never grades its own homework; a
+  rival falls only to odds of 100 to 1; art is judged across 490,000
+  artist-, concept- and trend-years, each year predicted from earlier years
+  only; and every sentence a language model writes about an imagined artist
+  is checked by code and two models from different makers before it is shown.
+- **What it found:** over 23 years of weekly economic data, no cause-and-effect
+  worldview beat each signal simply following its own past. In 26 years of
+  Guardian and New York Times criticism, the Times' attention comes before
+  museums buy an artist's work, and stories about an artist's life predict
+  no kind of success.
+- **How it is built:** Python, FastAPI, SQLite and pgmpy; 830 tests with
+  network calls blocked; layering enforced by import-linter and a 600-line
+  file budget in CI; model-written reports cached by snapshot hash, so a page
+  view never calls a model. Every finding comes from a replay planned in
+  writing before it ran.
+
 A working argument about how beliefs should be held, revised and given up,
 written as software. The engine starts with no hypotheses, only a domain's
 concepts. It forms rival explanations of the domain from the evidence (how
