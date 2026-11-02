@@ -1,5 +1,8 @@
 # Probabilistic Ontology Engine
 
+Start with `SNAPSHOT.md`: what this project is, how it works, and what is open,
+across this repo, the dashboard and the abductive engine.
+
 ## Spec
 Read `SPEC.md` in full before writing any code.
 All architecture decisions are in SPEC.md. Do not deviate without flagging it.
