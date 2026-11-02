@@ -37,11 +37,11 @@ uv run python -m evals.programmes /tmp/poe
 
 The replay feeds 23 years of weekly FRED data (2003–2026, as first
 published) through a fresh engine; the last command prints how long each
-rival programme survived and led. The findings below come from replays 1–10,
-run by an earlier engine that began from hand-written worldviews; to
-reproduce replay 10 exactly, check out `d2a8f6cb`, the last commit before
-the engine began forming its own (REFACTOR_SPEC D24). The current engine
-has not yet been replayed.
+rival programme survived and led. That runs the current engine, which
+forms its own hypotheses (replays 11–14 below). Replays 1–10 ran an earlier
+engine that began from hand-written worldviews; to reproduce replay 10
+exactly, check out `d2a8f6cb`, the last commit before the engine began
+forming its own (REFACTOR_SPEC D24).
 
 ## How it holds beliefs
 
