@@ -30,7 +30,7 @@ method wins.
 |---|---|---|---|
 | `probabilistic_ontology_engine` (this one) | The engine and its API (Python, FastAPI, SQLite, pgmpy) | `~/Documents/code/probabilistic_ontology_engine` | GitHub `technoir7/probabilistic_ontology_engine`; Railway deploys `main` to https://epistemic-monitor-suite-production.up.railway.app |
 | `epistemic-monitor` | The dashboard (Next.js 14, TypeScript, SWR, D3) | `~/Documents/code/epistemic-monitor` | GitHub `technoir7/epistemic-monitor`; Railway deploys `main` to https://epistemic-monitor-production.up.railway.app |
-| `abductive_engine` | Reads the art press into claims; forms concepts and trends; exports art's case data to POE. Also an unfinished macro engine that forms its own concepts | `~/Documents/code/abductive_engine` | **Local only, no remote.** Commit, never push |
+| `abductive_engine` | Reads the art press into claims; forms concepts and trends; exports art's case data to POE. Also an unfinished macro engine that forms its own concepts | `~/Documents/code/abductive_engine` | GitHub `technoir7/abductive_engine` (public since 2026-11-02); not deployed |
 
 Art's raw data lives outside git in `~/Documents/art-press-texts/` (about
 1.4 GB: Guardian and NYT texts, the model's readings, grounded claims,

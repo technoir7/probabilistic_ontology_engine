@@ -12,7 +12,9 @@ epistemology, and its forecasts are watched only as a check on its honesty.
 It runs live over eleven domains fed by public data (FRED, EIA, SEC EDGAR,
 GDELT, CoinGecko, SF Open Data and others), behind the
 [Epistemic State Monitor](https://epistemic-monitor-production.up.railway.app)
-dashboard ([source](https://github.com/technoir7/epistemic-monitor)).
+dashboard ([source](https://github.com/technoir7/epistemic-monitor)). Art's
+evidence, 26 years of criticism read into claims, comes from its sibling,
+the [abductive engine](https://github.com/technoir7/abductive_engine).
 
 ![The Epistemic State Monitor: the macro domain's leading explanation, its belief graph, current regime and paradigm-shift history](docs/dashboard.png)
 
