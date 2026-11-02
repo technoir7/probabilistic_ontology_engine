@@ -212,6 +212,8 @@ Every domain's signals are measured and read as low, middle or high, each with i
 
 ## Art: cases, trends and success
 
+![The art tab: mechanisms judged across artists, concepts and trends, the rival explanations, the graded signals and this year's trend lists](docs/art.png)
+
 Art's thirteen monthly totals (each paper's share of art articles by topic,
 market figures, museum buys) form no lasting links (D28), so art also runs in
 **cases mode** (D29). An artist, a concept or a trend is a case, and a
