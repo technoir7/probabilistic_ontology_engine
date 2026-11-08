@@ -255,6 +255,24 @@ class NarrativeTrendListOut(BaseModel):
     trends: list[NarrativeTrendOut]
 
 
+class NarrativeSuccessKindSummaryOut(BaseModel):
+    """One kind of success in the domain report (D31): its full analysis is its own report."""
+    kind: str
+    title: str
+    success_means: str
+    leader: str
+    leader_since: Optional[int]
+    gain_nats_over_own_past: float
+    verdicts: list[str]              # fixed by rule, the same its own report is given
+    kept_apart: bool                 # compared with the main kinds, never counted among them
+
+
+class NarrativeSuccessSummaryOut(BaseModel):
+    forecast_for: int
+    note: str
+    kinds: list[NarrativeSuccessKindSummaryOut]
+
+
 class NarrativeSnapshotOut(BaseModel):
     metadata: NarrativeMetadataOut
     current_regime_state: list[NarrativeRegimeVariableOut]
@@ -265,6 +283,7 @@ class NarrativeSnapshotOut(BaseModel):
     interpretation_hints: list[str]
     case_mechanisms: list[NarrativeCaseSetOut] = []   # D29: only a domain judged by cases
     trends: Optional[NarrativeTrendsOut] = None       # D30: only a domain with trends
+    success: Optional[NarrativeSuccessSummaryOut] = None   # D31: only a domain with success
 
 
 class EvidenceRecordOut(BaseModel):

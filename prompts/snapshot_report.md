@@ -55,11 +55,19 @@ Then say plainly that nothing in how critics write about a trend has predicted w
 it grows (the Trends case set), so the trends above are a picture of this year, not a
 forecast.
 
+## What predicts an artist's success
+Only when the data has `success`. One short paragraph a kind of success, in the order
+given, opening with its title in bold: what it means, the leading explanation in plain
+words, and its `verdicts`, each stated plainly in your own words; never soften, hedge or
+contradict a verdict, and claim no agreement between kinds that the verdicts do not
+state. A kind marked `kept_apart` is compared with the others, never counted among them.
+Close by saying each kind has its own fuller report.
+
 ## How far to trust it
 One short paragraph, as below, and add that the trends are groups of claims found by
 a model reading the press, named by another, so a name can be looser than its claims.
 
-Up to 750 words in all. Everything in "How to write" still holds.
+Up to 900 words in all. Everything in "How to write" still holds.
 
 ## How to write
 
@@ -118,6 +126,10 @@ groups of three adjectives, and dashes used as commas.
   words that set it apart and some of this year's claims in `what_critics_said`. Use
   the layout in "When the data has `trends`". They describe the present: never present
   them as forecasts.
+- `success`, when present: for each kind of success (critics approve, more press, a
+  museum buys, a place in the market's top 500, and market movers), what predicts that
+  an artist has it next year, with `verdicts` fixed by rule. Use the section "What
+  predicts an artist's success".
 - `interpretation_hints`: background for you. Do not quote them.
 
 If `evidence_count` is 0, say there is no data yet and stop after "In short".

@@ -1995,7 +1995,8 @@
     "evidence base is small (2 records); scores may not yet be reliable",
     "no edges are in the explore band: dominant causal structure is well-determined",
     "this domain is judged by cases: its monthly totals show no lasting links, so the hypotheses, competing candidates and frontier above are a search that has found nothing. Lead the report with case_mechanisms (after the trends, when there are trends): what the leading mechanism predicts for each kind of case, its evidence over each case's own past (gain_nats; 3 is strong), which mechanisms failed (negative gain), when the belief changed, and the cases the leader makes more likely next year",
-    "trends lists the broad ideas critics wrote about this year: new ones, growing, fading, and the most argued over (critics split between approval and disapproval). They describe the present, not a forecast: in case_mechanisms, no sign in how critics write about a trend has predicted whether it grows. Lead the report with them and analyse each from what critics said"
+    "trends lists the broad ideas critics wrote about this year: new ones, growing, fading, and the most argued over (critics split between approval and disapproval). They describe the present, not a forecast: in case_mechanisms, no sign in how critics write about a trend has predicted whether it grows. Lead the report with them and analyse each from what critics said",
+    "success says, for each kind of success, what predicts that an artist has it next year, with verdicts fixed by rule: state them as given, never soften them. Each kind has its own report with the detail"
    ],
    "metadata": {
     "current_generation": 0,
@@ -2010,6 +2011,94 @@
     "paradigm_shifts_total": 0,
     "recent_shifts": [],
     "structure_entropy": 0.0
+   },
+   "success": {
+    "forecast_for": 2026,
+    "kinds": [
+     {
+      "gain_nats_over_own_past": 343.2,
+      "kept_apart": false,
+      "kind": "approve",
+      "leader": "claims about the artist in a growing trend that year + claims about the artist in an argued-over trend that year + Guardian articles on the artist tagged painting that year + NYT coverage that year",
+      "leader_since": 2022,
+      "success_means": "critics' approvals of the artist next year",
+      "title": "Critics approve",
+      "verdicts": [
+       "The leading features beat each artist's own past by an overwhelming margin.",
+       "The year-after control is no test here: next year's features count part of next year's success.",
+       "claims about the artist in a growing trend that year also leads for more press (helps), market (helps); not for museum buys.",
+       "claims about the artist in an argued-over trend that year also leads for more press (helps), museum buys (helps); not for market.",
+       "Guardian articles on the artist tagged painting that year leads for no other kind.",
+       "NYT coverage that year leads for all four kinds; it helps, except that it hurts for more press."
+      ]
+     },
+     {
+      "gain_nats_over_own_past": 143.3,
+      "kept_apart": false,
+      "kind": "press",
+      "leader": "claims about the artist in a new trend that year + claims about the artist in a growing trend that year + claims about the artist in an argued-over trend that year + NYT coverage that year",
+      "leader_since": 2025,
+      "success_means": "articles naming the artist next year, in either paper",
+      "title": "More press",
+      "verdicts": [
+       "The leading features beat each artist's own past by an overwhelming margin.",
+       "The year-after control is no test here: next year's features count part of next year's success.",
+       "claims about the artist in a new trend that year joined the leader only in 2025, after the last scored year, so no control has tested it yet; its push is a fit to past years, not a tested forecast.",
+       "claims about the artist in a new trend that year leads for no other kind.",
+       "claims about the artist in a growing trend that year also leads for critics approve (helps), market (helps); not for museum buys.",
+       "claims about the artist in an argued-over trend that year also leads for critics approve (helps), museum buys (helps); not for market.",
+       "NYT coverage that year leads for all four kinds; it helps, except that it hurts for more press."
+      ]
+     },
+     {
+      "gain_nats_over_own_past": 223.0,
+      "kept_apart": false,
+      "kind": "museum",
+      "leader": "claims about the artist in an argued-over trend that year + articles on the artist tagged photography that year + NYT coverage that year",
+      "leader_since": 2015,
+      "success_means": "works acquired by Chicago or Cleveland next year",
+      "title": "Museum buys",
+      "verdicts": [
+       "The leading features beat each artist's own past by an overwhelming margin.",
+       "The year-after control is a fair test here, since this success is counted apart from the press; this year's features predict better than next year's, so the coverage comes before this success.",
+       "articles on the artist tagged photography that year adds nothing: dealt at random, the engine does as well or better.",
+       "claims about the artist in an argued-over trend that year also leads for critics approve (helps), more press (helps); not for market.",
+       "articles on the artist tagged photography that year leads for no other kind.",
+       "NYT coverage that year leads for all four kinds; it helps, except that it hurts for more press."
+      ]
+     },
+     {
+      "gain_nats_over_own_past": 56.5,
+      "kept_apart": false,
+      "kind": "market",
+      "leader": "claims about the artist in a growing trend that year + NYT coverage that year",
+      "leader_since": 2024,
+      "success_means": "the artist's place in Artprice's Top 500 by auction turnover next year",
+      "title": "Market",
+      "verdicts": [
+       "The leading features beat each artist's own past clearly but modestly.",
+       "The year-after control is a fair test here, since this success is counted apart from the press; next year's features predict as well or better, so the coverage comes with this success rather than before it.",
+       "claims about the artist in a growing trend that year also leads for critics approve (helps), more press (helps); not for museum buys.",
+       "NYT coverage that year leads for all four kinds; it helps, except that it hurts for more press."
+      ]
+     },
+     {
+      "gain_nats_over_own_past": 66.2,
+      "kept_apart": true,
+      "kind": "movers",
+      "leader": "claims about the artist in an argued-over trend that year + NYT coverage that year",
+      "leader_since": 2017,
+      "success_means": "moves up the bands of Artprice's Top 500 next year (bands: not listed, 251\u2013500, 101\u2013250, 26\u2013100, 1\u201325)",
+      "title": "Market movers",
+      "verdicts": [
+       "The leading features beat each artist's own past clearly but modestly.",
+       "The year-after control is a fair test here, since this success is counted apart from the press; next year's features predict as well or better, so the coverage comes with this success rather than before it.",
+       "claims about the artist in an argued-over trend that year also leads for critics approve (helps), more press (helps), museum buys (helps); not for market.",
+       "NYT coverage that year leads for every kind of success too; it helps, except that it hurts for more press."
+      ]
+     }
+    ],
+    "note": "artists are those Chicago or Cleveland ever acquired; gains are totals over every artist and scored year; each kind, and which themes and life stories help, has its own report"
    },
    "trends": {
     "argued_over": [

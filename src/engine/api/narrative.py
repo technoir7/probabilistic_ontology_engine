@@ -10,13 +10,16 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 
 from ..engine import ProbabilisticOntologyEngine
+from ..model.success import Success
 from ..model.trends import TrendLists
 from ..runtime.cases import compute_case_reports
+from ..runtime.success import current_success
 from ..runtime.trends import current_trends
 from ..services.cases import CaseReport
 from ..model.scoring import candidate_score
 from ..schemas import InferenceQuery, PopulationAggregation, QueryType
 from . import context, presenters
+from .success_narrative import success_summary
 from .dto import (
     NarrativeCompetingCandidatesOut,
     NarrativeCompetitorOut,
@@ -55,12 +58,18 @@ TRENDS_HINT = (
 )
 TREND_ROWS = 6
 
+SUCCESS_HINT = (
+    "success says, for each kind of success, what predicts that an artist has it next year, with verdicts fixed "
+    "by rule: state them as given, never soften them. Each kind has its own report with the detail"
+)
+
 
 def snapshot_for(state: Any, domain: str) -> NarrativeSnapshotOut:
     """The snapshot for a domain key."""
     engine, domain_id, display_name = context.resolve_domain(domain, state)
     key = domain.lower()
-    return build_snapshot(engine, domain_id, display_name, compute_case_reports(key), current_trends(key))
+    return build_snapshot(engine, domain_id, display_name, compute_case_reports(key), current_trends(key),
+                          current_success(key))
 
 
 LIST_ROWS = 12
@@ -125,6 +134,7 @@ def build_snapshot(
     engine: ProbabilisticOntologyEngine, domain_id: str, display_name: str,
     case_reports: tuple[CaseReport, ...] = (),
     trends: Optional[TrendLists] = None,
+    success: Optional[Success] = None,
 ) -> NarrativeSnapshotOut:
     pop = engine.get_population(domain_id)
     dom = pop.dominant()
@@ -352,6 +362,8 @@ def build_snapshot(
         hints.append(CASES_HINT)
     if trends is not None:
         hints.append(TRENDS_HINT)
+    if success is not None:
+        hints.append(SUCCESS_HINT)
 
     return NarrativeSnapshotOut(
         metadata=metadata,
@@ -363,4 +375,5 @@ def build_snapshot(
         interpretation_hints=hints,
         case_mechanisms=[_case_set(r) for r in case_reports],
         trends=_trends(trends) if trends is not None else None,
+        success=success_summary(success) if success is not None else None,
     )

@@ -10,7 +10,8 @@ from ..model.trends import TrendLists
 from ..runtime.success import current_success
 from ..runtime.trends import current_trends
 from . import context
-from .dto import NarrativeCaseForecastOut
+from ..model.success import Success
+from .dto import NarrativeCaseForecastOut, NarrativeSuccessKindSummaryOut, NarrativeSuccessSummaryOut
 from .success_dto import (
     NarrativeImageSubjectOut,
     NarrativeLifeClaimOut, NarrativeLifeEdgeOut,
@@ -62,6 +63,21 @@ def success_snapshot(domain: str, kind: str) -> NarrativeSuccessOut:
         image_subject=_image_subject(s, key, kind),
         note=(f"artists are those Chicago or Cleveland ever acquired; years run {min(y for y, _ in k.years) if k.years else '?'} "
               f"to {max(y for y, _ in k.years) if k.years else '?'}; what critics rewarded is the year to September {s.year}"))
+
+
+def success_summary(s: Success) -> NarrativeSuccessSummaryOut:
+    """Every kind of success in brief, for the domain report: its leader, gain
+    and verdicts, the same its own report is given."""
+    def words(features) -> str:
+        return " + ".join(s.meanings.get(f, f) for f in features) or "each artist's own past alone"
+    return NarrativeSuccessSummaryOut(
+        forecast_for=s.forecast_for,
+        note=("artists are those Chicago or Cleveland ever acquired; gains are totals over every artist and scored "
+              "year; each kind, and which themes and life stories help, has its own report"),
+        kinds=[NarrativeSuccessKindSummaryOut(
+            kind=key, title=k.title, success_means=k.outcome, leader=words(k.leader), leader_since=k.leader_since,
+            gain_nats_over_own_past=round(k.gain, 1), verdicts=_verdicts(s, key), kept_apart=key in s.apart)
+            for key, k in s.kinds.items()])
 
 
 THEME_FEATURES = ("good_theme", "poor_theme")

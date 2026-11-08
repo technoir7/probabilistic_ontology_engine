@@ -1791,6 +1791,16 @@
       "ontology_competition": {
        "$ref": "#/components/schemas/NarrativeOntologyCompetitionOut"
       },
+      "success": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/NarrativeSuccessSummaryOut"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
       "trends": {
        "anyOf": [
         {
@@ -1812,6 +1822,91 @@
       "interpretation_hints"
      ],
      "title": "NarrativeSnapshotOut",
+     "type": "object"
+    },
+    "NarrativeSuccessKindSummaryOut": {
+     "description": "One kind of success in the domain report (D31): its full analysis is its own report.",
+     "properties": {
+      "gain_nats_over_own_past": {
+       "title": "Gain Nats Over Own Past",
+       "type": "number"
+      },
+      "kept_apart": {
+       "title": "Kept Apart",
+       "type": "boolean"
+      },
+      "kind": {
+       "title": "Kind",
+       "type": "string"
+      },
+      "leader": {
+       "title": "Leader",
+       "type": "string"
+      },
+      "leader_since": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Leader Since"
+      },
+      "success_means": {
+       "title": "Success Means",
+       "type": "string"
+      },
+      "title": {
+       "title": "Title",
+       "type": "string"
+      },
+      "verdicts": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Verdicts",
+       "type": "array"
+      }
+     },
+     "required": [
+      "kind",
+      "title",
+      "success_means",
+      "leader",
+      "leader_since",
+      "gain_nats_over_own_past",
+      "verdicts",
+      "kept_apart"
+     ],
+     "title": "NarrativeSuccessKindSummaryOut",
+     "type": "object"
+    },
+    "NarrativeSuccessSummaryOut": {
+     "properties": {
+      "forecast_for": {
+       "title": "Forecast For",
+       "type": "integer"
+      },
+      "kinds": {
+       "items": {
+        "$ref": "#/components/schemas/NarrativeSuccessKindSummaryOut"
+       },
+       "title": "Kinds",
+       "type": "array"
+      },
+      "note": {
+       "title": "Note",
+       "type": "string"
+      }
+     },
+     "required": [
+      "forecast_for",
+      "note",
+      "kinds"
+     ],
+     "title": "NarrativeSuccessSummaryOut",
      "type": "object"
     },
     "NarrativeTrendOut": {

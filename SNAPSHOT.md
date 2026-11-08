@@ -125,6 +125,8 @@ domains/    one package per domain; sources/ (FRED, yfinance, GDELT, grades)
   also beat each of its parts by 3. The cases ship as JSON snapshots in
   `src/domains/art_prestige_regime_v1/{case_data,trend_data,success_data}/`,
   rebuilt locally about once a year; the server never reads the press.
+  Every art panel, route, rule and current result, in a dense form for a
+  model to read: [docs/ART_CONSOLE_SPEC.md](docs/ART_CONSOLE_SPEC.md).
 - **Success (D31)**, **themes**, **lives (D32)**: the case engine run
   offline on four kinds of success (critics approve, more press, a museum
   buys, a place in Artprice's Top 500) plus market movers, with two

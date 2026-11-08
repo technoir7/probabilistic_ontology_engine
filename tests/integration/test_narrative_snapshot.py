@@ -388,8 +388,8 @@ def test_ns_13_a_domain_judged_by_cases_hands_the_report_its_mechanisms(client):
 def test_ns_14_a_domain_without_cases_has_none_and_its_report_hash_is_unchanged(client):
     from src.engine.api.report import snapshot_hash
     body = client.get("/v1/export/narrative-snapshot", params={"domain": "mr"}).json()
-    assert body["case_mechanisms"] == [] and body["trends"] is None
-    without = {k: v for k, v in body.items() if k not in ("case_mechanisms", "trends")}
+    assert body["case_mechanisms"] == [] and body["trends"] is None and body["success"] is None
+    without = {k: v for k, v in body.items() if k not in ("case_mechanisms", "trends", "success")}
     assert snapshot_hash(body) == snapshot_hash(without)
 
 
@@ -405,3 +405,21 @@ def test_ns_15_the_art_report_is_handed_this_years_trends_as_description(client)
     assert 3 <= len(row["what_critics_said"]) <= 8 and row["distinctive_words"]
     assert list(row["share_by_year_pct"]) == ["2023", "2024", "2025", "2026"]
     assert any("not a forecast" in h for h in body["interpretation_hints"])
+
+
+def test_ns_16_the_art_report_is_handed_what_predicts_success_with_its_verdicts(client):
+    """REFACTOR_SPEC D31: the domain report and its export carry each kind of
+    success, its leader, gain and the verdicts fixed by rule, not only the
+    case sets and trends."""
+    from src.engine.api.success_narrative import success_snapshot
+    body = client.get("/v1/export/narrative-snapshot", params={"domain": "art"}).json()
+    s = body["success"]
+    assert s["forecast_for"] == 2026
+    kinds = {k["kind"]: k for k in s["kinds"]}
+    assert set(kinds) == {"approve", "press", "museum", "market", "movers"}
+    museum = kinds["museum"]
+    assert museum["title"] == "Museum buys" and museum["leader_since"] == 2015 and museum["gain_nats_over_own_past"] > 100
+    # The same verdicts its own report is given, so the two reports cannot disagree.
+    assert museum["verdicts"] == success_snapshot("art", "museum").verdicts
+    assert museum["kept_apart"] is False and kinds["movers"]["kept_apart"] is True
+    assert any("own report" in h for h in body["interpretation_hints"])

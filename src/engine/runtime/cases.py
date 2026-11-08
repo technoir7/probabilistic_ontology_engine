@@ -1,6 +1,6 @@
 """Each domain's case reports (REFACTOR_SPEC D29). The case sets are static
 snapshots shipped with the domain, so a report is computed once per process
-(file reads and the case engine over every case-year: about 15 s on a laptop,
+(file reads and the case engine over every case-year: 15–40 s on a laptop,
 over a minute on the server) and kept."""
 from __future__ import annotations
 
